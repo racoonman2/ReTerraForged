@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "reterraforged",
+  "version": "${version}",
+  "name": "ReTerraForged",
+  "description": "A 1.19.+ fork of https://github.com/TerraForged/TerraForged",
+  "authors": [
+	"dags",
+	"Won-Ton",
+	"racconman"
+  ],
+  "contact": {
+    "repo": "https://github.com/racoonman2/reterraforged/",
+    "issues": "https://github.com/racoonman2/reterraforged/issues"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "raccoonman.reterraforged.fabric.ReTerraForgedFabric"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.14.14",
+    "minecraft": ">=1.19.4"
+  },
+  "accessWidener" : "reterraforged.accesswidener",
+  "mixins": [
+    "reterraforged.mixins.json"
+  ]
+}
