@@ -1,0 +1,28 @@
+modLoader="javafml"
+loaderVersion="[40,)"
+license="MIT"
+
+[[mods]]
+modId="reterraforged"
+displayName="ReTerraForged"
+version="0.0.4"
+authors="dags,Won-Ton,raccoonman"
+credits="dags,Won-Ton,raccoonman"
+logoFile="logo.png"
+displayURL="https://github.com/racoonman2/reterraforged/"
+issueTrackerURL="https://github.com/racoonman2/reterraforged/issues"
+description="A 1.19.+ fork of https://github.com/TerraForged/TerraForged"
+
+[[dependencies.reterraforged]]
+    modId="forge"
+    mandatory=true
+    versionRange="[40,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.reterraforged]]
+	modId = "minecraft"
+	mandatory = true
+	versionRange = "[1.19.4,)"
+	ordering = "NONE"
+	side = "BOTH"
