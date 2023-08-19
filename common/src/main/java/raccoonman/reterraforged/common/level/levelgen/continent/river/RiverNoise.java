@@ -25,9 +25,10 @@
 package raccoonman.reterraforged.common.level.levelgen.continent.river;
 
 import raccoonman.reterraforged.common.level.levelgen.cell.CellPoint;
-import raccoonman.reterraforged.common.level.levelgen.continent.ContinentNoise;
+import raccoonman.reterraforged.common.level.levelgen.continent.ContinentCellNoise;
 import raccoonman.reterraforged.common.level.levelgen.continent.config.ContinentConfig;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainSample;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseLevels;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainSample;
 import raccoonman.reterraforged.common.noise.Source;
 import raccoonman.reterraforged.common.noise.domain.Domain;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
@@ -51,18 +52,18 @@ public class RiverNoise {
     private static final int RIVER_CACHE_SIZE = 1024;
 
     private final float lakeDensity;
-    private final ContinentNoise continent;
+    private final ContinentCellNoise continent;
     private final RiverCarver riverCarver;
     private final Domain riverWarp;
-    private final ThreadLocal<CarverSample> localRiverSample = ThreadLocal.withInitial(CarverSample::new);
+    private final ThreadLocal<RiverSample> localRiverSample = ThreadLocal.withInitial(RiverSample::new);
 
     private final ObjectPool<RiverPieces> pool = ObjectPool.forCacheSize(RIVER_CACHE_SIZE, RiverPieces::new);
     private final LongCache<RiverPieces> cache = LossyCache.concurrent(RIVER_CACHE_SIZE, RiverPieces[]::new, this.pool::restore);
 
-    public RiverNoise(ContinentNoise continent, ContinentConfig config) {
+    public RiverNoise(NoiseLevels levels, ContinentCellNoise continent, ContinentConfig config) {
     	this.continent = continent;
         this.lakeDensity = config.rivers.lakeDensity;
-        this.riverCarver = new RiverCarver(continent.levels, config);
+        this.riverCarver = new RiverCarver(levels, config);
         this.riverWarp = Domain.warp(
                 Source.builder().frequency(30).legacySimplex().shift(X_OFFSET),
                 Source.builder().frequency(30).legacySimplex().shift(Y_OFFSET),
@@ -81,8 +82,8 @@ public class RiverNoise {
         riverCarver.carve(px, py, sample, nodeSample, seed);
     }
 
-    private void sample(float x, float y, CarverSample sample, int seed) {
-        var centre = continent.getNearestCell(x, y);
+    private void sample(float x, float y, RiverSample sample, int seed) {
+        var centre = continent.getNearestCell(seed, x, y);
         int centreX = PosUtil.unpackLeft(centre);
         int centreY = PosUtil.unpackRight(centre);
 
@@ -152,7 +153,7 @@ public class RiverNoise {
         int ax = PosUtil.unpackLeft(index);
         int ay = PosUtil.unpackRight(index);
 
-        var a = continent.getCell(ax, ay);
+        var a = continent.getCell(seed, ax, ay);
         if (continent.shapeNoise.getThresholdValue(a) <= 0) return RiverPieces.NONE;
 
         var min = a;
@@ -166,7 +167,7 @@ public class RiverNoise {
         for (var dir : DIRS) {
             int bx = ax + dir.x;
             int by = ay + dir.y;
-            var b = continent.getCell(bx, by);
+            var b = continent.getCell(seed, bx, by);
 
             float value = getBaseValue(b);
 
@@ -180,7 +181,7 @@ public class RiverNoise {
             if (value <= 0) continue;
 
             // Check if B is higher and A is its lowest neighbour
-            if (connects(ax, ay, bx, by, value)) {
+            if (connects(ax, ay, bx, by, value, seed)) {
                 float bh = getHeight(b.lowOctaveNoise, 0, 1);
                 float br = getRadius(b.lowOctaveNoise, 0, 1);
                 int hash = MathUtil.hash(seed + 827614, bx, by);
@@ -267,14 +268,14 @@ public class RiverNoise {
         pieces.addLake(new RiverNode(a.px, a.py, cx, cy, ah, ah, 1, 1, 0));
     }
 
-    private boolean connects(int ax, int ay, int bx, int by, float minValue) {
+    private boolean connects(int ax, int ay, int bx, int by, float minValue, int seed) {
         int minY = bx;
         int minX = by;
 
         for (var dir : DIRS) {
             int cx = bx + dir.x;
             int cy = by + dir.y;
-            var c = continent.getCell(cx, cy);
+            var c = continent.getCell(seed, cx, cy);
             float value = getBaseValue(c);
 
             if (value < minValue) {

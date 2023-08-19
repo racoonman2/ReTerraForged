@@ -41,7 +41,7 @@ public class Invert extends Modifier {
     public Invert(Noise source) {
         super(source);
     }
-
+    
     @Override
     public float modify(float x, float y, float noiseValue, int seed) {
         if (noiseValue > source.maxValue()) {

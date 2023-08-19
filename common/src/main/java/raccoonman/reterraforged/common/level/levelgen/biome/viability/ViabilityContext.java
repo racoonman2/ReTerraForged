@@ -26,16 +26,14 @@ package raccoonman.reterraforged.common.level.levelgen.biome.viability;
 
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
-import raccoonman.reterraforged.common.level.levelgen.climate.ClimateNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseSample;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainCache;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainNoise;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainCache;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainNoise;
 
 public class ViabilityContext implements Viability.Context {
     public int seed;
-    public TerrainCache terrainData;
+//    public TerrainCache terrainData;
     public TerrainNoise terrainNoise;
-    public ClimateNoise climateNoise;
     public NoiseSample sample = new NoiseSample();
     public Holder<NoiseGeneratorSettings> settings;
     
@@ -53,24 +51,19 @@ public class ViabilityContext implements Viability.Context {
     public Holder<NoiseGeneratorSettings> getSettings() {
         return this.settings;
     }
-
-    @Override
-    public TerrainCache getTerrain() {
-        return terrainData;
-    }
-
-    @Override
-    public TerrainNoise getTerrainNoise() {
-    	return terrainNoise;
-    }
-    
-    @Override
-    public ClimateNoise getClimateNoise() {
-        return climateNoise;
-    }
-
-	@Override
-	public NoiseSample sample() {
-		return this.sample;
-	}
+//
+//    @Override
+//    public TerrainCache getTerrain() {
+//        return terrainData;
+//    }
+//
+//    @Override
+//    public TerrainNoise getTerrainNoise() {
+//    	return terrainNoise;
+//    }
+//    
+//	@Override
+//	public NoiseSample sample() {
+//		return this.sample;
+//	}
 }

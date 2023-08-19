@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package raccoonman.reterraforged.common.level.levelgen.terrain.erosion;
+package raccoonman.reterraforged.common.level.levelgen.noise.terrain.erosion;
 
 import java.util.concurrent.CompletableFuture;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseData;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainSample;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainSample;
 import raccoonman.reterraforged.common.util.FastRandom;
 import raccoonman.reterraforged.common.util.storage.ObjectMap;
 

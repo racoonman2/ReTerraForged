@@ -11,17 +11,16 @@ import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate.Sampler;
+import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.common.level.levelgen.climate.Climate;
 import raccoonman.reterraforged.common.level.levelgen.climate.ClimatePoint;
 import raccoonman.reterraforged.common.level.levelgen.climate.ClimatePreset;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseSample;
-import raccoonman.reterraforged.common.level.levelgen.noise.density.MutablePointContext;
 
 public class RTFBiomeSource extends BiomeSource {
 	public static final Codec<RTFBiomeSource> CODEC = ClimatePreset.CODEC.xmap(RTFBiomeSource::new, RTFBiomeSource::getPreset);
 	
 	private final Holder<ClimatePreset> climatePreset;
-    private final ThreadLocal<Point> localPoint = ThreadLocal.withInitial(Point::new);
 
     public RTFBiomeSource(Holder<ClimatePreset> climatePreset) {
 		this.climatePreset = climatePreset;
@@ -58,25 +57,15 @@ public class RTFBiomeSource extends BiomeSource {
 	
 	@Override
 	public Holder<Biome> getNoiseBiome(int x, int y, int z, Sampler sampler) {
-        int blockX = QuartPos.toBlock(x);
-        int blockY = QuartPos.toBlock(y);
-        int blockZ = QuartPos.toBlock(z);
-        Point point = this.localPoint.get();
-        point.sample.terrain.continentNoise = 1;
-        point.sample.terrain.baseNoise = 0;
-        point.sample.terrain.heightNoise = 0;
-        point.sample.terrain.waterNoise = 1;
-        point.sample.climate.biomeNoise = 0.5F;
-        point.sample.climate.biomeEdgeNoise = 0.5F;
-        point.sample.climate.moisture = 0.5F;
-        point.sample.climate.temperature = 0.5F;
-        point.sample.climate.climate = 0.5F;
-//		this.climateNoise.get().sample(blockX, blockZ, point.sample.climate);
-//		this.terrainNoise.get().sample(blockX, blockZ, point.sample.terrain);
-		point.ctx.x = blockX;
-		point.ctx.y = blockY;
-		point.ctx.z = blockZ;
-		return this.getClimate(point.sample, (float) sampler.depth().compute(point.ctx)).value().biomes().getValue(point.sample.climate.biomeNoise);
+        DensityFunction.FunctionContext ctx = new DensityFunction.SinglePointContext(QuartPos.toBlock(x), QuartPos.toBlock(y), QuartPos.toBlock(z));
+		return this.climatePreset.value().params().findValue(
+			(float) sampler.temperature().compute(ctx),
+			(float) sampler.humidity().compute(ctx),
+			(float) sampler.continentalness().compute(ctx),
+			1.0F - (float) sampler.depth().compute(ctx),
+			(float) sampler.erosion().compute(ctx),
+			(float) sampler.depth().compute(ctx)			
+		).value().biomes().getValue(1);
 	}
 	
 	@Override
@@ -87,12 +76,19 @@ public class RTFBiomeSource extends BiomeSource {
 //		this.climateNoise.get().sample(x, z, sample.climate);
 //		this.terrainNoise.get().sample(x, z, sample.terrain);
 //
-//    	lines.add("");
-//		lines.add("[TFBiomeSource]");
+		DensityFunction.FunctionContext ctx = new DensityFunction.SinglePointContext(pos.getX(), pos.getY(), pos.getZ());
+    	lines.add("");
+		lines.add("[RTFBiomeSource]");
+		lines.add("Temperature: " + sampler.temperature().compute(ctx));
+		lines.add("Humidity: " + sampler.humidity().compute(ctx));
+		lines.add("Continent: " + sampler.continentalness().compute(ctx));
+		lines.add("Erosion: " + sampler.erosion().compute(ctx));
+		lines.add("Depth: " + sampler.depth().compute(ctx));
+		lines.add("Weirdness: " + sampler.weirdness().compute(ctx));
 //    	lines.add("Climate Group Index: " + this.getClimateGroupIndex(sample.climate));
 //    	lines.add("Climate Group: " + name(this.getClimateGroup(sample.climate)));
 //    	lines.add("Climate: " + name(this.getClimate(sample, (float) sampler.depth().compute(new DensityFunction.SinglePointContext(x, pos.getY(), z)))));
-//    	lines.add("");
+    	lines.add("");
 	}
 //	
 //	private static String name(Holder<?> holder) {
@@ -100,11 +96,4 @@ public class RTFBiomeSource extends BiomeSource {
 //			return key.location().toString();
 //		}).orElse("(Inlined)");
 //	}
-	
-	private record Point(NoiseSample sample, MutablePointContext ctx) {
-
-		public Point() {
-			this(new NoiseSample(), new MutablePointContext());
-		}
-	}
 }

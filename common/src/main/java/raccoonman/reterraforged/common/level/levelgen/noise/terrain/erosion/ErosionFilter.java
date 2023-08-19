@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package raccoonman.reterraforged.common.level.levelgen.terrain.erosion;
+package raccoonman.reterraforged.common.level.levelgen.noise.terrain.erosion;
 
 import raccoonman.reterraforged.common.level.levelgen.settings.WorldSettings;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;

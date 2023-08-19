@@ -28,7 +28,7 @@ import raccoonman.reterraforged.common.level.levelgen.continent.ContinentPoints;
 import raccoonman.reterraforged.common.level.levelgen.continent.config.ContinentConfig;
 import raccoonman.reterraforged.common.level.levelgen.continent.config.RiverConfig;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseLevels;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainSample;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainSample;
 import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.Source;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
@@ -42,8 +42,8 @@ public class RiverCarver {
 
     private final NoiseLevels levels;
     private final Noise erosionNoise;
-    private final RiverConfig riverConfig = new RiverConfig();
-    private final RiverConfig lakeConfig = new RiverConfig();
+    private final RiverConfig riverConfig = RiverConfig.river();
+    private final RiverConfig lakeConfig = RiverConfig.river();
 
     public RiverCarver(NoiseLevels levels, ContinentConfig config) {
         float frequency = levels.frequency * (1f / config.shape.scale);
@@ -57,15 +57,14 @@ public class RiverCarver {
         	.shift(config.rivers.seed + SEED_OFFSET);
     }
 
-    public void carve(float x, float y, TerrainSample sample, CarverSample carverSample, int seed) {
+    public float carve(float x, float y, TerrainSample sample, RiverSample carverSample, int seed) {
         float erosion = erosionNoise.getValue(x, y, seed);
         float baseModifier = getBaseModifier(sample);
 
-        sample.waterNoise = clipRiverNoise(sample);
         float baseNoise = sample.baseNoise * baseModifier;
         baseNoise = carve(sample, carverSample.river(), riverConfig, baseNoise, baseModifier, erosion);
         baseNoise = carve(sample, carverSample.lake(), lakeConfig, baseNoise, baseModifier, erosion);
-        sample.baseNoise = baseNoise;
+        return clipRiverNoise(sample);
     }
 
     private float carve(TerrainSample sample, NodeSample nodeSample, RiverConfig config, float baseNoise, float baseModifier, float erosion) {

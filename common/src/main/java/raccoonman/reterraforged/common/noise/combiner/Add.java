@@ -42,7 +42,7 @@ public class Add extends Combiner {
     public Add(Noise... modules) {
         super(modules);
     }
-
+    
     @Override
     protected float minTotal(float total, Noise next) {
         return total + next.minValue();

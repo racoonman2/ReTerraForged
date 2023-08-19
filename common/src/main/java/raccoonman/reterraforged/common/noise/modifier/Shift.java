@@ -42,7 +42,7 @@ public class Shift extends Modifier {
         super(source);
         
         this.seedOffset = seedOffset;
-    }
+	}
 
     @Override
     public float getValue(float x, float y, int seed) {

@@ -49,7 +49,7 @@ public class Grad extends Modifier {
         this.upper = upper;
         this.strength = strength;
     }
-
+    
     @Override
     public float modify(float x, float y, float noiseValue, int seed) {
         float upperBound = upper.getValue(x, y, seed);

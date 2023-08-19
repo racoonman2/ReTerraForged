@@ -1,7 +1,7 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package raccoonman.reterraforged.common.level.levelgen.climate;
+package raccoonman.reterraforged.common.level.levelgen.noise.climate;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -26,10 +26,10 @@ public class Temperature implements Noise {
     @Override
     public float getValue(float x, float y, int seed) {
         float sin = NoiseUtil.sin(y *= this.frequency);
-        sin = NoiseUtil.clamp(sin, -1.0f, 1.0f);
+        sin = NoiseUtil.clamp(sin, -1.0F, 1.0F);
         float value = NoiseUtil.pow(sin, this.power);
         value = NoiseUtil.copySign(value, sin);
-        return NoiseUtil.map(value, -1.0f, 1.0f, 2.0f);
+        return NoiseUtil.map(value, -1.0F, 1.0F, 2.0F);
     }
 
 	@Override

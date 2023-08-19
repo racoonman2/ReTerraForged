@@ -1,7 +1,7 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package raccoonman.reterraforged.common.level.levelgen.noise.source;
+package raccoonman.reterraforged.common.level.levelgen.noise;
 
 import java.util.Arrays;
 

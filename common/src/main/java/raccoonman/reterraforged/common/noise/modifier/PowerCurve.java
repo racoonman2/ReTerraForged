@@ -54,7 +54,7 @@ public class PowerCurve extends Modifier {
         this.range = this.max - this.min;
         this.mid = this.min + (range / 2F);
     }
-
+    
     @Override
     public float modify(float x, float y, float value, int seed) {
         if (value >= mid) {

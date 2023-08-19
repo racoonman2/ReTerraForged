@@ -22,26 +22,20 @@
  * SOFTWARE.
  */
 
-package raccoonman.reterraforged.common.level.levelgen.terrain;
-
-import java.util.function.Consumer;
-
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+package raccoonman.reterraforged.common.level.levelgen.noise.terrain;
 
 import net.minecraft.world.level.levelgen.DensityFunction;
-import raccoonman.reterraforged.common.level.levelgen.continent.ContinentGenerator;
+import raccoonman.reterraforged.common.level.levelgen.continent.ContinentNoise;
 import raccoonman.reterraforged.common.level.levelgen.continent.ContinentPoints;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseData;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseLevels;
-import raccoonman.reterraforged.common.level.levelgen.noise.density.MarkerDensityFunction;
 import raccoonman.reterraforged.common.level.levelgen.settings.WorldSettings;
 import raccoonman.reterraforged.common.level.levelgen.util.Seed;
 import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.Source;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 
-public class TerrainNoise implements Terrain, DensityFunction.SimpleFunction {
+public class TerrainNoise implements TerrainSampler, DensityFunction.SimpleFunction {
     protected static final int OCEAN_OFFSET = 8763214;
     protected static final int TERRAIN_OFFSET = 45763218;
     protected static final int CONTINENT_OFFSET = 18749560;
@@ -51,7 +45,7 @@ public class TerrainNoise implements Terrain, DensityFunction.SimpleFunction {
     protected final NoiseLevels levels;
     protected final Noise ocean;
     protected final TerrainBlender terrain;
-    protected final ContinentGenerator continent;
+    protected final ContinentNoise continent;
     protected final ThreadLocal<NoiseData> localChunk = ThreadLocal.withInitial(NoiseData::new);
     protected final ThreadLocal<SampleCache> localSample = ThreadLocal.withInitial(SampleCache::new);
     
@@ -60,35 +54,35 @@ public class TerrainNoise implements Terrain, DensityFunction.SimpleFunction {
     	this.levels = levels;
         this.ocean = createOceanTerrain();
         this.terrain = terrain;
-        this.continent = createContinentNoise(seed, settings, levels);
+        this.continent = createContinentNoise(levels, settings);
     }
 
-    public ContinentGenerator getContinent() {
+    public ContinentNoise getContinent() {
         return this.continent;
     }
+//
+//    public void generate(int chunkX, int chunkZ, Consumer<NoiseData> consumer) {
+//        var noiseData = this.localChunk.get();
+//        var blender = this.terrain.getBlenderResource();
+//        var sample = noiseData.sample();
+//
+//        int startX = chunkX << 4;
+//        int startZ = chunkZ << 4;
+//        for (int dz = -1; dz < 17; dz++) {
+//            for (int dx = -1; dx < 17; dx++) {
+//                int x = startX + dx;
+//                int z = startZ + dz;
+//
+//                this.sample(x, z, sample, blender);
+//
+//                noiseData.setNoise(dx, dz, sample);
+//            }
+//        }
+//
+//        consumer.accept(noiseData);
+//    }
 
-    public void generate(int chunkX, int chunkZ, Consumer<NoiseData> consumer) {
-        var noiseData = this.localChunk.get();
-        var blender = this.terrain.getBlenderResource();
-        var sample = noiseData.sample();
-
-        int startX = chunkX << 4;
-        int startZ = chunkZ << 4;
-        for (int dz = -1; dz < 17; dz++) {
-            for (int dx = -1; dx < 17; dx++) {
-                int x = startX + dx;
-                int z = startZ + dz;
-
-                this.sample(x, z, sample, blender);
-
-                noiseData.setNoise(dx, dz, sample);
-            }
-        }
-
-        consumer.accept(noiseData);
-    }
-
-    public TerrainBlender.LocalBlender getBlenderResource() {
+    public TerrainBlender.Local getBlenderResource() {
         return this.terrain.getBlenderResource();
     }
 
@@ -97,7 +91,7 @@ public class TerrainNoise implements Terrain, DensityFunction.SimpleFunction {
         this.sample(x, z, sample, blender);
     }
     
-    public TerrainSample sample(int x, int z, TerrainSample sample, TerrainBlender.LocalBlender blender) {
+    public TerrainSample sample(int x, int z, TerrainSample sample, TerrainBlender.Local blender) {
         float nx = getNoiseCoord(x);
         float nz = getNoiseCoord(z);
         this.sampleTerrain(nx, nz, sample, blender);
@@ -105,7 +99,7 @@ public class TerrainNoise implements Terrain, DensityFunction.SimpleFunction {
         return sample;
     }
 
-    protected TerrainSample sampleTerrain(float x, float z, TerrainSample sample, TerrainBlender.LocalBlender blender) {
+    protected TerrainSample sampleTerrain(float x, float z, TerrainSample sample, TerrainBlender.Local blender) {
     	this.continent.sampleContinent(x, z, sample, this.seed);
     	
         float continentNoise = sample.continentNoise;
@@ -120,19 +114,19 @@ public class TerrainNoise implements Terrain, DensityFunction.SimpleFunction {
         return sample;
     }
 
-    private void getOcean(float x, float z, TerrainSample sample, TerrainBlender.LocalBlender blender) {
+    private void getOcean(float x, float z, TerrainSample sample, TerrainBlender.Local blender) {
         float rawNoise = this.ocean.getValue(x, z, this.seed);
 
         sample.heightNoise = this.levels.toDepthNoise(rawNoise);
     }
 
-    private void getInland(float x, float z, TerrainSample sample, TerrainBlender.LocalBlender blender) {
+    private void getInland(float x, float z, TerrainSample sample, TerrainBlender.Local blender) {
         float heightNoise = terrain.getValue(x, z, this.seed, blender) * this.heightMultiplier;
 
         sample.heightNoise = this.levels.toHeightNoise(sample.baseNoise, heightNoise);
     }
 
-    private void getBlend(float x, float z, TerrainSample sample, TerrainBlender.LocalBlender blender) {
+    private void getBlend(float x, float z, TerrainSample sample, TerrainBlender.Local blender) {
     	if (sample.continentNoise < ContinentPoints.BEACH) {
             float lowerRaw = ocean.getValue(x, z, this.seed);
             float lower = this.levels.toDepthNoise(lowerRaw);
@@ -161,8 +155,8 @@ public class TerrainNoise implements Terrain, DensityFunction.SimpleFunction {
         return Source.simplex(64, 3).shift(OCEAN_OFFSET).scale(0.4);
     }
     
-    private static ContinentGenerator createContinentNoise(Seed seed, WorldSettings settings, NoiseLevels levels) {
-        return new ContinentGenerator(seed.offset(CONTINENT_OFFSET), levels, settings);
+    private static ContinentNoise createContinentNoise(NoiseLevels levels, WorldSettings settings) {
+        return new ContinentNoise(levels, settings);
     }
 
 	@Override
@@ -197,7 +191,7 @@ public class TerrainNoise implements Terrain, DensityFunction.SimpleFunction {
         float dx = e - w;
         float dz = s - n;
         float grad = NoiseUtil.sqrt(dx * dx + dz * dz);
-        return NoiseUtil.clamp(grad, Terrain.MIN, Terrain.MAX);
+        return NoiseUtil.clamp(grad, TerrainSampler.MIN, TerrainSampler.MAX);
 	}
 
 	private TerrainSample sample(int x, int z) {
@@ -218,28 +212,5 @@ public class TerrainNoise implements Terrain, DensityFunction.SimpleFunction {
 		public final TerrainSample sample = new TerrainSample();
 		public int x = Integer.MIN_VALUE; 
 		public int z = Integer.MIN_VALUE;
-	}
-	
-	//TODO don't hardcode min/max values
-	public record Marker(WorldSettings settings, TerrainBlender blender) implements MarkerDensityFunction {
-		public static final Codec<TerrainNoise.Marker> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			WorldSettings.CODEC.fieldOf("settings").forGetter(TerrainNoise.Marker::settings),
-			TerrainBlender.CODEC.fieldOf("blender").forGetter(TerrainNoise.Marker::blender)
-		).apply(instance, Marker::new));
-
-		@Override
-		public double minValue() {
-			return 0.0D;
-		}
-
-		@Override
-		public double maxValue() {
-			return 1.0D;
-		}
-
-		@Override
-		public Codec<TerrainNoise.Marker> markerCodec() {
-			return CODEC;
-		}
 	}
 }

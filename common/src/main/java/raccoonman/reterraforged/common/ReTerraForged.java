@@ -31,14 +31,12 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import raccoonman.reterraforged.common.registries.RTFBiomeSources;
-import raccoonman.reterraforged.common.registries.RTFChunkGenerators;
 import raccoonman.reterraforged.common.registries.RTFCurveFunctionTypes;
 import raccoonman.reterraforged.common.registries.RTFDensityFunctionTypes;
 import raccoonman.reterraforged.common.registries.RTFDomainTypes;
 import raccoonman.reterraforged.common.registries.RTFFeatures;
 import raccoonman.reterraforged.common.registries.RTFNoiseTypes;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
-import raccoonman.reterraforged.common.registries.RTFViabilities;
 
 public final class ReTerraForged {
 	public static final String MOD_ID = "reterraforged";
@@ -50,9 +48,9 @@ public final class ReTerraForged {
 		RTFDomainTypes.register();
 		RTFNoiseTypes.register();
 		RTFFeatures.register();
-		RTFViabilities.register();
+//		RTFViabilities.register();
 		RTFDensityFunctionTypes.register();
-		RTFChunkGenerators.register();
+//		RTFChunkGenerators.register();
 		RTFBiomeSources.register();
 	}
 	

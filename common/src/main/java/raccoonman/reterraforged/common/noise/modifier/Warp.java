@@ -46,7 +46,7 @@ public class Warp extends Modifier {
         super(source);
         this.domain = domain;
     }
-
+    
     @Override
     public float getValue(float x, float y, int seed) {
         return source.getValue(domain.getX(x, y, seed), domain.getY(x, y, seed), seed);

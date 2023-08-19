@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package raccoonman.reterraforged.common.level.levelgen.terrain.erosion;
+package raccoonman.reterraforged.common.level.levelgen.noise.terrain.erosion;
 
 public class NoiseTileSize {
     public static final int CHUNK_SIZE = 16;

@@ -24,10 +24,14 @@
 
 package raccoonman.reterraforged.common.level.levelgen.cell;
 
+import com.mojang.serialization.Codec;
+
+import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.func.Interpolation;
 import raccoonman.reterraforged.common.noise.util.Noise2D;
+import raccoonman.reterraforged.common.util.CodecUtil;
 
-public enum CellSource {
+public enum CellSource implements Noise {
     PERLIN {
         @Override
         public float sample(int seed, float x, float y) {
@@ -47,9 +51,17 @@ public enum CellSource {
         }
     };
 
-    public abstract float sample(int seed, float x, float y);
+	public static final Codec<CellSource> CODEC = CodecUtil.forEnum(CellSource::valueOf);
+	
+    protected abstract float sample(int seed, float x, float y);
 
-    public float getValue(int seed, float x, float y) {
+    @Override
+    public float getValue(float x, float y, int seed) {
         return (1 + this.sample(seed, x, y)) * 0.5f;
     }
+
+	@Override
+	public Codec<CellSource> codec() {
+		return CODEC;
+	}
 }

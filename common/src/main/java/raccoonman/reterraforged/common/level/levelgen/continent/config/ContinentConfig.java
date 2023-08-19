@@ -36,8 +36,6 @@ public class ContinentConfig {
     public final Noise noise = new Noise();
     public final Rivers rivers = new Rivers();
     public static class Shape {
-        public int seed0;
-        public int seed1;
         public int scale = CONTINENT_SAMPLE_SCALE;
         public float jitter = 0.75f;
         public float threshold = 0.525f;
@@ -55,7 +53,7 @@ public class ContinentConfig {
     public static class Rivers {
         public int seed = 0;
         public float lakeDensity = 0.75f;
-        public final RiverConfig rivers = new RiverConfig();
+        public final RiverConfig rivers = RiverConfig.river();
         public final RiverConfig lakes = RiverConfig.lake();
     }
 }

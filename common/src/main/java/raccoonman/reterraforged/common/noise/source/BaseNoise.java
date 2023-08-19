@@ -33,4 +33,6 @@ public abstract class BaseNoise implements Noise {
 	public BaseNoise(float frequency) {
 		this.frequency = frequency;
 	}
+	
+	
 }

@@ -74,7 +74,7 @@ public class Select extends Selector {
         this.upperCurveMax = upperBound + edgeFalloff;
         this.upperCurveRange = upperCurveMax - upperCurveMin;
     }
-
+    
     @Override
     public float selectValue(float x, float y, float value, int seed) {
         if (edgeFalloff == 0) {

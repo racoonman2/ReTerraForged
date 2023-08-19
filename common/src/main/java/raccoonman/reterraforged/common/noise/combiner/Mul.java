@@ -42,7 +42,7 @@ public class Mul extends Combiner {
     public Mul(Noise... modules) {
         super(modules);
     }
-
+    
     @Override
     protected float minTotal(float total, Noise next) {
         return total * next.minValue();

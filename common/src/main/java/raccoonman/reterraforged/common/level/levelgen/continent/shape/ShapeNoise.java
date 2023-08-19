@@ -25,11 +25,11 @@
 package raccoonman.reterraforged.common.level.levelgen.continent.shape;
 
 import raccoonman.reterraforged.common.level.levelgen.cell.CellPoint;
-import raccoonman.reterraforged.common.level.levelgen.continent.ContinentNoise;
+import raccoonman.reterraforged.common.level.levelgen.continent.ContinentCellNoise;
 import raccoonman.reterraforged.common.level.levelgen.continent.ContinentPoints;
 import raccoonman.reterraforged.common.level.levelgen.continent.config.ContinentConfig;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainSample;
 import raccoonman.reterraforged.common.level.levelgen.settings.ControlPoints;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainSample;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 import raccoonman.reterraforged.common.util.pos.PosUtil;
 
@@ -43,11 +43,11 @@ public class ShapeNoise {
     public final float baseFalloffMin;
     public final float baseFalloffMax;
 
-    private final ContinentNoise continent;
+    private final ContinentCellNoise continent;
     private final FalloffPoint[] falloffPoints;
     private final ThreadLocal<CellLocal[]> cellBuffer = ThreadLocal.withInitial(CellLocal::init);
 
-    public ShapeNoise(ContinentNoise continent, ContinentConfig config, ControlPoints controlPoints) {
+    public ShapeNoise(ContinentCellNoise continent, ContinentConfig config, ControlPoints controlPoints) {
         this.continent = continent;
         this.baseFalloff = config.noise.baseNoiseFalloff;
         this.continentFalloff = config.noise.continentNoiseFalloff;
@@ -71,8 +71,9 @@ public class ShapeNoise {
         return NoiseUtil.map(value, min, max, max - min);
     }
 
-    public TerrainSample sample(float x, float y, TerrainSample sample) {
-        var centre = continent.getNearestCell(x, y);
+    @Deprecated
+    public TerrainSample sample(float x, float y, TerrainSample sample, int seed) {
+        var centre = continent.getNearestCell(seed, x, y);
         int centreX = PosUtil.unpackLeft(centre);
         int centreY = PosUtil.unpackRight(centre);
 
@@ -85,14 +86,13 @@ public class ShapeNoise {
         int maxX = centreX + RADIUS;
         int maxY = centreY + RADIUS;
 
-        int closest = -1;
         float min0 = Float.MAX_VALUE;
         float min1 = Float.MAX_VALUE;
         var buffer = cellBuffer.get();
 
         for (int cy = minY, i = 0; cy <= maxY; cy++) {
             for (int cx = minX; cx <= maxX; cx++, i++) {
-                var cell = continent.getCell(cx, cy);
+                var cell = continent.getCell(seed, cx, cy);
                 var local = buffer[i];
 
                 float distance = NoiseUtil.sqrt(NoiseUtil.dist2(x, y, cell.px, cell.py));
@@ -103,17 +103,17 @@ public class ShapeNoise {
                 if (distance < min0) {
                     min1 = min0;
                     min0 = distance;
-                    closest = i;
                 } else if (distance < min1) {
                     min1 = distance;
                 }
             }
         }
 
-        return sampleEdges(closest, min0, min1, buffer, sample);
+        return sampleEdges(min0, min1, buffer, sample);
     }
 
-    private TerrainSample sampleEdges(int index, float min0, float min1, CellLocal[] buffer, TerrainSample sample) {
+    @Deprecated
+    private TerrainSample sampleEdges(float min0, float min1, CellLocal[] buffer, TerrainSample sample) {
         float borderDistance = (min0 + min1) * 0.5F;
         float baseBlend = borderDistance * baseFalloff;
         float continentBlend = borderDistance * continentFalloff;

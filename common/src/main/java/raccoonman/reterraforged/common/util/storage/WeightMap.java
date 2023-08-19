@@ -14,11 +14,11 @@ import raccoonman.reterraforged.common.util.MathUtil;
 import raccoonman.reterraforged.common.util.CodecUtil;
 
 public class WeightMap<T> implements Iterable<T> {
-    protected final Object[] values;
+    public final Object[] values;
     protected final float[] cumulativeWeights;
     protected final float sumWeight;
     protected final float zeroWeight;
-    private float[] weights;
+    public float[] weights;
 
     private WeightMap(float[] weights, Object[] values) {
         this.values = Arrays.copyOf(values, values.length);

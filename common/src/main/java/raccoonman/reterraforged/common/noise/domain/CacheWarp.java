@@ -43,7 +43,7 @@ public class CacheWarp implements Domain {
     public CacheWarp(Domain domain) {
         this.domain = domain;
     }
-    
+        
     @Override
     public float getOffsetX(float x, float y, int seed) {
         if (cached && x == this.x && y == this.y) {

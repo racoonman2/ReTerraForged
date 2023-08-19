@@ -32,21 +32,24 @@ import raccoonman.reterraforged.common.noise.Noise;
 
 public class DomainWarp implements Domain {
 	public static final Codec<DomainWarp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Noise.DIRECT_CODEC.fieldOf("x").forGetter((d) -> d.x),
-		Noise.DIRECT_CODEC.fieldOf("y").forGetter((d) -> d.y),
+		Noise.DIRECT_CODEC.fieldOf("x").forGetter((d) -> d.originalX),
+		Noise.DIRECT_CODEC.fieldOf("y").forGetter((d) -> d.originalY),
 		Noise.DIRECT_CODEC.fieldOf("distance").forGetter((d) -> d.distance)
 	).apply(instance, DomainWarp::new));
 	
+	private final Noise originalX, originalY;
     private final Noise x;
     private final Noise y;
     private final Noise distance;
 
     public DomainWarp(Noise x, Noise y, Noise distance) {
-        this.x = map(x);
+    	this.originalX = x;
+    	this.originalY = y;
+    	this.x = map(x);
         this.y = map(y);
         this.distance = distance;
     }
-
+    
     @Override
     public float getOffsetX(float x, float y, int seed) {
         return this.x.getValue(x, y, seed) * this.distance.getValue(x, y, seed);
@@ -85,11 +88,6 @@ public class DomainWarp implements Domain {
     // map the module to the range -0.5 to 0.5
     // this ensures warping occurs in the positive and negative directions
     private static Noise map(Noise in) {
-        if (in.minValue() == -0.5F && in.maxValue() == 0.5F) {
-            return in;
-        }
-
-        // if range is not 1 then use map to squash/stretch it to correct range
         return in.map(-0.5, 0.5);
     }
 }

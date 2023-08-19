@@ -5,12 +5,9 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
   	"MixinBoat",
-  	"MixinChunkStatus",
-  	"MixinNoiseBasedChunkGenerator",
-  	"MixinNoiseBasedChunkGenerator$CreateNoiseChunkInvoker",
   	"MixinNoiseChunk",
   	"MixinRandomState",
-  	"MixinProtoChunk"
+  	"MixinNoiseBasedChunkGenerator"
   ],
   "injectors": {
     "defaultRequire": 1

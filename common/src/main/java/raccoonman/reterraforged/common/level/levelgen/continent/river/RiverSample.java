@@ -24,13 +24,13 @@
 
 package raccoonman.reterraforged.common.level.levelgen.continent.river;
 
-public record CarverSample(NodeSample river, NodeSample lake) {
+public record RiverSample(NodeSample river, NodeSample lake) {
 
-    public CarverSample() {
+    public RiverSample() {
     	this(new NodeSample(), new NodeSample());
     }
     
-    public CarverSample reset() {
+    public RiverSample reset() {
         this.river.reset();
         this.lake.reset();
         return this;

@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainCache;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainCache;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 import raccoonman.reterraforged.common.registries.data.tags.RTFBlockTags;
 

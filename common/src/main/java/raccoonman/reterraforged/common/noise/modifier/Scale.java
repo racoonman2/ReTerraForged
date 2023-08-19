@@ -49,7 +49,7 @@ public class Scale extends Modifier {
         this.min = source.minValue() * scale.minValue();
         this.max = source.maxValue() * scale.maxValue();
     }
-
+    
     @Override
     public float minValue() {
         return min;

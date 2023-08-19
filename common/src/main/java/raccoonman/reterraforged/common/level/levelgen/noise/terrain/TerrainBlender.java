@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package raccoonman.reterraforged.common.level.levelgen.terrain;
+package raccoonman.reterraforged.common.level.levelgen.noise.terrain;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -38,7 +38,6 @@ import raccoonman.reterraforged.common.util.storage.WeightMap;
 
 public class TerrainBlender implements Noise {
 	public static final Codec<TerrainBlender> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Codec.INT.fieldOf("scale").forGetter((m) -> m.scale),
 		Codec.FLOAT.fieldOf("jitter").forGetter((m) -> m.jitter),
 		Codec.FLOAT.fieldOf("blending").forGetter((m) -> m.blending),
 		WeightMap.codec(Noise.CODEC).fieldOf("noise").forGetter((m) -> m.noise)
@@ -47,22 +46,20 @@ public class TerrainBlender implements Noise {
 	private static final int REGION_SEED_OFFSET = 21491124;
 	private static final int WARP_SEED_OFFSET = 12678;
 
-	private final int scale;
-	private final float frequency;
+//	private final int scale;
+//	private final float frequency;
 	private final float jitter;
 	private final float blending;
 
 	private final Domain warp;
 	private final WeightMap<Holder<Noise>> noise;
-	private final ThreadLocal<LocalBlender> blender = ThreadLocal.withInitial(LocalBlender::new);
+	private final ThreadLocal<Local> blender = ThreadLocal.withInitial(Local::new);
 
-	public TerrainBlender(int scale, float jitter, float blending, WeightMap<Holder<Noise>> noise) {
-		this.scale = scale;
-		this.frequency = 1F / scale;
+	public TerrainBlender(float jitter, float blending, WeightMap<Holder<Noise>> noise) {
 		this.jitter = jitter;
 		this.blending = blending;
 		this.noise = noise;
-		this.warp = Domain.warp(Source.SIMPLEX, WARP_SEED_OFFSET, scale, 3, scale / 2.5F); // TODO make this configurable
+		this.warp = Domain.warp(Source.SIMPLEX, 800, 3, 800 / 2.5F).shift(WARP_SEED_OFFSET); // TODO make this configurable
 	}
 
 	@Override
@@ -76,18 +73,18 @@ public class TerrainBlender implements Noise {
 		return CODEC;
 	}
 
-	public float getValue(float x, float z, int seed, LocalBlender blender) {
-		float rx = this.warp.getX(x, z, seed) * this.frequency;
-		float rz = this.warp.getY(x, z, seed) * this.frequency;
+	public float getValue(float x, float z, int seed, Local blender) {
+		float rx = this.warp.getX(x, z, seed) * (1.0F / 800.0F);
+		float rz = this.warp.getY(x, z, seed) * (1.0F / 800.0F);
 		getCell(seed + REGION_SEED_OFFSET, rx, rz, this.jitter, blender);
 		return blender.getValue(x, z, this.blending, seed, this.noise);
 	}
 
-	public LocalBlender getBlenderResource() {
+	public Local getBlenderResource() {
 		return this.blender.get();
 	}
 
-	private static void getCell(int seed, float x, float z, float jitter, LocalBlender blender) {
+	private static void getCell(int seed, float x, float z, float jitter, Local blender) {
 		int maxX = NoiseUtil.floor(x) + 1;
 		int maxZ = NoiseUtil.floor(z) + 1;
 
@@ -130,7 +127,7 @@ public class TerrainBlender implements Noise {
 		blender.closestIndex2 = nearestIndex2;
 	}
 
-	public static class LocalBlender {
+	public static class Local {
 		protected int closestIndex;
 		protected int closestIndex2;
 

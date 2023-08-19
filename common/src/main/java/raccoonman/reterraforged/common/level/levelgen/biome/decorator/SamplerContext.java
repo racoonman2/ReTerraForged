@@ -38,8 +38,6 @@ import raccoonman.reterraforged.common.level.levelgen.biome.vegetation.BiomeVege
 import raccoonman.reterraforged.common.level.levelgen.biome.vegetation.VegetationConfig;
 import raccoonman.reterraforged.common.level.levelgen.biome.vegetation.VegetationFeatures;
 import raccoonman.reterraforged.common.level.levelgen.biome.viability.ViabilityContext;
-import raccoonman.reterraforged.common.level.levelgen.generator.RTFChunkGenerator;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainCache;
 import raccoonman.reterraforged.common.util.storage.FloatMap;
 
 public class SamplerContext {
@@ -47,7 +45,6 @@ public class SamplerContext {
 
     public ChunkAccess chunk;
     public WorldGenLevel region;
-    public RTFChunkGenerator generator;
     public WorldgenRandom random;
 
     public Biome biome;
@@ -68,10 +65,10 @@ public class SamplerContext {
     public Holder<Biome> getBiome(int x, int y, int z) {
         return region.getBiome(pos.set(x, y, z));
     }
-
-    public TerrainCache terrainData() {
-        return viabilityContext.getTerrain();
-    }
+//
+//    public TerrainCache terrainData() {
+//        return viabilityContext.getTerrain();
+//    }
 
     public SamplerContext reset() {
         biomeList.reset();

@@ -42,13 +42,11 @@ public class Map extends Modifier {
 	
 	private final Noise min;
     private final Noise max;
-    private final float sourceRange;
 
     public Map(Noise source, Noise min, Noise max) {
         super(source);
         this.min = min;
         this.max = max;
-        this.sourceRange = source.maxValue() - source.minValue();
     }
     
     @Override
@@ -63,7 +61,7 @@ public class Map extends Modifier {
 
     @Override
     public float modify(float x, float y, float value, int seed) {
-        float alpha = (value - source.minValue()) / sourceRange;
+        float alpha = (value - source.minValue()) / this.sourceRange();
         float min = this.min.getValue(x, y, seed);
         float max = this.max.getValue(x, y, seed);
         return min + (alpha * (max - min));
@@ -85,18 +83,23 @@ public class Map extends Modifier {
 
         Map map = (Map) o;
 
-        if (Float.compare(map.sourceRange, sourceRange) != 0) return false;
+        if (Float.compare(map.sourceRange(), this.sourceRange()) != 0) return false;
         if (!min.equals(map.min)) return false;
         return max.equals(map.max);
     }
 
     @Override
     public int hashCode() {
+    	float sourceRange = this.sourceRange();
         int result = super.hashCode();
         result = 31 * result + min.hashCode();
         result = 31 * result + max.hashCode();
         result = 31 * result + (sourceRange != +0.0f ? Float.floatToIntBits(sourceRange) : 0);
         return result;
+    }
+    
+    private float sourceRange() {
+    	return this.source.maxValue() - source.minValue();
     }
     
     @Override

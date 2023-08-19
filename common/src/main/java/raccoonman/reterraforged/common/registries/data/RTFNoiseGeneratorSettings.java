@@ -15,7 +15,6 @@ import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.level.levelgen.noise.density.NoopDensityFunction;
 
 public final class RTFNoiseGeneratorSettings {
     public static final ResourceKey<NoiseGeneratorSettings> DEFAULT = resolve("default");
@@ -37,21 +36,20 @@ public final class RTFNoiseGeneratorSettings {
 	  		new NoiseSettings(-64, 1024, 1, 1), 
 	  		Blocks.STONE.defaultBlockState(), 
 	  		Blocks.WATER.defaultBlockState(), 
-//	  		overworldRouter,
 	  		new NoiseRouter(
 	  			overworldRouter.barrierNoise(),
 	  			overworldRouter.fluidLevelFloodednessNoise(),
 	  			overworldRouter.fluidLevelSpreadNoise(),
 	  			overworldRouter.lavaNoise(),
-	  			NoopDensityFunction.INSTANCE,
-	  			NoopDensityFunction.INSTANCE,
-	  			NoopDensityFunction.INSTANCE,
-	  			NoopDensityFunction.INSTANCE,
+	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.TEMPERATURE)),
+	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.HUMIDITY)),
+	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.CONTINENT)),
+	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.RIVER)),
 	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.DEPTH)),
-	  			NoopDensityFunction.INSTANCE,
-//	  			overworldRouter.initialDensityWithoutJaggedness()
+	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.WEIRDNESS)),
 	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.TERRAIN)),
 	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.TERRAIN)),
+//	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.FINAL_DENSITY)),
 	  			overworldRouter.veinToggle(),
 	  			overworldRouter.veinRidged(),
 	  			overworldRouter.veinGap()

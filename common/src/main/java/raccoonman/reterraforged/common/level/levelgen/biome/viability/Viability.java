@@ -32,10 +32,9 @@ import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
-import raccoonman.reterraforged.common.level.levelgen.climate.ClimateNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseSample;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainCache;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainNoise;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainCache;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainNoise;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.util.CodecUtil;
 
@@ -63,13 +62,11 @@ public interface Viability {
 
         Holder<NoiseGeneratorSettings> getSettings();
 
-        TerrainCache getTerrain();
+//        TerrainCache getTerrain();
 
-        TerrainNoise getTerrainNoise();
+//        TerrainNoise getTerrainNoise();
         
-        NoiseSample sample();
-        
-        ClimateNoise getClimateNoise();
+//        NoiseSample sample();
     }
 
     static float getFallOff(float value, float max) {

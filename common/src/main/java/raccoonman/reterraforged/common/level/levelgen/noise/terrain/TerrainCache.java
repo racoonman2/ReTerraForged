@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-package raccoonman.reterraforged.common.level.levelgen.terrain;
+package raccoonman.reterraforged.common.level.levelgen.noise.terrain;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseData;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseLevels;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 import raccoonman.reterraforged.common.util.storage.FloatMap;
 
-public record TerrainCache(NoiseLevels levels, FloatMap base, FloatMap height, FloatMap gradient, FloatMap water) implements Terrain {
+public record TerrainCache(NoiseLevels levels, FloatMap base, FloatMap height, FloatMap gradient, FloatMap water) implements TerrainSampler {
 
 	public TerrainCache(NoiseLevels levels) {
 		this(levels, new FloatMap(), new FloatMap(), new FloatMap(), new FloatMap());
@@ -72,7 +72,7 @@ public record TerrainCache(NoiseLevels levels, FloatMap base, FloatMap height, F
 	        float gradient = NoiseUtil.sqrt(dx * dx + dz * dz);
 	        this.base.set(x, z, this.levels.getScaledBase(base.get(x, z)));
 	        this.height.set(x, z, this.levels.getScaledHeight(height.get(x, z)));
-	        this.gradient.set(x, z, NoiseUtil.clamp(gradient, Terrain.MIN, Terrain.MAX));
+	        this.gradient.set(x, z, NoiseUtil.clamp(gradient, TerrainSampler.MIN, TerrainSampler.MAX));
 	        this.water.set(x, z, noiseData.water().get(x, z));
         }
     }

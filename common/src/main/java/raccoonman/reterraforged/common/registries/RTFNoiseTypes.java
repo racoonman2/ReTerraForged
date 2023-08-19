@@ -4,7 +4,15 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.resources.ResourceKey;
 import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.level.levelgen.noise.source.Valley.ValleyNoise;
+import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
+import raccoonman.reterraforged.common.level.levelgen.noise.Valley.ValleyNoise;
+import raccoonman.reterraforged.common.level.levelgen.noise.climate.Humidity;
+import raccoonman.reterraforged.common.level.levelgen.noise.climate.Temperature;
+import raccoonman.reterraforged.common.level.levelgen.noise.climate.Weirdness;
+import raccoonman.reterraforged.common.level.levelgen.noise.continent.Continent;
+import raccoonman.reterraforged.common.level.levelgen.noise.continent.ContinentLerp;
+import raccoonman.reterraforged.common.level.levelgen.noise.river.River;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainBlender;
 import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.combiner.Add;
 import raccoonman.reterraforged.common.noise.combiner.Max;
@@ -101,7 +109,15 @@ public final class RTFNoiseTypes {
 	public static final ResourceKey<Codec<? extends Noise>> SELECT = resolve("select");
 	public static final ResourceKey<Codec<? extends Noise>> VARIABLE_BLEND = resolve("variable_blend");
 	public static final ResourceKey<Codec<? extends Noise>> VALLEY = resolve("valley");
-	
+	public static final ResourceKey<Codec<? extends Noise>> HOLDER = resolve("holder");
+	public static final ResourceKey<Codec<? extends Noise>> TEMPERATURE = resolve("temperature");
+	public static final ResourceKey<Codec<? extends Noise>> HUMIDITY = resolve("humidity");
+	public static final ResourceKey<Codec<? extends Noise>> CONTINENT = resolve("continent");
+	public static final ResourceKey<Codec<? extends Noise>> RIVER = resolve("river");
+	public static final ResourceKey<Codec<? extends Noise>> WEIRDNESS = resolve("weirdness");
+	public static final ResourceKey<Codec<? extends Noise>> CONTINENT_LERP = resolve("continent_lerp");
+	public static final ResourceKey<Codec<? extends Noise>> BLENDER = resolve("blender");
+
 	public static void register() {
 		RegistryUtil.register(CONSTANT, () -> Constant.CODEC);
 		RegistryUtil.register(BILLOW, () -> Billow.CODEC);
@@ -149,6 +165,14 @@ public final class RTFNoiseTypes {
 		RegistryUtil.register(SELECT, () -> Select.CODEC);
 		RegistryUtil.register(VARIABLE_BLEND, () -> VariableBlend.CODEC);
 		RegistryUtil.register(VALLEY, () -> ValleyNoise.CODEC);
+		RegistryUtil.register(HOLDER, () -> HolderNoise.CODEC);
+		RegistryUtil.register(TEMPERATURE, () -> Temperature.CODEC);
+		RegistryUtil.register(HUMIDITY, () -> Humidity.CODEC);
+		RegistryUtil.register(CONTINENT, () -> Continent.CODEC);
+		RegistryUtil.register(RIVER, () -> River.CODEC);
+		RegistryUtil.register(WEIRDNESS, () -> Weirdness.CODEC);
+		RegistryUtil.register(CONTINENT_LERP, () -> ContinentLerp.CODEC);
+		RegistryUtil.register(BLENDER, () -> TerrainBlender.CODEC);
 	}
 	
 	private static ResourceKey<Codec<? extends Noise>> resolve(String path) {

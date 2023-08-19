@@ -1,18 +1,20 @@
 package raccoonman.reterraforged.common.asm.mixin;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.objectweb.asm.Opcodes;
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
-import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Desc;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
@@ -21,26 +23,20 @@ import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
-import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.asm.extensions.TerrainHolder;
-import raccoonman.reterraforged.common.level.levelgen.noise.density.LazyDensityFunction;
-import raccoonman.reterraforged.common.level.levelgen.terrain.Terrain;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainNoise;
+import raccoonman.reterraforged.common.level.levelgen.noise.density.Cache2DFunction;
+import raccoonman.reterraforged.common.level.levelgen.noise.density.MutablePointContext;
 
-@Implements({
-	@Interface(iface = TerrainHolder.class, prefix = ReTerraForged.MOD_ID + "$TerrainHolder$"),
-})
 @Mixin(NoiseChunk.class)
 class MixinNoiseChunk {
-	private Terrain terrain;
-	
-	public void reterraforged$TerrainHolder$setTerrain(Terrain terrain) {
-		this.terrain = terrain;
-	}
-	
-	public Terrain reterraforged$TerrainHolder$getTerrain() {
-		return this.terrain;
-	}
+	@Shadow
+	@Final
+	private int firstNoiseX;
+	@Shadow
+	@Final
+	private int firstNoiseZ;
+	@Shadow
+	@Final
+	private int	noiseSizeXZ;
 	
 	@ModifyVariable(
 		at = @At(
@@ -74,21 +70,21 @@ class MixinNoiseChunk {
 	public Aquifer.FluidPicker NoiseChunk(Aquifer.FluidPicker old) {
 		return old;
 	}
-
-	@ModifyConstant(
-		target = @Desc(
-			value = "computePreliminarySurfaceLevel",
-			args = long.class,
-			ret = int.class
-		),
-		require = 1,
-		constant = @Constant(doubleValue = 0.390625D)
-	)
-	private double computePreliminarySurfaceLevel(double old) { 
-		return this.terrain != null ? 0.35D : old;
-	}
+//
+//	@ModifyConstant(
+//		target = @Desc(
+//			value = "computePreliminarySurfaceLevel",
+//			args = long.class,
+//			ret = int.class
+//		), 
+//		require = 1,
+//		constant = @Constant(doubleValue = 0.390625D)
+//	)
+//	private double computePreliminarySurfaceLevel(double old) { 
+//		return this.functionCache != null ? 0.35D : old;
+//	}
 	
-	private DensityFunction cachedTerrainFunction;
+	private Map<DensityFunction, DensityFunction> cache = new HashMap<>();
 	
 	@Inject(
 		at = @At("HEAD"),
@@ -100,14 +96,23 @@ class MixinNoiseChunk {
 		)
 	)
 	private void wrapNew(DensityFunction densityFunction, CallbackInfoReturnable<DensityFunction> callback) {
-		if(densityFunction instanceof TerrainNoise marker) {
-			if(this.cachedTerrainFunction == null) {
-				this.cachedTerrainFunction = new LazyDensityFunction(() -> {
-					return this.terrain;
-				}, marker.minValue(), marker.maxValue());
-			}
-			
-			callback.setReturnValue(this.cachedTerrainFunction);
+		if(densityFunction instanceof Cache2DFunction.Marker function) {
+			MutablePointContext ctx = new MutablePointContext();
+			DensityFunction source = function.function();
+			callback.setReturnValue(this.cache.computeIfAbsent(function, (k) -> {
+				int width = QuartPos.toBlock(this.noiseSizeXZ);
+				int startX = QuartPos.toBlock(this.firstNoiseX);
+				int startZ = QuartPos.toBlock(this.firstNoiseZ);
+				float[] cache = new float[width * width];
+				for(int x = 0; x < width; x++) {
+					for(int z = 0; z < width; z++) {
+						ctx.x = startX + x;
+						ctx.z = startZ + z;
+						cache[(z * width + x)] = (float) source.compute(ctx);
+					}
+				}
+				return new Cache2DFunction(startX, startZ, width, (float) source.minValue(), (float) source.maxValue(), cache, source);
+			}));
 		}
 	}
 }

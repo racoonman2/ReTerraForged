@@ -50,7 +50,7 @@ public class Bias extends Modifier {
         super(source);
         this.bias = bias;
     }
-
+    
     @Override
     public float minValue() {
         return super.minValue() + bias.minValue();

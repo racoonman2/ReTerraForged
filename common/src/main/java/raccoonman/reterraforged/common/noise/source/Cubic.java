@@ -28,6 +28,7 @@ package raccoonman.reterraforged.common.noise.source;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.util.Noise2D;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 
@@ -55,7 +56,7 @@ public class Cubic extends BaseNoise {
     	this.max = this.calculateBound(0.75F, octaves, gain);
     	this.range = this.max - this.min;
     }
-
+	
     @Override
     public float minValue() {
         return min;

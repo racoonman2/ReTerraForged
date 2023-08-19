@@ -20,7 +20,6 @@ import net.minecraft.world.level.levelgen.presets.WorldPreset;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.level.levelgen.biome.source.RTFBiomeSource;
 import raccoonman.reterraforged.common.level.levelgen.climate.ClimatePreset;
-import raccoonman.reterraforged.common.level.levelgen.generator.RTFChunkGenerator;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 
 public final class RTFWorldPresets {
@@ -50,7 +49,7 @@ public final class RTFWorldPresets {
 			.put(LevelStem.OVERWORLD, 
 				new LevelStem(
 					dimensions.getOrThrow(BuiltinDimensionTypes.OVERWORLD),
-					new RTFChunkGenerator(
+					new NoiseBasedChunkGenerator(
 						new RTFBiomeSource(climatePreset.getOrThrow(RTFClimatePresets.DEFAULT)),
 						noiseSettings.getOrThrow(RTFNoiseGeneratorSettings.DEFAULT)
 					)

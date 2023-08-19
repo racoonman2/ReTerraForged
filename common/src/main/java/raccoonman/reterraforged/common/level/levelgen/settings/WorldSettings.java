@@ -6,6 +6,7 @@ package raccoonman.reterraforged.common.level.levelgen.settings;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+@Deprecated
 public record WorldSettings(int continentScale, ControlPoints controlPoints, Terrain terrain, Erosion erosion) {
 	public static final WorldSettings DEFAULT = new WorldSettings(400, ControlPoints.DEFAULT, Terrain.DEFAULT, Erosion.DEFAULT);
 	

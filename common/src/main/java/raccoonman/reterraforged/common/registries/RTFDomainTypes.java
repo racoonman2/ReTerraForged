@@ -11,10 +11,12 @@ import raccoonman.reterraforged.common.noise.domain.CumulativeWarp;
 import raccoonman.reterraforged.common.noise.domain.DirectionWarp;
 import raccoonman.reterraforged.common.noise.domain.Domain;
 import raccoonman.reterraforged.common.noise.domain.DomainWarp;
+import raccoonman.reterraforged.common.noise.domain.ShiftWarp;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 public final class RTFDomainTypes {
 	public static final ResourceKey<Codec<? extends Domain>> CACHE_WARP = resolve("cache_warp");
+	public static final ResourceKey<Codec<? extends Domain>> SHIFT_WARP = resolve("shift_warp");
 	public static final ResourceKey<Codec<? extends Domain>> ADD_WARP = resolve("add_warp");
 	public static final ResourceKey<Codec<? extends Domain>> COMPOUND_WARP = resolve("compound_warp");
 	public static final ResourceKey<Codec<? extends Domain>> CUMULATIVE_WARP = resolve("cumulative_warp");
@@ -23,6 +25,7 @@ public final class RTFDomainTypes {
 	
 	public static void register() {
 		RegistryUtil.register(CACHE_WARP, () -> CacheWarp.CODEC);
+		RegistryUtil.register(SHIFT_WARP, () -> ShiftWarp.CODEC);
 		RegistryUtil.register(ADD_WARP, () -> AddWarp.CODEC);
 		RegistryUtil.register(COMPOUND_WARP, () -> CompoundWarp.CODEC);
 		RegistryUtil.register(CUMULATIVE_WARP, () -> CumulativeWarp.CODEC);

@@ -12,6 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraftforge.client.event.RegisterPresetEditorsEvent;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -20,6 +21,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistriesHooks;
 import raccoonman.reterraforged.common.ReTerraForged;
+import raccoonman.reterraforged.common.client.gui.preview.WorldPreviewScreen;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.registries.data.RTFClimatePresets;
 import raccoonman.reterraforged.common.registries.data.RTFClimates;
@@ -43,6 +45,11 @@ public final class ReTerraForgedForge {
     	
     	IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
     	modBus.addListener(ReTerraForgedForge::gatherData);
+    	modBus.addListener((RegisterPresetEditorsEvent event) -> {
+    		event.register(RTFWorldPresets.RETERRAFORGED, (parent, ctx) -> {
+    			return new WorldPreviewScreen((int) ctx.options().seed(), parent, ctx.worldgenLoadContext().lookupOrThrow(RTFRegistries.NOISE));
+    		});
+    	});
     	
     	RegistryUtilImpl.register(modBus);
     }

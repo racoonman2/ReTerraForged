@@ -24,9 +24,17 @@
 
 package raccoonman.reterraforged.common.level.levelgen.continent.config;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 
 public class FloatRange {
+	public static final Codec<FloatRange> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Codec.FLOAT.fieldOf("min").forGetter((f) -> f.min),
+		Codec.FLOAT.fieldOf("max").forGetter((f) -> f.max)
+	).apply(instance, FloatRange::new));
+	
     public float min, max;
 
     public FloatRange(float min, float max) {

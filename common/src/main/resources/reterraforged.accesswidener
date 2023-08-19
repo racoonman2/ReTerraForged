@@ -1,5 +1,3 @@
 accessWidener	v2	named
 
-extendable class net/minecraft/world/level/levelgen/DensityFunctions$WeirdScaledSampler
-extendable class net/minecraft/world/level/levelgen/NoiseBasedChunkGenerator
 accessible method net/minecraft/world/level/levelgen/NoiseGeneratorSettings overworld (Lnet/minecraft/data/worldgen/BootstapContext;ZZ)Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;

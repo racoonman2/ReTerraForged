@@ -24,23 +24,34 @@
 
 package raccoonman.reterraforged.common.level.levelgen.noise;
 
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainSample;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainSample;
 import raccoonman.reterraforged.common.util.storage.FloatMap;
 
-public record NoiseData(TerrainSample sample, FloatMap base, FloatMap height, FloatMap water) {
+public record NoiseData(FloatMap base, FloatMap height, FloatMap water) {
     public static final int BORDER = 1;
     public static final int MIN = -BORDER;
     public static final int MAX = 16 + BORDER;
 
     public NoiseData() {
-    	this(new TerrainSample(), new FloatMap(BORDER), new FloatMap(BORDER), new FloatMap(BORDER));
+    	this(new FloatMap(BORDER), new FloatMap(BORDER), new FloatMap(BORDER));
     }
     
+    public void setNoise(int x, int z, float base, float height, float water) {
+        int index = this.base.index().of(x, z);
+        this.setNoise(index, base, height, water);
+    }
+    
+    public void setNoise(int index, float base, float height, float water) {
+    	this.base.set(index, base);
+    	this.height.set(index, height);
+    	this.water.set(index, water);
+    }
+
     public void setNoise(int x, int z, TerrainSample sample) {
         int index = this.base.index().of(x, z);
         this.setNoise(index, sample);
     }
-
+    
     public void setNoise(int index, TerrainSample sample) {
         this.base.set(index, sample.baseNoise);
         this.height.set(index, sample.heightNoise);

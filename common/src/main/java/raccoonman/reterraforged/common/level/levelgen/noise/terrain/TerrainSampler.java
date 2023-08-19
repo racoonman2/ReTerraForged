@@ -1,11 +1,11 @@
-package raccoonman.reterraforged.common.level.levelgen.terrain;
+package raccoonman.reterraforged.common.level.levelgen.noise.terrain;
 
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseLevels;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 
-public interface Terrain extends DensityFunction.SimpleFunction {
+public interface TerrainSampler extends DensityFunction.SimpleFunction {
 	public static final float MIN = 0.0F;
 	public static final float MAX = 1.0F;
 	

@@ -24,6 +24,9 @@
 
 package raccoonman.reterraforged.common.level.levelgen.cell;
 
+import com.mojang.serialization.Codec;
+
+import raccoonman.reterraforged.common.util.CodecUtil;
 import raccoonman.reterraforged.common.util.MathUtil;
 
 public enum CellShape {
@@ -42,6 +45,8 @@ public enum CellShape {
         }
     };
 
+	public static final Codec<CellShape> CODEC = CodecUtil.forEnum(CellShape::valueOf);
+	
     public float adjustX(float x) {
         return x;
     }

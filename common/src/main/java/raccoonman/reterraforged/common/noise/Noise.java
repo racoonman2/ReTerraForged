@@ -25,11 +25,15 @@
 
 package raccoonman.reterraforged.common.noise;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.google.common.base.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.RegistryFileCodec;
 import raccoonman.reterraforged.common.noise.combiner.Add;
 import raccoonman.reterraforged.common.noise.combiner.Max;
@@ -77,17 +81,18 @@ import raccoonman.reterraforged.common.util.CodecUtil;
 public interface Noise {	
 	public static final Codec<Noise> DIRECT_CODEC = CodecUtil.forRegistry(RTFRegistries.NOISE_TYPE, Lifecycle.stable(), Noise::codec, Functions.identity());
 	public static final Codec<Holder<Noise>> CODEC = RegistryFileCodec.create(RTFRegistries.NOISE, DIRECT_CODEC);
+	public static final Codec<HolderSet<Noise>> LIST_CODEC = RegistryCodecs.homogeneousList(RTFRegistries.NOISE, DIRECT_CODEC);
 	
 	Codec<? extends Noise> codec();
 	
 	float getValue(float x, float y, int seed);
 	
     default float minValue() {
-    	return 0;
+    	return 0.0F;
     }
     
     default float maxValue() {
-    	return 1;
+    	return 1.0F;
     }
 	
     /**
@@ -366,9 +371,6 @@ public interface Noise {
      * @return a new Map module
      */
     default Noise map(Noise min, Noise max) {
-        if (min.minValue() == min.maxValue() && min.minValue() == minValue() && max.minValue() == max.maxValue() && max.maxValue() == maxValue()) {
-            return this;
-        }
         return new Map(this, min, max);
     }
 
@@ -565,5 +567,10 @@ public interface Noise {
     
     default Noise shift(int offset) {
     	return new Shift(this, offset);
+    }
+
+    static final AtomicInteger NEXT_SHIFT = new AtomicInteger();
+    default Noise unique() {
+    	return this.shift(NEXT_SHIFT.getAndIncrement());
     }
 }

@@ -42,7 +42,7 @@ public class Threshold extends Modifier {
         super(source);
         this.threshold = threshold;
     }
-
+    
     @Override
     public float modify(float x, float y, float noiseValue, int seed) {
         float limit = threshold.getValue(x, y, seed);

@@ -42,7 +42,7 @@ public class Alpha extends Modifier {
         super(source);
         this.alpha = alpha;
     }
-
+    
     @Override
     public float modify(float x, float y, float noiseValue, int seed) {
         float a = alpha.getValue(x, y, seed);

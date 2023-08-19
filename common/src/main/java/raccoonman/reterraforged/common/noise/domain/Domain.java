@@ -38,24 +38,6 @@ import raccoonman.reterraforged.common.util.CodecUtil;
 public interface Domain {
 	public static final Codec<Domain> CODEC = CodecUtil.forRegistry(RTFRegistries.DOMAIN_TYPE, Lifecycle.stable(), Domain::codec, Function.identity());
 
-    Domain DIRECT = new Domain() {
-
-        @Override
-        public float getOffsetX(float x, float y, int seed) {
-            return 0;
-        }
-
-        @Override
-        public float getOffsetY(float x, float y, int seed) {
-            return 0;
-        }
-        
-        @Override
-        public Codec<? extends Domain> codec() {
-        	return Codec.unit(this);
-        }
-    };
-
     float getOffsetX(float x, float y, int seed);
 
     float getOffsetY(float x, float y, int seed);
@@ -74,6 +56,10 @@ public interface Domain {
         return new CacheWarp(this);
     }
 
+    default Domain shift(int shift) {
+    	return new ShiftWarp(this, shift);
+    }
+    
     default Domain add(Domain next) {
         return new AddWarp(this, next);
     }
@@ -86,34 +72,34 @@ public interface Domain {
         return new CumulativeWarp(this, next);
     }
 
-    static Domain warp(Noise x, Noise y, Noise distance) {
+    public static Domain warp(Noise x, Noise y, Noise distance) {
         return new DomainWarp(x, y, distance);
     }
 
-    static Domain warp(int shift, int scale, int octaves, double strength) {
-        return warp(Source.PERLIN, shift, scale, octaves, strength);
+    public static Domain warp(int scale, int octaves, double strength) {
+        return warp(Source.PERLIN, scale, octaves, strength);
     }
 
-    static Domain warp(Source type, int shift, int scale, int octaves, double strength) {
+    public static Domain warp(Source type, int scale, int octaves, double strength) {
         return warp(
-                Source.build(scale, octaves).build(type).shift(shift),
-                Source.build(scale, octaves).build(type).shift(shift++),
-                Source.constant(strength)
+        	Source.build(scale, octaves).build(type).shift(0),
+        	Source.build(scale, octaves).build(type).shift(1),
+        	Source.constant(strength)
         );
     }
 
-    static Domain direction(Noise direction, Noise distance) {
+    public static Domain direction(Noise direction, Noise distance) {
         return new DirectionWarp(direction, distance);
     }
 
-    static Domain direction(int shift, int scale, int octaves, double strength) {
+    public static Domain direction(int shift, int scale, int octaves, double strength) {
         return direction(Source.PERLIN, shift, scale, octaves, strength);
     }
 
-    static Domain direction(Source type, int shift, int scale, int octaves, double strength) {
+    public static Domain direction(Source type, int shift, int scale, int octaves, double strength) {
         return direction(
-                Source.build(scale, octaves).build(type).shift(shift),
-                Source.constant(strength)
+        	Source.build(scale, octaves).build(type).shift(shift),
+        	Source.constant(strength)
         );
     }
 }

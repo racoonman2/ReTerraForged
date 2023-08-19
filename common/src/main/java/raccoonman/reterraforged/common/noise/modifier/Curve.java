@@ -48,7 +48,7 @@ public class Curve extends Modifier {
     public Curve(Noise source, float mid, float steepness) {
         this(source, new MidPointCurve(mid, steepness));
     }
-
+    
     @Override
     public float modify(float x, float y, float noiseValue, int seed) {
         return func.apply(noiseValue);

@@ -2,8 +2,6 @@ package raccoonman.reterraforged.common.asm.mixin;
 
 import java.lang.reflect.Field;
 
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Desc;
@@ -13,24 +11,10 @@ import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.levelgen.RandomState;
-import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.asm.extensions.GeneratorHolder;
-import raccoonman.reterraforged.common.level.levelgen.noise.NoiseLevels;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainGenerator;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainNoise;
-import raccoonman.reterraforged.common.level.levelgen.util.Seed;
+import raccoonman.reterraforged.common.level.levelgen.noise.density.NoiseDensityFunction;
 
-@Implements({
-	@Interface(iface = GeneratorHolder.class, prefix = ReTerraForged.MOD_ID + "$GeneratorHolder$"),
-})
 @Mixin(RandomState.class)
 public class MixinRandomState {
-	private TerrainNoise terrain;
-	private TerrainGenerator generator;
-	
-	public TerrainGenerator reterraforged$GeneratorHolder$getGenerator() {
-		return this.generator;
-	}
 	
 	@Redirect(
 		at = @At(
@@ -47,15 +31,10 @@ public class MixinRandomState {
 	)
 	private NoiseRouter RandomState(NoiseRouter router, DensityFunction.Visitor visitor, NoiseGeneratorSettings settings) {
 		return router.mapAll((function) -> {
-			if(function instanceof TerrainNoise.Marker marker) {
-				if(this.terrain == null) {
-					long seed = findField(visitor, long.class);
-					this.terrain = new TerrainNoise(new Seed(seed), marker.settings(), NoiseLevels.create(marker.settings().terrain(), settings.seaLevel()), marker.blender());
-					this.generator = new TerrainGenerator(this.terrain);
-				} 
-				return this.terrain;
+			if(function instanceof NoiseDensityFunction.Marker marker) {
+				return new NoiseDensityFunction(marker.noise().value(), findField(visitor, long.class).intValue());
 			}
-			return visitor.apply(function);
+			return function;
 		});
 	}
 	

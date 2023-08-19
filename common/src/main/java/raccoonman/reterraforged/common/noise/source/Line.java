@@ -78,7 +78,7 @@ public class Line implements Noise {
         this.featherBias = 1 - feather;
         this.length2 = dx * dx + dy * dy;
     }
-
+    
     @Override
     public float getValue(float x, float y, int seed) {
         float widthMod = getWidthModifier(x, y, seed);

@@ -43,7 +43,7 @@ public class Sin extends BaseNoise {
     	super(frequency);
     	this.alpha = alpha;
     }
-
+    
     @Override
     public float getValue(float x, float y, int seed) {
         float a = alpha.getValue(x, y, seed);

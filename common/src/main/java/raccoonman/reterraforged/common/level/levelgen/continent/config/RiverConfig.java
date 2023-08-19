@@ -24,14 +24,35 @@
 
 package raccoonman.reterraforged.common.level.levelgen.continent.config;
 
-public class RiverConfig {
-    public float erosion = 0.075f;
-    public final FloatRange bedWidth = new FloatRange(1, 7);
-    public final FloatRange bankWidth = new FloatRange(3, 30);
-    public final FloatRange valleyWidth = new FloatRange(80, 200);
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-    public final FloatRange bedDepth = new FloatRange(1.25f, 5f);
-    public final FloatRange bankDepth = new FloatRange(1.25f, 3f);
+public class RiverConfig {
+	public static final Codec<RiverConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Codec.FLOAT.fieldOf("erosion").forGetter((c) -> c.erosion),
+		FloatRange.CODEC.fieldOf("bed_width").forGetter((c) -> c.bedWidth),
+		FloatRange.CODEC.fieldOf("bank_width").forGetter((c) -> c.bankWidth),
+		FloatRange.CODEC.fieldOf("valley_width").forGetter((c) -> c.valleyWidth),
+		FloatRange.CODEC.fieldOf("bed_depth").forGetter((c) -> c.bedDepth),
+		FloatRange.CODEC.fieldOf("bank_depth").forGetter((c) -> c.bankDepth)	
+	).apply(instance, RiverConfig::new));
+	
+    public float erosion;
+    public final FloatRange bedWidth;
+    public final FloatRange bankWidth;
+    public final FloatRange valleyWidth;
+
+    public final FloatRange bedDepth;
+    public final FloatRange bankDepth;
+	
+	public RiverConfig(float erosion, FloatRange bedWidth, FloatRange bankWidth, FloatRange valleyWidth, FloatRange bedDepth, FloatRange bankDepth) {
+		this.erosion = erosion;
+		this.bedWidth = bedWidth;
+		this.bankWidth = bankDepth;
+		this.valleyWidth = valleyWidth;
+		this.bedDepth = bedDepth;
+		this.bankDepth = bankDepth;
+	}
 
     public RiverConfig copy(RiverConfig config) {
         erosion = config.erosion;
@@ -53,23 +74,25 @@ public class RiverConfig {
         return this;
     }
 
+    public static RiverConfig river() {
+    	return new RiverConfig(
+    		0.075F,
+    		new FloatRange(1, 7),
+    		new FloatRange(3, 30),
+    		new FloatRange(80, 200),
+    		new FloatRange(1.25F, 5.0F),
+    		new FloatRange(1.25F, 3.0F)
+    	);
+    }
+    
     public static RiverConfig lake() {
-        var config = new RiverConfig();
-        config.bankWidth.min = 30;
-        config.bankWidth.max = 45;
-
-        config.bankDepth.min = 1.25f;
-        config.bankDepth.max = 3.0f;
-
-        config.bedWidth.min = 1;
-        config.bedWidth.max = 15;
-
-        config.bedDepth.min = 1.25f;
-        config.bedDepth.max = 8f;
-
-        config.valleyWidth.min = 80;
-        config.valleyWidth.max = 200;
-
-        return config;
+        return new RiverConfig(
+        	0.075F,
+        	new FloatRange(1, 15),
+        	new FloatRange(30, 45),
+        	new FloatRange(80, 200),
+        	new FloatRange(1.25F, 8.0F),
+        	new FloatRange(1.25F, 3.0F)
+        );
     }
 }

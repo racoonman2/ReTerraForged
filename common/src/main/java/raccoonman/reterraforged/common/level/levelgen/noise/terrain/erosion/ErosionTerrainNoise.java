@@ -22,17 +22,16 @@
  * SOFTWARE.
  */
 
-package raccoonman.reterraforged.common.level.levelgen.terrain.erosion;
+package raccoonman.reterraforged.common.level.levelgen.noise.terrain.erosion;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseData;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseLevels;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainBlender;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainNoise;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainSample;
 import raccoonman.reterraforged.common.level.levelgen.settings.WorldSettings;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainBlender;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainNoise;
-import raccoonman.reterraforged.common.level.levelgen.terrain.TerrainSample;
 import raccoonman.reterraforged.common.level.levelgen.util.Seed;
 import raccoonman.reterraforged.common.util.pos.PosUtil;
 import raccoonman.reterraforged.common.util.storage.LongCache;
@@ -61,23 +60,23 @@ public class ErosionTerrainNoise extends TerrainNoise {
         this.pool = ObjectPool.forCacheSize(CACHE_SIZE, () -> new float[16 * 16]);
         this.cache = LossyCache.concurrent(CACHE_SIZE, CompletableFuture[]::new, this::restore);
     }
-
-    @Override
-    public void generate(int chunkX, int chunkZ, Consumer<NoiseData> consumer) {
-        try {
-            var resource = localResource.get();
-
-            collectNeighbours(chunkX, chunkZ, resource);
-            generateCenterChunk(chunkX, chunkZ, resource);
-            awaitNeighbours(resource);
-
-            generateErosion(chunkX, chunkZ, resource);
-            generateRivers(chunkX, chunkZ, resource);
-            consumer.accept(resource.chunk);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-    }
+//
+//    @Override
+//    public void generate(int chunkX, int chunkZ, Consumer<NoiseData> consumer) {
+//        try {
+//            var resource = localResource.get();
+//
+//            collectNeighbours(chunkX, chunkZ, resource);
+//            generateCenterChunk(chunkX, chunkZ, resource);
+//            awaitNeighbours(resource);
+//
+//            generateErosion(chunkX, chunkZ, resource);
+//            generateRivers(chunkX, chunkZ, resource);
+//            consumer.accept(resource.chunk);
+//        } catch (Throwable t) {
+//            t.printStackTrace();
+//        }
+//    }
 
     protected void collectNeighbours(int chunkX, int chunkZ, NoiseResource resource) {
         for (int dz = tileSize.chunkMin; dz < tileSize.chunkMax; dz++) {

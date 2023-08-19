@@ -1,7 +1,7 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package raccoonman.reterraforged.common.level.levelgen.climate;
+package raccoonman.reterraforged.common.level.levelgen.noise.climate;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -10,23 +10,21 @@ import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.Source;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 
-// this is just a normal noise module
-@Deprecated(forRemoval = true)
-public class Moisture implements Noise {
-	public static final Codec<Moisture> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+public class Humidity implements Noise {
+	public static final Codec<Humidity> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Noise.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.originalSource),
 		Codec.INT.fieldOf("power").forGetter((m) -> m.power)
-	).apply(instance, Moisture::new));
+	).apply(instance, Humidity::new));
 	
 	private final Noise originalSource;
     private final Noise source;
     private final int power;
 
-    public Moisture(int seed, int scale, int power) {
-        this(Source.simplex(scale, 1).clamp(0.125, 0.875).map(0.0, 1.0).shift(seed), power);
+    public Humidity(int scale, int power) {
+        this(Source.simplex(scale, 1).clamp(0.125, 0.875).map(0.0, 1.0), power);
     }
 
-    public Moisture(Noise source, int power) {
+    public Humidity(Noise source, int power) {
     	this.originalSource = source;
     	this.source = source.freq(0.5, 1.0);
         this.power = power;
@@ -45,7 +43,7 @@ public class Moisture implements Noise {
     }
 
 	@Override
-	public Codec<Moisture> codec() {
+	public Codec<Humidity> codec() {
 		return CODEC;
 	}
 }

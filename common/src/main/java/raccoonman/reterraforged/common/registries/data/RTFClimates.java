@@ -32,7 +32,7 @@ public final class RTFClimates {
 		ctx.register(DEEP, new Climate(
 			new WeightMap.Builder<>()
 				.entry(0.5F, biomes.getOrThrow(Biomes.DEEP_DARK))
-				.entry(1.0F, biomes.getOrThrow(Biomes.DRIPSTONE_CAVES))
+				.entry(1.0F, biomes.getOrThrow(Biomes.PLAINS))
 				.build()
 		));
 	}

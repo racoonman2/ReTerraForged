@@ -1,8 +1,7 @@
 /*
- *
  * MIT License
  *
- * Copyright (c) 2020 TerraForged
+ * Copyright (c) 2021 TerraForged
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,13 +22,12 @@
  * SOFTWARE.
  */
 
-package raccoonman.reterraforged.common.noise;
+package raccoonman.reterraforged.common.level.levelgen.noise.terrain;
 
-import net.minecraft.core.Holder;
-
-public record Module(Holder<Noise> type, int seed) {
-	
-    public float getValue(float x, float y) {
-    	return this.type.value().getValue(x, y, this.seed);
-    }
+// TODO these should be set to NaN before use
+public final class TerrainSample {
+    public float continentNoise = 1;
+    public float baseNoise = 0;
+    public float heightNoise = 0;
+    public float waterNoise = 1;
 }

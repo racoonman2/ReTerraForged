@@ -42,6 +42,15 @@ public class FloatMap {
     public Index index() {
         return this.index;
     }
+ 
+    public boolean contains(int x, int z) {
+    	int index = this.index.of(x, z);
+    	return index >= 0 && index < this.data.length;
+    }
+    
+    public float getOr(int x, int z, FallbackFunction fallback) {
+    	return this.contains(x, z) ? this.get(x, z) : fallback.getValue(x, z);
+    }
     
     public float get(int x, int z) {
         return this.get(this.index.of(x, z));
@@ -57,5 +66,9 @@ public class FloatMap {
 
     public void set(int index, float value) {
     	this.data[index] = value;
+    }
+    
+    public interface FallbackFunction {
+    	float getValue(int x, int z);
     }
 }

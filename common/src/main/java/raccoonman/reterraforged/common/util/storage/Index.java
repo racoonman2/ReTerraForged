@@ -29,7 +29,7 @@ public interface Index {
 
     int of(int x, int z);
 
-    static Index borderedChunk(int border) {
+    public static Index borderedChunk(int border) {
     	final int offset = border;
     	final int size = 16 + border * 2;
     	return (x, z) -> {
