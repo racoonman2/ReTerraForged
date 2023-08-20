@@ -26,7 +26,6 @@ package raccoonman.reterraforged.common.level.levelgen.noise;
 
 import net.minecraft.world.level.dimension.DimensionType;
 import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.level.levelgen.settings.WorldSettings;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 import raccoonman.reterraforged.common.util.MathUtil;
 
@@ -110,13 +109,13 @@ public class NoiseLevels {
         return frequency * scale;
     }
     
-    public static NoiseLevels create(WorldSettings.Terrain terrain, int seaLevel) {
-        int cminY = MathUtil.clamp(terrain.minY(), Limits.MIN_MIN_Y, Limits.MAX_MIN_Y);
-        int cmaxY = MathUtil.clamp(terrain.maxY(), Limits.MIN_MAX_Y, Limits.MAX_MAX_Y);
-        int cseaLevel = MathUtil.clamp(seaLevel, Limits.MIN_SEA_LEVEL, terrain.maxY() >> 1);
-        int cseaFloor = MathUtil.clamp(seaLevel - terrain.seaDepth(), cminY, cseaLevel - 1);
-        int cbaseHeight = MathUtil.clamp(terrain.baseHeight(), cseaLevel, cmaxY);
-        return new NoiseLevels(terrain.autoScale(), terrain.scale(), cseaLevel, cseaFloor, cmaxY, cbaseHeight);
+    public static NoiseLevels create(boolean autoScale, float scale, int minY, int maxY, int baseHeight, int seaDepth, int seaLevel) {
+        int cminY = MathUtil.clamp(minY, Limits.MIN_MIN_Y, Limits.MAX_MIN_Y);
+        int cmaxY = MathUtil.clamp(maxY, Limits.MIN_MAX_Y, Limits.MAX_MAX_Y);
+        int cseaLevel = MathUtil.clamp(seaLevel, Limits.MIN_SEA_LEVEL, maxY >> 1);
+        int cseaFloor = MathUtil.clamp(seaLevel - seaDepth, cminY, cseaLevel - 1);
+        int cbaseHeight = MathUtil.clamp(baseHeight, cseaLevel, cmaxY);
+        return new NoiseLevels(autoScale, scale, cseaLevel, cseaFloor, cmaxY, cbaseHeight);
     }
 
     public static class Limits {

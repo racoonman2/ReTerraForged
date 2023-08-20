@@ -32,7 +32,7 @@ public class MixinRandomState {
 	private NoiseRouter RandomState(NoiseRouter router, DensityFunction.Visitor visitor, NoiseGeneratorSettings settings) {
 		return router.mapAll((function) -> {
 			if(function instanceof NoiseDensityFunction.Marker marker) {
-				return new NoiseDensityFunction(marker.noise().value(), findField(visitor, long.class).intValue());
+				return new NoiseDensityFunction(marker.noise().value(), Long.hashCode(findField(visitor, long.class).longValue()));
 			}
 			return function;
 		});

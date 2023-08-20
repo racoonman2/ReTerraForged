@@ -26,8 +26,8 @@ package raccoonman.reterraforged.common.util.storage;
 
 import it.unimi.dsi.fastutil.HashCommon;
 import net.minecraft.util.Mth;
-import raccoonman.reterraforged.common.Environment;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
+import raccoonman.reterraforged.common.util.Environment;
 
 import java.util.Arrays;
 import java.util.concurrent.locks.StampedLock;

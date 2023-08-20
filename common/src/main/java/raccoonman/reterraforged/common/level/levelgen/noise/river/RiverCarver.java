@@ -1,96 +1,77 @@
-/*
- * MIT License
- *
- * Copyright (c) 2021 TerraForged
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
-package raccoonman.reterraforged.common.level.levelgen.noise.river;
-
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import raccoonman.reterraforged.common.noise.Noise;
-import raccoonman.reterraforged.common.noise.Source;
-
-public class River implements Noise {
-	public static final Codec<River> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		RiverConfig.CODEC.fieldOf("river").forGetter((r) -> r.rivers),
-		RiverConfig.CODEC.fieldOf("lake").forGetter((r) -> r.lakes),
-		Codec.FLOAT.fieldOf("lake_density").forGetter((r) -> r.lakeDensity),
-		Codec.FLOAT.fieldOf("frequency").forGetter((r) -> r.frequency)
-	).apply(instance, River::new));
-	
-    private static final float BORDER_OFFSET = 0.05F;
-    private static final float BORDER_RANGE = 1.0F - BORDER_OFFSET;
-    
-    private final RiverConfig rivers, lakes;
-    private final float frequency;
-    
-    private final RiverConfig riverConfig;
-    private final RiverConfig lakeConfig;
-    private final RiverPieceSampler pieceSampler;
-    private final float lakeDensity;
-    private final Noise erosionNoise;
-    private final ThreadLocal<RiverSample> localRiverSample = ThreadLocal.withInitial(RiverSample::new);
-
-    public River(RiverConfig rivers, RiverConfig lakes, float lakeDensity, float frequency) {
-    	this.rivers = rivers;
-    	this.lakes = lakes;
-    	this.frequency = frequency;
-    	
-    	this.riverConfig = RiverConfig.river().copy(rivers).scale(frequency);
-        this.lakeConfig = RiverConfig.river().scale(frequency);
-        this.lakeDensity = lakeDensity;
-        this.pieceSampler = new RiverPieceSampler();
-        this.erosionNoise = Source.builder()
-        	.frequency(128)
-        	.octaves(2)
-        	.ridge()
-        	.shift(21221);
-    }
-    
-	@Override
-    public float getValue(float x, float y, int seed) {
-//        var nodeSample = this.localRiverSample.get().reset();
-//        this.pieceSampler.sample(seed, x, y, nodeSample);
-//        this.carve(x, y, seed, nodeSample);
-		return 1.0F;
-    }
+///*
+// * MIT License
+// *
+// * Copyright (c) 2021 TerraForged
+// *
+// * Permission is hereby granted, free of charge, to any person obtaining a copy
+// * of this software and associated documentation files (the "Software"), to deal
+// * in the Software without restriction, including without limitation the rights
+// * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// * copies of the Software, and to permit persons to whom the Software is
+// * furnished to do so, subject to the following conditions:
+// *
+// * The above copyright notice and this permission notice shall be included in all
+// * copies or substantial portions of the Software.
+// *
+// * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// * SOFTWARE.
+// */
 //
-//    public void carve(float x, float y, int seed, RiverSample carverSample) {
+//package raccoonman.reterraforged.common.level.levelgen.continent.river;
+//
+//import raccoonman.reterraforged.common.level.levelgen.continent.ContinentPoints;
+//import raccoonman.reterraforged.common.level.levelgen.continent.config.ContinentConfig;
+//import raccoonman.reterraforged.common.level.levelgen.continent.config.RiverConfig;
+//import raccoonman.reterraforged.common.level.levelgen.noise.NoiseLevels;
+//import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainSample;
+//import raccoonman.reterraforged.common.noise.Noise;
+//import raccoonman.reterraforged.common.noise.Source;
+//import raccoonman.reterraforged.common.noise.util.NoiseUtil;
+//import raccoonman.reterraforged.common.util.MathUtil;
+//
+//public class RiverCarver {
+//    private static final int SEED_OFFSET = 21221;
+//    private static final double EROSION_FREQ = 128;
+//    private static final float BORDER_OFFSET = 0.05f;
+//    private static final float BORDER_RANGE = 1f - BORDER_OFFSET;
+//
+//    private final NoiseLevels levels;
+//    private final Noise erosionNoise;
+//    private final RiverConfig riverConfig = RiverConfig.river();
+//    private final RiverConfig lakeConfig = RiverConfig.river();
+//
+//    public RiverCarver(NoiseLevels levels, ContinentConfig config) {
+//        float frequency = levels.frequency * (1f / config.shape.scale);
+//        this.levels = levels;
+//        this.riverConfig.copy(config.rivers.rivers).scale(frequency);
+//        this.lakeConfig.copy(config.rivers.lakes).scale(frequency);
+//        this.erosionNoise = Source.builder()
+//        	.frequency(EROSION_FREQ)
+//        	.octaves(2)
+//        	.ridge()
+//        	.shift(config.rivers.seed + SEED_OFFSET);
+//    }
+//
+//    public float carve(float x, float y, TerrainSample sample, RiverSample carverSample, int seed) {
 //        float erosion = erosionNoise.getValue(x, y, seed);
 //        float baseModifier = getBaseModifier(sample);
 //
-//        sample.waterNoise = clipRiverNoise(sample);
 //        float baseNoise = sample.baseNoise * baseModifier;
 //        baseNoise = carve(sample, carverSample.river(), riverConfig, baseNoise, baseModifier, erosion);
 //        baseNoise = carve(sample, carverSample.lake(), lakeConfig, baseNoise, baseModifier, erosion);
-//        sample.baseNoise = baseNoise;
+//        return clipRiverNoise(sample);
 //    }
 //
 //    private float carve(TerrainSample sample, NodeSample nodeSample, RiverConfig config, float baseNoise, float baseModifier, float erosion) {
 //        float modifiedBaseNoise = getBaseNoise(sample, nodeSample, config, baseModifier);
-//        if (modifiedBaseNoise == -1.0F) return baseNoise;
+//        if (modifiedBaseNoise == -1f) return baseNoise;
 //
-//        float baseLevel = levels.toHeightNoise(modifiedBaseNoise, 0.0F);
+//        float baseLevel = levels.toHeightNoise(modifiedBaseNoise, 0f);
 //        carve(baseLevel, erosion, sample, nodeSample, config);
 //
 //        return modifiedBaseNoise;
@@ -129,7 +110,7 @@ public class River implements Noise {
 //
 //        sample.heightNoise = height;
 //    }
-
+//
 //    private float getBaseNoise(TerrainSample sample, NodeSample nodeSample, RiverConfig config, float modifier) {
 //        if (nodeSample.isInvalid()) return -1f;
 //
@@ -145,13 +126,13 @@ public class River implements Noise {
 //        float alpha = (distance - bankRadius) / (valleyRadius - bankRadius);
 //        return NoiseUtil.lerp(nodeSample.level, sample.baseNoise, alpha) * modifier;
 //    }
-
+//
 //    private float getBaseModifier(TerrainSample sample) {
 //        float min = ContinentPoints.COAST;
 //        float max = 1.0f;
 //        return NoiseUtil.map(sample.continentNoise, min, max, max - min);
 //    }
-
+//
 //    private float getErosionModifier(float erosionNoise, float valleyAlpha) {
 //        float erosionFade = 1f - NoiseUtil.map(valleyAlpha, 0.975f, 1.0f, 0.025f);
 //
@@ -186,9 +167,5 @@ public class River implements Noise {
 //    private static float getAlpha(float value, float min, float max) {
 //        return value <= min ? 0.0f : value >= max ? 1.0f : (value - min) / (max - min);
 //    }
-//	
-	@Override
-	public Codec<River> codec() {
-		return CODEC;
-	}
-}
+//}
+

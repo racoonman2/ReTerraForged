@@ -1,6 +1,5 @@
 package raccoonman.reterraforged.common.registries.data;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -10,7 +9,7 @@ import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.level.levelgen.noise.density.Cache2DFunction;
+import raccoonman.reterraforged.common.level.levelgen.noise.density.FlatCache;
 import raccoonman.reterraforged.common.level.levelgen.noise.density.NoiseDensityFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.density.YGradientFunction;
 import raccoonman.reterraforged.common.noise.Noise;
@@ -22,8 +21,6 @@ public final class RTFDensityFunctions {
 	public static final ResourceKey<DensityFunction> CONTINENT = resolve("overworld/continent");
 	public static final ResourceKey<DensityFunction> RIVER = resolve("overworld/river");
 	public static final ResourceKey<DensityFunction> WEIRDNESS = resolve("overworld/weirdness");
-    public static final ResourceKey<DensityFunction> OCEAN = resolve("overworld/ocean");
-	public static final ResourceKey<DensityFunction> TERRAIN = resolve("overworld/terrain");
 	public static final ResourceKey<DensityFunction> FINAL_DENSITY = resolve("overworld/final_density");
     public static final ResourceKey<DensityFunction> DEPTH = resolve("overworld/depth");
     private static final ResourceKey<DensityFunction> NOODLE = resolve("minecraft:overworld/caves/noodle");
@@ -36,29 +33,27 @@ public final class RTFDensityFunctions {
 		HolderGetter<NormalNoise.NoiseParameters> noiseParams = ctx.lookup(Registries.NOISE);
 		HolderGetter<Noise> noise = ctx.lookup(RTFRegistries.NOISE);
 		
-        ctx.register(TERRAIN, terrain(noise));
         ctx.register(TEMPERATURE, new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.TEMPERATURE)));
         ctx.register(HUMIDITY, new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.HUMIDITY)));
         ctx.register(CONTINENT, new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.CONTINENT)));
         ctx.register(RIVER, new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.RIVER)));
         ctx.register(WEIRDNESS, new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.WEIRDNESS)));
-	    ctx.register(OCEAN, new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.OCEAN)));
-		ctx.register(FINAL_DENSITY, finalDensity(densityFunctions, noiseParams));
+		ctx.register(FINAL_DENSITY, terrain(noise));// finalDensity(densityFunctions, noiseParams, terrain));
 	    ctx.register(DEPTH, DensityFunctions.yClampedGradient(-64, 1024, 1.0F, 0.0F));
    }
 	
 	private static DensityFunction terrain(HolderGetter<Noise> noise) {
-		return new YGradientFunction(new Cache2DFunction.Marker(new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.TERRAIN))));
+		return new YGradientFunction(new FlatCache.Marker(new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.TERRAIN))));
 	}
 	
-	private static DensityFunction finalDensity(HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams) {
-		DensityFunction heightGradient = heightGradient(getFunction(densityFunctions, TERRAIN));
+	private static DensityFunction finalDensity(HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, DensityFunction terrain) {
+		DensityFunction heightGradient = heightGradient(terrain);
 		DensityFunction heightCaveChoice = DensityFunctions.rangeChoice(heightGradient, -1000000.0D, 1.5625D, heightGradient, postProcess(underground(densityFunctions, noiseParams, heightGradient)));
         return DensityFunctions.min(slideOverworld(heightCaveChoice), getFunction(densityFunctions, NOODLE));
 	}
 	
     private static DensityFunction heightGradient(DensityFunction base) {
-    	DensityFunction heightGradient = new DensityFunctions.HolderHolder(Holder.direct(DensityFunctions.add(DensityFunctions.yClampedGradient(-64, 1024, 1.5D, -1.5D), base)));
+    	DensityFunction heightGradient = DensityFunctions.add(DensityFunctions.yClampedGradient(-64, 1024, 1.5D, -1.5D), base);
     	DensityFunction densityGradient = noiseGradientDensity(base, heightGradient);
     	return DensityFunctions.add(densityGradient, base);
     }
@@ -102,6 +97,10 @@ public final class RTFDensityFunctions {
 	private static DensityFunction getFunction(HolderGetter<DensityFunction> densityFunctions, ResourceKey<DensityFunction> key) {
 		return new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(key));
 	}
+
+    private static DensityFunction registerAndWrap(BootstapContext<DensityFunction> bootstapContext, ResourceKey<DensityFunction> resourceKey, DensityFunction densityFunction) {
+        return new DensityFunctions.HolderHolder(bootstapContext.register(resourceKey, densityFunction));
+    }
 	
 	private static ResourceKey<DensityFunction> resolve(String key) {
 		return ReTerraForged.resolve(Registries.DENSITY_FUNCTION, key);

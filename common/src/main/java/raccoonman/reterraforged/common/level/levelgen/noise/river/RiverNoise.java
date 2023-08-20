@@ -1,23 +1,88 @@
-package raccoonman.reterraforged.common.level.levelgen.noise.river;
-
-import raccoonman.reterraforged.common.noise.util.Vec2i;
-import raccoonman.reterraforged.common.util.storage.LongCache;
-import raccoonman.reterraforged.common.util.storage.LossyCache;
-import raccoonman.reterraforged.common.util.storage.ObjectPool;
-
-public class RiverPieceSampler {
-    private static final Vec2i[] DIRS = { new Vec2i(1, 0), new Vec2i(0, 1), new Vec2i(-1, 0), new Vec2i(0, -1) };
-
-    private static final int DIR_OFFSET = 20107;
-    private static final int SIZE_A_OFFSET = 9803;
-    private static final int SIZE_B_OFFSET = 28387;
-    private static final int LAKE_CHANCE_OFFSET = 37171;
-    private static final int RIVER_CACHE_SIZE = 1024;
- 
-    private final ObjectPool<RiverPieces> pool = ObjectPool.forCacheSize(RIVER_CACHE_SIZE, RiverPieces::new);
-    private final LongCache<RiverPieces> cache = LossyCache.concurrent(RIVER_CACHE_SIZE, RiverPieces[]::new, this.pool::restore);
-
-//    public void sample(int seed, float x, float y, RiverSample sample) {
+///*
+// * MIT License
+// *
+// * Copyright (c) 2021 TerraForged
+// *
+// * Permission is hereby granted, free of charge, to any person obtaining a copy
+// * of this software and associated documentation files (the "Software"), to deal
+// * in the Software without restriction, including without limitation the rights
+// * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// * copies of the Software, and to permit persons to whom the Software is
+// * furnished to do so, subject to the following conditions:
+// *
+// * The above copyright notice and this permission notice shall be included in all
+// * copies or substantial portions of the Software.
+// *
+// * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// * SOFTWARE.
+// */
+//
+//package raccoonman.reterraforged.common.level.levelgen.continent.river;
+//
+//import raccoonman.reterraforged.common.level.levelgen.cell.CellPoint;
+//import raccoonman.reterraforged.common.level.levelgen.continent.ContinentCellNoise;
+//import raccoonman.reterraforged.common.level.levelgen.continent.config.ContinentConfig;
+//import raccoonman.reterraforged.common.level.levelgen.noise.NoiseLevels;
+//import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainSample;
+//import raccoonman.reterraforged.common.noise.Source;
+//import raccoonman.reterraforged.common.noise.domain.Domain;
+//import raccoonman.reterraforged.common.noise.util.NoiseUtil;
+//import raccoonman.reterraforged.common.noise.util.Vec2i;
+//import raccoonman.reterraforged.common.util.MathUtil;
+//import raccoonman.reterraforged.common.util.pos.PosUtil;
+//import raccoonman.reterraforged.common.util.storage.LongCache;
+//import raccoonman.reterraforged.common.util.storage.LossyCache;
+//import raccoonman.reterraforged.common.util.storage.ObjectPool;
+//
+//public class RiverNoise {
+//    public static final Vec2i[] DIRS = { new Vec2i(1, 0), new Vec2i(0, 1), new Vec2i(-1, 0), new Vec2i(0, -1) };
+//
+//    private static final int X_OFFSET = 8657124;
+//    private static final int Y_OFFSET = 5123678;
+//    private static final int DIR_OFFSET = 20107;
+//    private static final int SIZE_A_OFFSET = 9803;
+//    private static final int SIZE_B_OFFSET = 28387;
+//    private static final int LAKE_CHANCE_OFFSET = 37171;
+//
+//    private static final int RIVER_CACHE_SIZE = 1024;
+//
+//    private final float lakeDensity;
+//    private final ContinentCellNoise continent;
+//    private final RiverCarver riverCarver;
+//    private final Domain riverWarp;
+//    private final ThreadLocal<RiverSample> localRiverSample = ThreadLocal.withInitial(RiverSample::new);
+//
+//    private final ObjectPool<RiverPieces> pool = ObjectPool.forCacheSize(RIVER_CACHE_SIZE, RiverPieces::new);
+//    private final LongCache<RiverPieces> cache = LossyCache.concurrent(RIVER_CACHE_SIZE, RiverPieces[]::new, this.pool::restore);
+//
+//    public RiverNoise(NoiseLevels levels, ContinentCellNoise continent, ContinentConfig config) {
+//    	this.continent = continent;
+//        this.lakeDensity = config.rivers.lakeDensity;
+//        this.riverCarver = new RiverCarver(levels, config);
+//        this.riverWarp = Domain.warp(
+//                Source.builder().frequency(30).legacySimplex().shift(X_OFFSET),
+//                Source.builder().frequency(30).legacySimplex().shift(Y_OFFSET),
+//                Source.constant(0.004)
+//        );
+//    }
+//
+//    public void sample(float x, float y, TerrainSample sample, int seed) {
+//        float px = riverWarp.getX(x, y, seed);
+//        float py = riverWarp.getY(x, y, seed);
+//
+//        var nodeSample = localRiverSample.get().reset();
+//
+//        sample(px, py, nodeSample, seed);
+//
+//        riverCarver.carve(px, py, sample, nodeSample, seed);
+//    }
+//
+//    private void sample(float x, float y, RiverSample sample, int seed) {
 //        var centre = continent.getNearestCell(seed, x, y);
 //        int centreX = PosUtil.unpackLeft(centre);
 //        int centreY = PosUtil.unpackRight(centre);
@@ -187,7 +252,7 @@ public class RiverPieceSampler {
 //        // If B is an ocean cell then extend the connection all the way to prevent
 //        // rivers stopping short at the coast/beach. Note: we must use the 'b.noise'
 //        // here and not the low-octave 'b.noise()'.
-//        if (b.noise < continent.threshold) {
+//        if (b.noise < continent.shapeNoise.threshold) {
 //            pieces.addRiver(new RiverNode(mx, my, b.px, b.py, mh, bh, mr, br, warp1));
 //        }
 //    }
@@ -245,4 +310,4 @@ public class RiverPieceSampler {
 //
 //        return noise;
 //    }
-}
+//}

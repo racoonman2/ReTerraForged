@@ -4,15 +4,19 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.resources.ResourceKey;
 import raccoonman.reterraforged.common.ReTerraForged;
+import raccoonman.reterraforged.common.level.levelgen.noise.Blender;
+import raccoonman.reterraforged.common.level.levelgen.noise.Choice;
+import raccoonman.reterraforged.common.level.levelgen.noise.Falloff;
 import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
+import raccoonman.reterraforged.common.level.levelgen.noise.MapRange;
 import raccoonman.reterraforged.common.level.levelgen.noise.Valley.ValleyNoise;
+import raccoonman.reterraforged.common.level.levelgen.noise.cell.CellSource;
+import raccoonman.reterraforged.common.level.levelgen.noise.Weirdness;
 import raccoonman.reterraforged.common.level.levelgen.noise.climate.Humidity;
 import raccoonman.reterraforged.common.level.levelgen.noise.climate.Temperature;
-import raccoonman.reterraforged.common.level.levelgen.noise.climate.Weirdness;
 import raccoonman.reterraforged.common.level.levelgen.noise.continent.Continent;
 import raccoonman.reterraforged.common.level.levelgen.noise.continent.ContinentLerp;
 import raccoonman.reterraforged.common.level.levelgen.noise.river.River;
-import raccoonman.reterraforged.common.level.levelgen.noise.terrain.TerrainBlender;
 import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.combiner.Add;
 import raccoonman.reterraforged.common.noise.combiner.Max;
@@ -117,7 +121,12 @@ public final class RTFNoiseTypes {
 	public static final ResourceKey<Codec<? extends Noise>> WEIRDNESS = resolve("weirdness");
 	public static final ResourceKey<Codec<? extends Noise>> CONTINENT_LERP = resolve("continent_lerp");
 	public static final ResourceKey<Codec<? extends Noise>> BLENDER = resolve("blender");
-
+	public static final ResourceKey<Codec<? extends Noise>> FALLOFF = resolve("falloff");
+	public static final ResourceKey<Codec<? extends Noise>> FBM = resolve("fbm");
+	public static final ResourceKey<Codec<? extends Noise>> CHOICE = resolve("choice");
+	public static final ResourceKey<Codec<? extends Noise>> CELL_SOURCE = resolve("cell_source");
+	public static final ResourceKey<Codec<? extends Noise>> MAP_RANGE = resolve("map_range");
+	
 	public static void register() {
 		RegistryUtil.register(CONSTANT, () -> Constant.CODEC);
 		RegistryUtil.register(BILLOW, () -> Billow.CODEC);
@@ -172,7 +181,12 @@ public final class RTFNoiseTypes {
 		RegistryUtil.register(RIVER, () -> River.CODEC);
 		RegistryUtil.register(WEIRDNESS, () -> Weirdness.CODEC);
 		RegistryUtil.register(CONTINENT_LERP, () -> ContinentLerp.CODEC);
-		RegistryUtil.register(BLENDER, () -> TerrainBlender.CODEC);
+		RegistryUtil.register(BLENDER, () -> Blender.CODEC);
+		RegistryUtil.register(FALLOFF, () -> Falloff.CODEC);
+		RegistryUtil.register(FBM, () -> raccoonman.reterraforged.common.level.levelgen.noise.FBM.CODEC);
+		RegistryUtil.register(CHOICE, () -> Choice.CODEC);
+		RegistryUtil.register(CELL_SOURCE, () -> CellSource.CODEC);
+		RegistryUtil.register(MAP_RANGE, () -> MapRange.CODEC);
 	}
 	
 	private static ResourceKey<Codec<? extends Noise>> resolve(String path) {

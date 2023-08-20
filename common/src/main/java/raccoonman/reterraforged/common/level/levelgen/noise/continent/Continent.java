@@ -27,87 +27,53 @@ package raccoonman.reterraforged.common.level.levelgen.noise.continent;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import raccoonman.reterraforged.common.level.levelgen.cell.CellPoint;
-import raccoonman.reterraforged.common.level.levelgen.cell.CellShape;
-import raccoonman.reterraforged.common.level.levelgen.cell.CellSource;
-import raccoonman.reterraforged.common.level.levelgen.continent.ContinentPoints;
-import raccoonman.reterraforged.common.level.levelgen.continent.shape.FalloffPoint;
-import raccoonman.reterraforged.common.level.levelgen.settings.ControlPoints;
-import raccoonman.reterraforged.common.level.levelgen.settings.WorldSettings;
+import raccoonman.reterraforged.common.level.levelgen.noise.cell.CellShape;
 import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
-import raccoonman.reterraforged.common.noise.util.Vec2f;
-import raccoonman.reterraforged.common.util.SpiralIterator;
+import raccoonman.reterraforged.common.util.MathUtil;
 import raccoonman.reterraforged.common.util.pos.PosUtil;
+import raccoonman.reterraforged.common.util.storage.LongCache;
+import raccoonman.reterraforged.common.util.storage.LossyCache;
 
-//TODO clean this up
 public class Continent implements Noise {
 	public static final Codec<Continent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.fieldOf("falloff").forGetter((c) -> c.falloff),
-		Codec.FLOAT.fieldOf("threshold").forGetter((c) -> c.threshold),
 		Codec.FLOAT.fieldOf("jitter").forGetter((c) -> c.jitter),
 		CellShape.CODEC.fieldOf("cell_shape").forGetter((c) -> c.cellShape),
-		CellSource.CODEC.fieldOf("cell_source").forGetter((c) -> c.cellSource),
-		WorldSettings.ControlPoints.CODEC.fieldOf("control_points").forGetter((c) -> c.controlPoints)
+		Noise.DIRECT_CODEC.fieldOf("cell_source").forGetter((c) -> c.cellSource)
 	).apply(instance, Continent::new));
 	
-	private static final int VALID_SPAWN_RADIUS = 3;
-    private static final int SPAWN_SEARCH_RADIUS = 100_000;
     private static final int RADIUS = 2;
 
     private final float falloff;
-    //TODO shouldn't be public
-    public final float threshold;
     private final float jitter;
     private final CellShape cellShape;
-    private final CellSource cellSource;
+    private final Noise cellSource;
+    private final LongCache<Float> cellCache = LossyCache.concurrent(2048, Float[]::new);
 
-    private final ContinentCell cellNoise;
-    private final WorldSettings.ControlPoints controlPoints;
-    private final FalloffPoint[] falloffPoints;
-    private final ThreadLocal<CellLocal[]> cellBuffer = ThreadLocal.withInitial(CellLocal::init);
-    @Deprecated //ew
-    private volatile Vec2f offset = null;
+    private final ThreadLocal<CellLocal[]> cellBuffer = ThreadLocal.withInitial(CellLocal::makeBuffer);
 
-    public Continent(float falloff, float threshold, float jitter, CellShape cellShape, CellSource cellSource, WorldSettings.ControlPoints controlPoints) {
+    public Continent(float falloff, float jitter, CellShape cellShape, Noise cellSource) {
         this.falloff = falloff;
-        this.threshold = threshold;
         this.jitter = jitter;
         this.cellShape = cellShape;
         this.cellSource = cellSource;
-        this.controlPoints = controlPoints;
-        this.cellNoise = new ContinentCell(jitter, cellShape, cellSource);
-        this.falloffPoints = ContinentPoints.getFalloff(new ControlPoints(controlPoints));
     }
     
-    private Vec2f getWorldOffset(int seed) {
-        if (this.offset == null) {
-        	this.offset = computeWorldOffset(seed);
-        }
-        return this.offset;
-    }
-
-    public float getThresholdValue(CellPoint cell) {
-        return cell.noise < this.threshold ? 0F : 1F;
-    }
-
-    public float getFalloff(float continentNoise) {
-        return ContinentPoints.getFalloff(continentNoise, this.falloffPoints);
-    }
+	@Override
+	public Codec<Continent> codec() {
+		return CODEC;
+	}
 
     @Override
     public float getValue(float x, float y, int seed) {
-    	var offset = this.getWorldOffset(seed);
-    	x += offset.x;
-    	y += offset.y;
-    	
-        var centre = this.getNearestCell(x, y, seed);
+        long centre = this.getNearestCell(x, y, seed);
         int centreX = PosUtil.unpackLeft(centre);
         int centreY = PosUtil.unpackRight(centre);
 
         // Note: Must adjust inputs AFTER getting nearest cell
-        x = cellNoise.cellShape.adjustX(x);
-        y = cellNoise.cellShape.adjustY(y);
+        x = this.cellShape.adjustX(x);
+        y = this.cellShape.adjustY(y);
 
         int minX = centreX - RADIUS;
         int minY = centreY - RADIUS;
@@ -116,17 +82,20 @@ public class Continent implements Noise {
 
         float min0 = Float.MAX_VALUE;
         float min1 = Float.MAX_VALUE;
-        var buffer = cellBuffer.get();
+        var buffer = this.cellBuffer.get();
 
         for (int cy = minY, i = 0; cy <= maxY; cy++) {
             for (int cx = minX; cx <= maxX; cx++, i++) {
-                var cell = cellNoise.getCell(cx, cy, seed);
+            	int hash = MathUtil.hash(seed, cx, cy);
+                float px = this.cellShape.getCellX(hash, cx, cy, this.jitter);
+                float py = this.cellShape.getCellY(hash, cx, cy, this.jitter);
+                var cell = this.getCached(cx, cy, px, py, seed);
                 var local = buffer[i];
 
-                float distance = NoiseUtil.sqrt(NoiseUtil.dist2(x, y, cell.px, cell.py));
+                float distance = NoiseUtil.sqrt(NoiseUtil.dist2(x, y, px, py));
 
-                local.cell = cell;
-                local.context = distance;
+                local.noise = cell;
+                local.distance = distance;
 
                 if (distance < min0) {
                     min1 = min0;
@@ -137,10 +106,28 @@ public class Continent implements Noise {
             }
         }
 
-        return sampleEdges(min0, min1, buffer);
+        return sampleEdges(min0, min1, this.falloff, buffer);
     }
 
-    public long getNearestCell(float x, float y, int seed) {
+    private static float sampleEdges(float min0, float min1, float falloff, CellLocal[] buffer) {
+        float borderDistance = (min0 + min1) * 0.5F;
+        float blend = borderDistance * falloff;
+
+        float sum = 0.0F;
+        float sumWeight = 0.0F;
+
+        for (var local : buffer) {
+            float dist = local.distance;
+            float value = local.noise;
+            float weight = getWeight(dist, min0, blend);
+
+            sum += value * weight;
+            sumWeight += weight;
+        }
+        return sum / sumWeight;
+    }
+
+    private long getNearestCell(float x, float y, int seed) {
         x = this.cellShape.adjustX(x);
         y = this.cellShape.adjustY(y);
 
@@ -155,11 +142,13 @@ public class Continent implements Noise {
 
         for (int cy = minY; cy <= maxY; cy++) {
             for (int cx = minX; cx <= maxX; cx++) {
-                var cell = this.cellNoise.getCell(cx, cy, seed);
-                float dist2 = NoiseUtil.dist2(x, y, cell.px, cell.py);
+            	int hash = MathUtil.hash(seed, cx, cy);
+                float px = this.cellShape.getCellX(hash, cx, cy, this.jitter);
+                float py = this.cellShape.getCellY(hash, cx, cy, this.jitter);
+                float distance2 = NoiseUtil.dist2(x, y, px, py);
 
-                if (dist2 < distance) {
-                    distance = dist2;
+                if (distance2 < distance) {
+                    distance = distance2;
                     nearestX = cx;
                     nearestY = cy;
                 }
@@ -169,90 +158,34 @@ public class Continent implements Noise {
         return PosUtil.pack(nearestX, nearestY);
     }
     
-	@Override
-	public Codec<Continent> codec() {
-		return CODEC;
-	}
-
-    @Deprecated
-    private float sampleEdges(float min0, float min1, CellLocal[] buffer) {
-        float borderDistance = (min0 + min1) * 0.5F;
-        float blend = borderDistance * this.falloff;
-
-        float sum = 0f;
-        float sumWeight = 0f;
-
-        for (var local : buffer) {
-            float dist = local.context;
-            float value = getThresholdValue(local.cell);
-            float weight = getWeight(dist, min0, blend);
-
-            sum += value * weight;
-            sumWeight += weight;
-        }
-        return getFalloff(sum / sumWeight);
-    }
-    
-    private Vec2f computeWorldOffset(int seed) {
-        var iterator = new SpiralIterator(0, 0, 0, SPAWN_SEARCH_RADIUS);
-        var cell = new CellPoint();
-
-        while (iterator.hasNext()) {
-            long pos = iterator.next();
-            this.cellNoise.computeCell(seed, pos, 0, 0, cell);
-
-            if (this.getThresholdValue(cell) == 0) {
-                continue;
-            }
-
-            float px = cell.px;
-            float py = cell.py;
-            if (isValidSpawn(seed, pos, VALID_SPAWN_RADIUS, cell)) {
-                return new Vec2f(px, py);
-            }
-        }
-
-        return Vec2f.ZERO;
-    }
-
-    private boolean isValidSpawn(int seed, long pos, int radius, CellPoint cell) {
-        int radius2 = radius * radius;
-
-        for (int dy = -radius; dy <= radius; dy++) {
-            for (int dx = -radius; dx <= radius; dx++) {
-                int d2 = dx * dx + dy * dy;
-
-                if (dy < 1 || d2 >= radius2) continue;
-
-                this.cellNoise.computeCell(seed, pos, dx, dy, cell);
-
-                if (this.getThresholdValue(cell) == 0) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+    private float getCached(int cx, int cy, float px, float py, int seed) {
+    	return this.cellCache.computeIfAbsent(PosUtil.pack(cx, cy), (k) -> {
+        	return this.cellSource.getValue(px, py, seed);
+        });
     }
 
     private static float getWeight(float dist, float origin, float blendRange) {
         float delta = dist - origin;
-        if (delta <= 0) return 1F;
-        if (delta >= blendRange) return 0F;
+        if (delta <= 0.0F) {
+        	return 1.0F;
+        }
+        if (delta >= blendRange) {
+        	return 0.0F;
+        }
         return 1 - (delta / blendRange);
     }
 
-    protected static class CellLocal {
-        public CellPoint cell;
-        public float context;
+    private static class CellLocal {
+        public float noise;
+        public float distance;
 
-        protected static CellLocal[] init() {
-            int size = 1 + RADIUS * 2;
-            var cells = new CellLocal[size * size];
-            for (int i = 0; i < cells.length; i++) {
-                cells[i] = new CellLocal();
+        public static CellLocal[] makeBuffer() {
+            int diameter = RADIUS * 2 + 1;
+            var buffer = new CellLocal[diameter * diameter];
+            for (int i = 0; i < buffer.length; i++) {
+                buffer[i] = new CellLocal();
             }
-            return cells;
+            return buffer;
         }
     }
 }

@@ -47,9 +47,8 @@ public final class RTFNoiseGeneratorSettings {
 	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.RIVER)),
 	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.DEPTH)),
 	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.WEIRDNESS)),
-	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.TERRAIN)),
-	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.TERRAIN)),
-//	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.FINAL_DENSITY)),
+	  			DensityFunctions.constant(1.0D),
+	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.FINAL_DENSITY)),
 	  			overworldRouter.veinToggle(),
 	  			overworldRouter.veinRidged(),
 	  			overworldRouter.veinGap()
