@@ -25,17 +25,17 @@
 package raccoonman.reterraforged.common.util.storage;
 
 public interface Index {
-    Index CHUNK = (x, z) -> ((z & 15) << 4) | (x & 15);
+	Index CHUNK = (x, z) -> ((z & 15) << 4) | (x & 15);
 
-    int of(int x, int z);
+	int of(int x, int z);
 
-    public static Index borderedChunk(int border) {
-    	final int offset = border;
-    	final int size = 16 + border * 2;
-    	return (x, z) -> {
-    		x += offset;
-    		z += offset;
-    		return z * size + x;
-        };
-    }
+	public static Index borderedChunk(int border) {
+		final int offset = border;
+		final int size = 16 + border * 2;
+		return (x, z) -> {
+			x += offset;
+			z += offset;
+			return z * size + x;
+		};
+	}
 }

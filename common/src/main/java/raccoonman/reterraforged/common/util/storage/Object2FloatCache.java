@@ -28,37 +28,36 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 public class Object2FloatCache<T> {
-    protected final Value[] values;
-    protected final Map<T, Value> map;
+	private final Value[] values;
+	private final Map<T, Value> map;
 
-    public Object2FloatCache(int size) {
-        this.values = new Value[size];
-        this.map = new IdentityHashMap<>();
-        for (int i = 0; i < values.length; i++) {
-            values[i] = new Value();
-        }
-    }
+	public Object2FloatCache(int size) {
+		this.values = new Value[size];
+		this.map = new IdentityHashMap<>();
+		for (int i = 0; i < values.length; i++) {
+			this.values[i] = new Value();
+		}
+	}
 
-    public void clear() {
-        map.clear();
-    }
+	public void clear() {
+		this.map.clear();
+	}
 
-    public void put(T t, float value) {
-        int index = map.size();
+	public void put(T t, float value) {
+		int index = this.map.size();
 
-        var holder = values[index];
-        holder.value = value;
+		var holder = this.values[index];
+		holder.value = value;
 
-        map.put(t, holder);
-    }
+		this.map.put(t, holder);
+	}
 
-    public float get(T t) {
-        var holder = map.get(t);
-        if (holder == null) return Float.NaN;
-        return holder.value;
-    }
+	public float get(T t) {
+		var holder = this.map.get(t);
+		return holder != null ? holder.value : Float.NaN;
+	}
 
-    protected static class Value {
-        protected float value;
-    }
+	private static class Value {
+		public float value;
+	}
 }

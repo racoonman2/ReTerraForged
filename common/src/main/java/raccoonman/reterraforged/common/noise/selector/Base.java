@@ -25,6 +25,7 @@
 
 package raccoonman.reterraforged.common.noise.selector;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -49,7 +50,7 @@ public class Base extends Selector {
     protected final float falloff;
 
     public Base(Noise base, Noise control, float falloff, Interpolation interpolation) {
-        super(control, new Noise[] { base, control }, interpolation);
+        super(control, ImmutableList.of(base, control), interpolation);
         this.base = base;
         this.min = base.maxValue();
         this.max = base.maxValue() + falloff;
@@ -59,11 +60,11 @@ public class Base extends Selector {
     
     @Override
     protected float selectValue(float x, float y, float upperValue, int seed) {
-        if (upperValue < max) {
-            float lowerValue = base.getValue(x, y, seed);
-            if (falloff > 0) {
-                float clamp = Math.max(min, upperValue);
-                float alpha = (max - clamp) / falloff;
+        if (upperValue < this.max) {
+            float lowerValue = this.base.getValue(x, y, seed);
+            if (this.falloff > 0) {
+                float clamp = Math.max(this.min, upperValue);
+                float alpha = (this.max - clamp) / this.falloff;
                 return blendValues(upperValue, lowerValue, alpha);
             }
             return lowerValue;
@@ -73,12 +74,12 @@ public class Base extends Selector {
 
     @Override
     public float minValue() {
-        return base.minValue();
+        return this.base.minValue();
     }
 
     @Override
     public float maxValue() {
-        return maxValue;
+        return this.maxValue;
     }
 
 	@Override

@@ -25,6 +25,7 @@
 
 package raccoonman.reterraforged.common.noise.selector;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -60,7 +61,7 @@ public class Select extends Selector {
     protected final float upperCurveRange;
 
     public Select(Noise control, Noise source0, Noise source1, float lowerBound, float upperBound, float edgeFalloff, Interpolation interpolation) {
-        super(control, new Noise[]{source0, source1}, interpolation);
+        super(control, ImmutableList.of(source0, source1), interpolation);
         this.control = control;
         this.source0 = source0;
         this.source1 = source1;

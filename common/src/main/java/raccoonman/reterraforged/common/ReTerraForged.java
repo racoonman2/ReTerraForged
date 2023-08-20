@@ -30,36 +30,45 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import raccoonman.reterraforged.common.level.levelgen.climate.Climate;
+import raccoonman.reterraforged.common.level.levelgen.climate.ClimatePreset;
+import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.registries.RTFBiomeSources;
+import raccoonman.reterraforged.common.registries.RTFBuiltInRegistries;
 import raccoonman.reterraforged.common.registries.RTFCurveFunctionTypes;
 import raccoonman.reterraforged.common.registries.RTFDensityFunctionTypes;
 import raccoonman.reterraforged.common.registries.RTFDomainTypes;
 import raccoonman.reterraforged.common.registries.RTFFeatures;
 import raccoonman.reterraforged.common.registries.RTFNoiseTypes;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
+import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 public final class ReTerraForged {
 	public static final String MOD_ID = "reterraforged";
 	public static final Logger LOGGER = LogManager.getLogger("ReTerraForged");
 
-	public static void init() {
-		RTFRegistries.register();
-		RTFCurveFunctionTypes.register();
-		RTFDomainTypes.register();
-		RTFNoiseTypes.register();
-		RTFFeatures.register();
-//		RTFViabilities.register();
-		RTFDensityFunctionTypes.register();
-//		RTFChunkGenerators.register();
-		RTFBiomeSources.register();
+	public static void bootstrap() {
+		RTFBuiltInRegistries.bootstrap();
+		// TODO move this somewhere else;
+		RegistryUtil.createDataRegistry(RTFRegistries.NOISE, Noise.DIRECT_CODEC);
+		RegistryUtil.createDataRegistry(RTFRegistries.CLIMATE, Climate.DIRECT_CODEC);
+		RegistryUtil.createDataRegistry(RTFRegistries.CLIMATE_PRESET, ClimatePreset.DIRECT_CODEC);
+		RTFCurveFunctionTypes.bootstrap();
+		RTFDomainTypes.bootstrap();
+		RTFNoiseTypes.bootstrap();
+		RTFFeatures.bootstrap();
+		RTFDensityFunctionTypes.bootstrap();
+		RTFBiomeSources.bootstrap();
 	}
 	
+	// does this belong here?
 	public static ResourceLocation resolve(String name) {
 		if (name.contains(":")) return new ResourceLocation(name);
 		return new ResourceLocation(MOD_ID, name);
 	}
 
-	public static <T> ResourceKey<T> resolve(ResourceKey<Registry<T>> registryKey, String valueKey) {
+	// ^^^^^^^^
+	public static <T> ResourceKey<T> resolve(ResourceKey<? extends Registry<T>> registryKey, String valueKey) {
 		return ResourceKey.create(registryKey, resolve(valueKey));
 	}
 }

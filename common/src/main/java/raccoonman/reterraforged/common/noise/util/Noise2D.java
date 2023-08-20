@@ -204,8 +204,8 @@ public class Noise2D {
                 int cy = yi + dy;
                 Vec2f vec = NoiseUtil.cell(seed, cx, cy);
 
-                float deltaX = cx + vec.x * distance - x;
-                float deltaY = cy + vec.y * distance - y;
+                float deltaX = cx + vec.x() * distance - x;
+                float deltaY = cy + vec.y() * distance - y;
                 float dist = distanceFunc.apply(deltaX, deltaY);
 
                 if (dist < nearest) {
@@ -233,8 +233,8 @@ public class Noise2D {
                 int cy = yi + dy;
                 Vec2f vec = NoiseUtil.cell(seed, cx, cy);
 
-                float deltaX = cx + vec.x * distance - x;
-                float deltaY = cy + vec.y * distance - y;
+                float deltaX = cx + vec.x() * distance - x;
+                float deltaY = cy + vec.y() * distance - y;
                 float dist = distanceFunc.apply(deltaX, deltaY);
 
                 if (dist < nearest1) {

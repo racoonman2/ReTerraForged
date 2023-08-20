@@ -8,82 +8,65 @@ import java.util.Arrays;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.Holder;
+import net.minecraft.util.StringRepresentable;
 import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 import raccoonman.reterraforged.common.noise.util.Vec2f;
-import raccoonman.reterraforged.common.util.CodecUtil;
 
-// im pretty sure this is supposed to be named Valley, but change it back to Ridge if not
-public class Valley {
+public record Valley(Noise source, int octaves, float strength, float gridSize, float amplitude, float lacunarity, float falloff, Mode blendMode, ThreadLocal<float[]> erosionCache) implements Noise {
 	public static final Codec<Valley> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Noise.DIRECT_CODEC.fieldOf("source").forGetter((v) -> v.source),
 		Codec.INT.fieldOf("octaves").forGetter((v) -> v.octaves),
 		Codec.FLOAT.fieldOf("strength").forGetter((v) -> v.strength),
 		Codec.FLOAT.fieldOf("grid_size").forGetter((v) -> v.gridSize),
 		Codec.FLOAT.fieldOf("amplitude").forGetter((v) -> v.amplitude),
 		Codec.FLOAT.fieldOf("lacunarity").forGetter((v) -> v.lacunarity),
-		Codec.FLOAT.fieldOf("falloff").forGetter((v) -> v.distanceFallOff),
+		Codec.FLOAT.fieldOf("falloff").forGetter((v) -> v.falloff),
 		Mode.CODEC.fieldOf("blend_mode").forGetter((v) -> v.blendMode)
 	).apply(instance, Valley::new));
-	
-    private final int octaves;
-    private final float strength;
-    private final float gridSize;
-    private final float amplitude;
-    private final float lacunarity;
-    private final float distanceFallOff;
-    private final Mode blendMode;
 
-    public Valley(float strength, float gridSize, Mode blendMode) {
-        this(1, strength, gridSize, blendMode);
+    public Valley(Noise source, float strength, float gridSize, Mode blendMode) {
+        this(source, 1, strength, gridSize, blendMode);
     }
 
-    public Valley(int octaves, float strength, float gridSize, Mode blendMode) {
-        this(octaves, strength, gridSize, 1.0f / (float)(octaves + 1), 2.25f, 0.75f, blendMode);
+    public Valley(Noise source, int octaves, float strength, float gridSize, Mode blendMode) {
+        this(source, octaves, strength, gridSize, 1.0f / (float)(octaves + 1), 2.25f, 0.75f, blendMode);
     }
 
-    public Valley(int octaves, float strength, float gridSize, float amplitude, float lacunarity, float distanceFallOff, Mode blendMode) {
-        this.octaves = octaves;
-        this.strength = strength;
-        this.gridSize = gridSize;
-        this.amplitude = amplitude;
-        this.lacunarity = lacunarity;
-        this.distanceFallOff = distanceFallOff;
-        this.blendMode = blendMode;
+    public Valley(Noise source, int octaves, float strength, float gridSize, float amplitude, float lacunarity, float falloff, Mode blendMode) {
+		this(source, octaves, strength, gridSize, amplitude, lacunarity, falloff, blendMode, ThreadLocal.withInitial(() -> new float[25]));
     }
 
-    public Noise wrap(Holder<Noise> source) {
-        return new ValleyNoise(this, source);
-    }
+	@Override
+	public Codec<Valley> codec() {
+		return CODEC;
+	}
 
-    public float getValue(float x, float y, int seed, Holder<Noise> source) {
-        return this.getValue(x, y, seed, source, new float[25]);
-    }
-
-    public float getValue(float x, float y, int seed, Holder<Noise> source, float[] cache) {
-        float value = source.value().getValue(x, y, seed);
-        float erosion = this.getErosionValue(x, y, seed, source, cache);
+    @Override
+    public float getValue(float x, float y, int seed) {
+        float value = this.source.getValue(x, y, seed);
+        float erosion = this.getErosionValue(x, y, seed, this.erosionCache.get());
         return NoiseUtil.lerp(erosion, value, this.blendMode.blend(value, erosion, this.strength));
     }
 
-    public float getErosionValue(float x, float y, int seed, Holder<Noise> source, float[] cache) {
+    private float getErosionValue(float x, float y, int seed, float[] cache) {
         float sum = 0.0f;
         float max = 0.0f;
         float gain = 1.0f;
         float distance = this.gridSize;
         for (int i = 0; i < this.octaves; ++i) {
-            float value = this.getSingleErosionValue(x, y, distance, seed, source, cache);
+            float value = this.getSingleErosionValue(x, y, distance, seed, cache);
             sum += (value *= gain);
             max += gain;
             gain *= this.amplitude;
-            distance *= this.distanceFallOff;
+            distance *= this.falloff;
             x *= this.lacunarity;
             y *= this.lacunarity;
         }
         return sum / max;
     }
 
-    public float getSingleErosionValue(float x, float y, float gridSize, int seed, Holder<Noise> source, float[] cache) {
+    private float getSingleErosionValue(float x, float y, float gridSize, int seed, float[] cache) {
         Arrays.fill(cache, -1.0f);
         int pix = NoiseUtil.floor(x / gridSize);
         int piy = NoiseUtil.floor(y / gridSize);
@@ -93,8 +76,8 @@ public class Valley {
                 int pax = pix + dx1;
                 int pay = piy + dy1;
                 Vec2f vec1 = NoiseUtil.cell(seed, pax, pay);
-                float ax = ((float)pax + vec1.x) * gridSize;
-                float ay = ((float)pay + vec1.y) * gridSize;
+                float ax = ((float)pax + vec1.x()) * gridSize;
+                float ay = ((float)pay + vec1.y()) * gridSize;
                 float bx = ax;
                 float by = ay;
                 float lowestNeighbour = Float.MAX_VALUE;
@@ -103,8 +86,8 @@ public class Valley {
                         int pbx = pax + dx2;
                         int pby = pay + dy2;
                         Vec2f vec2 = pbx == pax && pby == pay ? vec1 : NoiseUtil.cell(seed, pbx, pby);
-                        float candidateX = ((float)pbx + vec2.x) * gridSize;
-                        float candidateY = ((float)pby + vec2.y) * gridSize;
+                        float candidateX = ((float)pbx + vec2.x()) * gridSize;
+                        float candidateY = ((float)pby + vec2.y()) * gridSize;
                         float height = Valley.getNoiseValue(dx1 + dx2, dy1 + dy2, candidateX, candidateY, seed, source, cache);
                         if (!(height < lowestNeighbour)) continue;
                         lowestNeighbour = height;
@@ -117,14 +100,14 @@ public class Valley {
                 minHeight2 = height2;
             }
         }
-        return NoiseUtil.clamp(Valley.sqrt(minHeight2) / gridSize, 0.0f, 1.0f);
+        return NoiseUtil.clamp((float) Math.sqrt(minHeight2) / gridSize, 0.0f, 1.0f);
     }
 
-    private static float getNoiseValue(int dx, int dy, float px, float py, int seed, Holder<Noise> module, float[] cache) {
+    private static float getNoiseValue(int dx, int dy, float px, float py, int seed, Noise module, float[] cache) {
         int index = (dy + 2) * 5 + (dx + 2);
         float value = cache[index];
         if (value == -1.0f) {
-            cache[index] = value = module.value().getValue(px, py, seed);
+            cache[index] = value = module.getValue(px, py, seed);
         }
         return value;
     }
@@ -136,7 +119,7 @@ public class Valley {
         float bady = by - ay;
         float paba = padx * badx + pady * bady;
         float baba = badx * badx + bady * bady;
-        float h = NoiseUtil.clamp(paba / baba, 0.0f, 1.0f);
+        float h = NoiseUtil.clamp(paba / baba, 0.0F, 1.0F);
         return Valley.len2(padx, pady, badx * h, bady * h);
     }
 
@@ -145,65 +128,45 @@ public class Valley {
         float dy = y2 - y1;
         return dx * dx + dy * dy;
     }
-
-    private static float sqrt(float value) {
-        return (float)Math.sqrt(value);
-    }
-
-    public static enum Mode {
-        CONSTANT{
+    
+    public static enum Mode implements StringRepresentable {
+        CONSTANT("constant") {
 
             @Override
             public float blend(float value, float erosion, float strength) {
-                return 1.0f - strength;
+                return 1.0F - strength;
             }
         }
         ,
-        INPUT_LINEAR{
+        INPUT_LINEAR("input_linear") {
 
             @Override
             public float blend(float value, float erosion, float strength) {
-                return 1.0f - strength * value;
+                return 1.0F - strength * value;
             }
         }
         ,
-        OUTPUT_LINEAR{
+        OUTPUT_LINEAR("output_linear") {
 
             @Override
             public float blend(float value, float erosion, float strength) {
-                return 1.0f - strength * erosion;
+                return 1.0F - strength * erosion;
             }
         };
 
-    	public static final Codec<Mode> CODEC = CodecUtil.forEnum(Mode::valueOf);
- 
-        public abstract float blend(float var1, float var2, float var3);
-    }
-
-    public static class ValleyNoise implements Noise {
-    	public static final Codec<ValleyNoise> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-    		Valley.CODEC.fieldOf("valley").forGetter((n) -> n.valley),
-    		Noise.CODEC.fieldOf("source").forGetter((n) -> n.source)
-    	).apply(instance, ValleyNoise::new));
+    	public static final Codec<Mode> CODEC = StringRepresentable.fromEnum(Mode::values);
+    	private String name;
     	
-        private final Valley valley;
-        private final Holder<Noise> source;
-        private final ThreadLocal<float[]> cache = ThreadLocal.withInitial(() -> new float[25]);
-
-        private ValleyNoise(Valley valley, Holder<Noise> source) {
-            this.valley = valley;
-            this.source = source;
-        }
-
-        @Override
-        public float getValue(float x, float y, int seed) {
-            return this.valley.getValue(x, y, seed, this.source, this.cache.get());
-        }
-
-		@Override
-		public Codec<ValleyNoise> codec() {
-			return CODEC;
-		}
+    	private Mode(String name) {
+    		this.name = name;
+    	}
+    	
+    	@Override
+    	public String getSerializedName() {
+    		return this.name;
+    	}
+    	
+        public abstract float blend(float value, float erosion, float strength);
     }
 }
 

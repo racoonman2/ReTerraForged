@@ -27,36 +27,46 @@ package raccoonman.reterraforged.common.noise.func;
 
 import com.mojang.serialization.Codec;
 
+import net.minecraft.util.StringRepresentable;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
-import raccoonman.reterraforged.common.util.CodecUtil;
 
 /**
  * https://github.com/Auburns/FastNoise_Java
  */
-public enum Interpolation implements CurveFunction {
-    LINEAR {
+public enum Interpolation implements CurveFunction, StringRepresentable {
+    LINEAR("linear") {
     	
         @Override
         public float apply(float f) {
             return f;
         }
     },
-    CURVE3 {
+    CURVE3("curve3") {
     	
         @Override
         public float apply(float f) {
             return NoiseUtil.interpHermite(f);
         }
     },
-    CURVE4 {
+    CURVE4("curve4") {
     	
         @Override
         public float apply(float f) {
             return NoiseUtil.interpQuintic(f);
         }
     };
-
-	public static final Codec<Interpolation> CODEC = CodecUtil.forEnum(Interpolation::valueOf);
+	
+	public static final Codec<Interpolation> CODEC = StringRepresentable.fromEnum(Interpolation::values);
+	private String name;
+	
+	private Interpolation(String name) {
+		this.name = name;
+	}
+	
+	@Override
+	public String getSerializedName() {
+		return this.name;
+	}
 	
 	@Override
 	public Codec<Interpolation> codec() {

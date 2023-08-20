@@ -25,9 +25,9 @@
 package raccoonman.reterraforged.common.util.storage;
 
 public interface LongCache<T> {
-    T computeIfAbsent(long key, KeyFunction<T> function);
+	T computeIfAbsent(long key, KeyFunction<T> function);
 
-    interface KeyFunction<T> {
-        T apply(long key);
-    }
+	interface KeyFunction<T> {
+		T apply(long key);
+	}
 }

@@ -24,11 +24,7 @@
 
 package raccoonman.reterraforged.common.util;
 
-import java.awt.geom.Line2D;
-
-import raccoonman.reterraforged.common.noise.source.Line;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
-import raccoonman.reterraforged.common.util.pos.PosUtil;
 
 public class MathUtil {
     public static final float EPSILON = 0.99999F;
@@ -102,63 +98,11 @@ public class MathUtil {
         return NoiseUtil.map(value, -1, 1, 2);
     }
 
-    public static float sum(float[] values) {
-        float sum = 0F;
+    public static float sum(float... values) {
+        float sum = 0.0F;
         for (float value : values) {
             sum += value;
         }
         return sum;
-    }
-
-    protected static float getLineDistance(float x, float y, float ax, float ay, float bx, float by, float ar, float br) {
-        float dx = bx - ax;
-        float dy = by - ay;
-        float v = (x - ax) * dx + (y - ay) * dy;
-        v /= dx * dx + dy * dy;
-        v = v < 0 ? 0 : v > 1 ? 1 : v;
-
-        float tx = ax + dx * v;
-        float ty = ay + dy * v;
-        float tr = ar + (br - ar) * v;
-        float tr2 = tr * tr;
-        float d2 = Line.dist2(x, y, tx, ty);
-
-        return d2 < tr2 ? 1f - NoiseUtil.sqrt(d2) / tr : 0f;
-    }
-
-    public static long getIntersection(float x, float y, float ax, float ay, float bx, float by) {
-        float dx = bx - ax;
-        float dy = by - ay;
-
-        float v = (x - ax) * dx + (y - ay) * dy;
-        v /= dx * dx + dy * dy;
-
-        float px = ax + dx * v;
-        float py = ay + dy * v;
-
-        return PosUtil.packf(px, py);
-    }
-
-    public static long getIntersection(float ax, float ay, float bx, float by, float cx, float cy, float dx, float dy) {
-        float a1 = by - ay;
-        float b1 = ax - bx;
-
-        float a2 = dy - cy;
-        float b2 = cx - dx;
-
-        float det = a1 * b2 - a2 * b1;
-        if (det == 0) return Long.MAX_VALUE;
-
-        float c1 = a1 * (ax) + b1 * (ay);
-        float c2 = a2 * (cx) + b2 * (cy);
-
-        float x = (b2 * c1 - b1 * c2) / det;
-        float y = (a1 * c2 - a2 * c1) / det;
-
-        return PosUtil.packf(x, y);
-    }
-
-    public static boolean intersects(float ax, float ay, float bx, float by, float cx, float cy, float dx, float dy) {
-        return Line2D.linesIntersect(ax, ay, bx, by, cx, cy, dx, dy);
     }
 }

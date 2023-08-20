@@ -29,6 +29,7 @@ import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 import raccoonman.reterraforged.common.util.MathUtil;
 
+@Deprecated(forRemoval = true)
 public class NoiseLevels {
 	public final boolean auto;
     public final float scale;

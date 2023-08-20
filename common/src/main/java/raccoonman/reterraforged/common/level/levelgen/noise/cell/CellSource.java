@@ -26,34 +26,43 @@ package raccoonman.reterraforged.common.level.levelgen.noise.cell;
 
 import com.mojang.serialization.Codec;
 
+import net.minecraft.util.StringRepresentable;
 import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.func.Interpolation;
 import raccoonman.reterraforged.common.noise.util.Noise2D;
-import raccoonman.reterraforged.common.util.CodecUtil;
 
-public enum CellSource implements Noise {
-    PERLIN {
+public enum CellSource implements Noise, StringRepresentable {
+    PERLIN("perlin") {
         @Override
         public float sample(int seed, float x, float y) {
             return Noise2D.singlePerlin2(x, y, seed, Interpolation.CURVE3);
         }
     },
-    SIMPLEX {
+    SIMPLEX("simplex") {
         @Override
         public float sample(int seed, float x, float y) {
             return Noise2D.singleSimplex(x, y, seed);
         }
     },
-    CUBIC {
+    CUBIC("cubic") {
         @Override
         public float sample(int seed, float x, float y) {
             return Noise2D.singleCubic(x, y, seed);
         }
     };
 
-	public static final Codec<CellSource> CODEC = CodecUtil.forEnum(CellSource::valueOf);
+	public static final Codec<CellSource> CODEC = StringRepresentable.fromEnum(CellSource::values);
 	
-    protected abstract float sample(int seed, float x, float y);
+	private String name;
+	
+	private CellSource(String name) {
+		this.name = name;
+	}
+	
+	@Override
+	public String getSerializedName() {
+		return this.name;
+	}
 
     @Override
     public float getValue(float x, float y, int seed) {
@@ -64,4 +73,6 @@ public enum CellSource implements Noise {
 	public Codec<CellSource> codec() {
 		return CODEC;
 	}
+	
+    protected abstract float sample(int seed, float x, float y);
 }

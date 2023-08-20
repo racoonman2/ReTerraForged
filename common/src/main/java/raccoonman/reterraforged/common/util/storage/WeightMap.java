@@ -11,8 +11,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.util.MathUtil;
-import raccoonman.reterraforged.common.util.CodecUtil;
 
+//this sucks lol
+//TODO clean this up
 public class WeightMap<T> implements Iterable<T> {
     public final Object[] values;
     protected final float[] cumulativeWeights;
@@ -34,18 +35,18 @@ public class WeightMap<T> implements Iterable<T> {
     }
     
     public boolean isEmpty() {
-        return values.length == 0;
+        return this.values.length == 0;
     }
 
     @SuppressWarnings("unchecked")
 	public T getValue(float value) {
-        value *= sumWeight;
+        value *= this.sumWeight;
 
-        if (value < zeroWeight) return (T) values[0];
+        if (value < this.zeroWeight) return (T) this.values[0];
 
-        for (int i = 1; i < cumulativeWeights.length; i++) {
-            if (value < cumulativeWeights[i]) {
-                return (T) values[i];
+        for (int i = 1; i < this.cumulativeWeights.length; i++) {
+            if (value < this.cumulativeWeights[i]) {
+                return (T) this.values[i];
             }
         }
 
@@ -74,15 +75,10 @@ public class WeightMap<T> implements Iterable<T> {
         return new WeightMap<>(weights, values);
     }
 
-    @SuppressWarnings("unchecked")
 	public static <T> Codec<WeightMap<T>> codec(Codec<T> valueCodec) {
-    	return CodecUtil.forArray(Entry.codec(valueCodec), (size) -> {
-    		return (Entry<T>[]) new Entry[size];
-    	}).xmap((entries) -> {
+    	return Entry.codec(valueCodec).listOf().xmap((entries) -> {
     		return new WeightMap<>(getWeights(entries), getValues(entries));
-    	}, (map) -> {
-    		return getEntries(map.weights, map.values);
-    	});
+    	}, WeightMap::getEntries);
     }
     
     private record Entry<T>(float weight, T value) {
@@ -95,27 +91,27 @@ public class WeightMap<T> implements Iterable<T> {
     	}
     }
     
-    private static <T> Object[] getValues(Entry<T>[] entries) {
-    	Object[] objects = new Object[entries.length];
+    private static <T> Object[] getValues(List<Entry<T>> entries) {
+    	Object[] objects = new Object[entries.size()];
     	for(int i = 0; i < objects.length; i++) {
-    		objects[i] = entries[i].value;
+    		objects[i] = entries.get(i).value;
     	}
     	return objects;
     }
     
-    private static <T> float[] getWeights(Entry<T>[] entries) {
-    	float[] weights = new float[entries.length];
+    private static <T> float[] getWeights(List<Entry<T>> entries) {
+    	float[] weights = new float[entries.size()];
     	for(int i = 0; i < weights.length; i++) {
-    		weights[i] = entries[i].weight;
+    		weights[i] = entries.get(i).weight;
     	}
     	return weights;
     }
     
     @SuppressWarnings("unchecked")
-	private static <T> Entry<T>[] getEntries(float[] weights, Object[] values) {
-		Entry<T>[] entries = new Entry[values.length];
-    	for(int i = 0; i < entries.length; i++) {
-    		entries[i] = new Entry<>(weights[i], (T) values[i]);
+	private static <T> List<Entry<T>> getEntries(WeightMap<T> map) {
+		List<Entry<T>> entries = new ArrayList<>(map.values.length);
+    	for(int i = 0; i < map.values.length; i++) {
+    		entries.add(new Entry<>(map.weights[i], (T) map.values[i]));
     	}
     	return entries;
     }

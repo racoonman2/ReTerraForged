@@ -20,7 +20,7 @@ public class FlatCache implements DensityFunction.SimpleFunction {
     }
     
     public void fillCache(int cellStartBlockX, int cellStartBlockZ) {
-    	MutableFunctionContext ctx = new MutableFunctionContext();
+    	MutableContext ctx = new MutableContext();
 		ctx.y = 0;
 		for(int x = 0; x < this.width; x++) {
 			for(int z = 0; z < this.width; z++) {
@@ -59,6 +59,27 @@ public class FlatCache implements DensityFunction.SimpleFunction {
 	@Override
 	public KeyDispatchDataCodec<? extends DensityFunction> codec() {
 		throw new UnsupportedOperationException();
+	}
+	
+	class MutableContext implements DensityFunction.FunctionContext {
+		public int x;
+		public int y;
+		public int z;
+		
+		@Override
+		public int blockX() {
+			return this.x;
+		}
+
+		@Override
+		public int blockY() {
+			return this.y;
+		}
+
+		@Override
+		public int blockZ() {
+			return this.z;
+		}
 	}
 	
 	public record Marker(DensityFunction function) implements DensityFunction.SimpleFunction {

@@ -1,20 +1,19 @@
 package raccoonman.reterraforged.common.registries;
 
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import raccoonman.reterraforged.common.ReTerraForged;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import raccoonman.reterraforged.common.level.levelgen.feature.TemplateFeature;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 public final class RTFFeatures {
-	public static final ResourceKey<Feature<?>> TEMPLATE = resolve("template");
+	public static final TemplateFeature TEMPLATE = register("template", new TemplateFeature(TemplateFeature.Config.CODEC));
 	
-	public static void register() {
-		RegistryUtil.register(TEMPLATE, TemplateFeature::new);
+	public static void bootstrap() {
 	}
 	
-	private static ResourceKey<Feature<?>> resolve(String name) {
-		return ReTerraForged.resolve(Registries.FEATURE, name);
-	}
+	private static <C extends FeatureConfiguration, F extends Feature<C>> F register(String string, F feature) {
+		RegistryUtil.register(BuiltInRegistries.FEATURE, string, feature);
+		return feature;
+    }
 }

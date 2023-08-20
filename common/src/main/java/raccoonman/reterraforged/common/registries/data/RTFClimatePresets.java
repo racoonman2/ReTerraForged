@@ -34,7 +34,6 @@ public final class RTFClimatePresets {
 				NoiseTree.Parameter.ignore(),
 				NoiseTree.Parameter.ignore(),
 				NoiseTree.Parameter.ignore(),
-				NoiseTree.Parameter.ignore(),
 				NoiseTree.Parameter.span(0.0F, 0.825F)
 			),
 			ClimatePoint.of(
@@ -43,11 +42,10 @@ public final class RTFClimatePresets {
 				NoiseTree.Parameter.ignore(),
 				NoiseTree.Parameter.ignore(), 
 				NoiseTree.Parameter.ignore(),
-				NoiseTree.Parameter.ignore(),
 				NoiseTree.Parameter.point(1.0F)
 			)
 		);
-		return new ClimatePreset(new NoiseTree.PointList<>(6, ImmutableList.copyOf(points)));
+		return new ClimatePreset(new NoiseTree.PointList<>(5, ImmutableList.copyOf(points)));
 	}
 
 	private static ResourceKey<ClimatePreset> resolve(String path) {

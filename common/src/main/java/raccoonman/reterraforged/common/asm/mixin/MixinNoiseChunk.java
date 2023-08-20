@@ -22,18 +22,6 @@ import raccoonman.reterraforged.common.level.levelgen.noise.density.FlatCache;
 class MixinNoiseChunk {
 	@Shadow
 	@Final
-	private int firstNoiseX;
-	@Shadow
-	@Final
-	private int firstNoiseZ;
-	@Shadow
-	@Final
-	private int	noiseSizeXZ;
-	@Shadow
-	@Final
-    private DensityFunction initialDensityNoJaggedness;
-	@Shadow
-	@Final
 	private int cellStartBlockX, cellStartBlockZ;
 	@Shadow
 	@Final

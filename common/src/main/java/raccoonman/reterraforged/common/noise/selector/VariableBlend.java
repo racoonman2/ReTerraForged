@@ -25,6 +25,7 @@
 
 package raccoonman.reterraforged.common.noise.selector;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -54,7 +55,7 @@ public class VariableBlend extends Selector {
     private final float minBlend;
 
     public VariableBlend(Noise control, Noise variator, Noise source0, Noise source1, float midpoint, float minBlend, float maxBlend, Interpolation interpolation) {
-        super(control, new Noise[]{ source0, source1 }, interpolation);
+        super(control, ImmutableList.of(source0, source1), interpolation);
         this.source0 = source0;
         this.source1 = source1;
         this.midpoint = midpoint;

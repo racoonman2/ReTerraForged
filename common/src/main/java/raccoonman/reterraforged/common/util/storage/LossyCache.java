@@ -24,160 +24,179 @@
 
 package raccoonman.reterraforged.common.util.storage;
 
-import it.unimi.dsi.fastutil.HashCommon;
-import net.minecraft.util.Mth;
-import raccoonman.reterraforged.common.noise.util.NoiseUtil;
-import raccoonman.reterraforged.common.util.Environment;
-
 import java.util.Arrays;
 import java.util.concurrent.locks.StampedLock;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
+import it.unimi.dsi.fastutil.HashCommon;
+import net.minecraft.util.Mth;
+import raccoonman.reterraforged.common.noise.util.NoiseUtil;
+
 public class LossyCache<T> implements LongCache<T> {
-    protected final long[] keys;
-    protected final T[] values;
-    protected final int mask;
-    protected final Consumer<T> removalListener;
+	private static final Consumer<?> NOOP_REMOVAL_LISTENER = (t) -> {};
+	
+	protected final long[] keys;
+	protected final T[] values;
+	protected final int mask;
+	protected final Consumer<T> removalListener;
 
-    private LossyCache(int capacity, IntFunction<T[]> constructor, Consumer<T> removalListener) {
-        capacity = Mth.smallestEncompassingPowerOfTwo(capacity);
-        this.mask = capacity - 1;
-        this.keys = new long[capacity];
-        this.values = constructor.apply(capacity);
-        this.removalListener = removalListener;
-        Arrays.fill(this.keys, Long.MIN_VALUE);
-    }
+	private LossyCache(int capacity, IntFunction<T[]> constructor, Consumer<T> removalListener) {
+		capacity = Mth.smallestEncompassingPowerOfTwo(capacity);
+		this.mask = capacity - 1;
+		this.keys = new long[capacity];
+		this.values = constructor.apply(capacity);
+		this.removalListener = removalListener;
+		Arrays.fill(this.keys, Long.MIN_VALUE);
+	}
 
-    @Override
-    public T computeIfAbsent(long key, KeyFunction<T> function) {
-        int hash = hash(key);
-        int index = hash & mask;
-        T value = values[index];
+	@Override
+	public T computeIfAbsent(long key, KeyFunction<T> function) {
+		int hash = hash(key);
+		int index = hash & this.mask;
+		T value = this.values[index];
 
-        if (keys[index] == key && value != null) return value;
+		if (this.keys[index] == key && value != null)
+			return value;
 
-        T newValue = function.apply(key);
-        keys[index] = key;
-        values[index] = newValue;
+		T newValue = function.apply(key);
+		this.keys[index] = key;
+		this.values[index] = newValue;
 
-        onRemove(value);
+		this.onRemove(value);
 
-        return newValue;
-    }
+		return newValue;
+	}
 
-    protected void onRemove(T value) {
-        if (value != null) {
-            removalListener.accept(value);
-        }
-    }
+	protected void onRemove(T value) {
+		if (value != null) {
+			this.removalListener.accept(value);
+		}
+	}
 
-    protected static int hash(long l) {
-        return (int) HashCommon.mix(l);
-    }
+	private static int hash(long l) {
+		return (int) HashCommon.mix(l);
+	}
 
-    public static <T> LongCache<T> of(int capacity, IntFunction<T[]> constructor) {
-        return of(capacity, constructor, t -> {});
-    }
+	@SuppressWarnings("unchecked")
+	private static <T> Consumer<T> noop(){
+		return (Consumer<T>) NOOP_REMOVAL_LISTENER;
+	}
+	
+	public static <T> LongCache<T> of(int capacity, IntFunction<T[]> constructor) {
+		return of(capacity, constructor, noop());
+	}
 
-    public static <T> LongCache<T> of(int capacity, IntFunction<T[]> constructor, Consumer<T> removalListener) {
-        return new LossyCache<>(capacity, constructor, removalListener);
-    }
+	public static <T> LongCache<T> of(int capacity, IntFunction<T[]> constructor, Consumer<T> removalListener) {
+		return new LossyCache<>(capacity, constructor, removalListener);
+	}
 
-    public static <T> LongCache<T> concurrent(int capacity, IntFunction<T[]> constructor) {
-        return concurrent(capacity, constructor, t -> {});
-    }
+	public static <T> LongCache<T> concurrent(int capacity, IntFunction<T[]> constructor) {
+		return concurrent(capacity, constructor, noop());
+	}
 
-    public static <T> LongCache<T> concurrent(int capacity, IntFunction<T[]> constructor, Consumer<T> removalListener) {
-        return concurrent(capacity, Environment.CORES, constructor, removalListener);
-    }
+	public static <T> LongCache<T> concurrent(int capacity, IntFunction<T[]> constructor, Consumer<T> removalListener) {
+		return concurrent(capacity, Runtime.getRuntime().availableProcessors(), constructor, removalListener);
+	}
 
-    public static <T> LongCache<T> concurrent(int capacity, int concurrency, IntFunction<T[]> constructor, Consumer<T> removalListener) {
-        return new Concurrent<>(capacity, concurrency, constructor, removalListener);
-    }
+	public static <T> LongCache<T> concurrent(int capacity, int concurrency, IntFunction<T[]> constructor, Consumer<T> removalListener) {
+		return new Concurrent<>(capacity, concurrency, constructor, removalListener);
+	}
 
-    public static class Stamped<T> extends LossyCache<T> {
-        protected final StampedLock lock = new StampedLock();
+	private static class Stamped<T> extends LossyCache<T> {
+		private final StampedLock lock = new StampedLock();
 
-        public Stamped(int capacity, IntFunction<T[]> constructor, Consumer<T> removalListener) {
-            super(capacity, constructor, removalListener);
-        }
+		public Stamped(int capacity, IntFunction<T[]> constructor, Consumer<T> removalListener) {
+			super(capacity, constructor, removalListener);
+		}
 
-        @Override
-        public T computeIfAbsent(long key, KeyFunction<T> function) {
-            final int index = hash(key) & mask;
+		@Override
+		public T computeIfAbsent(long key, KeyFunction<T> function) {
+			final int index = hash(key) & this.mask;
 
-            // Try reading without locking
-            long readStamp = lock.tryOptimisticRead();
-            long currentKey = keys[index];
-            T currentValue = values[index];
+			// Try reading without locking
+			long readStamp = this.lock.tryOptimisticRead();
+			long currentKey = this.keys[index];
+			T currentValue = this.values[index];
 
-            if (!lock.validate(readStamp)) {
-                // Write occurred during the optimistic read so obtain a full read lock
-                readStamp = lock.readLock();
-                currentKey = keys[index];
-                currentValue = values[index];
-            }
+			if (!this.lock.validate(readStamp)) {
+				// Write occurred during the optimistic read so obtain a full read lock
+				readStamp = this.lock.readLock();
+				currentKey = this.keys[index];
+				currentValue = this.values[index];
+			}
 
-            if (currentKey == key && currentValue != null) {
-                LockUtil.unlockIfRead(lock, readStamp);
-                return currentValue;
-            }
+			if (currentKey == key && currentValue != null) {
+				unlockIfRead(this.lock, readStamp);
+				return currentValue;
+			}
 
-            long writeStamp = lock.tryConvertToWriteLock(readStamp);
-            try {
-                if (writeStamp == 0L) {
-                    writeStamp = LockUtil.convertToWrite(lock, readStamp);
+			long writeStamp = this.lock.tryConvertToWriteLock(readStamp);
+			try {
+				if (writeStamp == 0L) {
+					writeStamp = convertToWrite(this.lock, readStamp);
 
-                    // Write may have occurred between unlocking read & obtaining write
-                    if (keys[index] == key && values[index] != null) {
-                        return values[index];
-                    }
-                }
+					// Write may have occurred between unlocking read & obtaining write
+					if (this.keys[index] == key && this.values[index] != null) {
+						return this.values[index];
+					}
+				}
 
-                T newValue = function.apply(key);
-                keys[index] = key;
-                values[index] = newValue;
+				T newValue = function.apply(key);
+				this.keys[index] = key;
+				this.values[index] = newValue;
 
-                return newValue;
-            } finally {
-                lock.unlockWrite(writeStamp);
-                onRemove(currentValue);
-            }
-        }
-    }
+				return newValue;
+			} finally {
+				this.lock.unlockWrite(writeStamp);
+				this.onRemove(currentValue);
+			}
+		}
 
-    public static class Concurrent<T> implements LongCache<T> {
-        protected static final int HASH_BITS = 0x7fffffff;
+		private static void unlockIfRead(StampedLock lock, long readStamp) {
+			if (StampedLock.isReadLockStamp(readStamp)) {
+				lock.unlockRead(readStamp);
+			}
+		}
 
-        protected final int mask;
-        protected final Stamped<T>[] buckets;
+		private static long convertToWrite(StampedLock lock, long readStamp) {
+			if (StampedLock.isReadLockStamp(readStamp)) {
+				lock.unlockRead(readStamp);
+			}
+			return lock.writeLock();
+		}
+	}
 
-        @SuppressWarnings("unchecked")
+	private static class Concurrent<T> implements LongCache<T> {
+		private static final int HASH_BITS = 0x7fffffff;
+
+		private final int mask;
+		private final Stamped<T>[] buckets;
+
+		@SuppressWarnings("unchecked")
 		public Concurrent(int capacity, int concurrency, IntFunction<T[]> constructor, Consumer<T> removalListener) {
-            concurrency = Mth.smallestEncompassingPowerOfTwo(concurrency);
-            capacity = NoiseUtil.floor(((float) capacity / concurrency));
+			concurrency = Mth.smallestEncompassingPowerOfTwo(concurrency);
+			capacity = NoiseUtil.floor(((float) capacity / concurrency));
 
-            this.mask = concurrency - 1;
-            //noinspection unchecked
-            this.buckets = new Stamped[concurrency];
+			this.mask = concurrency - 1;
+			this.buckets = new Stamped[concurrency];
 
-            for (int i = 0; i < concurrency; i++) {
-                this.buckets[i] = new Stamped<>(capacity, constructor, removalListener);
-            }
-        }
+			for (int i = 0; i < concurrency; i++) {
+				this.buckets[i] = new Stamped<>(capacity, constructor, removalListener);
+			}
+		}
 
-        @Override
-        public T computeIfAbsent(long key, KeyFunction<T> function) {
-            return buckets[index(key)].computeIfAbsent(key, function);
-        }
+		@Override
+		public T computeIfAbsent(long key, KeyFunction<T> function) {
+			return this.buckets[index(key)].computeIfAbsent(key, function);
+		}
 
-        protected int index(long key) {
-            return spread(key) & mask;
-        }
+		private int index(long key) {
+			return spread(key) & this.mask;
+		}
 
-        protected static int spread(long h) {
-            return (int) (h ^ (h >>> 16)) & HASH_BITS;
-        }
-    }
+		private static int spread(long h) {
+			return (int) (h ^ (h >>> 16)) & HASH_BITS;
+		}
+	}
 }

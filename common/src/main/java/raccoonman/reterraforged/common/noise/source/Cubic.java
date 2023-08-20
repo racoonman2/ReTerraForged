@@ -28,7 +28,6 @@ package raccoonman.reterraforged.common.noise.source;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.util.Noise2D;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 

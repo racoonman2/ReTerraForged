@@ -7,6 +7,6 @@ public final class ReTerraForgedFabric implements ModInitializer {
 	
 	@Override
 	public void onInitialize() {
-		ReTerraForged.init();
+		ReTerraForged.bootstrap();
     }
 }

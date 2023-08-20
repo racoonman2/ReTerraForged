@@ -27,32 +27,41 @@ package raccoonman.reterraforged.common.noise.func;
 
 import com.mojang.serialization.Codec;
 
-import raccoonman.reterraforged.common.util.CodecUtil;
+import net.minecraft.util.StringRepresentable;
 
 /**
  * https://github.com/Auburns/FastNoise_Java
  */
-public enum DistanceFunc {
-    EUCLIDEAN {
+public enum DistanceFunc implements StringRepresentable {
+    EUCLIDEAN("euclidean") {
         @Override
         public float apply(float vecX, float vecY) {
             return vecX * vecX + vecY * vecY;
         }
     },
-    MANHATTAN {
+    MANHATTAN("manhattan") {
         @Override
         public float apply(float vecX, float vecY) {
             return Math.abs(vecX) + Math.abs(vecY);
         }
     },
-    NATURAL {
+    NATURAL("natural") {
         @Override
         public float apply(float vecX, float vecY) {
             return (Math.abs(vecX) + Math.abs(vecY)) + (vecX * vecX + vecY * vecY);
         }
     };
+	public static final Codec<DistanceFunc> CODEC = StringRepresentable.fromEnum(DistanceFunc::values);
+	private String name;
 	
-	public static final Codec<DistanceFunc> CODEC = CodecUtil.forEnum(DistanceFunc::valueOf);
-
+	private DistanceFunc(String name) {
+		this.name = name;
+	}
+	
+	@Override
+	public String getSerializedName() {
+		return this.name;
+	}
+	
     public abstract float apply(float vecX, float vecY);
 }

@@ -28,13 +28,11 @@ package raccoonman.reterraforged.common.noise.func;
 import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.Lifecycle;
 
-import raccoonman.reterraforged.common.registries.RTFRegistries;
-import raccoonman.reterraforged.common.util.CodecUtil;
+import raccoonman.reterraforged.common.registries.RTFBuiltInRegistries;
 
 public interface CurveFunction {
-	Codec<CurveFunction> CODEC = CodecUtil.forRegistry(RTFRegistries.CURVE_FUNCTION_TYPE, Lifecycle.stable(), CurveFunction::codec, Function.identity());
+	Codec<CurveFunction> CODEC = RTFBuiltInRegistries.CURVE_FUNCTION_TYPE.byNameCodec().dispatchStable(CurveFunction::codec, Function.identity());
 	
     float apply(float value);
     

@@ -7,28 +7,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.noise.Noise;
-import raccoonman.reterraforged.common.noise.Source;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 
-public class Humidity implements Noise {
+public record Humidity(Noise source, int power) implements Noise {
 	public static final Codec<Humidity> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Noise.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.originalSource),
+		Noise.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
 		Codec.INT.fieldOf("power").forGetter((m) -> m.power)
 	).apply(instance, Humidity::new));
-	
-	private final Noise originalSource;
-    private final Noise source;
-    private final int power;
-
-    public Humidity(int scale, int power) {
-        this(Source.simplex(scale, 1).clamp(0.125, 0.875).map(0.0, 1.0), power);
-    }
-
-    public Humidity(Noise source, int power) {
-    	this.originalSource = source;
-    	this.source = source.freq(0.5, 1.0);
-        this.power = power;
-    }
 
     @Override
     public float getValue(float x, float y, int seed) {

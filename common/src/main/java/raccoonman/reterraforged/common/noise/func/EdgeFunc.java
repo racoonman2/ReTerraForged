@@ -27,13 +27,13 @@ package raccoonman.reterraforged.common.noise.func;
 
 import com.mojang.serialization.Codec;
 
-import raccoonman.reterraforged.common.util.CodecUtil;
+import net.minecraft.util.StringRepresentable;
 
 /**
  * https://github.com/Auburns/FastNoise_Java
  */
-public enum EdgeFunc {
-    DISTANCE_2 {
+public enum EdgeFunc implements StringRepresentable {
+    DISTANCE_2("distance_2") {
         @Override
         public float apply(float distance, float distance2) {
             return distance2 - 1;
@@ -54,7 +54,7 @@ public enum EdgeFunc {
             return 2;
         }
     },
-    DISTANCE_2_ADD {
+    DISTANCE_2_ADD("distance_2_add") {
         @Override
         public float apply(float distance, float distance2) {
             return distance2 + distance - 1;
@@ -75,7 +75,7 @@ public enum EdgeFunc {
             return 2.6F;
         }
     },
-    DISTANCE_2_SUB {
+    DISTANCE_2_SUB("distance_2_sub") {
         @Override
         public float apply(float distance, float distance2) {
             return distance2 - distance - 1;
@@ -96,7 +96,7 @@ public enum EdgeFunc {
             return 1.8F;
         }
     },
-    DISTANCE_2_MUL {
+    DISTANCE_2_MUL("distance_2_mul") {
         @Override
         public float apply(float distance, float distance2) {
             return distance2 * distance - 1;
@@ -117,7 +117,7 @@ public enum EdgeFunc {
             return 1.7F;
         }
     },
-    DISTANCE_2_DIV {
+    DISTANCE_2_DIV("distance_2_div") {
         @Override
         public float apply(float distance, float distance2) {
             return distance / distance2 - 1;
@@ -138,8 +138,18 @@ public enum EdgeFunc {
             return 1;
         }
     };
-
-	public static final Codec<EdgeFunc> CODEC = CodecUtil.forEnum(EdgeFunc::valueOf);
+	
+	public static final Codec<EdgeFunc> CODEC = StringRepresentable.fromEnum(EdgeFunc::values);
+	private String name;
+	
+	private EdgeFunc(String name) {
+		this.name = name;
+	}
+	
+	@Override
+	public String getSerializedName() {
+		return this.name;
+	}
 	
     public abstract float apply(float distance, float distance2);
 

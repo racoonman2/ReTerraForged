@@ -10,7 +10,6 @@ import raccoonman.reterraforged.common.level.levelgen.climate.ClimatePreset;
 import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.domain.Domain;
 import raccoonman.reterraforged.common.noise.func.CurveFunction;
-import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 public final class RTFRegistries {
 	public static final ResourceKey<Registry<Codec<? extends Noise>>> NOISE_TYPE = resolve("worldgen/noise_type");
@@ -20,15 +19,6 @@ public final class RTFRegistries {
 	public static final ResourceKey<Registry<Climate>> CLIMATE = resolve("worldgen/climate");
 	public static final ResourceKey<Registry<ClimatePreset>> CLIMATE_PRESET = resolve("worldgen/climate_preset");
 
-	public static void register() {
-		RegistryUtil.createRegistry(NOISE_TYPE);
-		RegistryUtil.createRegistry(DOMAIN_TYPE);
-		RegistryUtil.createRegistry(CURVE_FUNCTION_TYPE);
-		RegistryUtil.createDataRegistry(NOISE, Noise.DIRECT_CODEC);
-		RegistryUtil.createDataRegistry(CLIMATE, Climate.DIRECT_CODEC);
-		RegistryUtil.createDataRegistry(CLIMATE_PRESET, ClimatePreset.DIRECT_CODEC);
-	}
-	
 	private static <T> ResourceKey<Registry<T>> resolve(String key) {
 		return ResourceKey.createRegistryKey(ReTerraForged.resolve(key));
 	}

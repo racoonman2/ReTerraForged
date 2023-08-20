@@ -27,25 +27,25 @@ package raccoonman.reterraforged.common.noise.func;
 
 import com.mojang.serialization.Codec;
 
+import net.minecraft.util.StringRepresentable;
 import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 import raccoonman.reterraforged.common.noise.util.Vec2f;
-import raccoonman.reterraforged.common.util.CodecUtil;
 
 /**
  * @author dags <dags@dags.me>
  */
-public enum CellFunc {
-    CELL_VALUE {
+public enum CellFunc implements StringRepresentable {
+    CELL_VALUE("cell_value") {
         @Override
         public float apply(int xc, int yc, float distance, int seed, Vec2f vec2f, Noise lookup) {
             return NoiseUtil.valCoord2D(seed, xc, yc);
         }
     },
-    NOISE_LOOKUP {
+    NOISE_LOOKUP("noise_lookup") {
         @Override
         public float apply(int xc, int yc, float distance, int seed, Vec2f vec2f, Noise lookup) {
-            return lookup.getValue(xc + vec2f.x, yc + vec2f.y, seed);
+            return lookup.getValue(xc + vec2f.x(), yc + vec2f.y(), seed);
         }
 
         @Override
@@ -53,7 +53,7 @@ public enum CellFunc {
             return value;
         }
     },
-    DISTANCE {
+    DISTANCE("distance") {
         @Override
         public float apply(int xc, int yc, float distance, int seed, Vec2f vec2f, Noise lookup) {
             return distance - 1;
@@ -65,8 +65,18 @@ public enum CellFunc {
         }
     };
 	
-	public static final Codec<CellFunc> CODEC = CodecUtil.forEnum(CellFunc::valueOf);
-
+	public static final Codec<CellFunc> CODEC = StringRepresentable.fromEnum(CellFunc::values);
+	private String name;
+	
+	private CellFunc(String name) {
+		this.name = name;
+	}
+	
+	@Override
+	public String getSerializedName() {
+		return this.name;
+	}
+	
     public abstract float apply(int xc, int yc, float distance, int seed, Vec2f vec2f, Noise lookup);
 
     public float mapValue(float value, float min, float max, float range) {

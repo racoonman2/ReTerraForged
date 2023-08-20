@@ -15,12 +15,13 @@ import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.common.level.levelgen.climate.ClimatePoint;
 import raccoonman.reterraforged.common.level.levelgen.climate.ClimatePreset;
 
-public class RTFBiomeSource extends BiomeSource {
-	public static final Codec<RTFBiomeSource> CODEC = ClimatePreset.CODEC.xmap(RTFBiomeSource::new, RTFBiomeSource::getPreset);
+// TODO add support for composing climate presets in some way
+public class ClimateBasedBiomeSource extends BiomeSource {
+	public static final Codec<ClimateBasedBiomeSource> CODEC = ClimatePreset.CODEC.xmap(ClimateBasedBiomeSource::new, ClimateBasedBiomeSource::getPreset);
 	
 	private final Holder<ClimatePreset> climatePreset;
 
-    public RTFBiomeSource(Holder<ClimatePreset> climatePreset) {
+    public ClimateBasedBiomeSource(Holder<ClimatePreset> climatePreset) {
 		this.climatePreset = climatePreset;
 	}
     
@@ -29,7 +30,7 @@ public class RTFBiomeSource extends BiomeSource {
     }
 	
 	@Override
-	protected Codec<RTFBiomeSource> codec() {
+	protected Codec<ClimateBasedBiomeSource> codec() {
 		return CODEC;
 	}
 
@@ -47,10 +48,9 @@ public class RTFBiomeSource extends BiomeSource {
 			(float) sampler.temperature().compute(ctx),
 			(float) sampler.humidity().compute(ctx),
 			(float) sampler.continentalness().compute(ctx),
-			1.0F - (float) sampler.depth().compute(ctx),
 			(float) sampler.erosion().compute(ctx),
-			(float) sampler.depth().compute(ctx)			
-		).value().biomes().getValue(1);
+			(float) sampler.depth().compute(ctx)
+		).value().biomes().getValue((float) sampler.weirdness().compute(ctx));
 	}
 	
 	@Override

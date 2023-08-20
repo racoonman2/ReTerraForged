@@ -25,8 +25,8 @@ public record Weirdness(CellShape shape, float frequency, float jitter) implemen
 		x = this.shape.adjustX(x);
         y = this.shape.adjustY(y);
 		
-		x = x * this.frequency;
-		y = y * this.frequency;
+		x *= this.frequency;
+		y *= this.frequency;
 
 		int minX = NoiseUtil.floor(x) - 1;
 		int minY = NoiseUtil.floor(y) - 1;

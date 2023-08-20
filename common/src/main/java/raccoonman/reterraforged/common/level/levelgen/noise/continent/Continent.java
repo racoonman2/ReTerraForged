@@ -31,11 +31,11 @@ import raccoonman.reterraforged.common.level.levelgen.noise.cell.CellShape;
 import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 import raccoonman.reterraforged.common.util.MathUtil;
-import raccoonman.reterraforged.common.util.pos.PosUtil;
+import raccoonman.reterraforged.common.util.PosUtil;
 import raccoonman.reterraforged.common.util.storage.LongCache;
 import raccoonman.reterraforged.common.util.storage.LossyCache;
 
-public class Continent implements Noise {
+public record Continent(float falloff, float jitter, CellShape cellShape, Noise cellSource, ThreadLocal<CellLocal[]> cellBuffer, LongCache<Float> cellCache) implements Noise {
 	public static final Codec<Continent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.fieldOf("falloff").forGetter((c) -> c.falloff),
 		Codec.FLOAT.fieldOf("jitter").forGetter((c) -> c.jitter),
@@ -45,21 +45,10 @@ public class Continent implements Noise {
 	
     private static final int RADIUS = 2;
 
-    private final float falloff;
-    private final float jitter;
-    private final CellShape cellShape;
-    private final Noise cellSource;
-    private final LongCache<Float> cellCache = LossyCache.concurrent(2048, Float[]::new);
-
-    private final ThreadLocal<CellLocal[]> cellBuffer = ThreadLocal.withInitial(CellLocal::makeBuffer);
-
     public Continent(float falloff, float jitter, CellShape cellShape, Noise cellSource) {
-        this.falloff = falloff;
-        this.jitter = jitter;
-        this.cellShape = cellShape;
-        this.cellSource = cellSource;
+    	this(falloff, jitter, cellShape, cellSource, ThreadLocal.withInitial(CellLocal::makeBuffer), LossyCache.concurrent(2048, Float[]::new));
     }
-    
+
 	@Override
 	public Codec<Continent> codec() {
 		return CODEC;
@@ -109,24 +98,6 @@ public class Continent implements Noise {
         return sampleEdges(min0, min1, this.falloff, buffer);
     }
 
-    private static float sampleEdges(float min0, float min1, float falloff, CellLocal[] buffer) {
-        float borderDistance = (min0 + min1) * 0.5F;
-        float blend = borderDistance * falloff;
-
-        float sum = 0.0F;
-        float sumWeight = 0.0F;
-
-        for (var local : buffer) {
-            float dist = local.distance;
-            float value = local.noise;
-            float weight = getWeight(dist, min0, blend);
-
-            sum += value * weight;
-            sumWeight += weight;
-        }
-        return sum / sumWeight;
-    }
-
     private long getNearestCell(float x, float y, int seed) {
         x = this.cellShape.adjustX(x);
         y = this.cellShape.adjustY(y);
@@ -164,6 +135,24 @@ public class Continent implements Noise {
         });
     }
 
+    private static float sampleEdges(float min0, float min1, float falloff, CellLocal[] buffer) {
+        float borderDistance = (min0 + min1) * 0.5F;
+        float blend = borderDistance * falloff;
+
+        float sum = 0.0F;
+        float sumWeight = 0.0F;
+
+        for (var local : buffer) {
+            float dist = local.distance;
+            float value = local.noise;
+            float weight = getWeight(dist, min0, blend);
+
+            sum += value * weight;
+            sumWeight += weight;
+        }
+        return sum / sumWeight;
+    }
+    
     private static float getWeight(float dist, float origin, float blendRange) {
         float delta = dist - origin;
         if (delta <= 0.0F) {

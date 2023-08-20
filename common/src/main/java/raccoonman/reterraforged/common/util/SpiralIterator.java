@@ -24,8 +24,6 @@
 
 package raccoonman.reterraforged.common.util;
 
-import raccoonman.reterraforged.common.util.pos.PosUtil;
-
 public class SpiralIterator {
     private final int x;
     private final int z;
@@ -42,36 +40,36 @@ public class SpiralIterator {
         this.z = z;
         this.minRadius = radius;
         this.maxRadius = maxRadius;
-        setRadius(radius);
+        this.setRadius(radius);
     }
 
     public void reset() {
-        i = -1;
-        setRadius(minRadius);
+    	this.i = -1;
+        this.setRadius(this.minRadius);
     }
 
     public boolean hasNext() {
-        return i + 1 < maxIndex || radius < maxRadius;
+        return this.i + 1 < this.maxIndex || this.radius < this.maxRadius;
     }
 
     public long next() {
-        nextIndex();
+    	this.nextIndex();
 
-        int edge = i / length;
-        int step = i % length;
-        int dx = -radius, dz = -radius;
+        int edge = this.i / this.length;
+        int step = this.i % this.length;
+        int dx = -this.radius, dz = -this.radius;
 
         switch (edge) {
-            case 0 -> dx = -radius + step;
+            case 0 -> dx = -this.radius + step;
             case 1 -> {
-                dx = radius;
-                dz = -radius + step;
+                dx = this.radius;
+                dz = -this.radius + step;
             }
             case 2 -> {
-                dx = radius - step;
-                dz = radius;
+                dx = this.radius - step;
+                dz = this.radius;
             }
-            case 3 -> dz = radius - step;
+            case 3 -> dz = this.radius - step;
         }
 
         return PosUtil.pack(x + dx, z + dz);
@@ -82,12 +80,12 @@ public class SpiralIterator {
     }
 
     private void nextIndex() {
-        if (radius > maxRadius) return;
+        if (this.radius > this.maxRadius) return;
 
-        if (++i < maxIndex) return;
+        if (++this.i < this.maxIndex) return;
 
-        setRadius(radius + 1);
-        i = 0;
+        this.setRadius(this.radius + 1);
+        this.i = 0;
     }
 
     private void setRadius(int radius) {
@@ -109,8 +107,8 @@ public class SpiralIterator {
         }
 
         public long next() {
-            if (!hasNext()) return 0L;
-            return function.apply(SpiralIterator.this);
+            if (!this.hasNext()) return 0L;
+            return this.function.apply(SpiralIterator.this);
         }
     }
 

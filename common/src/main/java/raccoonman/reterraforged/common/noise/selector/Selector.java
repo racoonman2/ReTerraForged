@@ -25,6 +25,8 @@
 
 package raccoonman.reterraforged.common.noise.selector;
 
+import java.util.List;
+
 import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.combiner.Combiner;
 import raccoonman.reterraforged.common.noise.func.Interpolation;
@@ -38,7 +40,7 @@ public abstract class Selector extends Combiner {
     protected final Noise control;
     protected final Interpolation interpolation;
 
-    public Selector(Noise control, Noise[] sources, Interpolation interpolation) {
+    public Selector(Noise control, List<Noise> sources, Interpolation interpolation) {
         super(sources);
         this.control = control;
         this.interpolation = interpolation;

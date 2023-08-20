@@ -41,7 +41,7 @@ import raccoonman.reterraforged.platform.registries.forge.RegistryUtilImpl;
 public final class ReTerraForgedForge {
 
     public ReTerraForgedForge() {
-    	ReTerraForged.init();
+    	ReTerraForged.bootstrap();
     	
     	IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
     	modBus.addListener(ReTerraForgedForge::gatherData);

@@ -29,6 +29,7 @@ import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
 
+import net.minecraft.util.StringRepresentable;
 import raccoonman.reterraforged.common.noise.func.CellFunc;
 import raccoonman.reterraforged.common.noise.func.DistanceFunc;
 import raccoonman.reterraforged.common.noise.func.EdgeFunc;
@@ -36,38 +37,44 @@ import raccoonman.reterraforged.common.noise.source.Builder;
 import raccoonman.reterraforged.common.noise.source.Constant;
 import raccoonman.reterraforged.common.noise.source.Line;
 import raccoonman.reterraforged.common.noise.source.Rand;
-import raccoonman.reterraforged.common.util.CodecUtil;
 
-public enum Source {
-    BILLOW(Builder::billow),
-    CELL(Builder::cell),
-    CELL_EDGE(Builder::cellEdge),
-    CONST(Builder::constant),
-    CUBIC(Builder::cubic),
-    PERLIN(Builder::perlin),
-    RIDGE(Builder::ridge),
-    SIMPLEX(Builder::legacySimplex),
-    SIMPLEX2(Builder::simplex),
-    SIMPLEX_RIDGE(Builder::simplex),
-    SIN(Builder::sin),
-    RAND(Builder::rand);
+public enum Source implements StringRepresentable {
+    BILLOW("billow", Builder::billow),
+    CELL("cell", Builder::cell),
+    CELL_EDGE("cell_edge", Builder::cellEdge),
+    CONSTANT("const", Builder::constant),
+    CUBIC("cubic", Builder::cubic),
+    PERLIN("perlin", Builder::perlin),
+    RIDGE("ridge", Builder::ridge),
+    LEGACY_SIMPLEX("legacy_simplex", Builder::legacySimplex),
+    SIMPLEX("simplex", Builder::simplex),
+    SIMPLEX_RIDGE("simplex_ridge", Builder::simplex),
+    SIN("sin", Builder::sin),
+    RAND("rand", Builder::rand);
 
-	public static final Codec<Source> CODEC = CodecUtil.forEnum(Source::valueOf);
+	public static final Codec<Source> CODEC = StringRepresentable.fromEnum(Source::values);
 	
     public static final Noise ONE = new Constant(1F);
     public static final Noise ZERO = new Constant(0F);
     public static final Noise HALF = new Constant(0.5F);
 
+    private final String name;
     private final Function<Builder, Noise> fn;
 
-    Source(Function<Builder, Noise> fn) {
-        this.fn = fn;
+    Source(String name, Function<Builder, Noise> fn) {
+    	this.name = name;
+    	this.fn = fn;
     }
 
     public Noise build(Builder builder) {
         return fn.apply(builder);
     }
 
+    @Override
+    public String getSerializedName() {
+    	return this.name;
+    }
+    
     public static Builder builder() {
         return new Builder();
     }

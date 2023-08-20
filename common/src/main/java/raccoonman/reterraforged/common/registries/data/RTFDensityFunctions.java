@@ -40,7 +40,7 @@ public final class RTFDensityFunctions {
         ctx.register(WEIRDNESS, new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.WEIRDNESS)));
 		ctx.register(FINAL_DENSITY, terrain(noise));// finalDensity(densityFunctions, noiseParams, terrain));
 	    ctx.register(DEPTH, DensityFunctions.yClampedGradient(-64, 1024, 1.0F, 0.0F));
-   }
+	}
 	
 	private static DensityFunction terrain(HolderGetter<Noise> noise) {
 		return new YGradientFunction(new FlatCache.Marker(new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.TERRAIN))));
@@ -97,10 +97,6 @@ public final class RTFDensityFunctions {
 	private static DensityFunction getFunction(HolderGetter<DensityFunction> densityFunctions, ResourceKey<DensityFunction> key) {
 		return new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(key));
 	}
-
-    private static DensityFunction registerAndWrap(BootstapContext<DensityFunction> bootstapContext, ResourceKey<DensityFunction> resourceKey, DensityFunction densityFunction) {
-        return new DensityFunctions.HolderHolder(bootstapContext.register(resourceKey, densityFunction));
-    }
 	
 	private static ResourceKey<DensityFunction> resolve(String key) {
 		return ReTerraForged.resolve(Registries.DENSITY_FUNCTION, key);

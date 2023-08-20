@@ -25,12 +25,10 @@
 
 package raccoonman.reterraforged.common.noise.util;
 
-import java.util.Objects;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-public class Vec2f {
+public record Vec2f(float x, float y) {
 	public static final Codec<Vec2f> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.optionalFieldOf("x", 0.0F).forGetter((v) -> v.x),
 		Codec.FLOAT.optionalFieldOf("y", 0.0F).forGetter((v) -> v.y)
@@ -38,20 +36,12 @@ public class Vec2f {
 	
     public static final Vec2f ZERO = new Vec2f(0, 0);
 
-    public final float x;
-    public final float y;
-
-    public Vec2f(float x, float y) {
-        this.x = x;
-        this.y = y;
+    public int blockX() {
+        return (int) this.x;
     }
 
-    public int getBlockX() {
-        return (int) x;
-    }
-
-    public int getBlockY() {
-        return (int) y;
+    public int blockY() {
+        return (int) this.y;
     }
 
     public Vec2f add(float x, float y) {
@@ -65,20 +55,6 @@ public class Vec2f {
     }
 
     public Vec2i toInt() {
-        return new Vec2i(getBlockX(), getBlockY());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Vec2f vec2f = (Vec2f) o;
-        return Float.compare(vec2f.x, x) == 0 &&
-                Float.compare(vec2f.y, y) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y);
+        return new Vec2i(this.blockX(), this.blockY());
     }
 }

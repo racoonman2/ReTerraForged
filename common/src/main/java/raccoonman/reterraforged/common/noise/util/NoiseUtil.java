@@ -321,12 +321,12 @@ public class NoiseUtil {
 
     public static float gradCoord2D(int seed, int x, int y, float xd, float yd) {
         Vec2f g = coord2D(seed, x, y);
-        return xd * g.x + yd * g.y;
+        return xd * g.x() + yd * g.y();
     }
 
     public static float gradCoord2D_24(int seed, int x, int y, float xd, float yd) {
         Vec2f g = coord2D_24(seed, x, y);
-        return xd * g.x + yd * g.y;
+        return xd * g.x() + yd * g.y();
     }
 
     public static float pow(float value, float power) {

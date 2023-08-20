@@ -1,5 +1,6 @@
 package raccoonman.reterraforged.common.client.gui.preview;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -24,10 +25,8 @@ import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import raccoonman.reterraforged.common.noise.Noise;
-import raccoonman.reterraforged.common.util.ColorUtil;
 
-// TODO finish this
-// this is more for debugging noise then anything else
+// TODO finish this (also make zoom better)
 public class WorldPreviewScreen extends Screen {
 	private static final int MAX_SCALE = 250;
 	
@@ -44,7 +43,7 @@ public class WorldPreviewScreen extends Screen {
 		this.parent = parent;
 		this.layers = noiseGetter.listElements().map((ref) -> {
 			return new Layer(ref, Float2IntFunctions.primitive((value) -> {
-				return ColorUtil.rgba(value, value, value);//MathUtil.step(1 - value, 8) * 0.65F, saturation, brightness);
+				return rgba(value, value, value);//MathUtil.step(1 - value, 8) * 0.65F, saturation, brightness);
 			}));
 		}).toList();
 		this.framebuffer = new DynamicTexture(256, 256, false);
@@ -136,6 +135,19 @@ public class WorldPreviewScreen extends Screen {
 		drawCenteredString(stack, this.font, this.title, this.width / 2, 8, 16777215);
 	}
 	
+	// this looks kinda messy being here but oh well
+	private static int rgba(float h, float s, float b) {
+        int argb = Color.HSBtoRGB(h, s, b);
+        int red = (argb >> 16) & 0xFF;
+        int green = (argb >> 8) & 0xFF;
+        int blue =  argb & 0xFF;
+        return rgba(red, green, blue);
+    }
+
+    private static int rgba(int r, int g, int b) {
+        return r + (g << 8) + (b << 16) + (255 << 24);
+    }
+    
 	private record Layer(Holder.Reference<Noise> noise, Float2IntFunction color) {
 	}
 	

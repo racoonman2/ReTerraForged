@@ -1,78 +1,64 @@
 package raccoonman.reterraforged.platform.registries.forge;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Supplier;
 
-import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.RegistryBuilder;
 import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.util.CodecUtil;
 
-//TODO handle overrides
 public final class RegistryUtilImpl {
-	private static final Map<ResourceKey<? extends Registry<?>>, DeferredRegister<?>> REGISTERS = Maps.newConcurrentMap();
-	private static final Map<ResourceKey<? extends Registry<?>>, Codec<?>> CODECS = Maps.newConcurrentMap();
-	
-	public static <A> Codec<A> codec(ResourceKey<? extends Registry<A>> registry, Lifecycle lifecycle) {
-		return CodecUtil.forLazy(() -> {
-			return GameData.getWrapper(registry, lifecycle).byNameCodec();
-		});
-	}
-	
-	public static <T> void createRegistry(ResourceKey<Registry<T>> key) {
-		ResourceLocation registry = key.location();
-		REGISTERS.computeIfAbsent(ResourceKey.createRegistryKey(registry), (f) -> {
-			DeferredRegister<T> register = DeferredRegister.create(registry, registry.getNamespace());
-			register.makeRegistry(() -> {
-				RegistryBuilder<T> builder = new RegistryBuilder<>();
-				builder.hasTags();
-				return builder.onCreate((owner, stage) -> {
-					ReTerraForged.LOGGER.info("Created registry {}", registry);
-				});
-			});
-			return register;
-		});
-	}
-	
-	
-	public static <T> void createDataRegistry(ResourceKey<Registry<T>> key, Codec<T> codec) {
-		CODECS.computeIfAbsent(key, (k) -> {
-			return codec;
-		});
-	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <T> void register(ResourceKey<T> key, Supplier<T> value) {
-		ResourceLocation registry = key.registry();
-		ResourceLocation location = key.location();
-		REGISTERS.computeIfAbsent(ResourceKey.createRegistryKey(registry), (f) -> {
-			return DeferredRegister.create(registry, location.getNamespace());
-		}).register(location.getPath(), (Supplier) value);
-	}
+	private static final Map<ResourceKey<? extends Registry<?>>, DeferredRegistry.Writable<?>> REGISTERS = Collections.synchronizedMap(new HashMap<>());
+	private static final List<DataRegistry<?>> DATA_REGISTRIES = Collections.synchronizedList(new ArrayList<>());
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void register(IEventBus bus) {
-		for(DeferredRegister<?> register : REGISTERS.values()) {
-			register.register(bus);
+		for(DeferredRegistry.Writable<?> registry : REGISTERS.values()) {
+			registry.register(bus);
 		}
+		
 		bus.addListener((DataPackRegistryEvent.NewRegistry event) -> {
-			for(Entry<ResourceKey<? extends Registry<?>>, Codec<?>> entry : CODECS.entrySet()) {
-				ResourceKey key = entry.getKey();
-				Codec value = entry.getValue();
-				
-				event.dataPackRegistry(key, value);
+			for(DataRegistry registry : DATA_REGISTRIES) {
+				event.dataPackRegistry(registry.key(), registry.codec());
 			}
 		});
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <T> WritableRegistry<T> getWritable(Registry<T> registry) {
+		return (WritableRegistry<T>) REGISTERS.computeIfAbsent(registry.key(), (k) -> {
+			return new DeferredRegistry.Writable<>(DeferredRegister.create((ResourceKey) k, ReTerraForged.MOD_ID));
+		});
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static <T> Registry<T> createRegistry(ResourceKey<? extends Registry<T>> key) {
+		DeferredRegister<T> register = DeferredRegister.create((ResourceKey) key, ReTerraForged.MOD_ID);
+		register.makeRegistry(() -> {
+			return new RegistryBuilder().hasTags();
+		});
+		REGISTERS.put(key, new DeferredRegistry.Writable<>(register));
+		return DeferredRegistry.memoize(key, () -> {
+			return GameData.getWrapper(key, Lifecycle.stable());
+		});
+	}
+
+	public static <T> void createDataRegistry(ResourceKey<? extends Registry<T>> key, Codec<T> codec) {
+		DATA_REGISTRIES.add(new DataRegistry<>(key, codec));
+	}
+	
+	private record DataRegistry<T>(ResourceKey<? extends Registry<T>> key, Codec<T> codec) {
 	}
 }

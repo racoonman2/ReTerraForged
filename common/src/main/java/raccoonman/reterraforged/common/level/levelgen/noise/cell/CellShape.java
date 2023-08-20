@@ -26,12 +26,12 @@ package raccoonman.reterraforged.common.level.levelgen.noise.cell;
 
 import com.mojang.serialization.Codec;
 
-import raccoonman.reterraforged.common.util.CodecUtil;
+import net.minecraft.util.StringRepresentable;
 import raccoonman.reterraforged.common.util.MathUtil;
 
-public enum CellShape {
-    SQUARE,
-    HEXAGON {
+public enum CellShape implements StringRepresentable {
+    SQUARE("square"),
+    HEXAGON("hexagon") {
         @Override
         public float adjustY(float y) {
             return y * 1.2f; // rough
@@ -45,7 +45,18 @@ public enum CellShape {
         }
     };
 
-	public static final Codec<CellShape> CODEC = CodecUtil.forEnum(CellShape::valueOf);
+	public static final Codec<CellShape> CODEC = StringRepresentable.fromEnum(CellShape::values);
+	
+	private String name;
+	
+	private CellShape(String name) {
+		this.name = name;
+	}
+	
+	@Override
+	public String getSerializedName() {
+		return this.name;
+	}
 	
     public float adjustX(float x) {
         return x;

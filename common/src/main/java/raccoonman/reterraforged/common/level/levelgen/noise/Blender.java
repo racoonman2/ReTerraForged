@@ -27,7 +27,6 @@ package raccoonman.reterraforged.common.level.levelgen.noise;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.Holder;
 import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.domain.Domain;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
@@ -35,32 +34,21 @@ import raccoonman.reterraforged.common.util.MathUtil;
 import raccoonman.reterraforged.common.util.storage.Object2FloatCache;
 import raccoonman.reterraforged.common.util.storage.WeightMap;
 
-public class Blender implements Noise {
+public record Blender(Domain regionWarp, float regionJitter, float regionScale, float blending, WeightMap<Noise> noise, ThreadLocal<Local> local) implements Noise {
 	public static final Codec<Blender> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Domain.CODEC.fieldOf("region_warp").forGetter((m) -> m.regionWarp),
 		Codec.FLOAT.fieldOf("region_jitter").forGetter((m) -> m.regionJitter),
 		Codec.FLOAT.fieldOf("region_scale").forGetter((m) -> m.regionScale),
 		Codec.FLOAT.fieldOf("blending").forGetter((m) -> m.blending),
-		WeightMap.codec(Noise.CODEC).fieldOf("noise").forGetter((m) -> m.noise)
+		WeightMap.codec(Noise.DIRECT_CODEC).fieldOf("noise").forGetter((m) -> m.noise)
 	).apply(instance, Blender::new));
 
-	private static final int REGION_SEED_OFFSET = 21491124;
-
-	private final Domain regionWarp;
-	private final float regionScale;
-	private final float regionJitter;
-	private final float blending;
-
-	private final WeightMap<Holder<Noise>> noise;
-	private final ThreadLocal<Local> local = ThreadLocal.withInitial(Local::new);
-
-	public Blender(Domain regionWarp, float regionJitter, float regionScale, float blending, WeightMap<Holder<Noise>> noise) {
-		this.regionWarp = regionWarp;
-		this.regionScale = regionScale;
-		this.regionJitter = regionJitter;
-		this.blending = blending;
-		this.noise = noise;
+	public Blender(Domain regionWarp, float regionJitter, float regionScale, float blending, WeightMap<Noise> noise) {
+		this(regionWarp, regionJitter, regionScale, blending, noise, ThreadLocal.withInitial(Local::new));
 	}
+	
+	@Deprecated
+	private static final int REGION_SEED_OFFSET = 21491124;
 
 	@Override
 	public float getValue(float x, float y, int seed) {
@@ -125,7 +113,7 @@ public class Blender implements Noise {
 
 		public final int[] hashes = new int[9];
 		public final float[] distances = new float[9];
-		public final Object2FloatCache<Holder<Noise>> cache = new Object2FloatCache<>(9);
+		public final Object2FloatCache<Noise> cache = new Object2FloatCache<>(9);
 
 		public float getCentreNoiseIndex() {
 			return getNoiseIndex(this.closestIndex);
@@ -135,44 +123,44 @@ public class Blender implements Noise {
 			return NoiseUtil.sqrt(this.distances[index]);
 		}
 
-		public float getCentreValue(float x, float y, int seed, WeightMap<Holder<Noise>> noise) {
-			return noise.getValue(this.getCentreNoiseIndex()).value().getValue(x, y, seed);
+		public float getCentreValue(float x, float y, int seed, WeightMap<Noise> noise) {
+			return noise.getValue(this.getCentreNoiseIndex()).getValue(x, y, seed);
 		}
 
-		public float getValue(float x, float y, float blending, int seed, WeightMap<Holder<Noise>> noise) {
-			float dist0 = getDistance(closestIndex);
-			float dist1 = getDistance(closestIndex2);
+		public float getValue(float x, float y, float blending, int seed, WeightMap<Noise> noise) {
+			float dist0 = this.getDistance(this.closestIndex);
+			float dist1 = this.getDistance(this.closestIndex2);
 
 			float borderDistance = (dist0 + dist1) * 0.5F;
 			float blendRange = borderDistance * blending;
 			float blendStart = borderDistance - blendRange;
 
 			if (dist0 <= blendStart) {
-				return getCentreValue(x, y, seed, noise);
+				return this.getCentreValue(x, y, seed, noise);
 			} else {
-				return getBlendedValue(x, y, dist0, dist1, blendRange, seed, noise);
+				return this.getBlendedValue(x, y, dist0, dist1, blendRange, seed, noise);
 			}
 		}
 
-		public float getBlendedValue(float x, float y, float nearest, float nearest2, float blendRange, int seed, WeightMap<Holder<Noise>> noise) {
-			cache.clear();
+		public float getBlendedValue(float x, float y, float nearest, float nearest2, float blendRange, int seed, WeightMap<Noise> noise) {
+			this.cache.clear();
 
-			float sumNoise = getCacheValue(closestIndex, x, y, seed, noise);
+			float sumNoise = this.getCacheValue(this.closestIndex, x, y, seed, noise);
 			float sumWeight = getWeight(nearest, nearest, blendRange);
 
 			float nearestWeight2 = getWeight(nearest2, nearest, blendRange);
 			if (nearestWeight2 > 0) {
-				sumNoise += getCacheValue(closestIndex2, x, y, seed, noise) * nearestWeight2;
+				sumNoise += this.getCacheValue(this.closestIndex2, x, y, seed, noise) * nearestWeight2;
 				sumWeight += nearestWeight2;
 			}
 
 			for (int i = 0; i < 9; i++) {
-				if (i == closestIndex || i == closestIndex2)
+				if (i == this.closestIndex || i == this.closestIndex2)
 					continue;
 
 				float weight = getWeight(getDistance(i), nearest, blendRange);
 				if (weight > 0) {
-					sumNoise += getCacheValue(i, x, y, seed, noise) * weight;
+					sumNoise += this.getCacheValue(i, x, y, seed, noise) * weight;
 					sumWeight += weight;
 				}
 			}
@@ -180,14 +168,14 @@ public class Blender implements Noise {
 			return NoiseUtil.clamp(sumNoise / sumWeight, 0, 1);
 		}
 
-		private float getCacheValue(int index, float x, float y, int seed, WeightMap<Holder<Noise>> noise) {
-			float noiseIndex = getNoiseIndex(index);
+		private float getCacheValue(int index, float x, float y, int seed, WeightMap<Noise> noise) {
+			float noiseIndex = this.getNoiseIndex(index);
 			var terrain = noise.getValue(noiseIndex);
 
-			float value = cache.get(terrain);
+			float value = this.cache.get(terrain);
 			if (Float.isNaN(value)) {
-				value = terrain.value().getValue(x, y, seed);
-				cache.put(terrain, value);
+				value = terrain.getValue(x, y, seed);
+				this.cache.put(terrain, value);
 			}
 
 			return value;

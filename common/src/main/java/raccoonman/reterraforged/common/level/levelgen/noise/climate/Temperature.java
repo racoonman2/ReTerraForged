@@ -9,19 +9,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 
-public class Temperature implements Noise {
+public record Temperature(float frequency, int power) implements Noise {
 	public static final Codec<Temperature> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.fieldOf("frequency").forGetter((m) -> m.frequency),
 		Codec.INT.fieldOf("power").forGetter((m) -> m.power)
 	).apply(instance, Temperature::new));
-	
-    private final int power;
-    private final float frequency;
-
-    public Temperature(float frequency, int power) {
-        this.frequency = frequency;
-        this.power = power;
-    }
 
     @Override
     public float getValue(float x, float y, int seed) {

@@ -28,8 +28,8 @@ package raccoonman.reterraforged.common.noise;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.base.Functions;
+import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -72,14 +72,14 @@ import raccoonman.reterraforged.common.noise.selector.Blend;
 import raccoonman.reterraforged.common.noise.selector.MultiBlend;
 import raccoonman.reterraforged.common.noise.selector.Select;
 import raccoonman.reterraforged.common.noise.selector.VariableBlend;
+import raccoonman.reterraforged.common.registries.RTFBuiltInRegistries;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
-import raccoonman.reterraforged.common.util.CodecUtil;
 
 /**
  * @author dags <dags@dags.me>
  */
 public interface Noise {	
-	public static final Codec<Noise> DIRECT_CODEC = CodecUtil.forRegistry(RTFRegistries.NOISE_TYPE, Lifecycle.stable(), Noise::codec, Functions.identity());
+	public static final Codec<Noise> DIRECT_CODEC = RTFBuiltInRegistries.NOISE_TYPE.byNameCodec().dispatchStable(Noise::codec, Functions.identity());
 	public static final Codec<Holder<Noise>> CODEC = RegistryFileCodec.create(RTFRegistries.NOISE, DIRECT_CODEC);
 	public static final Codec<HolderSet<Noise>> LIST_CODEC = RegistryCodecs.homogeneousList(RTFRegistries.NOISE, DIRECT_CODEC);
 	
@@ -114,7 +114,7 @@ public interface Noise {
      * @return a new Add Module
      */
     default Noise add(Noise other) {
-        return new Add(this, other);
+        return new Add(ImmutableList.of(this, other));
     }
 
     /**
@@ -199,7 +199,7 @@ public interface Noise {
     }
 
     /**
-     * Combine two other Modules by using this one to decide how much of each should be blended together
+     * Combine two other Modules by using this one to d)ecide how much of each should be blended together
      *
      * @param source0 - the first of the two Modules to blend
      * @param source1 - the second of the two Modules to blend
@@ -392,7 +392,7 @@ public interface Noise {
      * @return a new Max Module
      */
     default Noise max(Noise other) {
-        return new Max(this, other);
+        return new Max(ImmutableList.of(this, other));
     }
 
     /**
@@ -402,7 +402,7 @@ public interface Noise {
      * @return a new Min Module
      */
     default Noise min(Noise other) {
-        return new Min(this, other);
+        return new Min(ImmutableList.of(this, other));
     }
 
     /**
@@ -426,7 +426,7 @@ public interface Noise {
         if (other.minValue() == 1F && other.maxValue() == 1F) {
             return this;
         }
-        return new Mul(this, other);
+        return new Mul(ImmutableList.of(this, other));
     }
 
     default Noise blend(double blend, Noise... sources) {
@@ -434,7 +434,7 @@ public interface Noise {
     }
 
     default Noise blend(double blend, Interpolation interpolation, Noise... sources) {
-        return new MultiBlend((float) blend, interpolation, this, sources);
+        return new MultiBlend((float) blend, interpolation, this, ImmutableList.copyOf(sources));
     }
 
     default Noise pow(Noise n) {
@@ -495,7 +495,7 @@ public interface Noise {
     }
 
     default Noise sub(Noise other) {
-        return new Sub(this, other);
+        return new Sub(ImmutableList.of(this, other));
     }
 
     default Noise legacyTerrace(double lowerCurve, double upperCurve, int steps, double blendRange) {

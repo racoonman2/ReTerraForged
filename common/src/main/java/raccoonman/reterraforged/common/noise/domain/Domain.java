@@ -28,15 +28,13 @@ package raccoonman.reterraforged.common.noise.domain;
 import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.Lifecycle;
 
 import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.Source;
-import raccoonman.reterraforged.common.registries.RTFRegistries;
-import raccoonman.reterraforged.common.util.CodecUtil;
+import raccoonman.reterraforged.common.registries.RTFBuiltInRegistries;
 
 public interface Domain {
-	public static final Codec<Domain> CODEC = CodecUtil.forRegistry(RTFRegistries.DOMAIN_TYPE, Lifecycle.stable(), Domain::codec, Function.identity());
+	public static final Codec<Domain> CODEC = RTFBuiltInRegistries.DOMAIN_TYPE.byNameCodec().dispatchStable(Domain::codec, Function.identity());
 
     float getOffsetX(float x, float y, int seed);
 

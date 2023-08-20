@@ -25,7 +25,9 @@
 
 package raccoonman.reterraforged.common.noise.combiner;
 
-import java.util.Arrays;
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 import raccoonman.reterraforged.common.noise.Noise;
 
@@ -37,18 +39,19 @@ import raccoonman.reterraforged.common.noise.Noise;
 public abstract class Combiner implements Noise {
     private final float min;
     private final float max;
-    protected final Noise[] sources;
+    protected final List<Noise> sources;
 
-    public Combiner(Noise... sources) {
+    public Combiner(List<Noise> sources) {
+    	sources = ImmutableList.copyOf(sources);
         float min = 0F;
         float max = 0F;
-        if (sources.length > 0) {
-            min = sources[0].minValue();
-            max = sources[0].maxValue();
-            for (int i = 1; i < sources.length; i++) {
-                Noise next = sources[i];
-                min = minTotal(min, next);
-                max = maxTotal(max, next);
+        if (sources.size() > 0) {
+            min = sources.get(0).minValue();
+            max = sources.get(0).maxValue();
+            for (int i = 1; i < sources.size(); i++) {
+                Noise next = sources.get(i);
+                min = this.minTotal(min, next);
+                max = this.maxTotal(max, next);
             }
         }
         this.min = min;
@@ -59,12 +62,12 @@ public abstract class Combiner implements Noise {
     @Override
     public float getValue(float x, float y, int seed) {
         float result = 0F;
-        if (sources.length > 0) {
-            result = sources[0].getValue(x, y, seed);
-            for (int i = 1; i < sources.length; i++) {
-                Noise module = sources[i];
+        if (this.sources.size() > 0) {
+            result = this.sources.get(0).getValue(x, y, seed);
+            for (int i = 1; i < this.sources.size(); i++) {
+                Noise module = this.sources.get(i);
                 float value = module.getValue(x, y, seed);
-                result = combine(result, value);
+                result = this.combine(result, value);
             }
         }
         return result;
@@ -72,32 +75,32 @@ public abstract class Combiner implements Noise {
 
     @Override
     public float minValue() {
-        return min;
+        return this.min;
     }
 
     @Override
     public float maxValue() {
-        return max;
+        return this.max;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
 
         Combiner combiner = (Combiner) o;
 
-        if (Float.compare(combiner.min, min) != 0) return false;
-        if (Float.compare(combiner.max, max) != 0) return false;
+        if (Float.compare(combiner.min, this.min) != 0) return false;
+        if (Float.compare(combiner.max, this.max) != 0) return false;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        return Arrays.equals(sources, combiner.sources);
+        return combiner.sources.equals(this.sources);
     }
 
     @Override
     public int hashCode() {
-        int result = (min != +0.0f ? Float.floatToIntBits(min) : 0);
-        result = 31 * result + (max != +0.0f ? Float.floatToIntBits(max) : 0);
-        result = 31 * result + Arrays.hashCode(sources);
+        int result = (this.min != +0.0f ? Float.floatToIntBits(this.min) : 0);
+        result = 31 * result + (this.max != +0.0f ? Float.floatToIntBits(this.max) : 0);
+        result = 31 * result + this.sources.hashCode();
         return result;
     }
 

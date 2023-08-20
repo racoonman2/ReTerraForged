@@ -1,17 +1,19 @@
 package raccoonman.reterraforged.common.registries.data;
 
-import net.minecraft.core.Holder;
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.level.levelgen.noise.Blender;
 import raccoonman.reterraforged.common.level.levelgen.noise.Choice;
-import raccoonman.reterraforged.common.level.levelgen.noise.FBM;
 import raccoonman.reterraforged.common.level.levelgen.noise.Falloff;
+import raccoonman.reterraforged.common.level.levelgen.noise.Fractal;
 import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.MapRange;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseLevels;
+import raccoonman.reterraforged.common.level.levelgen.noise.SampleAtNearestCell;
 import raccoonman.reterraforged.common.level.levelgen.noise.Valley;
 import raccoonman.reterraforged.common.level.levelgen.noise.Weirdness;
 import raccoonman.reterraforged.common.level.levelgen.noise.cell.CellShape;
@@ -70,17 +72,15 @@ public final class RTFNoise {
         ctx.register(DOLOMITES, createDolomite());
         ctx.register(MOUNTAINS_RIDGE_1, createMountains2(false));
         ctx.register(MOUNTAINS_RIDGE_2, createMountains3(false));
-        
-        ctx.register(TEMPERATURE, createTemperature(noise, 225, new RangeValue(6, 2, 0.0F, 0.98F, 0.05F)));
-        ctx.register(HUMIDITY, createHumidity(noise, 225, new RangeValue(6, 1, 0.0F, 1.0F, 0.0F)));
-        
+
         final int continentScale = 500;
-        ctx.register(CONTINENT, createContinent(noise, continentScale));
-        
-        ctx.register(RIVER, createRiver(noise));
-        ctx.register(WEIRDNESS, createWeirdness(noise));
-        
-        ctx.register(TERRAIN, createTerrainBlender(noise, createBase(noise, continentScale), createOcean()));        
+        ctx.register(CONTINENT, createContinent(continentScale));
+        ctx.register(RIVER, createRiver());
+    	NoiseLevels levels = NoiseLevels.create(true, 1.0F, -64, 480, 128, 40, 62);
+        ctx.register(TERRAIN, createTerrainBlender(noise, levels, createBase(continentScale), createOcean()));        
+        ctx.register(WEIRDNESS, createWeirdness());
+        ctx.register(TEMPERATURE, createTemperature(levels, 225, new RangeValue(6, 2, 0.0F, 0.98F, 0.05F)));
+        ctx.register(HUMIDITY, createHumidity(levels, 225, new RangeValue(6, 1, 0.0F, 1.0F, 0.0F)));
     }
     
     private static ResourceKey<Noise> resolve(String path) {
@@ -188,8 +188,7 @@ public final class RTFNoise {
         
     private static Noise makeFancy(Noise module) {
     	Domain warp = Domain.direction(Source.perlin(10, 1).unique(), Source.constant(2.0));
-    	Valley erosion = new Valley(5, 0.65f, 128.0f, 0.2f, 3.1f, 0.6f, Valley.Mode.CONSTANT);
-    	return erosion.wrap(Holder.direct(module)).warp(warp);
+    	return new Valley(module, 5, 0.65f, 128.0f, 0.2f, 3.1f, 0.6f, Valley.Mode.CONSTANT).warp(warp);
     }
         
     private static Noise createDolomite() {
@@ -209,7 +208,7 @@ public final class RTFNoise {
     	var peaks = Source.build(400, 5).lacunarity(2.7).gain(0.6).simplexRidge()
     		.unique()
     		.clamp(0, 0.675).map(0, 1)
-    		.warp(Domain.warp(Source.SIMPLEX, 40, 5, 30))
+    		.warp(Domain.warp(Source.LEGACY_SIMPLEX, 40, 5, 30))
     		.alpha(0.875);
 
         return shape.mul(peaks).max(slopes)
@@ -232,39 +231,37 @@ public final class RTFNoise {
         }
     }
     
-    private static Noise createTemperature(HolderGetter<Noise> noise, int biomeSize, RangeValue settings) {
+    private static Noise createTemperature(NoiseLevels levels, int biomeSize, RangeValue settings) {
         float scaler = settings.scale();
         float size = scaler * biomeSize;
         int scale = NoiseUtil.round(size * (1.0F / biomeSize));
-        Noise warp = Source.build(80, 3).lacunarity(2.4).gain(0.3).simplex();
-        return settings.apply(new Temperature(1.0F / scale, settings.falloff()))
-            .freq(1.0F / 500.0F, 1.0F / 500.0F)
-            .warp(scale * 4, 2, scale * 4).unique()
-        	.warp(scale, 1, scale).unique()
-        	.warp(
-        		warp.unique(),
-        		warp.unique(),
-        		Source.constant(80 * 0.75)
-	        );
+        Noise temperature = settings.apply(new Temperature(1.0F / scale, settings.falloff()))
+        	.warp(scale * 4, 2, scale * 4)
+        	.warp(scale, 1, scale);;
+    	return new SampleAtNearestCell(temperature, CellShape.SQUARE, 0.8F).freq(1.0F / biomeSize, 1.0F / biomeSize).warp(
+    		Source.build(80, 3).lacunarity(2.4).gain(0.3).simplex(),
+    		Source.build(80, 3).lacunarity(2.4).gain(0.3).simplex(),
+    		Source.constant(80.0F * 0.75)		
+    	).freq(levels.frequency, levels.frequency);
     }
     
-    private static Noise createHumidity(HolderGetter<Noise> noise, int biomeSize, RangeValue settings) {
-    	float scaler = settings.scale() * 2.5F;
+    private static Noise createHumidity(NoiseLevels levels, int biomeSize, RangeValue settings) {
+        float scaler = settings.scale() * 2.5F;
+        float freq = 1F / biomeSize;
         float size = scaler * biomeSize;
-        int scale = NoiseUtil.round(size * (1.0F / biomeSize));
-        Noise warp = Source.build(80, 3).lacunarity(2.4).gain(0.3).simplex();
-        return settings.apply(new Humidity(scale, settings.falloff()))
-        	.freq(1.0F / 500.0F, 1.0F / 500.0F)
-        	.warp(Math.max(1, scale / 2), 1, scale / 4.0D).unique()
-        	.warp(Math.max(1, scale / 6), 2, scale / 12.0D).unique()
-        	.warp(
-        		warp.unique(),
-        		warp.unique(),
-        		Source.constant(80 * 0.75)
-        	);
+        int moistScale = NoiseUtil.round(size * freq);
+    	Noise humidity = new Humidity(Source.simplex(moistScale, 1).clamp(0.125, 0.875).map(0.0, 1.0).freq(0.5F, 1.0F), settings.falloff());
+    	humidity = settings.apply(humidity)
+    		.warp(Math.max(1, moistScale / 2), 1, moistScale / 4.0D)
+    		.warp(Math.max(1, moistScale / 6), 2, moistScale / 12.0D);
+    	return new SampleAtNearestCell(humidity, CellShape.SQUARE, 0.8F).freq(1.0F / biomeSize, 1.0F / biomeSize).warp(
+    		Source.build(80, 3).lacunarity(2.4).gain(0.3).simplex(),
+    		Source.build(80, 3).lacunarity(2.4).gain(0.3).simplex(),
+    		Source.constant(80.0F * 0.75)		
+    	).freq(levels.frequency, levels.frequency);
     }
 
-    private static Noise createBase(HolderGetter<Noise> noise, int scale) {
+    private static Noise createBase(int scale) {
     	Noise warp = Source.builder()
     		.octaves(3)
     		.lacunarity(2.2)
@@ -275,7 +272,7 @@ public final class RTFNoise {
     	return new MapRange(new Continent(1.0F, 0.75F, CellShape.SQUARE, CellSource.PERLIN.freq(1.0F / 5.0F, 1.0F / 5.0F).shift(656)).freq(1.0F / scale, 1.0F / scale).warp(warp.unique(), warp.unique(), Source.constant(0.2D)), threshold + 0.01F, threshold + 0.25F);
     }
     
-    private static Noise createContinent(HolderGetter<Noise> noise, int scale) {
+    private static Noise createContinent(int scale) {
     	Noise warp = Source.builder()
     		.octaves(3)
     		.lacunarity(2.2)
@@ -284,16 +281,19 @@ public final class RTFNoise {
     		.perlin();
     	final float threshold = 0.525F;
     	return new Falloff(
-    		new Continent(1.0F, 0.75F, CellShape.SQUARE, new Choice(new FBM(CellSource.PERLIN, 2, 2.75F, 0.3F).freq(1.0F / 5.0F, 1.0F / 5.0F).shift(6569), threshold, 0.0F, 1.0F)),
-    		new Falloff.Point(0.8F, 1.0F, 1.0F),   // inland
-    		new Falloff.Point(0.75F, 0.55F, 1.0F), // coast
-    		new Falloff.Point(0.45F, 0.5F, 0.55F), // beach
-    		new Falloff.Point(0.3F, 0.25F, 0.5F),  // shallow ocean
-    		new Falloff.Point(0.05F, 0.1F, 0.25F)  // deep ocean
+    		new Continent(1.0F, 0.75F, CellShape.SQUARE, new Choice(new Fractal(CellSource.PERLIN, 2, 2.75F, 0.3F).freq(1.0F / 5.0F, 1.0F / 5.0F).shift(6569), Source.constant(threshold), Source.constant(0.0F), Source.constant(1.0F))),
+    		0.1F,
+    		ImmutableList.of(
+	    		new Falloff.Point(0.8F, 1.0F, 1.0F),   // inland
+	    		new Falloff.Point(0.75F, 0.55F, 1.0F), // coast
+	    		new Falloff.Point(0.45F, 0.5F, 0.55F), // beach
+	    		new Falloff.Point(0.3F, 0.25F, 0.5F),  // shallow ocean
+	    		new Falloff.Point(0.05F, 0.1F, 0.25F)  // deep ocean
+    		)
     	).freq(1.0F / scale, 1.0F / scale).warp(warp.unique(), warp.unique(), Source.constant(0.2D));
     }
     
-    private static Noise createRiver(HolderGetter<Noise> noise) {
+    private static Noise createRiver() {
     	Noise warp = Source.builder().frequency(30).legacySimplex();
     	return new River(RiverConfig.river(), RiverConfig.lake(), 0.75F, 1.0F / 400.0F)
     		.warp(
@@ -303,7 +303,7 @@ public final class RTFNoise {
     		);
     }
     
-    private static Noise createWeirdness(HolderGetter<Noise> noise) {
+    private static Noise createWeirdness() {
         Noise warp = Source.build(80, 3).lacunarity(2.4).gain(0.3).simplex();
     	return new Weirdness(CellShape.SQUARE, 1.0F, 0.8F)
     		.shift(1235785)
@@ -315,28 +315,27 @@ public final class RTFNoise {
             );
     }
     
-    private static Noise createTerrainBlender(HolderGetter<Noise> noise, Noise base, Noise ocean) {
-    	NoiseLevels levels = NoiseLevels.create(true, 1.0F, -64, 480, 128, 40, 62);
+    private static Noise createTerrainBlender(HolderGetter<Noise> noise, NoiseLevels levels, Noise base, Noise ocean) {
     	return new ContinentLerp(
     		new HolderNoise(noise.getOrThrow(CONTINENT)),
     			Source.constant(levels.heightMin)
     			.add(base.mul(Source.constant(levels.baseRange)))
-    			.add(new Blender(Domain.warp(Source.SIMPLEX, 800, 3, 800 / 2.5F).shift(12678), 0.8F, 800.0F, 0.4F,
+    			.add(new Blender(Domain.warp(Source.LEGACY_SIMPLEX, 800, 3, 800 / 2.5F).shift(12678), 0.8F, 800.0F, 0.4F,
     				 new WeightMap.Builder<>()
-	    	    		.entry(0.55F, noise.getOrThrow(RTFNoise.STEPPE))
-	    	    		.entry(0.6F,  noise.getOrThrow(RTFNoise.PLAINS))
-	    	    		.entry(0.55F, noise.getOrThrow(RTFNoise.HILLS_1))
-	    	    		.entry(0.55F, noise.getOrThrow(RTFNoise.HILLS_2))
-	    	    		.entry(0.45F, noise.getOrThrow(RTFNoise.DALES))
-	    	    		.entry(0.45F, noise.getOrThrow(RTFNoise.PLATEAU))
-	    	    		.entry(0.65F, noise.getOrThrow(RTFNoise.BADLANDS))
-	    	    		.entry(0.65F, noise.getOrThrow(RTFNoise.TORRIDONIAN))
-	    	    		.entry(0.55F, noise.getOrThrow(RTFNoise.MOUNTAINS_1))
-	    	    		.entry(0.45F, noise.getOrThrow(RTFNoise.MOUNTAINS_2))
-	    	    		.entry(0.45F, noise.getOrThrow(RTFNoise.MOUNTAINS_3))
-	    	    		.entry(0.45F, noise.getOrThrow(RTFNoise.DOLOMITES))
-	    	    		.entry(0.45F, noise.getOrThrow(RTFNoise.MOUNTAINS_RIDGE_1))
-	    	    		.entry(0.45F, noise.getOrThrow(RTFNoise.MOUNTAINS_RIDGE_2))
+	    	    		.entry(0.55F, new HolderNoise(noise.getOrThrow(RTFNoise.STEPPE)))
+	    	    		.entry(0.6F,  new HolderNoise(noise.getOrThrow(RTFNoise.PLAINS)))
+	    	    		.entry(0.55F, new HolderNoise(noise.getOrThrow(RTFNoise.HILLS_1)))
+	    	    		.entry(0.55F, new HolderNoise(noise.getOrThrow(RTFNoise.HILLS_2)))
+	    	    		.entry(0.45F, new HolderNoise(noise.getOrThrow(RTFNoise.DALES)))
+	    	    		.entry(0.45F, new HolderNoise(noise.getOrThrow(RTFNoise.PLATEAU)))
+	    	    		.entry(0.65F, new HolderNoise(noise.getOrThrow(RTFNoise.BADLANDS)))
+	    	    		.entry(0.65F, new HolderNoise(noise.getOrThrow(RTFNoise.TORRIDONIAN)))
+	    	    		.entry(0.55F, new HolderNoise(noise.getOrThrow(RTFNoise.MOUNTAINS_1)))
+	    	    		.entry(0.45F, new HolderNoise(noise.getOrThrow(RTFNoise.MOUNTAINS_2)))
+	    	    		.entry(0.45F, new HolderNoise(noise.getOrThrow(RTFNoise.MOUNTAINS_3)))
+	    	    		.entry(0.45F, new HolderNoise(noise.getOrThrow(RTFNoise.DOLOMITES)))
+	    	    		.entry(0.45F, new HolderNoise(noise.getOrThrow(RTFNoise.MOUNTAINS_RIDGE_1)))
+	    	    		.entry(0.45F, new HolderNoise(noise.getOrThrow(RTFNoise.MOUNTAINS_RIDGE_2)))
 	    	    		.build()
     				 ).mul(Source.constant(levels.heightRange)).mul(Source.constant(1.2F))
     			),

@@ -1,5 +1,8 @@
 package raccoonman.reterraforged.common.level.levelgen.feature;
 
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -20,12 +23,11 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import raccoonman.reterraforged.common.level.levelgen.feature.TemplateFeature.Config;
-import raccoonman.reterraforged.common.util.CodecUtil;
 
 public class TemplateFeature extends Feature<Config> {
 
-	public TemplateFeature() {
-		super(Config.CODEC);
+	public TemplateFeature(Codec<Config> codec) {
+		super(codec);
 	}
 
 	@Override
@@ -50,14 +52,18 @@ public class TemplateFeature extends Feature<Config> {
 		}
 	}
 
-	public record Config(BlockPredicate placementPredicate, ResourceLocation... templates) implements FeatureConfiguration {
+	public record Config(BlockPredicate placementPredicate, List<ResourceLocation> templates) implements FeatureConfiguration {
 		public static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			BlockPredicate.CODEC.fieldOf("placement").forGetter(Config::placementPredicate),
-			CodecUtil.forArray(ResourceLocation.CODEC, ResourceLocation[]::new).fieldOf("templates").forGetter(Config::templates)
+			ResourceLocation.CODEC.listOf().fieldOf("templates").forGetter(Config::templates)
 		).apply(instance, Config::new));
 		
-		public static Config of(BlockPredicate placementPredicate, ResourceLocation... templates) {
-			return new Config(placementPredicate, templates);
+		public Config(BlockPredicate placementPredicate, ResourceLocation... templates) {
+			this(placementPredicate, ImmutableList.copyOf(templates));
+		}
+		
+		public Config {
+			templates = ImmutableList.copyOf(templates);
 		}
 	}
 }

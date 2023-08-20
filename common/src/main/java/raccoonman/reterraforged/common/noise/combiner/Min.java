@@ -25,21 +25,22 @@
 
 package raccoonman.reterraforged.common.noise.combiner;
 
+import java.util.List;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.noise.Noise;
-import raccoonman.reterraforged.common.util.CodecUtil;
 
 /**
  * @author dags <dags@dags.me>
  */
 public class Min extends Combiner {
 	public static final Codec<Min> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		CodecUtil.forArray(Noise.DIRECT_CODEC, Noise[]::new).fieldOf("modules").forGetter((c) -> c.sources)
+		Noise.DIRECT_CODEC.listOf().fieldOf("modules").forGetter((c) -> c.sources)
 	).apply(instance, Min::new));
 
-    public Min(Noise... modules) {
+    public Min(List<Noise> modules) {
         super(modules);
     }
 
@@ -50,7 +51,7 @@ public class Min extends Combiner {
 
     @Override
     protected float maxTotal(float total, Noise next) {
-        return minTotal(total, next);
+        return this.minTotal(total, next);
     }
 
     @Override
