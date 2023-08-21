@@ -4,16 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderSet;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Climate.Parameter;
+import net.minecraft.world.level.biome.Climate.ParameterPoint;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.level.levelgen.climate.Climate;
-import raccoonman.reterraforged.common.level.levelgen.climate.ClimatePoint;
 import raccoonman.reterraforged.common.level.levelgen.climate.ClimatePreset;
-import raccoonman.reterraforged.common.level.levelgen.noise.NoiseTree;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 
 public final class RTFClimatePresets {
@@ -26,26 +25,34 @@ public final class RTFClimatePresets {
 	}
 
 	private static ClimatePreset createDefault(HolderGetter<Climate> climates) {
-		List<ClimatePoint> points = new ArrayList<>();
+		List<ClimatePreset.Entry> points = new ArrayList<>();
 		Collections.addAll(points,
-			ClimatePoint.of(
-				climates.getOrThrow(RTFClimates.TEMPERATE),
-				NoiseTree.Parameter.ignore(),
-				NoiseTree.Parameter.ignore(),
-				NoiseTree.Parameter.ignore(),
-				NoiseTree.Parameter.ignore(),
-				NoiseTree.Parameter.span(0.0F, 0.825F)
+			new ClimatePreset.Entry(
+				new ParameterPoint(
+					Parameter.point(0.0F), 
+					Parameter.point(0.5F),
+					Parameter.span(0.55F, 1.0F),
+					Parameter.point(1.0F),
+					Parameter.point(0.0F),
+					Parameter.point(0.0F), 
+					0L
+				),
+				HolderSet.direct(climates.getOrThrow(RTFClimates.TEMPERATE))
 			),
-			ClimatePoint.of(
-				climates.getOrThrow(RTFClimates.DEEP),
-				NoiseTree.Parameter.ignore(),
-				NoiseTree.Parameter.ignore(),
-				NoiseTree.Parameter.ignore(), 
-				NoiseTree.Parameter.ignore(),
-				NoiseTree.Parameter.point(1.0F)
+			new ClimatePreset.Entry(
+				new ParameterPoint(
+					Parameter.point(0.0F), 
+					Parameter.point(0.5F),
+					Parameter.span(0.0F, 0.55F),
+					Parameter.point(1.0F),
+					Parameter.point(0.0F),
+					Parameter.point(0.0F), 
+					0L
+				),
+				HolderSet.direct(climates.getOrThrow(RTFClimates.OCEAN))
 			)
 		);
-		return new ClimatePreset(new NoiseTree.PointList<>(5, ImmutableList.copyOf(points)));
+		return new ClimatePreset(points);
 	}
 
 	private static ResourceKey<ClimatePreset> resolve(String path) {

@@ -9,6 +9,7 @@ import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.level.levelgen.noise.Blender;
 import raccoonman.reterraforged.common.level.levelgen.noise.Choice;
 import raccoonman.reterraforged.common.level.levelgen.noise.Falloff;
+import raccoonman.reterraforged.common.level.levelgen.noise.Floor;
 import raccoonman.reterraforged.common.level.levelgen.noise.Fractal;
 import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.MapRange;
@@ -315,8 +316,9 @@ public final class RTFNoise {
             );
     }
     
+    //TODO we should do the block height scaling in the density function instead
     private static Noise createTerrainBlender(HolderGetter<Noise> noise, NoiseLevels levels, Noise base, Noise ocean) {
-    	return new ContinentLerp(
+    	return new Floor(new ContinentLerp(
     		new HolderNoise(noise.getOrThrow(CONTINENT)),
     			Source.constant(levels.heightMin)
     			.add(base.mul(Source.constant(levels.baseRange)))
@@ -341,6 +343,6 @@ public final class RTFNoise {
     			),
     		ocean.mul(Source.constant(levels.depthRange)).add(Source.constant(levels.depthMin)),
     		levels.heightMin, 0.25F, 0.5F, 0.55F
-    	).freq(levels.frequency, levels.frequency);
+    	).freq(levels.frequency, levels.frequency).mul(Source.constant(levels.maxY)));
     }
 }

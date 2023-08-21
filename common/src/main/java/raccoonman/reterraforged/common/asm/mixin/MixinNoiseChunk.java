@@ -1,19 +1,17 @@
 package raccoonman.reterraforged.common.asm.mixin;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.At.Shift;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Desc;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.core.QuartPos;
+import net.minecraft.server.level.ColumnPos;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseChunk;
 import raccoonman.reterraforged.common.level.levelgen.noise.density.FlatCache;
@@ -22,17 +20,16 @@ import raccoonman.reterraforged.common.level.levelgen.noise.density.FlatCache;
 class MixinNoiseChunk {
 	@Shadow
 	@Final
-	private int cellStartBlockX, cellStartBlockZ;
-	@Shadow
-	@Final
     private int cellWidth;
 	@Shadow
-	private int inCellX;
+	@Final
+	private int cellCountXZ;
 	@Shadow
-	private int inCellY;
+	@Final
+	private int firstNoiseX;
 	@Shadow
-	private int inCellZ;
-	private List<FlatCache> flatCellCaches = new ArrayList<>();
+	@Final
+	private int firstNoiseZ;
 	
 	@Inject(
 		at = @At("HEAD"),
@@ -49,49 +46,30 @@ class MixinNoiseChunk {
 				
 				@Override
 				public int blockX() {
-					return MixinNoiseChunk.this.inCellX;
+					return ((NoiseChunk) (Object) MixinNoiseChunk.this).blockX() - QuartPos.toBlock(MixinNoiseChunk.this.firstNoiseX);
 				}
 				
 				@Override
 				public int blockY() {
-					return MixinNoiseChunk.this.inCellY;
+					return 0;
 				}
 				
 				@Override
 				public int blockZ() {
-					return MixinNoiseChunk.this.inCellZ;
+					return ((NoiseChunk) (Object) MixinNoiseChunk.this).blockZ() - QuartPos.toBlock(MixinNoiseChunk.this.firstNoiseZ);
 				}
-			}, function.function(), this.cellWidth);
-			this.flatCellCaches.add(cache);
+			}, function.function(), this.cellWidth * this.cellCountXZ + 1);
+    		cache.fillCache(QuartPos.toBlock(this.firstNoiseX), QuartPos.toBlock(this.firstNoiseZ));
 			callback.setReturnValue(cache);
 		}
 	}
 	
-
-	@Inject(
-		at = @At(
-			value = "FIELD",
-			shift = Shift.AFTER,
-			ordinal = 0,
-			opcode = Opcodes.IINC,
-			desc = @Desc(
-				value = "arrayInterpolationCounter",
-				ret = long.class
-			)
-		),
-		target = @Desc(
-			value = "selectCellYZ",
-			args = { int.class, int.class }
-		)
+	@ModifyConstant(
+		constant = @Constant(doubleValue = 0.390625D),
+		method = "computePreliminarySurfaceLevel",
+		require = 1
 	)
-    public void selectCellYZ(int i, int j, CallbackInfo callback) {
-    	for(FlatCache cache : this.flatCellCaches) {
-    		cache.fillCache(this.cellStartBlockX, this.cellStartBlockZ);
-    	}
-    }
-	
-	@Shadow
-	private DensityFunction wrapNew(DensityFunction densityFunction) {
-		throw new UnsupportedOperationException();
-    }
-}	
+	private double computePreliminarySurfaceLevel(double old) {
+		return 0.25D;
+	}
+}

@@ -19,13 +19,13 @@ public class FlatCache implements DensityFunction.SimpleFunction {
     	this.values = new double[width * width];
     }
     
-    public void fillCache(int cellStartBlockX, int cellStartBlockZ) {
+    public void fillCache(int offsetX, int offsetZ) {
     	MutableContext ctx = new MutableContext();
 		ctx.y = 0;
 		for(int x = 0; x < this.width; x++) {
 			for(int z = 0; z < this.width; z++) {
-				ctx.x = cellStartBlockX + x;
-				ctx.z = cellStartBlockZ + z;
+				ctx.x = offsetX + x;
+				ctx.z = offsetZ + z;
     			this.values[x * this.width + z] = this.filler.compute(ctx);
     		}
 		}
@@ -33,10 +33,9 @@ public class FlatCache implements DensityFunction.SimpleFunction {
 
     @Override
     public double compute(DensityFunction.FunctionContext functionContext) {
-        int x = this.cellPos.blockX();
-        int z = this.cellPos.blockZ();
-        if (x >= 0 && z >= 0 && x < this.width && z < this.width) {
-            return this.values[x * this.width + z];
+        int index = this.cellPos.blockX() * this.width + this.cellPos.blockZ();
+        if (index >= 0 && index < this.values.length) {
+            return this.values[index];
         }
         return this.filler.compute(functionContext);
     }

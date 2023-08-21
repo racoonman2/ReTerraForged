@@ -9,6 +9,7 @@ import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.common.ReTerraForged;
+import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.density.FlatCache;
 import raccoonman.reterraforged.common.level.levelgen.noise.density.NoiseDensityFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.density.YGradientFunction;
@@ -21,6 +22,13 @@ public final class RTFDensityFunctions {
 	public static final ResourceKey<DensityFunction> CONTINENT = resolve("overworld/continent");
 	public static final ResourceKey<DensityFunction> RIVER = resolve("overworld/river");
 	public static final ResourceKey<DensityFunction> WEIRDNESS = resolve("overworld/weirdness");
+	// FIXME
+	// the value this returns is wayy off from what Minecraft expects
+	// which causes aquifers to generate too deep
+	// which kills performance really badly
+	public static final ResourceKey<DensityFunction> INITIAL_DENSITY = resolve("overworld/initial_density");
+	// FIXME
+	// this should range from -1.0 -> 1.0 to hopefully fix structure beardifiers
 	public static final ResourceKey<DensityFunction> FINAL_DENSITY = resolve("overworld/final_density");
     public static final ResourceKey<DensityFunction> DEPTH = resolve("overworld/depth");
     private static final ResourceKey<DensityFunction> NOODLE = resolve("minecraft:overworld/caves/noodle");
@@ -33,17 +41,18 @@ public final class RTFDensityFunctions {
 		HolderGetter<NormalNoise.NoiseParameters> noiseParams = ctx.lookup(Registries.NOISE);
 		HolderGetter<Noise> noise = ctx.lookup(RTFRegistries.NOISE);
 		
-        ctx.register(TEMPERATURE, new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.TEMPERATURE)));
-        ctx.register(HUMIDITY, new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.HUMIDITY)));
-        ctx.register(CONTINENT, new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.CONTINENT)));
-        ctx.register(RIVER, new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.RIVER)));
-        ctx.register(WEIRDNESS, new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.WEIRDNESS)));
-		ctx.register(FINAL_DENSITY, terrain(noise));// finalDensity(densityFunctions, noiseParams, terrain));
+        ctx.register(TEMPERATURE, new NoiseDensityFunction.Marker(new HolderNoise(noise.getOrThrow(RTFNoise.TEMPERATURE))));
+        ctx.register(HUMIDITY, new NoiseDensityFunction.Marker(new HolderNoise(noise.getOrThrow(RTFNoise.HUMIDITY))));
+        ctx.register(CONTINENT, new NoiseDensityFunction.Marker(new HolderNoise(noise.getOrThrow(RTFNoise.CONTINENT))));
+        ctx.register(RIVER, new NoiseDensityFunction.Marker(new HolderNoise(noise.getOrThrow(RTFNoise.RIVER))));
+        ctx.register(WEIRDNESS, new NoiseDensityFunction.Marker(new HolderNoise(noise.getOrThrow(RTFNoise.WEIRDNESS))));
+        ctx.register(INITIAL_DENSITY, terrain(noise));
+		ctx.register(FINAL_DENSITY, finalDensity(densityFunctions, noiseParams, new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(INITIAL_DENSITY))));
 	    ctx.register(DEPTH, DensityFunctions.yClampedGradient(-64, 1024, 1.0F, 0.0F));
 	}
 	
 	private static DensityFunction terrain(HolderGetter<Noise> noise) {
-		return new YGradientFunction(new FlatCache.Marker(new NoiseDensityFunction.Marker(noise.getOrThrow(RTFNoise.TERRAIN))));
+		return new YGradientFunction(new FlatCache.Marker(new NoiseDensityFunction.Marker(new HolderNoise(noise.getOrThrow(RTFNoise.TERRAIN)))));
 	}
 	
 	private static DensityFunction finalDensity(HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, DensityFunction terrain) {

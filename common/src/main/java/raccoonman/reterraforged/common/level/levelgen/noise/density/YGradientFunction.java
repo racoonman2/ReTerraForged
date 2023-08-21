@@ -7,6 +7,7 @@ import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 
+//TODO don't hardcode min / max values
 public record YGradientFunction(DensityFunction y) implements DensityFunction.SimpleFunction {
 	public static final Codec<YGradientFunction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		DensityFunction.HOLDER_HELPER_CODEC.fieldOf("y").forGetter(YGradientFunction::y)
@@ -16,7 +17,7 @@ public record YGradientFunction(DensityFunction y) implements DensityFunction.Si
 	public double compute(FunctionContext ctx) {
 		int y = ctx.blockY();
 		int solidY = NoiseUtil.floor((float) this.y.compute(ctx));
-		return this.y.compute(ctx);// (float) (y < solidY + 1 ? this.y.maxValue() - ((double) y / solidY) : this.y.minValue());
+		return (float) (y < solidY + 1 ? 1.0F - ((double) y / solidY) : 0.0F);
 	}
 
 	@Override
@@ -26,12 +27,12 @@ public record YGradientFunction(DensityFunction y) implements DensityFunction.Si
 
 	@Override
 	public double minValue() {
-		return this.y.minValue();
+		return 0.0F;
 	}
 
 	@Override
 	public double maxValue() {
-		return this.y.maxValue();
+		return 1.0F;
 	}
 
 	@Override

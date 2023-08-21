@@ -26,7 +26,6 @@ package raccoonman.reterraforged.common.level.levelgen.noise;
 
 import net.minecraft.world.level.dimension.DimensionType;
 import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 import raccoonman.reterraforged.common.util.MathUtil;
 
 @Deprecated(forRemoval = true)
@@ -61,51 +60,15 @@ public class NoiseLevels {
 
         ReTerraForged.LOGGER.debug("Sea Level: {}, Base Height: {}, World Height: {}", seaLevel, baseHeight, maxY);
     }
-    
-    public float toCoord(float coord) {
-    	return coord * this.frequency;
-    }
 
-    public float scale(int level) {
-        return level * this.unit;
-    }
-
-    public int seaLevel() {
-    	return this.seaLevel;
-    }
-    
-    public float toDepthNoise(float noise) {
-        return this.depthMin + noise * this.depthRange;
-    }
-
-    public float toHeightNoise(float baseNoise, float heightNoise) {
-        return this.heightMin + this.baseRange * baseNoise + this.heightRange * heightNoise;
-    }
-
-    public float floor(float value) {
-        return NoiseUtil.floor(value / this.unit) * this.unit;
-    }
-
-    public float ceil(float value) {
-        return this.unit + NoiseUtil.floor(value / this.unit) * this.unit;
-    }
-    
-    public float getScaledHeight(float heightNoise) {
-        return heightNoise * this.maxY;
-    }
-
-    public float getScaledBase(float waterLevelNoise) {
-        return this.toHeightNoise(waterLevelNoise, 0.0F) * this.maxY;
-    }
-
-    public static float calcFrequency(int verticalRange, boolean auto, float scale, int seaLevel) {
+    private static float calcFrequency(int verticalRange, boolean auto, float scale, int seaLevel) {
         scale = scale <= 0.0F ? 1.0F : scale;
 
         if (!auto) {
         	return scale;
         }
 
-        // TODO we only use 256 for compatibility reasons
+        // TODO dont hardcode 256; we only use it for compatibility reasons
         float frequency = (256 - seaLevel) / (float) verticalRange;
         return frequency * scale;
     }

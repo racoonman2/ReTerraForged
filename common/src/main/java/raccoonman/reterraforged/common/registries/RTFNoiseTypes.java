@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import raccoonman.reterraforged.common.level.levelgen.noise.Blender;
 import raccoonman.reterraforged.common.level.levelgen.noise.Choice;
 import raccoonman.reterraforged.common.level.levelgen.noise.Falloff;
+import raccoonman.reterraforged.common.level.levelgen.noise.Floor;
 import raccoonman.reterraforged.common.level.levelgen.noise.Fractal;
 import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.MapRange;
@@ -28,7 +29,6 @@ import raccoonman.reterraforged.common.noise.modifier.AdvancedTerrace;
 import raccoonman.reterraforged.common.noise.modifier.Alpha;
 import raccoonman.reterraforged.common.noise.modifier.Bias;
 import raccoonman.reterraforged.common.noise.modifier.Boost;
-import raccoonman.reterraforged.common.noise.modifier.Cache;
 import raccoonman.reterraforged.common.noise.modifier.Clamp;
 import raccoonman.reterraforged.common.noise.modifier.Curve;
 import raccoonman.reterraforged.common.noise.modifier.Freq;
@@ -90,7 +90,6 @@ public final class RTFNoiseTypes {
 		register("alpha", Alpha.CODEC);
 		register("bias", Bias.CODEC);
 		register("boost", Boost.CODEC);
-		register("cache", Cache.CODEC);
 		register("clamp", Clamp.CODEC);
 		register("curve", Curve.CODEC);
 		register("freq", Freq.CODEC);
@@ -128,6 +127,7 @@ public final class RTFNoiseTypes {
 		register("cell_source", CellSource.CODEC);
 		register("map_range", MapRange.CODEC);
 		register("sample_at_nearest_cell", SampleAtNearestCell.CODEC);
+		register("floor", Floor.CODEC);
 	}
 	
 	private static void register(String name, Codec<? extends Noise> value) {

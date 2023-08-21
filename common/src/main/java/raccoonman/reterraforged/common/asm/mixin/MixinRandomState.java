@@ -1,16 +1,16 @@
 package raccoonman.reterraforged.common.asm.mixin; 
 
-import java.lang.reflect.Field;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Desc;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.levelgen.RandomState;
+import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.density.NoiseDensityFunction;
 
 @Mixin(RandomState.class)
@@ -29,30 +29,12 @@ public class MixinRandomState {
 		method = "<init>",
 		require = 1
 	)
-	private NoiseRouter RandomState(NoiseRouter router, DensityFunction.Visitor visitor, NoiseGeneratorSettings settings) {
+	private NoiseRouter RandomState(NoiseRouter router, DensityFunction.Visitor visitor, NoiseGeneratorSettings settings, HolderGetter<NormalNoise.NoiseParameters> params, final long seed) {
 		return router.mapAll((function) -> {
 			if(function instanceof NoiseDensityFunction.Marker marker) {
-				return new NoiseDensityFunction(marker.noise().value(), Long.hashCode(findField(visitor, long.class).longValue()));
+				return visitor.apply(new NoiseDensityFunction(marker.noise(), Long.hashCode(seed)));
 			}
-			return function;
+			return function.mapAll(visitor);
 		});
-	}
-	
-	@SuppressWarnings("unchecked")
-	private static <T> T findField(Object instance, Class<T> type) {
-		try {
-			Field target = null;
-			for(Field field : instance.getClass().getDeclaredFields()) {
-				if(field.getType().equals(type)) {
-					target = field;
-				}
-			}
-			if(target != null) {
-				return (T) target.get(instance);
-			}
-		} catch(Exception e) {
-			throw new RuntimeException(e);
-		}
-		throw new RuntimeException("Couldn't find field of type: " + type);
 	}
 }

@@ -56,13 +56,12 @@ public record Continent(float falloff, float jitter, CellShape cellShape, Noise 
 
     @Override
     public float getValue(float x, float y, int seed) {
+        x = this.cellShape.adjustX(x);
+        y = this.cellShape.adjustY(y);
+        
         long centre = this.getNearestCell(x, y, seed);
         int centreX = PosUtil.unpackLeft(centre);
         int centreY = PosUtil.unpackRight(centre);
-
-        // Note: Must adjust inputs AFTER getting nearest cell
-        x = this.cellShape.adjustX(x);
-        y = this.cellShape.adjustY(y);
 
         int minX = centreX - RADIUS;
         int minY = centreY - RADIUS;
@@ -99,9 +98,6 @@ public record Continent(float falloff, float jitter, CellShape cellShape, Noise 
     }
 
     private long getNearestCell(float x, float y, int seed) {
-        x = this.cellShape.adjustX(x);
-        y = this.cellShape.adjustY(y);
-
         int minX = NoiseUtil.floor(x) - 1;
         int minY = NoiseUtil.floor(y) - 1;
         int maxX = minX + 2;
@@ -143,8 +139,8 @@ public record Continent(float falloff, float jitter, CellShape cellShape, Noise 
         float sumWeight = 0.0F;
 
         for (var local : buffer) {
-            float dist = local.distance;
             float value = local.noise;
+            float dist = local.distance;
             float weight = getWeight(dist, min0, blend);
 
             sum += value * weight;

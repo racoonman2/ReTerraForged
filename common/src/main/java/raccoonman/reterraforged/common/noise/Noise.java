@@ -49,7 +49,6 @@ import raccoonman.reterraforged.common.noise.modifier.AdvancedTerrace;
 import raccoonman.reterraforged.common.noise.modifier.Alpha;
 import raccoonman.reterraforged.common.noise.modifier.Bias;
 import raccoonman.reterraforged.common.noise.modifier.Boost;
-import raccoonman.reterraforged.common.noise.modifier.Cache;
 import raccoonman.reterraforged.common.noise.modifier.Clamp;
 import raccoonman.reterraforged.common.noise.modifier.Curve;
 import raccoonman.reterraforged.common.noise.modifier.Freq;
@@ -265,20 +264,7 @@ public interface Noise {
         }
         return new Boost(this, iterations);
     }
-
-    /**
-     * Caches this Module's output for a given x,y coordinate (useful when this Module is being reused)
-     * Cache Modules are not thread-safe.
-     *
-     * @return a new Cache Module
-     */
-    default Noise cache() {
-        if (this instanceof Cache) {
-            return this;
-        }
-        return new Cache(this);
-    }
-
+    
     /**
      * Clamps the output of this Module between the provided min and max Module's output at a given coordinate
      *

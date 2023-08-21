@@ -7,6 +7,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.data.worldgen.SurfaceRuleData;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
@@ -47,14 +48,16 @@ public final class RTFNoiseGeneratorSettings {
 	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.RIVER)),
 	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.DEPTH)),
 	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.WEIRDNESS)),
-	  			DensityFunctions.constant(1.0D),
+	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.INITIAL_DENSITY)),
 	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.FINAL_DENSITY)),
 	  			overworldRouter.veinToggle(),
 	  			overworldRouter.veinRidged(),
 	  			overworldRouter.veinGap()
 	    	), 
 	  		SurfaceRuleData.overworld(), 
-	  		ImmutableList.of(),
+	  		ImmutableList.of(
+	  			Climate.parameters(0.5F, 0.5F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F)
+	  		),
 	  		62,
 	  		false, 
 	  		true, 

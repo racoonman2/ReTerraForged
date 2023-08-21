@@ -8,6 +8,7 @@ import raccoonman.reterraforged.common.noise.Noise;
 import raccoonman.reterraforged.common.noise.util.NoiseUtil;
 import raccoonman.reterraforged.common.util.MathUtil;
 
+@Deprecated // this is basically SampleAtNearestCell
 public record Weirdness(CellShape shape, float frequency, float jitter) implements Noise {
 	public static final Codec<Weirdness> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		CellShape.CODEC.fieldOf("shape").forGetter(Weirdness::shape),
