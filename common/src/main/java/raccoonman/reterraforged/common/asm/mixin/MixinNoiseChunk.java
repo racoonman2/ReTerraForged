@@ -11,8 +11,9 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.core.QuartPos;
-import net.minecraft.server.level.ColumnPos;
+import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.NoiseChunk;
 import raccoonman.reterraforged.common.level.levelgen.noise.density.FlatCache;
 
@@ -30,6 +31,9 @@ class MixinNoiseChunk {
 	@Shadow
 	@Final
 	private int firstNoiseZ;
+	@Shadow
+	@Final
+    private DensityFunctions.BeardifierOrMarker beardifier;
 	
 	@Inject(
 		at = @At("HEAD"),
@@ -41,6 +45,31 @@ class MixinNoiseChunk {
 		)
 	)
 	private void wrapNew(DensityFunction densityFunction, CallbackInfoReturnable<DensityFunction> callback) {
+		if(densityFunction instanceof DensityFunctions.BeardifierOrMarker marker) {			
+			callback.setReturnValue(new DensityFunction.SimpleFunction() {
+				
+				@Override
+				public double minValue() {
+					return -1.0D;
+				}
+				
+				@Override
+				public double maxValue() {
+					return 1.0D;
+				}
+				
+				@Override
+				public double compute(FunctionContext ctx) {
+					return Math.max(0.0D, (float) MixinNoiseChunk.this.beardifier.compute(ctx) - 0.303125D);
+				}
+				
+				@Override
+				public KeyDispatchDataCodec<? extends DensityFunction> codec() {
+					return null;
+				}
+			});
+		}
+		
 		if(densityFunction instanceof FlatCache.Marker function) {
 			FlatCache cache = new FlatCache(new DensityFunction.FunctionContext() {
 				
@@ -66,10 +95,16 @@ class MixinNoiseChunk {
 	
 	@ModifyConstant(
 		constant = @Constant(doubleValue = 0.390625D),
-		method = "computePreliminarySurfaceLevel",
+		target = @Desc(
+			value = "computePreliminarySurfaceLevel",
+			ret = int.class,
+			args = long.class
+		),
 		require = 1
 	)
 	private double computePreliminarySurfaceLevel(double old) {
-		return 0.25D;
+		// TODO don't hard code this
+		// obviously this won't make it into the final build
+		return 0.225D;
 	}
 }

@@ -29,7 +29,7 @@ public final class RTFNoiseGeneratorSettings {
     private static ResourceKey<NoiseGeneratorSettings> resolve(String name) {
     	return ResourceKey.create(Registries.NOISE_SETTINGS, ReTerraForged.resolve(name));
     }
-    
+
     private static NoiseGeneratorSettings createDefault(BootstapContext<NoiseGeneratorSettings> ctx, HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams) {
     	NoiseGeneratorSettings overworld = NoiseGeneratorSettings.overworld(ctx, false, false);
     	NoiseRouter overworldRouter = overworld.noiseRouter();
@@ -56,7 +56,15 @@ public final class RTFNoiseGeneratorSettings {
 	    	), 
 	  		SurfaceRuleData.overworld(), 
 	  		ImmutableList.of(
-	  			Climate.parameters(0.5F, 0.5F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F)
+	  			Climate.parameters(
+	  				Climate.Parameter.span(0.0F, 1.0F),
+	  				Climate.Parameter.span(0.0F, 1.0F),
+	  				Climate.Parameter.point(1.0F),
+	  				Climate.Parameter.span(0.0F, 1.0F),
+	  				Climate.Parameter.point(0.0F),
+	  				Climate.Parameter.span(0.0F, 1.0F),
+	  				0.0F
+	  			)
 	  		),
 	  		62,
 	  		false, 

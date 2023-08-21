@@ -46,6 +46,9 @@ public final class RTFDensityFunctions {
         ctx.register(CONTINENT, new NoiseDensityFunction.Marker(new HolderNoise(noise.getOrThrow(RTFNoise.CONTINENT))));
         ctx.register(RIVER, new NoiseDensityFunction.Marker(new HolderNoise(noise.getOrThrow(RTFNoise.RIVER))));
         ctx.register(WEIRDNESS, new NoiseDensityFunction.Marker(new HolderNoise(noise.getOrThrow(RTFNoise.WEIRDNESS))));
+        DensityFunction terrain = terrain(noise);
+        DensityFunction depth = getFunction(densityFunctions, DEPTH);
+        DensityFunction gradient = noiseGradientDensity(DensityFunctions.cache2d(terrain), depth);
         ctx.register(INITIAL_DENSITY, terrain(noise));
 		ctx.register(FINAL_DENSITY, finalDensity(densityFunctions, noiseParams, new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(INITIAL_DENSITY))));
 	    ctx.register(DEPTH, DensityFunctions.yClampedGradient(-64, 1024, 1.0F, 0.0F));

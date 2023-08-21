@@ -75,9 +75,9 @@ public final class RTFNoise {
         ctx.register(MOUNTAINS_RIDGE_2, createMountains3(false));
 
         final int continentScale = 500;
-        ctx.register(CONTINENT, createContinent(continentScale));
-        ctx.register(RIVER, createRiver());
     	NoiseLevels levels = NoiseLevels.create(true, 1.0F, -64, 480, 128, 40, 62);
+        ctx.register(CONTINENT, createContinent(levels, continentScale));
+        ctx.register(RIVER, createRiver());
         ctx.register(TERRAIN, createTerrainBlender(noise, levels, createBase(continentScale), createOcean()));        
         ctx.register(WEIRDNESS, createWeirdness());
         ctx.register(TEMPERATURE, createTemperature(levels, 225, new RangeValue(6, 2, 0.0F, 0.98F, 0.05F)));
@@ -273,7 +273,7 @@ public final class RTFNoise {
     	return new MapRange(new Continent(1.0F, 0.75F, CellShape.SQUARE, CellSource.PERLIN.freq(1.0F / 5.0F, 1.0F / 5.0F).shift(656)).freq(1.0F / scale, 1.0F / scale).warp(warp.unique(), warp.unique(), Source.constant(0.2D)), threshold + 0.01F, threshold + 0.25F);
     }
     
-    private static Noise createContinent(int scale) {
+    private static Noise createContinent(NoiseLevels levels, int scale) {
     	Noise warp = Source.builder()
     		.octaves(3)
     		.lacunarity(2.2)
@@ -281,17 +281,17 @@ public final class RTFNoise {
     		.gain(0.3)
     		.perlin();
     	final float threshold = 0.525F;
-    	return new Falloff(
+    	return scale(new Falloff(
     		new Continent(1.0F, 0.75F, CellShape.SQUARE, new Choice(new Fractal(CellSource.PERLIN, 2, 2.75F, 0.3F).freq(1.0F / 5.0F, 1.0F / 5.0F).shift(6569), Source.constant(threshold), Source.constant(0.0F), Source.constant(1.0F))),
     		0.1F,
     		ImmutableList.of(
-	    		new Falloff.Point(0.8F, 1.0F, 1.0F),   // inland
-	    		new Falloff.Point(0.75F, 0.55F, 1.0F), // coast
-	    		new Falloff.Point(0.45F, 0.5F, 0.55F), // beach
-	    		new Falloff.Point(0.3F, 0.25F, 0.5F),  // shallow ocean
-	    		new Falloff.Point(0.05F, 0.1F, 0.25F)  // deep ocean
+    			new Falloff.Point(0.8F, 1.0F, 1.0F),   // inland
+    			new Falloff.Point(0.75F, 0.55F, 1.0F), // coast
+    			new Falloff.Point(0.45F, 0.5F, 0.55F), // beach
+    			new Falloff.Point(0.3F, 0.25F, 0.5F),  // shallow ocean
+    			new Falloff.Point(0.05F, 0.1F, 0.25F)  // deep ocean
     		)
-    	).freq(1.0F / scale, 1.0F / scale).warp(warp.unique(), warp.unique(), Source.constant(0.2D));
+    	).freq(1.0F / scale, 1.0F / scale).warp(warp.unique(), warp.unique(), Source.constant(0.2D)), levels);
     }
     
     private static Noise createRiver() {
@@ -320,7 +320,7 @@ public final class RTFNoise {
     private static Noise createTerrainBlender(HolderGetter<Noise> noise, NoiseLevels levels, Noise base, Noise ocean) {
     	return new Floor(new ContinentLerp(
     		new HolderNoise(noise.getOrThrow(CONTINENT)),
-    			Source.constant(levels.heightMin)
+    		scale(Source.constant(levels.heightMin)
     			.add(base.mul(Source.constant(levels.baseRange)))
     			.add(new Blender(Domain.warp(Source.LEGACY_SIMPLEX, 800, 3, 800 / 2.5F).shift(12678), 0.8F, 800.0F, 0.4F,
     				 new WeightMap.Builder<>()
@@ -340,9 +340,13 @@ public final class RTFNoise {
 	    	    		.entry(0.45F, new HolderNoise(noise.getOrThrow(RTFNoise.MOUNTAINS_RIDGE_2)))
 	    	    		.build()
     				 ).mul(Source.constant(levels.heightRange)).mul(Source.constant(1.2F))
-    			),
-    		ocean.mul(Source.constant(levels.depthRange)).add(Source.constant(levels.depthMin)),
+    			), levels),
+    		scale(ocean.mul(Source.constant(levels.depthRange)).add(Source.constant(levels.depthMin)), levels),
     		levels.heightMin, 0.25F, 0.5F, 0.55F
-    	).freq(levels.frequency, levels.frequency).mul(Source.constant(levels.maxY)));
+    	).mul(Source.constant(levels.maxY)));
+    }
+    
+    private static Noise scale(Noise noise, NoiseLevels levels) {
+    	return noise.freq(levels.frequency, levels.frequency);
     }
 }

@@ -15,9 +15,9 @@ public record YGradientFunction(DensityFunction y) implements DensityFunction.Si
 	
 	@Override
 	public double compute(FunctionContext ctx) {
-		int y = ctx.blockY();
-		int solidY = NoiseUtil.floor((float) this.y.compute(ctx));
-		return (float) (y < solidY + 1 ? 1.0F - ((double) y / solidY) : 0.0F);
+		int blockY = ctx.blockY();
+		int noiseY = NoiseUtil.floor((float) this.y.compute(ctx));
+		return blockY < noiseY + 1 ? 1.0F - ((double) blockY / noiseY) : 0.0F;
 	}
 
 	@Override
