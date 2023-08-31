@@ -66,8 +66,8 @@ public class LegacyTerrace extends Modifier {
     }
 
     @Override
-    public float getValue(float x, float y, int seed) {
-        float value = source.getValue(x, y, seed);
+    public float compute(float x, float y, int seed) {
+        float value = source.compute(x, y, seed);
         value = NoiseUtil.clamp(value, 0, 1);
         return modify(x, y, value, seed);
     }
@@ -82,7 +82,7 @@ public class LegacyTerrace extends Modifier {
                 float alpha = (noiseValue - lower.upperBound) / (step.lowerBound - lower.upperBound);
                 alpha = 1 - Interpolation.CURVE3.apply(alpha);
                 float range = step.value - lower.value;
-                return step.value - (alpha * range * upperCurve.getValue(x, y, seed));
+                return step.value - (alpha * range * upperCurve.compute(x, y, seed));
             }
         } else if (noiseValue > step.upperBound) {
             if (index < maxIndex) {
@@ -90,7 +90,7 @@ public class LegacyTerrace extends Modifier {
                 float alpha = (noiseValue - step.upperBound) / (upper.lowerBound - step.upperBound);
                 alpha = Interpolation.CURVE3.apply(alpha);
                 float range = upper.value - step.value;
-                return step.value + (alpha * range * lowerCurve.getValue(x, y, seed));
+                return step.value + (alpha * range * lowerCurve.compute(x, y, seed));
             }
         }
         return step.value;

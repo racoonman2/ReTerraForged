@@ -61,7 +61,7 @@ public class Base extends Selector {
     @Override
     protected float selectValue(float x, float y, float upperValue, int seed) {
         if (upperValue < this.max) {
-            float lowerValue = this.base.getValue(x, y, seed);
+            float lowerValue = this.base.compute(x, y, seed);
             if (this.falloff > 0) {
                 float clamp = Math.max(this.min, upperValue);
                 float alpha = (this.max - clamp) / this.falloff;

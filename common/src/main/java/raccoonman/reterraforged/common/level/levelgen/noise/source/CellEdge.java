@@ -53,7 +53,7 @@ public class CellEdge extends BaseNoise {
     }
     
     @Override
-    public float getValue(float x, float y, int seed) {
+    public float compute(float x, float y, int seed) {
         x *= frequency;
         y *= frequency;
         float value = Noise2D.cellEdge(x, y, seed, distance, edgeFunc, distFunc);

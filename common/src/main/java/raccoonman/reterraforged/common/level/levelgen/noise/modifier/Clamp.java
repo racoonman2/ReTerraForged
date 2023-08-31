@@ -66,8 +66,8 @@ public class Clamp extends Modifier {
 
     @Override
     public float modify(float x, float y, float noiseValue, int seed) {
-        float min = this.min.getValue(x, y, seed);
-        float max = this.max.getValue(x, y, seed);
+        float min = this.min.compute(x, y, seed);
+        float max = this.max.compute(x, y, seed);
         if (noiseValue < min) {
             return min;
         }

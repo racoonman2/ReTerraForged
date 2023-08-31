@@ -40,7 +40,7 @@ public class Rand extends BaseNoise {
     }
 
     @Override
-    public float getValue(float x, float y, int seed) {
+    public float compute(float x, float y, int seed) {
         x *= frequency;
         y *= frequency;
         // -1 to 1

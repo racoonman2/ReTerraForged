@@ -61,7 +61,7 @@ public record SampleAtNearestCell(Noise source, float falloff, float jitter, int
 	}
 
     @Override
-    public float getValue(float x, float y, int seed) {
+    public float compute(float x, float y, int seed) {
         x = this.shape.adjustX(x);
         y = this.shape.adjustY(y);
         
@@ -83,7 +83,7 @@ public record SampleAtNearestCell(Noise source, float falloff, float jitter, int
                 float px = this.shape.getCellX(cx, cy, seed, this.jitter);
                 float py = this.shape.getCellY(cx, cy, seed, this.jitter);
                 var cell = this.cellCache.computeIfAbsent(packf(px, py), (k) -> {
-                	return this.source.getValue(px, py, seed);
+                	return this.source.compute(px, py, seed);
                 });
                 float distance = NoiseUtil.sqrt(NoiseUtil.dist2(x, y, px, py));
                 buffer[i] = packf(cell, distance);

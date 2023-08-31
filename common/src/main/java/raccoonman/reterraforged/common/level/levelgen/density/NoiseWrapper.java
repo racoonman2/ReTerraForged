@@ -12,7 +12,7 @@ public record NoiseWrapper(Noise noise, int seed) implements DensityFunction.Sim
 
 	@Override
 	public double compute(FunctionContext ctx) {
-		return this.noise.getValue(ctx.blockX(), ctx.blockZ(), this.seed);
+		return this.noise.compute(ctx.blockX(), ctx.blockZ(), this.seed);
 	}
 
 	@Override

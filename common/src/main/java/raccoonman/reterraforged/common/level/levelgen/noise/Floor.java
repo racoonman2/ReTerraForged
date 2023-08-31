@@ -16,7 +16,7 @@ public record Floor(Noise source) implements Noise {
 	}
 
 	@Override
-	public float getValue(float x, float y, int seed) {
-		return NoiseUtil.floor(this.source.getValue(x, y, seed));
+	public float compute(float x, float y, int seed) {
+		return NoiseUtil.floor(this.source.compute(x, y, seed));
 	}
 }

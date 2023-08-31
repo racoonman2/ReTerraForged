@@ -80,36 +80,36 @@ public class Select extends Selector {
     public float selectValue(float x, float y, float value, int seed) {
         if (edgeFalloff == 0) {
             if (value < lowerCurveMax) {
-                return source0.getValue(x, y, seed);
+                return source0.compute(x, y, seed);
             }
 
             if (value > upperCurveMin) {
-                return source1.getValue(x, y, seed);
+                return source1.compute(x, y, seed);
             }
 
-            return source0.getValue(x, y, seed);
+            return source0.compute(x, y, seed);
         }
 
         if (value < lowerCurveMin) {
-            return source0.getValue(x, y, seed);
+            return source0.compute(x, y, seed);
         }
 
         // curve
         if (value < lowerCurveMax) {
             float alpha = (value - lowerCurveMin) / lowerCurveRange;
-            return blendValues(source0.getValue(x, y, seed), source1.getValue(x, y, seed), alpha);
+            return blendValues(source0.compute(x, y, seed), source1.compute(x, y, seed), alpha);
         }
 
         if (value < upperCurveMin) {
-            return source1.getValue(x, y, seed);
+            return source1.compute(x, y, seed);
         }
 
         if (value < upperCurveMax) {
             float alpha = (value - upperCurveMin) / upperCurveRange;
-            return blendValues(source1.getValue(x, y, seed), source0.getValue(x, y, seed), alpha);
+            return blendValues(source1.compute(x, y, seed), source0.compute(x, y, seed), alpha);
         }
 
-        return source0.getValue(x, y, seed);
+        return source0.compute(x, y, seed);
     }
     
     @Override

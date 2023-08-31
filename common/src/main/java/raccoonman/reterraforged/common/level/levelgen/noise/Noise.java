@@ -26,15 +26,18 @@
 package raccoonman.reterraforged.common.level.levelgen.noise;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.RegistryFileCodec;
+import net.minecraft.world.level.levelgen.DensityFunctions;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Add;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Max;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Min;
@@ -70,6 +73,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.selector.Blend;
 import raccoonman.reterraforged.common.level.levelgen.noise.selector.MultiBlend;
 import raccoonman.reterraforged.common.level.levelgen.noise.selector.Select;
 import raccoonman.reterraforged.common.level.levelgen.noise.selector.VariableBlend;
+import raccoonman.reterraforged.common.level.levelgen.noise.source.Constant;
 import raccoonman.reterraforged.common.registries.RTFBuiltInRegistries;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 
@@ -77,7 +81,13 @@ import raccoonman.reterraforged.common.registries.RTFRegistries;
  * @author dags <dags@dags.me>
  */
 public interface Noise {	
-	public static final Codec<Noise> DIRECT_CODEC = RTFBuiltInRegistries.NOISE_TYPE.byNameCodec().dispatchStable(Noise::codec, Functions.identity());
+	static final Codec<Float> NOISE_VALUE_CODEC = Codec.floatRange((float) -DensityFunctions.MAX_REASONABLE_NOISE_VALUE, (float) DensityFunctions.MAX_REASONABLE_NOISE_VALUE);
+	public static final Codec<Noise> DIRECT_CODEC = Codec.<Float, Noise>either(NOISE_VALUE_CODEC, RTFBuiltInRegistries.NOISE_TYPE.byNameCodec().dispatchStable(Noise::codec, Functions.identity())).xmap(either -> either.map(Constant::new, Function.identity()), noise -> {
+		if (noise instanceof Constant constant) {
+			return Either.left(constant.value());
+	    }
+		return Either.right(noise);
+	});
 	public static final Codec<Holder<Noise>> CODEC = RegistryFileCodec.create(RTFRegistries.NOISE, DIRECT_CODEC);
     public static final Codec<Noise> HOLDER_HELPER_CODEC = CODEC.xmap(HolderNoise::new, noise -> {
         if (noise instanceof HolderNoise holderHolder) {
@@ -89,7 +99,9 @@ public interface Noise {
 	
 	Codec<? extends Noise> codec();
 	
-	float getValue(float x, float y, int seed);
+	float compute(float x, float y, int seed);
+	
+	//TODO these shouldn't be default
 	
     default float minValue() {
     	return 0.0F;

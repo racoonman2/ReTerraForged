@@ -18,7 +18,7 @@ public record MapToRange(Noise source, float min, float max) implements Noise {
 	}
 
 	@Override
-	public float getValue(float x, float y, int seed) {
-		return NoiseUtil.map(this.source.getValue(x, y, seed), this.min, this.max);
+	public float compute(float x, float y, int seed) {
+		return NoiseUtil.map(this.source.compute(x, y, seed), this.min, this.max);
 	}
 }

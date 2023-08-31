@@ -42,8 +42,8 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
 	}
 
     @Override
-    public float getValue(float x, float y, int seed) {
-        float value = this.source.getValue(x, y, seed);
+    public float compute(float x, float y, int seed) {
+        float value = this.source.compute(x, y, seed);
         float erosion = this.getErosionValue(x, y, seed, this.erosionCache.get());
         return NoiseUtil.lerp(erosion, value, this.blendMode.blend(value, erosion, this.strength));
     }
@@ -106,7 +106,7 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
         int index = (dy + 2) * 5 + (dx + 2);
         float value = cache[index];
         if (value == -1.0F) {
-            cache[index] = value = noise.getValue(px, py, seed);
+            cache[index] = value = noise.compute(px, py, seed);
         }
         return value;
     }

@@ -6,20 +6,20 @@ import raccoonman.reterraforged.common.level.levelgen.noise.Blender;
 import raccoonman.reterraforged.common.level.levelgen.noise.Falloff;
 import raccoonman.reterraforged.common.level.levelgen.noise.Floor;
 import raccoonman.reterraforged.common.level.levelgen.noise.Fractal;
+import raccoonman.reterraforged.common.level.levelgen.noise.Hash;
+import raccoonman.reterraforged.common.level.levelgen.noise.LerpAlpha;
 import raccoonman.reterraforged.common.level.levelgen.noise.MapToRange;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Threshold;
+import raccoonman.reterraforged.common.level.levelgen.noise.ThresholdList;
 import raccoonman.reterraforged.common.level.levelgen.noise.Valley;
 import raccoonman.reterraforged.common.level.levelgen.noise.cell.CellSource;
 import raccoonman.reterraforged.common.level.levelgen.noise.cell.SampleAtNearestCell;
-import raccoonman.reterraforged.common.level.levelgen.noise.climate.Humidity;
-import raccoonman.reterraforged.common.level.levelgen.noise.climate.Temperature;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Add;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Max;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Min;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Mul;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Sub;
-import raccoonman.reterraforged.common.level.levelgen.noise.continent.ContinentLerp;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Abs;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.AdvancedTerrace;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Alpha;
@@ -108,10 +108,11 @@ public final class RTFNoiseTypes {
 		register("select", Select.CODEC);
 		register("variable_blend", VariableBlend.CODEC);
 		register("valley", Valley.CODEC);
-		register("temperature", Temperature.CODEC);
-		register("humidity", Humidity.CODEC);
+//		register("temperature", Temperature.CODEC);
+//		register("humidity", Humidity.CODEC);
 //		register("river", River.CODEC);
-		register("continent_lerp", ContinentLerp.CODEC);
+		register("lerp_alpha", LerpAlpha.CODEC);
+		register("threshold_list", ThresholdList.CODEC);
 		register("blender", Blender.CODEC);
 		register("falloff", Falloff.CODEC);
 		register("fractal", Fractal.CODEC);
@@ -119,6 +120,7 @@ public final class RTFNoiseTypes {
 		register("map_to_range", MapToRange.CODEC);
 		register("sample_at_nearest_cell", SampleAtNearestCell.CODEC);
 		register("floor", Floor.CODEC);
+		register("hash", Hash.CODEC);
 	}
 	
 	private static void register(String name, Codec<? extends Noise> value) {

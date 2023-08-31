@@ -68,7 +68,7 @@ public enum CellSource implements Noise, StringRepresentable {
 	}
 
     @Override
-    public float getValue(float x, float y, int seed) {
+    public float compute(float x, float y, int seed) {
         return (1 + this.sample(x, y, seed)) * 0.5F;
     }
 

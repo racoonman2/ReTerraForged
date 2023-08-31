@@ -26,7 +26,7 @@ public record Temperature(float frequency, int power) implements Noise {
 	}
 	
     @Override
-    public float getValue(float x, float y, int seed) {
+    public float compute(float x, float y, int seed) {
         float sin = NoiseUtil.sin(y *= this.frequency);
         sin = NoiseUtil.clamp(sin, -1.0F, 1.0F);
         float value = NoiseUtil.pow(sin, this.power);

@@ -68,13 +68,13 @@ public class Blend extends Selector {
     @Override
     public float selectValue(float x, float y, float select, int seed) {
         if (select < blendLower) {
-            return source0.getValue(x, y, seed);
+            return source0.compute(x, y, seed);
         }
         if (select > blendUpper) {
-            return source1.getValue(x, y, seed);
+            return source1.compute(x, y, seed);
         }
         float alpha = (select - blendLower) / blendRange;
-        return blendValues(source0.getValue(x, y, seed), source1.getValue(x, y, seed), alpha);
+        return blendValues(source0.compute(x, y, seed), source1.compute(x, y, seed), alpha);
     }
     
     @Override

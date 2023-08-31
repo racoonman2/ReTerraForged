@@ -26,8 +26,8 @@ public record Humidity(Noise source, int power) implements Noise {
 	}
 	
     @Override
-    public float getValue(float x, float y, int seed) {
-        float noise = this.source.getValue(x, y, seed);
+    public float compute(float x, float y, int seed) {
+        float noise = this.source.compute(x, y, seed);
         if (this.power < 2) {
             return noise;
         }

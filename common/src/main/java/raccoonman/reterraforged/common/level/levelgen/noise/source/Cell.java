@@ -62,7 +62,7 @@ public class Cell extends BaseNoise {
     }
 
     @Override
-    public float getValue(float x, float y, int seed) {
+    public float compute(float x, float y, int seed) {
         x *= frequency;
         y *= frequency;
         float value = Noise2D.cell(x, y, seed, distance, cellFunc, distFunc, lookup);

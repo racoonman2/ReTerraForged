@@ -80,7 +80,7 @@ public class Line implements Noise {
     }
     
     @Override
-    public float getValue(float x, float y, int seed) {
+    public float compute(float x, float y, int seed) {
         float widthMod = getWidthModifier(x, y, seed);
         return getValue(x, y, widthMod, seed);
     }
@@ -142,7 +142,7 @@ public class Line implements Noise {
 
     public float getValue(float x, float y, float minWidth2, float widthModifier, int seed) {
         float dist2 = getDistance2(x, y);
-        float radius2 = minWidth2 + radius.getValue(x, y, seed) * widthModifier;
+        float radius2 = minWidth2 + radius.compute(x, y, seed) * widthModifier;
         if (dist2 > radius2) {
             return 0;
         }
@@ -180,8 +180,8 @@ public class Line implements Noise {
         }
 
         float fade = 1F;
-        float in = fadeIn.getValue(x, y, seed);
-        float out = fadeOut.getValue(x, y, seed);
+        float in = fadeIn.compute(x, y, seed);
+        float out = fadeOut.compute(x, y, seed);
         if (in > 0) {
             float dist = in * length2;
             if (d1 < dist) {

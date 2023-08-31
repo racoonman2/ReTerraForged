@@ -28,7 +28,7 @@ public record Threshold(Noise source, Noise threshold, Noise low, Noise high) im
 	}
 	
 	@Override
-	public float getValue(float x, float y, int seed) {
-		return this.source.getValue(x, y, seed) < this.threshold.getValue(x, y, seed) ? this.low.getValue(x, y, seed) : this.high.getValue(x, y, seed);
+	public float compute(float x, float y, int seed) {
+		return this.source.compute(x, y, seed) < this.threshold.compute(x, y, seed) ? this.low.compute(x, y, seed) : this.high.compute(x, y, seed);
 	}
 }

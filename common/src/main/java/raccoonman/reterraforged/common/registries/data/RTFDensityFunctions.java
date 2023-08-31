@@ -35,8 +35,8 @@ public final class RTFDensityFunctions {
 		HolderGetter<NormalNoise.NoiseParameters> noiseParams = ctx.lookup(Registries.NOISE);
 		HolderGetter<Noise> noise = ctx.lookup(RTFRegistries.NOISE);
 
-		ctx.register(NoiseRouterData.CONTINENTS, DensityFunctions.flatCache(wrapNoise(noise, RTFNoise.CONTINENTS)));
-    	ctx.register(NoiseRouterData.RIDGES, new YGradient(new FlatCache.Marker(wrapNoise(noise, RTFNoise.FINAL_BLEND))));
+		ctx.register(NoiseRouterData.CONTINENTS, DensityFunctions.flatCache(wrapNoise(noise, RTFNoise.CONTINENT)));
+    	ctx.register(NoiseRouterData.RIDGES, new YGradient(new FlatCache.Marker(wrapNoise(noise, RTFNoise.TERRAIN_HEIGHT))));
 //		ctx.register(FINAL_DENSITY, getFunction(densityFunctions, INITIAL_DENSITY));
 //    	ctx.register(NoiseRouterData.RIDGES, DensityFunctions.cache2d(wrapNoise(noise, RTFNoise.RIDGES)));
 	}

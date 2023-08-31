@@ -72,14 +72,14 @@ public class AdvancedTerrace extends Modifier {
             return value;
         }
 
-        float mask = this.mask.getValue(x, y, seed);
+        float mask = this.mask.compute(x, y, seed);
         if (mask == 0) {
             return value;
         }
 
         float result = value;
-        float slope = this.slope.getValue(x, y, seed);
-        float modulation = this.modulation.getValue(x, y, seed);
+        float slope = this.slope.compute(x, y, seed);
+        float modulation = this.modulation.compute(x, y, seed);
         for (int i = 1; i <= octaves; i++) {
             result = getStepped(result, steps * i);
             result = getSloped(value, result, slope);

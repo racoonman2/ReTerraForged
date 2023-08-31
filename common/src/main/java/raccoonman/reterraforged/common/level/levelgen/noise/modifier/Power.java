@@ -49,7 +49,7 @@ public class Power extends Modifier {
     
     @Override
     public float modify(float x, float y, float noiseValue, int seed) {
-        return NoiseUtil.pow(noiseValue, n.getValue(x, y, seed));
+        return NoiseUtil.pow(noiseValue, n.compute(x, y, seed));
     }
 
     @Override

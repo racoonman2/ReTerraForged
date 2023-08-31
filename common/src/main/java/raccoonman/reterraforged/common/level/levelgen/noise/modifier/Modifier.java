@@ -40,8 +40,8 @@ public abstract class Modifier implements Noise {
     }
 
     @Override
-    public float getValue(float x, float y, int seed) {
-        float value = source.getValue(x, y, seed);
+    public float compute(float x, float y, int seed) {
+        float value = source.compute(x, y, seed);
         return modify(x, y, value, seed);
     }
 

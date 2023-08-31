@@ -30,8 +30,8 @@ public record Fractal(Noise source, int octaves, float gain, float lacunarity) i
 	}
 
 	@Override
-	public float getValue(float x, float y, int seed) {
-		float sum = this.source.getValue(x, y, seed);
+	public float compute(float x, float y, int seed) {
+		float sum = this.source.compute(x, y, seed);
 		float amp = this.source.maxValue();
 		float sumAmp = amp;
         for(int i = 1; i < this.octaves; ++i) {
@@ -39,7 +39,7 @@ public record Fractal(Noise source, int octaves, float gain, float lacunarity) i
             x *= this.lacunarity;
             y *= this.lacunarity;
 
-            sum += this.source.getValue(x, y, seed) * amp;
+            sum += this.source.compute(x, y, seed) * amp;
             sumAmp += amp;
         }
         return sum / sumAmp;

@@ -80,7 +80,7 @@ public class MultiBlend extends Selector {
         Node max = min;
 
         if (this.blendRange == 0) {
-            return min.source.getValue(x, y, seed);
+            return min.source.compute(x, y, seed);
         }
 
         if (selector > min.max) {
@@ -88,13 +88,13 @@ public class MultiBlend extends Selector {
         } else if (selector < min.min) {
             min = this.nodes[index - 1];
         } else {
-            return min.source.getValue(x ,y, seed);
+            return min.source.compute(x ,y, seed);
         }
 
         float alpha = (selector - min.max) / this.blendRange;
         alpha = NoiseUtil.clamp(alpha, 0.0F, 1.0F);
 
-        return this.blendValues(min.source.getValue(x, y, seed), max.source.getValue(x, y, seed), alpha);
+        return this.blendValues(min.source.compute(x, y, seed), max.source.compute(x, y, seed), alpha);
     }
 
     @Override

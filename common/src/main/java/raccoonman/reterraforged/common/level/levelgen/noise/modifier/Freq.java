@@ -22,10 +22,10 @@ public class Freq extends Modifier {
     }
 
     @Override
-    public float getValue(float x, float y, int seed) {
-    	float fx = this.x.getValue(x, y, seed);
-        float fy = this.y.getValue(x, y, seed);
-        return this.source.getValue(x * fx, y * fy, seed);
+    public float compute(float x, float y, int seed) {
+    	float fx = this.x.compute(x, y, seed);
+        float fy = this.y.compute(x, y, seed);
+        return this.source.compute(x * fx, y * fy, seed);
     }
 
     @Override

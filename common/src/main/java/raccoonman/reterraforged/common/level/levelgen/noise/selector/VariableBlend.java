@@ -66,20 +66,20 @@ public class VariableBlend extends Selector {
     
     @Override
     protected float selectValue(float x, float y, float selector, int seed) {
-        float radius = minBlend + variator.getValue(x, y, seed) * maxBlend;
+        float radius = minBlend + variator.compute(x, y, seed) * maxBlend;
 
         float min = Math.max(0, midpoint - radius);
         if (selector < min) {
-            return source0.getValue(x, y, seed);
+            return source0.compute(x, y, seed);
         }
 
         float max = Math.min(1, midpoint + radius);
         if (selector > max) {
-            return source1.getValue(x, y, seed);
+            return source1.compute(x, y, seed);
         }
 
         float alpha = (selector - min) / (max - min);
-        return blendValues(source0.getValue(x, y, seed), source1.getValue(x, y, seed), alpha);
+        return blendValues(source0.compute(x, y, seed), source1.compute(x, y, seed), alpha);
     }
     
     @Override

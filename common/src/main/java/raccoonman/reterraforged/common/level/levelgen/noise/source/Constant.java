@@ -46,7 +46,7 @@ public class Constant implements Noise {
 	}
 	
     @Override
-    public float getValue(float x, float y, int seed) {
+    public float compute(float x, float y, int seed) {
         return this.value;
     }
 

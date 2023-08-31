@@ -58,7 +58,7 @@ public class LegacySimplex extends BaseNoise {
     }
 
     @Override
-    public float getValue(float x, float y, int seed) {
+    public float compute(float x, float y, int seed) {
         x *= this.frequency;
         y *= this.frequency;
 

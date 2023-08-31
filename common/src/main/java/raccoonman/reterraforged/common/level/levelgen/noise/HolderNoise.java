@@ -23,7 +23,7 @@ public record HolderNoise(Holder<Noise> holder) implements Noise {
     }
 
 	@Override
-	public float getValue(float x, float y, int seed) {
-		return this.holder.value().getValue(x, y, seed);
+	public float compute(float x, float y, int seed) {
+		return this.holder.value().compute(x, y, seed);
 	}
 }

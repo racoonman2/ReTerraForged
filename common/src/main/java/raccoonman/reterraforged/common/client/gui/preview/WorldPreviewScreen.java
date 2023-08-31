@@ -215,7 +215,7 @@ public class WorldPreviewScreen extends Screen {
 
 		@Override
 		public float sampleNoise(float x, float y, int seed) {
-			return this.holder.value().getValue(x, y, seed);
+			return this.holder.value().compute(x, y, seed);
 		}
 
 		@Override

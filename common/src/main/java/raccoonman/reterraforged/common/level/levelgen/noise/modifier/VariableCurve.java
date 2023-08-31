@@ -49,8 +49,8 @@ public class VariableCurve extends Modifier {
 
     @Override
     public float modify(float x, float y, float noiseValue, int seed) {
-        float mid = midpoint.getValue(x, y, seed);
-        float curve = gradient.getValue(x, y, seed);
+        float mid = midpoint.compute(x, y, seed);
+        float curve = gradient.compute(x, y, seed);
         return NoiseUtil.curve(noiseValue, mid, curve);
     }
 

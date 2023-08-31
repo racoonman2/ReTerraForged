@@ -47,8 +47,8 @@ public abstract class Selector extends Combiner {
     }
 
     @Override
-    public float getValue(float x, float y, int seed) {
-        float select = control.getValue(x, y, seed);
+    public float compute(float x, float y, int seed) {
+        float select = control.compute(x, y, seed);
         return selectValue(x, y, select, seed);
     }
 

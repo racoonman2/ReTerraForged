@@ -60,13 +60,13 @@ public abstract class Combiner implements Noise {
     }
 
     @Override
-    public float getValue(float x, float y, int seed) {
+    public float compute(float x, float y, int seed) {
         float result = 0.0F;
         if (this.modules.size() > 0) {
-            result = this.modules.get(0).getValue(x, y, seed);
+            result = this.modules.get(0).compute(x, y, seed);
             for (int i = 1; i < this.modules.size(); i++) {
                 Noise module = this.modules.get(i);
-                float value = module.getValue(x, y, seed);
+                float value = module.compute(x, y, seed);
                 result = this.combine(result, value);
             }
         }

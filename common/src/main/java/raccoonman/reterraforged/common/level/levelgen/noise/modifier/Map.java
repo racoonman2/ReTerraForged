@@ -62,8 +62,8 @@ public class Map extends Modifier {
     @Override
     public float modify(float x, float y, float value, int seed) {
         float alpha = (value - source.minValue()) / this.sourceRange();
-        float min = this.min.getValue(x, y, seed);
-        float max = this.max.getValue(x, y, seed);
+        float min = this.min.compute(x, y, seed);
+        float max = this.max.compute(x, y, seed);
         return min + (alpha * (max - min));
 
 //        if (source.maxValue() != source.minValue()) {

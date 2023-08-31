@@ -48,12 +48,12 @@ public class Modulate extends Modifier {
     }
 
     @Override
-    public float getValue(float x, float y, int seed) {
-        float angle = direction.getValue(x, y, seed) * NoiseUtil.PI2;
-        float strength = this.strength.getValue(x, y, seed);
+    public float compute(float x, float y, int seed) {
+        float angle = direction.compute(x, y, seed) * NoiseUtil.PI2;
+        float strength = this.strength.compute(x, y, seed);
         float dx = NoiseUtil.sin(angle) * strength;
         float dy = NoiseUtil.cos(angle) * strength;
-        return source.getValue(x + dx, y + dy, seed);
+        return source.compute(x + dx, y + dy, seed);
     }
 
     @Override

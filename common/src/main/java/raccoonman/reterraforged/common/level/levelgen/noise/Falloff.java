@@ -35,8 +35,8 @@ public record Falloff(Noise source, float min, List<Falloff.Point> points) imple
 	}
 
 	@Override
-	public float getValue(float x, float y, int seed) {
-		float source = this.source.getValue(x, y, seed);
+	public float compute(float x, float y, int seed) {
+		float source = this.source.compute(x, y, seed);
 		float previous = this.source.maxValue();
 		final float min = this.source.minValue();
 		for (Falloff.Point falloff : this.points) {

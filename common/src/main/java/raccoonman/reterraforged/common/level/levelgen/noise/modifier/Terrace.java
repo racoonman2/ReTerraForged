@@ -49,8 +49,8 @@ public class Terrace extends Modifier {
     }
 
     @Override
-    public float getValue(float x, float y, int seed) {
-        float value = source.getValue(x, y, seed);
+    public float compute(float x, float y, int seed) {
+        float value = source.compute(x, y, seed);
         value = NoiseUtil.clamp(value, MIN_NOISE_VALUE, MAX_NOISE_VALUE);
         return modify(x, y, value, seed);
     }
@@ -73,8 +73,8 @@ public class Terrace extends Modifier {
             return next.value;
         }
 
-        float ramp = 1F - (this.ramp.getValue(x, y, seed) * 0.5F);
-        float cliff = 1F - (this.cliff.getValue(x, y, seed) * 0.5F);
+        float ramp = 1F - (this.ramp.compute(x, y, seed) * 0.5F);
+        float cliff = 1F - (this.cliff.compute(x, y, seed) * 0.5F);
         float alpha = (noiseValue - step.lowerBound) / (step.upperBound - step.lowerBound);
 
         float value = step.value;
@@ -82,7 +82,7 @@ public class Terrace extends Modifier {
             Step next = steps[index + 1];
             float rampSize = 1 - ramp;
             float rampAlpha = (alpha - ramp) / rampSize;
-            float rampHeight = this.rampHeight.getValue(x, y, seed);
+            float rampHeight = this.rampHeight.compute(x, y, seed);
             value += (next.value - value) * rampAlpha * rampHeight;
         }
 

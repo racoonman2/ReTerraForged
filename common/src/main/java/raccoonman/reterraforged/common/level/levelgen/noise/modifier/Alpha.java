@@ -45,7 +45,7 @@ public class Alpha extends Modifier {
     
     @Override
     public float modify(float x, float y, float noiseValue, int seed) {
-        float a = alpha.getValue(x, y, seed);
+        float a = alpha.compute(x, y, seed);
         return (noiseValue * a) + (1 - a);
     }
 

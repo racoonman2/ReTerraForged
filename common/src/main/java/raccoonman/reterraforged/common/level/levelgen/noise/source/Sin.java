@@ -45,8 +45,8 @@ public class Sin extends BaseNoise {
     }
     
     @Override
-    public float getValue(float x, float y, int seed) {
-        float a = alpha.getValue(x, y, seed);
+    public float compute(float x, float y, int seed) {
+        float a = alpha.compute(x, y, seed);
         x *= frequency;
         y *= frequency;
 

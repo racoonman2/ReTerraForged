@@ -45,8 +45,8 @@ public class Billow extends Ridge {
     }
 
     @Override
-    public float getValue(float x, float y, int seed) {
-        return 1 - super.getValue(x, y, seed);
+    public float compute(float x, float y, int seed) {
+        return 1 - super.compute(x, y, seed);
     }
 
     @Override

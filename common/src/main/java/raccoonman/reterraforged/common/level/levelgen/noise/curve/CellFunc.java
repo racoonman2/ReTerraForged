@@ -50,7 +50,7 @@ public enum CellFunc implements StringRepresentable {
     NOISE_LOOKUP("noise_lookup") {
         @Override
         public float apply(int xc, int yc, float distance, int seed, Vec2f vec2f, Noise lookup) {
-            return lookup.getValue(xc + vec2f.x(), yc + vec2f.y(), seed);
+            return lookup.compute(xc + vec2f.x(), yc + vec2f.y(), seed);
         }
 
         @Override

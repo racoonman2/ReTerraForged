@@ -52,13 +52,13 @@ public class Grad extends Modifier {
     
     @Override
     public float modify(float x, float y, float noiseValue, int seed) {
-        float upperBound = upper.getValue(x, y, seed);
+        float upperBound = upper.compute(x, y, seed);
         if (noiseValue > upperBound) {
             return noiseValue;
         }
 
-        float amount = strength.getValue(x, y, seed);
-        float lowerBound = lower.getValue(x, y, seed);
+        float amount = strength.compute(x, y, seed);
+        float lowerBound = lower.compute(x, y, seed);
         if (noiseValue < lowerBound) {
             return NoiseUtil.pow(noiseValue, 1 - amount);
         }

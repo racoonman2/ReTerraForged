@@ -52,12 +52,12 @@ public class DomainWarp implements Domain {
     
     @Override
     public float getOffsetX(float x, float y, int seed) {
-        return this.x.getValue(x, y, seed) * this.distance.getValue(x, y, seed);
+        return this.x.compute(x, y, seed) * this.distance.compute(x, y, seed);
     }
 
     @Override
     public float getOffsetY(float x, float y, int seed) {
-        return this.y.getValue(x, y, seed) * this.distance.getValue(x, y, seed);
+        return this.y.compute(x, y, seed) * this.distance.compute(x, y, seed);
     }
 
     @Override

@@ -45,8 +45,8 @@ public class Shift extends Modifier {
 	}
 
     @Override
-    public float getValue(float x, float y, int seed) {
-    	return this.source.getValue(x, y, this.seedOffset + seed);
+    public float compute(float x, float y, int seed) {
+    	return this.source.compute(x, y, this.seedOffset + seed);
     }
     
     @Override
