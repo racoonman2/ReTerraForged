@@ -2,20 +2,18 @@ package raccoonman.reterraforged.common.registries;
 
 import com.mojang.serialization.Codec;
 
-import raccoonman.reterraforged.common.noise.domain.AddWarp;
-import raccoonman.reterraforged.common.noise.domain.CacheWarp;
-import raccoonman.reterraforged.common.noise.domain.CompoundWarp;
-import raccoonman.reterraforged.common.noise.domain.CumulativeWarp;
-import raccoonman.reterraforged.common.noise.domain.DirectionWarp;
-import raccoonman.reterraforged.common.noise.domain.Domain;
-import raccoonman.reterraforged.common.noise.domain.DomainWarp;
-import raccoonman.reterraforged.common.noise.domain.ShiftWarp;
+import raccoonman.reterraforged.common.level.levelgen.noise.domain.AddWarp;
+import raccoonman.reterraforged.common.level.levelgen.noise.domain.CompoundWarp;
+import raccoonman.reterraforged.common.level.levelgen.noise.domain.CumulativeWarp;
+import raccoonman.reterraforged.common.level.levelgen.noise.domain.DirectionWarp;
+import raccoonman.reterraforged.common.level.levelgen.noise.domain.Domain;
+import raccoonman.reterraforged.common.level.levelgen.noise.domain.DomainWarp;
+import raccoonman.reterraforged.common.level.levelgen.noise.domain.ShiftWarp;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 public final class RTFDomainTypes {
 	
 	public static void bootstrap() {
-		register("cache_warp", CacheWarp.CODEC);
 		register("shift_warp", ShiftWarp.CODEC);
 		register("add_warp", AddWarp.CODEC);
 		register("compound_warp", CompoundWarp.CODEC);

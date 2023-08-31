@@ -10,11 +10,10 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import raccoonman.reterraforged.common.util.MathUtil;
-
 //this sucks lol
 //TODO clean this up
 public class WeightMap<T> implements Iterable<T> {
+    private static final float EPSILON = 0.99999F;
     public final Object[] values;
     protected final float[] cumulativeWeights;
     protected final float sumWeight;
@@ -26,7 +25,7 @@ public class WeightMap<T> implements Iterable<T> {
         this.weights = Arrays.copyOf(weights, weights.length);
         this.cumulativeWeights = getCumulativeWeights(values.length, weights);
         this.zeroWeight = weights.length > 0 ? weights[0] : 0;
-        this.sumWeight = MathUtil.sum(weights) * MathUtil.EPSILON;
+        this.sumWeight = sum(weights) * EPSILON;
     }
 
     @SuppressWarnings("unchecked")
@@ -81,7 +80,15 @@ public class WeightMap<T> implements Iterable<T> {
     	}, WeightMap::getEntries);
     }
     
-    private record Entry<T>(float weight, T value) {
+	private static float sum(float... values) {
+        float sum = 0.0F;
+        for (float value : values) {
+            sum += value;
+        }
+        return sum;
+    }
+
+	private record Entry<T>(float weight, T value) {
     	
     	public static <T> Codec<Entry<T>> codec(Codec<T> valueCodec) {
     		return RecordCodecBuilder.create(instance -> instance.group(

@@ -26,7 +26,6 @@ package raccoonman.reterraforged.common.asm.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Desc;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -38,10 +37,7 @@ class MixinBoat {
 	
 	@Inject(
 		at = @At("RETURN"),
-		target = @Desc(
-			value = "isUnderwater",
-			ret = Boat.Status.class
-		),
+		method = "isUnderwater",
 		cancellable = true
 	)
     private void onIsUnderwater(CallbackInfoReturnable<Boat.Status> callback) {

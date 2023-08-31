@@ -24,23 +24,24 @@
 
 package raccoonman.reterraforged.common.level.levelgen.noise;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import raccoonman.reterraforged.common.noise.Noise;
-import raccoonman.reterraforged.common.noise.domain.Domain;
-import raccoonman.reterraforged.common.noise.util.NoiseUtil;
-import raccoonman.reterraforged.common.util.MathUtil;
-import raccoonman.reterraforged.common.util.storage.Object2FloatCache;
+import raccoonman.reterraforged.common.level.levelgen.noise.domain.Domain;
+import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 import raccoonman.reterraforged.common.util.storage.WeightMap;
 
+//TODO use correct min/max values
 public record Blender(Domain regionWarp, float regionJitter, float regionScale, float blending, WeightMap<Noise> noise, ThreadLocal<Local> local) implements Noise {
 	public static final Codec<Blender> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Domain.CODEC.fieldOf("region_warp").forGetter((m) -> m.regionWarp),
 		Codec.FLOAT.fieldOf("region_jitter").forGetter((m) -> m.regionJitter),
 		Codec.FLOAT.fieldOf("region_scale").forGetter((m) -> m.regionScale),
 		Codec.FLOAT.fieldOf("blending").forGetter((m) -> m.blending),
-		WeightMap.codec(Noise.DIRECT_CODEC).fieldOf("noise").forGetter((m) -> m.noise)
+		WeightMap.codec(Noise.HOLDER_HELPER_CODEC).fieldOf("noise").forGetter((m) -> m.noise)
 	).apply(instance, Blender::new));
 
 	public Blender(Domain regionWarp, float regionJitter, float regionScale, float blending, WeightMap<Noise> noise) {
@@ -81,13 +82,12 @@ public record Blender(Domain regionWarp, float regionJitter, float regionScale, 
 			for (int cx = maxX - 2; cx <= maxX; cx++, i++) {
 				int hash = NoiseUtil.hash2D(seed, cx, cz);
 
-				float dx = MathUtil.rand(hash, NoiseUtil.X_PRIME);
-				float dz = MathUtil.rand(hash, NoiseUtil.Y_PRIME);
-
+				float dx = NoiseUtil.rand(hash, NoiseUtil.X_PRIME);
+				float dz = NoiseUtil.rand(hash, NoiseUtil.Y_PRIME);
 				float px = cx + dx * jitter;
 				float pz = cz + dz * jitter;
 				float dist = NoiseUtil.dist2(x, y, px, pz);
-
+				
 				local.hashes[i] = hash;
 				local.distances[i] = dist;
 
@@ -106,17 +106,17 @@ public record Blender(Domain regionWarp, float regionJitter, float regionScale, 
 		local.closestIndex = nearestIndex;
 		local.closestIndex2 = nearestIndex2;
 	}
-
+	
 	private static class Local {
 		public int closestIndex;
 		public int closestIndex2;
 
 		public final int[] hashes = new int[9];
 		public final float[] distances = new float[9];
-		public final Object2FloatCache<Noise> cache = new Object2FloatCache<>(9);
+		public final Map<Noise, Float> cache = new IdentityHashMap<>(9);
 
 		public float getCentreNoiseIndex() {
-			return getNoiseIndex(this.closestIndex);
+			return this.getNoiseIndex(this.closestIndex);
 		}
 
 		public float getDistance(int index) {
@@ -172,7 +172,7 @@ public record Blender(Domain regionWarp, float regionJitter, float regionScale, 
 			float noiseIndex = this.getNoiseIndex(index);
 			var terrain = noise.getValue(noiseIndex);
 
-			float value = this.cache.get(terrain);
+			float value = this.cache.getOrDefault(terrain, Float.NaN);
 			if (Float.isNaN(value)) {
 				value = terrain.getValue(x, y, seed);
 				this.cache.put(terrain, value);
@@ -182,7 +182,7 @@ public record Blender(Domain regionWarp, float regionJitter, float regionScale, 
 		}
 
 		private float getNoiseIndex(int index) {
-			return MathUtil.rand(this.hashes[index]);
+			return NoiseUtil.rand(this.hashes[index]);
 		}
 
 		private static float getWeight(float dist, float origin, float blendRange) {

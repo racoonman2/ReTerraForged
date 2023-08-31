@@ -1,23 +1,59 @@
+///*
+// * MIT License
+// *
+// * Copyright (c) 2021 TerraForged
+// *
+// * Permission is hereby granted, free of charge, to any person obtaining a copy
+// * of this software and associated documentation files (the "Software"), to deal
+// * in the Software without restriction, including without limitation the rights
+// * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// * copies of the Software, and to permit persons to whom the Software is
+// * furnished to do so, subject to the following conditions:
+// *
+// * The above copyright notice and this permission notice shall be included in all
+// * copies or substantial portions of the Software.
+// *
+// * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// * SOFTWARE.
+// */
+//
 package raccoonman.reterraforged.common.level.levelgen.noise.river;
-
-import raccoonman.reterraforged.common.noise.util.Vec2i;
-import raccoonman.reterraforged.common.util.storage.LongCache;
-import raccoonman.reterraforged.common.util.storage.LossyCache;
-import raccoonman.reterraforged.common.util.storage.ObjectPool;
-
-public class RiverPieceSampler {
-    private static final Vec2i[] DIRS = { new Vec2i(1, 0), new Vec2i(0, 1), new Vec2i(-1, 0), new Vec2i(0, -1) };
-
-    private static final int DIR_OFFSET = 20107;
-    private static final int SIZE_A_OFFSET = 9803;
-    private static final int SIZE_B_OFFSET = 28387;
-    private static final int LAKE_CHANCE_OFFSET = 37171;
-    private static final int RIVER_CACHE_SIZE = 1024;
- 
-    private final ObjectPool<RiverPieces> pool = ObjectPool.forCacheSize(RIVER_CACHE_SIZE, RiverPieces::new);
-    private final LongCache<RiverPieces> cache = LossyCache.concurrent(RIVER_CACHE_SIZE, RiverPieces[]::new, this.pool::restore);
-
-//    public void sample(int seed, float x, float y, RiverSample sample) {
+//
+//import com.mojang.serialization.Codec;
+//import com.mojang.serialization.codecs.RecordCodecBuilder;
+//
+//import raccoonman.reterraforged.common.noise.Noise;
+//import raccoonman.reterraforged.common.noise.Source;
+//import raccoonman.reterraforged.common.noise.domain.Domain;
+//import raccoonman.reterraforged.common.noise.util.NoiseUtil;
+//import raccoonman.reterraforged.common.noise.util.Vec2i;
+//import raccoonman.reterraforged.common.util.MathUtil;
+//import raccoonman.reterraforged.common.util.PosUtil;
+//import raccoonman.reterraforged.common.util.storage.LongCache;
+//import raccoonman.reterraforged.common.util.storage.LossyCache;
+//import raccoonman.reterraforged.common.util.storage.ObjectPool;
+//
+//public class RiverPieceSampler {
+//    private static final Vec2i[] CELL_OFFSETS = { new Vec2i(1, 0), new Vec2i(0, 1), new Vec2i(-1, 0), new Vec2i(0, -1) };
+//    private static final int X_OFFSET = 86571124;
+//    private static final int Y_OFFSET = 5123678;
+//    private static final int DIR_OFFSET = 20107;
+//    private static final int SIZE_A_OFFSET = 9803;
+//    private static final int SIZE_B_OFFSET = 28387;
+//    private static final int LAKE_CHANCE_OFFSET = 37171;
+//
+//    private final float lakeDensity;
+//
+//    public RiverPieceSampler(float lakeDensity, Noise erosion) {
+//        this.lakeDensity = lakeDensity;
+//    }
+//	
+//    public void sample(float x, float y, int seed, RiverSample sample) {
 //        var centre = continent.getNearestCell(seed, x, y);
 //        int centreX = PosUtil.unpackLeft(centre);
 //        int centreY = PosUtil.unpackRight(centre);
@@ -99,7 +135,7 @@ public class RiverPieceSampler {
 //
 //        boolean isSource = true;
 //        var pieces = pool.take();
-//        for (var dir : DIRS) {
+//        for (var dir : CELL_OFFSETS) {
 //            int bx = ax + dir.x;
 //            int by = ay + dir.y;
 //            var b = continent.getCell(seed, bx, by);
@@ -153,33 +189,33 @@ public class RiverPieceSampler {
 //
 //    private void addRiverNodes(CellPoint a, CellPoint b, float ah, float bh, float ar, float br, int hash, RiverPieces pieces, int seed) {
 //        // Mid-point on border between cell points A & B
-//        float mx = (a.px + b.px) * 0.5f;
-//        float my = (a.py + b.py) * 0.5f;
-//        float mr = (ar + br) * 0.5f;
-//        float mh = (ah + bh) * 0.5f;
+//        float mx = (a.px + b.px) * 0.5F;
+//        float my = (a.py + b.py) * 0.5F;
+//        float mr = (ar + br) * 0.5F;
+//        float mh = (ah + bh) * 0.5F;
 //
 //        // Mid-point between A & M
-//        float cx = (a.px + mx) * 0.5f;
-//        float cy = (a.py + my) * 0.5f;
-//        float cr = (ar + mr) * 0.5f;
-//        float ch = (ah + mh) * 0.5f;
+//        float cx = (a.px + mx) * 0.5F;
+//        float cy = (a.py + my) * 0.5F;
+//        float cr = (ar + mr) * 0.5F;
+//        float ch = (ah + mh) * 0.5F;
 //
 //        // Normals to AC
 //        float nx = -(cy - a.py);
 //        float ny = (cx - a.px);
 //
-//        float dir = MathUtil.rand(seed + DIR_OFFSET, hash) < 0.5f ? -1f : 1f;
-//        float amp0 = 0.7f + MathUtil.rand(seed + SIZE_A_OFFSET, hash) * 0.3f;
-//        float amp1 = 0.7f + MathUtil.rand(seed + SIZE_B_OFFSET, hash) * 0.3f;
+//        float dir = MathUtil.rand(seed + DIR_OFFSET, hash) < 0.5F ? -1F : 1F;
+//        float amp0 = 0.7F + MathUtil.rand(seed + SIZE_A_OFFSET, hash) * 0.3F;
+//        float amp1 = 0.7F + MathUtil.rand(seed + SIZE_B_OFFSET, hash) * 0.3F;
 //
 //        // Displace point C perpendicularly to AC
-//        float displacement = 0.35f * dir * amp0;
+//        float displacement = 0.35F * dir * amp0;
 //        cx += nx * displacement;
 //        cy += ny * displacement;
 //
-//        float warpStrength = 0.275f * -dir * amp1;
-//        float warp1 = warpStrength * NoiseUtil.map(a.noise, 0.4f, 0.6f, 0.2f);
-//        float warp2 = -warpStrength * NoiseUtil.map(b.noise, 0.4f, 0.6f, 0.2f);
+//        float warpStrength = 0.275F * -dir * amp1;
+//        float warp1 = warpStrength * NoiseUtil.map(a.noise, 0.4F, 0.6F, 0.2F);
+//        float warp2 = -warpStrength * NoiseUtil.map(b.noise, 0.4F, 0.6F, 0.2F);
 //
 //        pieces.addRiver(new RiverNode(a.px, a.py, cx, cy, ah, ch, ar, cr, warp1));
 //        pieces.addRiver(new RiverNode(cx, cy, mx, my, ch, mh, cr, mr, warp2));
@@ -187,13 +223,13 @@ public class RiverPieceSampler {
 //        // If B is an ocean cell then extend the connection all the way to prevent
 //        // rivers stopping short at the coast/beach. Note: we must use the 'b.noise'
 //        // here and not the low-octave 'b.noise()'.
-//        if (b.noise < continent.threshold) {
+//        if (b.noise < continent.shapeNoise.threshold) {
 //            pieces.addRiver(new RiverNode(mx, my, b.px, b.py, mh, bh, mr, br, warp1));
 //        }
 //    }
 //
 //    private void addLakeNodes(CellPoint a, CellPoint b, float ah, int hash, RiverPieces pieces, int seed) {
-//        float size = (0.5f + MathUtil.rand(seed + SIZE_A_OFFSET, hash) * 0.5f) * 0.12f;
+//        float size = (0.5F + MathUtil.rand(seed + SIZE_A_OFFSET, hash) * 0.5F) * 0.12F;
 //
 //        float dx = a.px - b.px;
 //        float dy = a.py - b.py;
@@ -207,7 +243,7 @@ public class RiverPieceSampler {
 //        int minY = bx;
 //        int minX = by;
 //
-//        for (var dir : DIRS) {
+//        for (var dir : CELL_OFFSETS) {
 //            int cx = bx + dir.x;
 //            int cy = by + dir.y;
 //            var c = continent.getCell(seed, cx, cy);
@@ -224,25 +260,20 @@ public class RiverPieceSampler {
 //    }
 //
 //    private boolean hasLake(CellPoint cell, int hash) {
-//        return MathUtil.rand(hash + LAKE_CHANCE_OFFSET) <= lakeDensity
-//                || continent.shapeNoise.getBaseNoise(cell.lowOctaveNoise) < 0.25f;
+//        return MathUtil.rand(hash + LAKE_CHANCE_OFFSET) <= this.lakeDensity || continent.shapeNoise.getBaseNoise(cell.lowOctaveNoise) < 0.25F;
 //    }
 //
 //    private float getBaseValue(CellPoint point) {
 //        return continent.shapeNoise.getThresholdValue(point) <= 0 ? 0 : point.lowOctaveNoise;
 //    }
-//
-//    private float getHeight(float noise, float min, float max) {
-//        return noise;
-//    }
-//
+//    
 //    private float getRadius(float noise, float min, float max) {
-//        float lower = 0.5f;
-//        float upper = 0.7f;
+//        float lower = 0.5F;
+//        float upper = 0.7F;
 //
 //        noise = NoiseUtil.map(noise, lower, upper, (upper - lower));
 //        noise = 1 - noise;
 //
 //        return noise;
 //    }
-}
+//}

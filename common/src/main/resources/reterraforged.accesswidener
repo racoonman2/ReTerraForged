@@ -1,3 +1,20 @@
 accessWidener	v2	named
 
-accessible method net/minecraft/world/level/levelgen/NoiseGeneratorSettings overworld (Lnet/minecraft/data/worldgen/BootstapContext;ZZ)Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;
+accessible class net/minecraft/world/level/levelgen/SurfaceRules$Condition
+accessible class net/minecraft/world/level/levelgen/SurfaceRules$Context
+accessible class net/minecraft/world/level/levelgen/SurfaceRules$SurfaceRule
+accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context noiseChunk Lnet/minecraft/world/level/levelgen/NoiseChunk;
+accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context randomState Lnet/minecraft/world/level/levelgen/RandomState;
+accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context chunk Lnet/minecraft/world/level/chunk/ChunkAccess;
+accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context context Lnet/minecraft/world/level/levelgen/WorldGenerationContext;
+accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context system Lnet/minecraft/world/level/levelgen/SurfaceSystem;
+accessible field net/minecraft/world/level/levelgen/SurfaceSystem seaLevel I
+accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context blockX I
+accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context blockY I
+accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context blockZ I
+accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context pos Lnet/minecraft/core/BlockPos$MutableBlockPos;
+accessible class net/minecraft/world/level/levelgen/SurfaceRules$LazyCondition
+accessible class net/minecraft/world/level/levelgen/SurfaceRules$LazyXZCondition
+accessible method net/minecraft/world/level/levelgen/NoiseRouterData overworld (Lnet/minecraft/core/HolderGetter;Lnet/minecraft/core/HolderGetter;ZZ)Lnet/minecraft/world/level/levelgen/NoiseRouter;
+accessible method net/minecraft/world/level/levelgen/NoiseChunk wrap (Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;
+accessible field net/minecraft/world/level/levelgen/NoiseChunk initialDensityNoJaggedness Lnet/minecraft/world/level/levelgen/DensityFunction;

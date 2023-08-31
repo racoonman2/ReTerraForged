@@ -2,10 +2,10 @@ package raccoonman.reterraforged.common.registries;
 
 import com.mojang.serialization.Codec;
 
-import raccoonman.reterraforged.common.noise.func.CurveFunction;
-import raccoonman.reterraforged.common.noise.func.Interpolation;
-import raccoonman.reterraforged.common.noise.func.MidPointCurve;
-import raccoonman.reterraforged.common.noise.func.SCurve;
+import raccoonman.reterraforged.common.level.levelgen.noise.curve.CurveFunction;
+import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
+import raccoonman.reterraforged.common.level.levelgen.noise.curve.MidPointCurve;
+import raccoonman.reterraforged.common.level.levelgen.noise.curve.SCurve;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 public final class RTFCurveFunctionTypes {

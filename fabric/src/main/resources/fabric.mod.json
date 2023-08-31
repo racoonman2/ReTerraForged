@@ -26,7 +26,7 @@
   },
   "accessWidener" : "reterraforged.accesswidener",
   "mixins": [
-    "reterraforged.mixins.json"
+    "reterraforged-common.mixins.json"
   ],
   "icon": "assets/reterraforged/icon.png"
 }

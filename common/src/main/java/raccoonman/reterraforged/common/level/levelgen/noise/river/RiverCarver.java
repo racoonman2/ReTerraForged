@@ -22,7 +22,7 @@
 // * SOFTWARE.
 // */
 //
-//package raccoonman.reterraforged.common.level.levelgen.continent.river;
+package raccoonman.reterraforged.common.level.levelgen.noise.river;
 //
 //import raccoonman.reterraforged.common.level.levelgen.continent.ContinentPoints;
 //import raccoonman.reterraforged.common.level.levelgen.continent.config.ContinentConfig;
@@ -168,4 +168,3 @@
 //        return value <= min ? 0.0f : value >= max ? 1.0f : (value - min) / (max - min);
 //    }
 //}
-

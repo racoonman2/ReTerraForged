@@ -31,7 +31,7 @@ import java.util.function.IntFunction;
 
 import it.unimi.dsi.fastutil.HashCommon;
 import net.minecraft.util.Mth;
-import raccoonman.reterraforged.common.noise.util.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
 public class LossyCache<T> implements LongCache<T> {
 	private static final Consumer<?> NOOP_REMOVAL_LISTENER = (t) -> {};

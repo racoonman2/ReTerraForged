@@ -1,6 +1,6 @@
 package raccoonman.reterraforged.common.client.gui.preview;
 
-import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -8,8 +8,6 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import it.unimi.dsi.fastutil.floats.Float2IntFunction;
-import it.unimi.dsi.fastutil.floats.Float2IntFunctions;
 import net.minecraft.Util;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -18,15 +16,22 @@ import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
+import net.minecraft.client.gui.screens.worldselection.WorldCreationContext;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup.RegistryLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import raccoonman.reterraforged.common.noise.Noise;
+import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.DensityFunctions;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.RandomState;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.registries.RTFRegistries;
 
-// TODO finish this (also make zoom better)
+// TODO finish this (also improve zoom)
 public class WorldPreviewScreen extends Screen {
 	private static final int MAX_SCALE = 250;
 	
@@ -37,21 +42,35 @@ public class WorldPreviewScreen extends Screen {
 	private final List<Layer> layers;
 	private int scale;
 	
-	public WorldPreviewScreen(int seed, CreateWorldScreen parent, RegistryLookup<Noise> noiseGetter) {
+	public WorldPreviewScreen(CreateWorldScreen parent, WorldCreationContext ctx) {
+		this(parent, ctx.worldgenLoadContext(), ctx.options().seed());
+	}
+	
+	public WorldPreviewScreen(CreateWorldScreen parent, RegistryAccess registryAccess, long seed) {
 		super(Component.translatable("createWorld.customize.reterraforged.title"));
-		this.seed = seed;
+		this.seed = (int) seed;
 		this.parent = parent;
-		this.layers = noiseGetter.listElements().map((ref) -> {
-			return new Layer(ref, Float2IntFunctions.primitive((value) -> {
-				return rgba(value, value, value);//MathUtil.step(1 - value, 8) * 0.65F, saturation, brightness);
-			}));
-		}).toList();
+		this.layers = new ArrayList<>(registryAccess.lookupOrThrow(RTFRegistries.NOISE).listElements().map(NoiseLayer::new).toList());
 		this.framebuffer = new DynamicTexture(256, 256, false);
 		this.scale = 15;
-				
+		RandomState randomState = RandomState.create(registryAccess.lookupOrThrow(Registries.NOISE_SETTINGS).getOrThrow(NoiseGeneratorSettings.OVERWORLD).value(), registryAccess.lookupOrThrow(Registries.NOISE), seed);		
+		this.layers.add(new DensityLayer(Component.literal("minecraft:ridges"), randomState.router().ridges(), DensityLayer.View.XZ));
+		this.layers.add(new DensityLayer(Component.literal("minecraft:ridges_folded"), peaksAndValleys(randomState.router().ridges()), DensityLayer.View.XZ));
+		this.layers.add(new DensityLayer(Component.literal("minecraft:temperature"), randomState.router().temperature(), DensityLayer.View.XZ));
+		this.layers.add(new DensityLayer(Component.literal("minecraft:vegetation"), randomState.router().vegetation(), DensityLayer.View.XZ));
+		this.layers.add(new DensityLayer(Component.literal("minecraft:continents"), randomState.router().continents(), DensityLayer.View.XZ));
+		this.layers.add(new DensityLayer(Component.literal("minecraft:initial_density_without_jaggedness"), randomState.router().initialDensityWithoutJaggedness(), DensityLayer.View.XY));
+		this.layers.add(new DensityLayer(Component.literal("minecraft:final_density"), randomState.router().finalDensity(), DensityLayer.View.XY));
+		 
 		this.setLayer(this.layers.get(0));
 	}
-
+	
+	// we have to copy this from NoiseRouterData cause the AW won't work
+	// TODO fix the AW
+	private static DensityFunction peaksAndValleys(DensityFunction densityFunction) {
+		return DensityFunctions.mul(DensityFunctions.add(DensityFunctions.add(densityFunction.abs(), DensityFunctions.constant(-0.6666666666666666)).abs(), DensityFunctions.constant(-0.3333333333333333)), DensityFunctions.constant(-3.0));
+	}
+	
 	@Override
 	public void onClose() {
 		this.framebuffer.close();
@@ -82,7 +101,7 @@ public class WorldPreviewScreen extends Screen {
 							int tx = cx + lx;
 							int ty = cy + ly;
 							
-				            pixels.setPixelRGBA(tx, ty, layer.color.applyAsInt(layer.noise.value().getValue(tx * scale, ty * scale, this.seed)));
+				            pixels.setPixelRGBA(tx, ty, layer.sampleColor(tx * scale, ty * scale, this.seed) | 255 << pixels.format().alphaOffset());
 						}
 					}
 				}, Util.backgroundExecutor());
@@ -113,7 +132,7 @@ public class WorldPreviewScreen extends Screen {
 		});
 
 		this.addRenderableWidget(
-			CycleButton.builder((Layer layer) -> Component.literal(layer.noise.key().location().toString()))
+			CycleButton.builder(Layer::name)
 				.withValues(this.layers.toArray(Layer[]::new))
 				.withInitialValue(this.currentLayer)
 				.create(this.width / 2 - 128 + 16, this.height - 256 + 64 + 35, 256 - 32, 20, Component.translatable("createWorld.customize.reterraforged.world_preview.layer"), (button, layer) -> {
@@ -135,22 +154,6 @@ public class WorldPreviewScreen extends Screen {
 		drawCenteredString(stack, this.font, this.title, this.width / 2, 8, 16777215);
 	}
 	
-	// this looks kinda messy being here but oh well
-	private static int rgba(float h, float s, float b) {
-        int argb = Color.HSBtoRGB(h, s, b);
-        int red = (argb >> 16) & 0xFF;
-        int green = (argb >> 8) & 0xFF;
-        int blue =  argb & 0xFF;
-        return rgba(red, green, blue);
-    }
-
-    private static int rgba(int r, int g, int b) {
-        return r + (g << 8) + (b << 16) + (255 << 24);
-    }
-    
-	private record Layer(Holder.Reference<Noise> noise, Float2IntFunction color) {
-	}
-	
 	private class FramebufferWidget extends AbstractWidget {
 		private int seed;
 		
@@ -166,21 +169,105 @@ public class WorldPreviewScreen extends Screen {
 			int y = this.getY();
 			
 			RenderSystem.setShaderTexture(0, WorldPreviewScreen.this.framebuffer.getId());
+			RenderSystem.colorMask(true, true, true, false);
 			blit(stack, x, y, 0, 0.0F, 0.0F, this.width, this.height, this.width, this.height);
+			RenderSystem.colorMask(true, true, true, true);
 			
 			if(this.isMouseOver(mouseX, mouseY)) {
 				int relativeMouseX = (mouseX - this.getX()) * WorldPreviewScreen.this.scale;
 				int relativeMouseY = (mouseY - this.getY()) * WorldPreviewScreen.this.scale;
-				
-				drawString(stack, WorldPreviewScreen.this.font, "noise: " + WorldPreviewScreen.this.currentLayer.noise.value().getValue(relativeMouseX, relativeMouseY, this.seed), x + 8, y + this.getWidth() - 16, 16777215);	
+
 				drawString(stack, WorldPreviewScreen.this.font, "x: " + relativeMouseX, x + 8, y + this.getWidth() - 26, 16777215);	
 				drawString(stack, WorldPreviewScreen.this.font, "y: " + relativeMouseY, x + 8, y + this.getWidth() - 36, 16777215);	
+				drawString(stack, WorldPreviewScreen.this.font, String.format("noise: %.3f", WorldPreviewScreen.this.currentLayer.sampleNoise(relativeMouseX, relativeMouseY, this.seed)), x + 8, y + this.getWidth() - 16, 16777215);	
 			}
 		}
 
 		@Override
 		protected void updateWidgetNarration(NarrationElementOutput narration) {
 			// TODO
+		}
+	}
+    
+	private interface Layer {
+		float sampleNoise(float x, float y, int seed);
+		
+		int sampleColor(float x, float y, int seed);
+		
+		Component name();
+		
+		public interface Contrast extends Layer {
+			float minValue();
+			
+			float maxValue();
+			
+			@Override
+			default int sampleColor(float x, float y, int seed) {
+				float range = (float) (this.maxValue() - this.minValue());
+				float mapped = (this.sampleNoise(x, y, seed) + (range / 2.0F)) / (range);
+				int color = (int) Math.floor(255 * mapped);
+				return color + (color << 8) + (color << 16) + (255 << 24);
+			}			
+		}
+	}
+	
+	private record NoiseLayer(Holder<Noise> holder) implements Layer.Contrast {
+
+		@Override
+		public float sampleNoise(float x, float y, int seed) {
+			return this.holder.value().getValue(x, y, seed);
+		}
+
+		@Override
+		public Component name() {
+			return Component.literal(this.holder().unwrapKey().map((key) -> {
+				return key.location().toString();
+			}).orElse("[Inlined]"));
+		}
+
+		@Override
+		public float minValue() {
+			return this.holder.value().minValue();
+		}
+
+		@Override
+		public float maxValue() {
+			return this.holder.value().maxValue();
+		}
+	}
+	
+	private static record DensityLayer(Component name, DensityFunction function, View view) implements Layer.Contrast {
+		
+		@Override
+		public float sampleNoise(float x, float y, int seed) {
+			return this.view.sample(this.function, x, y, seed);
+		}
+
+		@Override
+		public float minValue() {
+			return (float) this.function.minValue();
+		}
+
+		@Override
+		public float maxValue() {
+			return (float) this.function.maxValue();
+		}
+		
+		public enum View {
+			XZ {
+				@Override
+				public float sample(DensityFunction function, float x, float y, int seed) {
+					return (float) function.compute(new DensityFunction.SinglePointContext((int) x, 0, (int) y));
+				}
+			},
+			XY {
+				@Override
+				public float sample(DensityFunction function, float x, float y, int seed) {
+					return (float) function.compute(new DensityFunction.SinglePointContext((int) x, (int) y, 0));
+				}
+			};
+			
+			public abstract float sample(DensityFunction function, float x, float y, int seed);
 		}
 	}
 }

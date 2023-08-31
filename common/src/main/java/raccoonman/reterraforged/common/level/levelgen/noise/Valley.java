@@ -9,31 +9,30 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.util.StringRepresentable;
-import raccoonman.reterraforged.common.noise.Noise;
-import raccoonman.reterraforged.common.noise.util.NoiseUtil;
-import raccoonman.reterraforged.common.noise.util.Vec2f;
+import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.util.Vec2f;
 
-public record Valley(Noise source, int octaves, float strength, float gridSize, float amplitude, float lacunarity, float falloff, Mode blendMode, ThreadLocal<float[]> erosionCache) implements Noise {
+public record Valley(Noise source, int octaves, float strength, float gridSize, float amplitude, float lacunarity, float falloff, Valley.Mode blendMode, ThreadLocal<float[]> erosionCache) implements Noise {
 	public static final Codec<Valley> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Noise.DIRECT_CODEC.fieldOf("source").forGetter((v) -> v.source),
+		Noise.HOLDER_HELPER_CODEC.fieldOf("source").forGetter((v) -> v.source),
 		Codec.INT.fieldOf("octaves").forGetter((v) -> v.octaves),
 		Codec.FLOAT.fieldOf("strength").forGetter((v) -> v.strength),
 		Codec.FLOAT.fieldOf("grid_size").forGetter((v) -> v.gridSize),
 		Codec.FLOAT.fieldOf("amplitude").forGetter((v) -> v.amplitude),
 		Codec.FLOAT.fieldOf("lacunarity").forGetter((v) -> v.lacunarity),
 		Codec.FLOAT.fieldOf("falloff").forGetter((v) -> v.falloff),
-		Mode.CODEC.fieldOf("blend_mode").forGetter((v) -> v.blendMode)
+		Valley.Mode.CODEC.fieldOf("blend_mode").forGetter((v) -> v.blendMode)
 	).apply(instance, Valley::new));
 
-    public Valley(Noise source, float strength, float gridSize, Mode blendMode) {
+    public Valley(Noise source, float strength, float gridSize, Valley.Mode blendMode) {
         this(source, 1, strength, gridSize, blendMode);
     }
 
-    public Valley(Noise source, int octaves, float strength, float gridSize, Mode blendMode) {
-        this(source, octaves, strength, gridSize, 1.0f / (float)(octaves + 1), 2.25f, 0.75f, blendMode);
+    public Valley(Noise source, int octaves, float strength, float gridSize, Valley.Mode blendMode) {
+        this(source, octaves, strength, gridSize, 1.0F / (float) (octaves + 1), 2.25F, 0.75F, blendMode);
     }
 
-    public Valley(Noise source, int octaves, float strength, float gridSize, float amplitude, float lacunarity, float falloff, Mode blendMode) {
+    public Valley(Noise source, int octaves, float strength, float gridSize, float amplitude, float lacunarity, float falloff, Valley.Mode blendMode) {
 		this(source, octaves, strength, gridSize, amplitude, lacunarity, falloff, blendMode, ThreadLocal.withInitial(() -> new float[25]));
     }
 
@@ -50,9 +49,9 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
     }
 
     private float getErosionValue(float x, float y, int seed, float[] cache) {
-        float sum = 0.0f;
-        float max = 0.0f;
-        float gain = 1.0f;
+        float sum = 0.0F;
+        float max = 0.0F;
+        float gain = 1.0F;
         float distance = this.gridSize;
         for (int i = 0; i < this.octaves; ++i) {
             float value = this.getSingleErosionValue(x, y, distance, seed, cache);
@@ -67,7 +66,7 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
     }
 
     private float getSingleErosionValue(float x, float y, float gridSize, int seed, float[] cache) {
-        Arrays.fill(cache, -1.0f);
+        Arrays.fill(cache, -1.0F);
         int pix = NoiseUtil.floor(x / gridSize);
         int piy = NoiseUtil.floor(y / gridSize);
         float minHeight2 = Float.MAX_VALUE;
@@ -76,8 +75,8 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
                 int pax = pix + dx1;
                 int pay = piy + dy1;
                 Vec2f vec1 = NoiseUtil.cell(seed, pax, pay);
-                float ax = ((float)pax + vec1.x()) * gridSize;
-                float ay = ((float)pay + vec1.y()) * gridSize;
+                float ax = ((float) pax + vec1.x()) * gridSize;
+                float ay = ((float) pay + vec1.y()) * gridSize;
                 float bx = ax;
                 float by = ay;
                 float lowestNeighbour = Float.MAX_VALUE;
@@ -86,8 +85,8 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
                         int pbx = pax + dx2;
                         int pby = pay + dy2;
                         Vec2f vec2 = pbx == pax && pby == pay ? vec1 : NoiseUtil.cell(seed, pbx, pby);
-                        float candidateX = ((float)pbx + vec2.x()) * gridSize;
-                        float candidateY = ((float)pby + vec2.y()) * gridSize;
+                        float candidateX = ((float) pbx + vec2.x()) * gridSize;
+                        float candidateY = ((float) pby + vec2.y()) * gridSize;
                         float height = Valley.getNoiseValue(dx1 + dx2, dy1 + dy2, candidateX, candidateY, seed, source, cache);
                         if (!(height < lowestNeighbour)) continue;
                         lowestNeighbour = height;
@@ -100,14 +99,14 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
                 minHeight2 = height2;
             }
         }
-        return NoiseUtil.clamp((float) Math.sqrt(minHeight2) / gridSize, 0.0f, 1.0f);
+        return NoiseUtil.clamp((float) Math.sqrt(minHeight2) / gridSize, 0.0F, 1.0F);
     }
 
-    private static float getNoiseValue(int dx, int dy, float px, float py, int seed, Noise module, float[] cache) {
+    private static float getNoiseValue(int dx, int dy, float px, float py, int seed, Noise noise, float[] cache) {
         int index = (dy + 2) * 5 + (dx + 2);
         float value = cache[index];
-        if (value == -1.0f) {
-            cache[index] = value = module.getValue(px, py, seed);
+        if (value == -1.0F) {
+            cache[index] = value = noise.getValue(px, py, seed);
         }
         return value;
     }
@@ -136,16 +135,14 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
             public float blend(float value, float erosion, float strength) {
                 return 1.0F - strength;
             }
-        }
-        ,
+        },
         INPUT_LINEAR("input_linear") {
 
             @Override
             public float blend(float value, float erosion, float strength) {
                 return 1.0F - strength * value;
             }
-        }
-        ,
+        },
         OUTPUT_LINEAR("output_linear") {
 
             @Override

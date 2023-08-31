@@ -6,15 +6,25 @@ package raccoonman.reterraforged.common.level.levelgen.noise.climate;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import raccoonman.reterraforged.common.noise.Noise;
-import raccoonman.reterraforged.common.noise.util.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
 public record Temperature(float frequency, int power) implements Noise {
 	public static final Codec<Temperature> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Codec.FLOAT.fieldOf("frequency").forGetter((m) -> m.frequency),
-		Codec.INT.fieldOf("power").forGetter((m) -> m.power)
+		Codec.FLOAT.fieldOf("frequency").forGetter(Temperature::frequency),
+		Codec.INT.fieldOf("power").forGetter(Temperature::power)
 	).apply(instance, Temperature::new));
 
+	@Override
+	public float minValue() {
+		return -1.0F;
+	}
+	
+	@Override
+	public float maxValue() {
+		return 1.0F;
+	}
+	
     @Override
     public float getValue(float x, float y, int seed) {
         float sin = NoiseUtil.sin(y *= this.frequency);

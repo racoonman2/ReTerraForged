@@ -30,10 +30,7 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import raccoonman.reterraforged.common.level.levelgen.climate.Climate;
-import raccoonman.reterraforged.common.level.levelgen.climate.ClimatePreset;
-import raccoonman.reterraforged.common.noise.Noise;
-import raccoonman.reterraforged.common.registries.RTFBiomeSources;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.registries.RTFBuiltInRegistries;
 import raccoonman.reterraforged.common.registries.RTFCurveFunctionTypes;
 import raccoonman.reterraforged.common.registries.RTFDensityFunctionTypes;
@@ -41,6 +38,8 @@ import raccoonman.reterraforged.common.registries.RTFDomainTypes;
 import raccoonman.reterraforged.common.registries.RTFFeatures;
 import raccoonman.reterraforged.common.registries.RTFNoiseTypes;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
+import raccoonman.reterraforged.common.registries.RTFSurfaceConditions;
+import raccoonman.reterraforged.common.registries.RTFSurfaceRules;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 public final class ReTerraForged {
@@ -49,16 +48,15 @@ public final class ReTerraForged {
 
 	public static void bootstrap() {
 		RTFBuiltInRegistries.bootstrap();
-		// TODO move this somewhere else;
-		RegistryUtil.createDataRegistry(RTFRegistries.NOISE, Noise.DIRECT_CODEC);
-		RegistryUtil.createDataRegistry(RTFRegistries.CLIMATE, Climate.DIRECT_CODEC);
-		RegistryUtil.createDataRegistry(RTFRegistries.CLIMATE_PRESET, ClimatePreset.DIRECT_CODEC);
 		RTFCurveFunctionTypes.bootstrap();
 		RTFDomainTypes.bootstrap();
 		RTFNoiseTypes.bootstrap();
 		RTFFeatures.bootstrap();
 		RTFDensityFunctionTypes.bootstrap();
-		RTFBiomeSources.bootstrap();
+		RTFSurfaceConditions.bootstrap();
+		RTFSurfaceRules.bootstrap();
+
+		RegistryUtil.createDataRegistry(RTFRegistries.NOISE, Noise.DIRECT_CODEC);
 	}
 	
 	// does this belong here?

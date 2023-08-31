@@ -27,7 +27,7 @@ package raccoonman.reterraforged.common.level.levelgen.noise.river;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import raccoonman.reterraforged.common.noise.util.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
 public class FloatRange {
 	public static final Codec<FloatRange> CODEC = RecordCodecBuilder.create(instance -> instance.group(

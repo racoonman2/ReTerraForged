@@ -1,24 +1,12 @@
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
-}
-
-loom {
-    accessWidenerPath = file("src/main/resources/reterraforged.accesswidener")
+    modApi "dev.architectury:architectury:${rootProject.architectury_version}"
 }
 
 architectury {
     common("forge", "fabric")
 }
 
-publishing {
-    publications {
-        mavenCommon(MavenPublication) {
-            artifactId = rootProject.archives_base_name
-            from components.java
-        }
-    }
-
-    repositories {
-    }
+loom {
+    accessWidenerPath = file("src/main/resources/reterraforged.accesswidener")
 }

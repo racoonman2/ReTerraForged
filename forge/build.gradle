@@ -1,16 +1,30 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
+
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    forge {
+        dataGen {
+            mod "reterraforged"
+        }
+    
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+
+        mixinConfig "reterraforged-common.mixins.json"
+    }
+}
+
 architectury {
     platformSetupLoomIde()
     forge()
 }
 
-//apply plugin: 'org.spongepowered.mixin'
-
 configurations {
     common
-    shadowCommon
+    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentForge.extendsFrom common
@@ -18,35 +32,23 @@ configurations {
 
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.forge_version}"
-    common(project(path: ":common", configuration: "namedElements")) { 
-    	transitive false 
-    }
-    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { 
-    	transitive = false 
-    }
+
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 }
 
 sourceSets {
     main {
         resources {
             srcDirs += [
-                 project(":common").file("src/main/resources").absolutePath
+                "src/generated/resources"
             ]
         }
     }
 }
 
-loom {
-    forge {
-        dataGen {
-            mod "reterraforged"
-        }
-        mixinConfig "reterraforged.mixins.json"
-    }
-}
-
-
 processResources {
+    duplicatesStrategy 'exclude'
     inputs.property "version", project.version
 
     filesMatching("META-INF/mods.toml") {
@@ -70,16 +72,14 @@ remapJar {
 
 jar {
     classifier "dev"
+    setArchivesBaseName("reterraforged-forge");
 }
 
 sourcesJar {
     def commonSources = project(":common").sourcesJar
     dependsOn commonSources
-    from { 
-    	commonSources.archiveFile.map { zipTree(it) } 
-    } {
-    	exclude "reterraforged.accesswidener", "pack.mcmeta", "reterraforged.mixins.json"
-    }
+    from commonSources.archiveFile.map { zipTree(it) }
+    duplicatesStrategy 'exclude'
 }
 
 components.java {
@@ -96,6 +96,8 @@ publishing {
         }
     }
 
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
+        // Add repositories to publish to here.
     }
 }

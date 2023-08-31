@@ -27,21 +27,23 @@ package raccoonman.reterraforged.common.level.levelgen.noise.cell;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.util.StringRepresentable;
-import raccoonman.reterraforged.common.util.MathUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
+//TODO this should just be a domain or something with the jitter param passed as a field
 public enum CellShape implements StringRepresentable {
     SQUARE("square"),
     HEXAGON("hexagon") {
+    	
         @Override
         public float adjustY(float y) {
-            return y * 1.2f; // rough
+            return y * 1.2F; // rough
         }
 
         @Override
         public float getCellX(int hash, int cx, int cy, float jitter) {
-            float ox = (cy & 1) * 0.5f;
-            float jx = ox > 0 ? jitter * 0.5f: jitter;
-            return MathUtil.getPosX(hash, cx, jx) + ox;
+            float ox = (cy & 1) * 0.5F;
+            float jx = ox > 0 ? jitter * 0.5F: jitter;
+            return getPosX(hash, cx, jx) + ox;
         }
     };
 
@@ -66,11 +68,21 @@ public enum CellShape implements StringRepresentable {
         return y;
     }
 
-    public float getCellX(int hash, int cx, int cy, float jitter) {
-        return MathUtil.getPosX(hash, cx, jitter);
+    public float getCellX(int cx, int cy, int seed, float jitter) {
+        return getPosX(NoiseUtil.hash2D(seed, cx, cy), cx, jitter);
     }
 
-    public float getCellY(int hash, int cx, int cy, float jitter) {
-        return MathUtil.getPosY(hash, cy, jitter);
+    public float getCellY(int cx, int cy, int seed, float jitter) {
+        return getPosY(NoiseUtil.hash2D(seed, cx, cy), cy, jitter);
+    }
+    
+    private static float getPosX(int hash, int cx, float jitter) {
+        float offset = NoiseUtil.rand(hash, NoiseUtil.X_PRIME);
+        return cx + offset * jitter;
+    }
+
+    private static float getPosY(int hash, int cy, float jitter) {
+        float offset = NoiseUtil.rand(hash, NoiseUtil.Y_PRIME);
+        return cy + offset * jitter;
     }
 }

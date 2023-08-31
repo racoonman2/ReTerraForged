@@ -15,9 +15,19 @@ configurations {
     developmentFabric.extendsFrom common
 }
 
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }
@@ -26,8 +36,7 @@ sourceSets {
     main {
         resources {
             srcDirs += [
-                 project(":forge").file("src/generated/resources").absolutePath,
-                 project(":common").file("src/main/resources").absolutePath
+                 project(":forge").file("src/generated/resources").absolutePath
             ]
         }
     }
@@ -42,13 +51,12 @@ processResources {
 }
 
 shadowJar {
-    exclude "architectury.common.json"
-    
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"
 }
 
 remapJar {
+    injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
     classifier null
@@ -56,16 +64,14 @@ remapJar {
 
 jar {
     classifier "dev"
+    setArchivesBaseName("reterraforged-fabric");
 }
 
 sourcesJar {
     def commonSources = project(":common").sourcesJar
     dependsOn commonSources
-    from { 
-    	commonSources.archiveFile.map { zipTree(it) } 
-    } {
-    	exclude "reterraforged.accesswidener", "pack.mcmeta", "reterraforged.mixins.json"
-    }
+    from commonSources.archiveFile.map { zipTree(it) }
+    duplicatesStrategy 'exclude'
 }
 
 components.java {

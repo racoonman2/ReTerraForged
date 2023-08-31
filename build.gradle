@@ -1,6 +1,7 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "1.1-SNAPSHOT" apply false
+    id 'io.github.juuxel.loom-quiltflower' version '1.8.0' apply false
 }
 
 architectury {
@@ -9,6 +10,7 @@ architectury {
 
 subprojects {
     apply plugin: "dev.architectury.loom"
+    apply plugin: "io.github.juuxel.loom-quiltflower"
 
     loom {
         silentMojangMappingsLicense()
@@ -17,16 +19,6 @@ subprojects {
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
         mappings loom.officialMojangMappings()
-    	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    }
-}
-
-repositories {
-    mavenCentral()
-
-    maven {
-        name = 'Mixin'
-        url = 'https://repo.spongepowered.org/repository/maven-public/'
     }
 }
 
@@ -40,13 +32,8 @@ allprojects {
     group = rootProject.maven_group
 
     repositories {
-        maven {
-            name = "Modrinth"
-            url = "https://api.modrinth.com/maven"
-            content {
-                includeGroup "maven.modrinth"
-            }
-        }
+        maven { url "https://maven.shedaniel.me" }
+        maven { url 'https://jitpack.io' }
     }
 
     tasks.withType(JavaCompile) {

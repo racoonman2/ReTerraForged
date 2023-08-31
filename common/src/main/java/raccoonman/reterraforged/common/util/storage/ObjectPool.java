@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 
-import raccoonman.reterraforged.common.noise.util.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
 public class ObjectPool<T> {
     protected final int capacity;

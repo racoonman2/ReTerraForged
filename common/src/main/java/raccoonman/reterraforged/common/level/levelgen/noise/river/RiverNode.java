@@ -24,9 +24,9 @@
 
 package raccoonman.reterraforged.common.level.levelgen.noise.river;
 
-import raccoonman.reterraforged.common.noise.func.Interpolation;
-import raccoonman.reterraforged.common.noise.source.Line;
-import raccoonman.reterraforged.common.noise.util.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
+import raccoonman.reterraforged.common.level.levelgen.noise.source.Line;
+import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
 public record RiverNode(float ax, float ay, float bx, float by, float ah, float bh, float ar, float br, float displacement) {
     public float getProjection(float x, float y) {

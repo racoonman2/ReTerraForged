@@ -21,6 +21,6 @@ public class RTFBlockTagsProvider extends TagsProvider<Block> {
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		this.tag(RTFBlockTags.ERODIBLE).addTag(BlockTags.DIRT);
+		this.tag(RTFBlockTags.ERODIBLE).addTag(BlockTags.DIRT).addTag(BlockTags.SNOW);
 	}
 }
