@@ -35,6 +35,11 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
     public Valley(Noise source, int octaves, float strength, float gridSize, float amplitude, float lacunarity, float falloff, Valley.Mode blendMode) {
 		this(source, octaves, strength, gridSize, amplitude, lacunarity, falloff, blendMode, ThreadLocal.withInitial(() -> new float[25]));
     }
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Valley(this.source.mapAll(visitor), this.octaves, this.strength, this.gridSize, this.amplitude, this.lacunarity, this.falloff, this.blendMode));
+	}
 
 	@Override
 	public Codec<Valley> codec() {
@@ -48,6 +53,20 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
         return NoiseUtil.lerp(erosion, value, this.blendMode.blend(value, erosion, this.strength));
     }
 
+    @Override
+    public boolean equals(Object o) {
+	    return o instanceof Valley valley && 
+	    	this.source.equals(valley.source) && 
+	    	this.octaves == valley.octaves && 
+	    	this.strength == valley.strength &&
+	    	this.gridSize == valley.gridSize &&
+	    	this.amplitude == valley.amplitude &&
+	    	this.lacunarity == valley.lacunarity &&
+	    	this.falloff == valley.falloff &&
+	    	this.blendMode.equals(valley.blendMode)
+	    ;
+    }
+    
     private float getErosionValue(float x, float y, int seed, float[] cache) {
         float sum = 0.0F;
         float max = 0.0F;

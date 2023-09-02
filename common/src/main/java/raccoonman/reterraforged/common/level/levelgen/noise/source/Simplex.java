@@ -28,6 +28,7 @@ package raccoonman.reterraforged.common.level.levelgen.noise.source;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
@@ -100,6 +101,11 @@ public class Simplex extends BaseNoise {
     @Override
 	public Codec<Simplex> codec() {
 		return CODEC;
+	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Simplex(this.frequency, this.lacunarity, this.octaves, this.gain));
 	}
 
     protected static float max(int octaves, float gain) {

@@ -56,6 +56,11 @@ public class Steps extends Modifier {
         this.slopeMin = slopeMin;
         this.slopeMax = slopeMax;
     }
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Steps(this.source.mapAll(visitor), this.steps.mapAll(visitor), this.slopeMin.mapAll(visitor), this.slopeMax.mapAll(visitor), this.curve));
+	}
     
     @Override
     public float modify(float x, float y, float noiseValue, int seed) {

@@ -94,4 +94,9 @@ public class Grad extends Modifier {
 	public Codec<Grad> codec() {
 		return CODEC;
 	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Grad(this.source.mapAll(visitor), this.lower.mapAll(visitor), this.upper.mapAll(visitor), this.strength.mapAll(visitor)));
+	}
 }

@@ -63,4 +63,11 @@ public class Max extends Combiner {
 	public Codec<Max> codec() {
 		return CODEC;
 	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Max(this.modules.stream().map((noise) -> {
+			return noise.mapAll(visitor);
+		}).toList()));
+	}
 }

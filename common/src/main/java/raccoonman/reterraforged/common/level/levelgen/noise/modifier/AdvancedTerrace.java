@@ -29,6 +29,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise.Visitor;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
 public class AdvancedTerrace extends Modifier {
@@ -132,6 +133,11 @@ public class AdvancedTerrace extends Modifier {
     @Override
 	public Codec<AdvancedTerrace> codec() {
 		return CODEC;
+	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new AdvancedTerrace(this.source.mapAll(visitor), this.modulation.mapAll(visitor), this.mask.mapAll(visitor), this.slope.mapAll(visitor), this.blendMin, this.blendMax, this.steps, this.octaves));
 	}
 
     private float getModulated(float value, float modulation) {

@@ -28,6 +28,7 @@ package raccoonman.reterraforged.common.level.levelgen.noise.source;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
 
 public class Rand extends BaseNoise {
@@ -67,5 +68,11 @@ public class Rand extends BaseNoise {
     @Override
 	public Codec<Rand> codec() {
 		return CODEC;
+	}
+    
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Rand(this.frequency));
 	}
 }

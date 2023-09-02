@@ -30,6 +30,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise.Visitor;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
 
 /**
@@ -85,5 +86,10 @@ public class Base extends Selector {
 	@Override
 	public Codec<Base> codec() {
 		return CODEC;
+	}
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Base(this.base.mapAll(visitor), this.control.mapAll(visitor), this.falloff, this.interpolation));
 	}
 }

@@ -12,6 +12,11 @@ public record RegionLerper(Noise alpha, Noise lower, Noise upper) implements Noi
 		Noise.HOLDER_HELPER_CODEC.fieldOf("lower").forGetter(RegionLerper::lower),
 		Noise.HOLDER_HELPER_CODEC.fieldOf("upper").forGetter(RegionLerper::upper)
 	).apply(instance, RegionLerper::new));
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new RegionLerper(this.alpha, this.lower, this.upper));
+	}
 	
 	@Override
 	public Codec<RegionLerper> codec() {

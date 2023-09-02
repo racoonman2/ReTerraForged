@@ -57,4 +57,9 @@ public class Freq extends Modifier {
 	public Codec<Freq> codec() {
 		return CODEC;
 	}
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Freq(this.source.mapAll(visitor), this.x.mapAll(visitor), this.y.mapAll(visitor)));
+	}
 }

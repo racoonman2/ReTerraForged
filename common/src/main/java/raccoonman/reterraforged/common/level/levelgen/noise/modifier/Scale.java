@@ -50,6 +50,11 @@ public class Scale extends Modifier {
         this.max = source.maxValue() * scale.maxValue();
     }
     
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Scale(this.source.mapAll(visitor), this.scale.mapAll(visitor)));
+	}
+    
     @Override
     public float minValue() {
         return min;

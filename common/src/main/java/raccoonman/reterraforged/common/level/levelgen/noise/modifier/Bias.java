@@ -30,6 +30,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Source;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise.Visitor;
 
 /**
  * @author dags <dags@dags.me>
@@ -87,5 +88,10 @@ public class Bias extends Modifier {
     @Override
 	public Codec<Bias> codec() {
 		return CODEC;
+	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Bias(this.source.mapAll(visitor), this.bias.mapAll(visitor)));
 	}
 }

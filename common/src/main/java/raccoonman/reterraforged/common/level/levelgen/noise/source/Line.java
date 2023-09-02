@@ -29,6 +29,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise.Visitor;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
 public class Line implements Noise {
@@ -134,6 +135,11 @@ public class Line implements Noise {
     @Override
 	public Codec<Line> codec() {
 		return CODEC;
+	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Line(this.x1, this.y1, this.x2, this.y2, this.radius.mapAll(visitor), this.fadeIn.mapAll(visitor), this.fadeOut.mapAll(visitor), this.featherScale));
 	}
 
     public float getValue(float x, float y, float widthModifier, int seed) {

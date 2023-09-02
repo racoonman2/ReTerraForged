@@ -12,7 +12,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.minecraftforge.client.event.RegisterPresetEditorsEvent;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -22,7 +21,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistriesHooks;
 import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.client.gui.preview.WorldPreviewScreen;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.registries.data.RTFDensityFunctions;
 import raccoonman.reterraforged.common.registries.data.RTFDimensionTypes;
@@ -49,7 +47,7 @@ public final class ReTerraForgedForge {
     
     private static void registerPresetEditors(RegisterPresetEditorsEvent event) {
     	// TODO we shouldn't register this for the default preset
-    	event.register(WorldPresets.NORMAL, WorldPreviewScreen::new);
+//    	event.register(WorldPresets.NORMAL, WorldPreviewScreen::new);
     }
      
     private static void gatherData(GatherDataEvent event) {

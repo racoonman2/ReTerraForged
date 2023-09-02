@@ -30,6 +30,7 @@ import java.util.Arrays;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
@@ -126,5 +127,10 @@ public class SimplexRidge extends BaseNoise {
     @Override
 	public Codec<SimplexRidge> codec() {
 		return CODEC;
+	}
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new SimplexRidge(this.frequency, this.lacunarity, this.octaves, this.gain));
 	}
 }

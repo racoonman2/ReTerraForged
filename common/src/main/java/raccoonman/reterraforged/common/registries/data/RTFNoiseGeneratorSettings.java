@@ -26,7 +26,7 @@ public final class RTFNoiseGeneratorSettings {
     private static NoiseGeneratorSettings createOverworld(HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams) {
     	NoiseRouter overworld = NoiseRouterData.overworld(densityFunctions, noiseParams, false, false);
     	return new NoiseGeneratorSettings(
-	  		new NoiseSettings(-64, 512, 1, 1),
+	  		new NoiseSettings(-64, 256, 1, 1),
 	  		Blocks.STONE.defaultBlockState(),
 	  		Blocks.WATER.defaultBlockState(),
 	  		new NoiseRouter(
@@ -36,11 +36,11 @@ public final class RTFNoiseGeneratorSettings {
 	  			DensityFunctions.zero(), 
 	  			DensityFunctions.zero(), 
 	  			DensityFunctions.zero(), 
-	  			DensityFunctions.constant(1.0D), 
+	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.CONTINENT)),
 	  			DensityFunctions.constant(-0.65D), 
 	  			DensityFunctions.zero(), 
 	  			DensityFunctions.zero(), 
-	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.FINAL_DENSITY)),
+	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.INITIAL_DENSITY)),
 	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.FINAL_DENSITY)),
 	  			DensityFunctions.zero(), 
 	  			DensityFunctions.zero(), 

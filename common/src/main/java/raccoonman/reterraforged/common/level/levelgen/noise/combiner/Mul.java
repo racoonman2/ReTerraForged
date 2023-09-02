@@ -63,4 +63,11 @@ public class Mul extends Combiner {
 	public Codec<Mul> codec() {
 		return CODEC;
 	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Mul(this.modules.stream().map((noise) -> {
+			return noise.mapAll(visitor);
+		}).toList()));
+	}
 }

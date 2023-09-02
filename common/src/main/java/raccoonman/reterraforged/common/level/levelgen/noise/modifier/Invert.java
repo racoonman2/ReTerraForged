@@ -57,4 +57,9 @@ public class Invert extends Modifier {
 	public Codec<Invert> codec() {
 		return CODEC;
 	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Invert(this.source.mapAll(visitor)));
+	}
 }

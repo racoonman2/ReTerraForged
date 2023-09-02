@@ -13,6 +13,11 @@ public record RegionId(DistanceFunction distance, float jitter) implements Noise
 		DistanceFunction.CODEC.fieldOf("distance").forGetter(RegionId::distance),
 		Codec.FLOAT.fieldOf("jitter").forGetter(RegionId::jitter)
 	).apply(instance, RegionId::new));
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return this;
+	}
 	
 	@Override
 	public Codec<RegionId> codec() {

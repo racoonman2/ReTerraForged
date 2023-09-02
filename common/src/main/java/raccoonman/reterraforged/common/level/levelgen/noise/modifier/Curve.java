@@ -76,4 +76,9 @@ public class Curve extends Modifier {
 	public Codec<Curve> codec() {
 		return CODEC;
 	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Curve(this.source.mapAll(visitor), this.func));
+	}
 }

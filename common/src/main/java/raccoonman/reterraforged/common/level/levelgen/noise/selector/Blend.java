@@ -81,4 +81,9 @@ public class Blend extends Selector {
 	public Codec<Blend> codec() {
 		return CODEC;
 	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Blend(this.control.mapAll(visitor), this.source0.mapAll(visitor), this.source1.mapAll(visitor), this.midpoint, this.blendRange, this.interpolation));
+	}
 }

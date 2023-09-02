@@ -12,6 +12,11 @@ public record Temperature(Noise frequency, int power) implements Noise {
     	Codec.INT.fieldOf("power").forGetter(Temperature::power)
     ).apply(instance, Temperature::new));
 	
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Temperature(this.frequency.mapAll(visitor), this.power));
+	}
+    
     @Override
     public float compute(float x, float y, int seed) {
         y *= this.frequency.compute(x, y, seed);

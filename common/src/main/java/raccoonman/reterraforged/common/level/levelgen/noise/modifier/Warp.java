@@ -47,6 +47,11 @@ public class Warp extends Modifier {
         this.domain = domain;
     }
     
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Warp(this.source.mapAll(visitor), this.domain));
+	}
+    
     @Override
     public float compute(float x, float y, int seed) {
         return source.compute(domain.getX(x, y, seed), domain.getY(x, y, seed), seed);

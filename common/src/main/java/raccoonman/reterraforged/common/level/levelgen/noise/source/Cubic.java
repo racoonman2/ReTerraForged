@@ -28,6 +28,7 @@ package raccoonman.reterraforged.common.level.levelgen.noise.source;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
@@ -111,6 +112,11 @@ public class Cubic extends BaseNoise {
     @Override
 	public Codec<Cubic> codec() {
 		return CODEC;
+	}
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Cubic(this.frequency, this.lacunarity, this.octaves, this.gain));
 	}
     
     private float calculateBound(float signal, int octaves, float gain) {

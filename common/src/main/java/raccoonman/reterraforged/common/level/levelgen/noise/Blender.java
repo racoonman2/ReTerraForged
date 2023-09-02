@@ -18,6 +18,11 @@ public record Blender(Noise control, Noise lower, Noise upper, float blendLower,
 	).apply(instance, Blender::new));
 	
 	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Blender(this.control.mapAll(visitor), this.lower.mapAll(visitor), this.upper.mapAll(visitor), this.blendLower, this.blendUpper, this.split, this.interpolation));
+	}
+	
+	@Override
 	public Codec<Blender> codec() {
 		return CODEC;
 	}

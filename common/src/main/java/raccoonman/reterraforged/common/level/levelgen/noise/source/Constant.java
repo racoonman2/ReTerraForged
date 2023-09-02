@@ -64,4 +64,9 @@ public class Constant implements Noise {
 	public Codec<Constant> codec() {
 		return CODEC;
 	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Constant(this.value));
+	}
 }

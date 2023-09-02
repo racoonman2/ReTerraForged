@@ -28,6 +28,8 @@ package raccoonman.reterraforged.common.level.levelgen.noise.source;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise.Visitor;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
@@ -104,6 +106,11 @@ public class Perlin extends BaseNoise {
     @Override
 	public Codec<Perlin> codec() {
 		return CODEC;
+	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Perlin(this.frequency, this.lacunarity, this.interpolation, this.octaves, this.gain));
 	}
 
     protected float min(int octaves, float gain) {

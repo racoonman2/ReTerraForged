@@ -102,9 +102,15 @@ public interface Noise {
 	Codec<? extends Noise> codec();
 	
 	float compute(float x, float y, int seed);
+
+    Noise mapAll(Noise.Visitor visitor);
+	
+	public interface Visitor {
+		Noise apply(Noise noise);
+	}
+
 	
 	//TODO these shouldn't be default
-	
     default float minValue() {
     	return 0.0F;
     }

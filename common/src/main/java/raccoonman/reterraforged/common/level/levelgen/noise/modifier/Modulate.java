@@ -47,6 +47,11 @@ public class Modulate extends Modifier {
         this.strength = strength;
     }
 
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Modulate(this.source.mapAll(visitor), this.direction.mapAll(visitor), this.strength.mapAll(visitor)));
+	}
+
     @Override
     public float compute(float x, float y, int seed) {
         float angle = direction.compute(x, y, seed) * NoiseUtil.PI2;

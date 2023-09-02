@@ -86,4 +86,9 @@ public class VariableBlend extends Selector {
 	public Codec<VariableBlend> codec() {
 		return CODEC;
 	}
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return new VariableBlend(this.control.mapAll(visitor), this.variator.mapAll(visitor), this.source0.mapAll(visitor), this.source1.mapAll(visitor), this.midpoint, this.minBlend, this.maxBlend, this.interpolation);
+	}
 }

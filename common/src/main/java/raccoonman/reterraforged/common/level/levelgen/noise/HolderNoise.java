@@ -26,4 +26,9 @@ public record HolderNoise(Holder<Noise> holder) implements Noise {
 	public float compute(float x, float y, int seed) {
 		return this.holder.value().compute(x, y, seed);
 	}
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new HolderNoise(Holder.direct(this.holder.value().mapAll(visitor))));
+	}
 }

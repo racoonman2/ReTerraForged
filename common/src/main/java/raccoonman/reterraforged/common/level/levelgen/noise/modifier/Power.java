@@ -47,6 +47,11 @@ public class Power extends Modifier {
         this.n = n;
     }
     
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Power(this.source.mapAll(visitor), this.n.mapAll(visitor)));
+	}
+    
     @Override
     public float modify(float x, float y, float noiseValue, int seed) {
         return NoiseUtil.pow(noiseValue, n.compute(x, y, seed));

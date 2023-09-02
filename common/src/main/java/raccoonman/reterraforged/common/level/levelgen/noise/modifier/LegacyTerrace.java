@@ -64,6 +64,11 @@ public class LegacyTerrace extends Modifier {
             this.steps[i] = new Step(value, spacing, blendRange);
         }
     }
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new LegacyTerrace(this.source.mapAll(visitor), this.lowerCurve.mapAll(visitor), this.upperCurve.mapAll(visitor), this.steps.length, this.blend));
+	}
 
     @Override
     public float compute(float x, float y, int seed) {

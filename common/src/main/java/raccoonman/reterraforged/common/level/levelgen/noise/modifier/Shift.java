@@ -44,6 +44,11 @@ public class Shift extends Modifier {
         this.seedOffset = seedOffset;
 	}
 
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Shift(this.source.mapAll(visitor), this.seedOffset));
+	}
+
     @Override
     public float compute(float x, float y, int seed) {
     	return this.source.compute(x, y, seed + this.seedOffset);

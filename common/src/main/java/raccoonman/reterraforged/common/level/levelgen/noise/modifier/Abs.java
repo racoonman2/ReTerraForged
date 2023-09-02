@@ -51,4 +51,9 @@ public class Abs extends Modifier {
 	public Codec<Abs> codec() {
 		return CODEC;
 	}
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Abs(this.source.mapAll(visitor)));
+	}
 }

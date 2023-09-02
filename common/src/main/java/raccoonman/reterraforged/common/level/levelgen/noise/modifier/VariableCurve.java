@@ -47,6 +47,11 @@ public class VariableCurve extends Modifier {
         this.gradient = gradient;
     }
 
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new VariableCurve(this.source.mapAll(visitor), this.midpoint.mapAll(visitor), this.gradient.mapAll(visitor)));
+	}
+
     @Override
     public float modify(float x, float y, float noiseValue, int seed) {
         float mid = midpoint.compute(x, y, seed);

@@ -16,9 +16,9 @@ public record YGradient(DensityFunction y) implements DensityFunction.SimpleFunc
 	
 	@Override
 	public double compute(FunctionContext ctx) {
-		int blockY = ctx.blockY();
-		int noiseY = NoiseUtil.floor((float) this.y.compute(ctx));
-		return blockY <= noiseY ? this.y.maxValue() - ((double) blockY / noiseY) : 0.0F;
+		double blockY = ctx.blockY();
+		double noiseY = NoiseUtil.floor((float) this.y.compute(ctx));
+		return blockY <= noiseY ? 1.0F - (blockY / noiseY) : 0.0F;
 	}
 
 	@Override

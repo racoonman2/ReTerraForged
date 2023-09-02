@@ -74,4 +74,9 @@ public class Boost extends Modifier {
 	public Codec<Boost> codec() {
 		return CODEC;
 	}
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Boost(this.source.mapAll(visitor), this.iterations));
+	}
 }

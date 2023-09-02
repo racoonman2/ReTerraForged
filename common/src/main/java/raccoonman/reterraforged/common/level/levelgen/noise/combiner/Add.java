@@ -63,4 +63,11 @@ public class Add extends Combiner {
 	public Codec<Add> codec() {
 		return CODEC;
 	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Add(this.modules.stream().map((noise) -> {
+			return noise.mapAll(visitor);
+		}).toList()));
+	}
 }

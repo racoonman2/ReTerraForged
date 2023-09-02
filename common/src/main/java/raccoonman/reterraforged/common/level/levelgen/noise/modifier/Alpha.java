@@ -71,4 +71,9 @@ public class Alpha extends Modifier {
 	public Codec<Alpha> codec() {
 		return CODEC;
 	}
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Alpha(this.source.mapAll(visitor), this.alpha.mapAll(visitor)));
+	}
 }

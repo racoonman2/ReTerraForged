@@ -77,5 +77,10 @@ public enum CellSource implements Noise, StringRepresentable {
 		return CODEC;
 	}
 	
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(this);
+	}
+	
     protected abstract float sample(float x, float y, int seed);
 }

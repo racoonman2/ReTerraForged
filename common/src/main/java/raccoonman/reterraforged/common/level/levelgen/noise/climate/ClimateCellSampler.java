@@ -13,6 +13,11 @@ public record ClimateCellSampler(Noise source, DistanceFunction distance) implem
 		Noise.HOLDER_HELPER_CODEC.fieldOf("source").forGetter(ClimateCellSampler::source),
 		DistanceFunction.CODEC.fieldOf("distance").forGetter(ClimateCellSampler::distance)
 	).apply(instance, ClimateCellSampler::new));
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new ClimateCellSampler(this.source.mapAll(visitor), this.distance));
+	}
 	
 	@Override
 	public Codec<ClimateCellSampler> codec() {

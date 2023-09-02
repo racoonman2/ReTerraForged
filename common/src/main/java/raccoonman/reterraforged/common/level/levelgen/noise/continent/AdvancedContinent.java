@@ -17,6 +17,11 @@ public record AdvancedContinent(float variance, float jitter, float inland, floa
 		Noise.HOLDER_HELPER_CODEC.fieldOf("cliff_noise").forGetter(AdvancedContinent::cliffNoise),
 		Noise.HOLDER_HELPER_CODEC.fieldOf("bay_noise").forGetter(AdvancedContinent::bayNoise)
 	).apply(instance, AdvancedContinent::new));
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return new AdvancedContinent(this.variance, this.jitter, this.inland, this.shallowOcean, this.cliffNoise.mapAll(visitor), this.bayNoise.mapAll(visitor));
+	}
 	
 	@Override
 	public Codec<AdvancedContinent> codec() {

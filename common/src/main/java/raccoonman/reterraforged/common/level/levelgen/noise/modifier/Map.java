@@ -49,6 +49,11 @@ public class Map extends Modifier {
         this.max = max;
     }
     
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Map(this.source.mapAll(visitor), this.min.mapAll(visitor), this.max.mapAll(visitor)));
+	}
+    
     @Override
     public float minValue() {
         return min.minValue();

@@ -19,6 +19,11 @@ public record RegionEdge(float edgeMin, float edgeMax, EdgeFunction edge, Distan
 	).apply(instance, RegionEdge::new));
 	
 	@Override
+	public Noise mapAll(Visitor visitor) {
+		return this;
+	}
+	
+	@Override
 	public Codec<RegionEdge> codec() {
 		return CODEC;
 	}

@@ -30,6 +30,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Source;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise.Visitor;
 
 /**
  * @author dags <dags@dags.me>
@@ -100,5 +101,10 @@ public class Clamp extends Modifier {
     @Override
 	public Codec<Clamp> codec() {
 		return CODEC;
+	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Clamp(this.source.mapAll(visitor), this.min.mapAll(visitor), this.max.mapAll(visitor)));
 	}
 }

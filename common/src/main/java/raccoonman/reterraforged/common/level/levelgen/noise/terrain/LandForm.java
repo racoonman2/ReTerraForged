@@ -21,4 +21,9 @@ public record LandForm(Noise base, Noise terrain) implements Noise {
 	public float compute(float x, float y, int seed) {
 		return NoiseUtil.clamp(this.base.compute(x, y, seed) + this.terrain.compute(x, y, seed), 0.0F, 1.0F);
 	}
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new LandForm(this.base.mapAll(visitor), this.terrain.mapAll(visitor)));
+	}
 }

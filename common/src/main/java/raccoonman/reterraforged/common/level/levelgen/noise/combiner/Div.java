@@ -63,4 +63,11 @@ public class Div extends Combiner {
 	public Codec<Div> codec() {
 		return CODEC;
 	}
+	
+    @Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Div(this.modules.stream().map((noise) -> {
+			return noise.mapAll(visitor);
+		}).toList()));
+	}
 }

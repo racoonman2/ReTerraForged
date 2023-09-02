@@ -29,6 +29,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise.Visitor;
+import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Sub;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
 public class Sin extends BaseNoise {
@@ -85,5 +87,10 @@ public class Sin extends BaseNoise {
     @Override
 	public Codec<Sin> codec() {
 		return CODEC;
+	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Sin(this.frequency, this.alpha.mapAll(visitor)));
 	}
 }

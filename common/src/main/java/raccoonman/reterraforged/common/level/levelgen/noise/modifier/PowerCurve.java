@@ -55,6 +55,11 @@ public class PowerCurve extends Modifier {
         this.mid = this.min + (range / 2F);
     }
     
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new PowerCurve(this.source.mapAll(visitor), this.power));
+	}
+    
     @Override
     public float modify(float x, float y, float value, int seed) {
         if (value >= mid) {

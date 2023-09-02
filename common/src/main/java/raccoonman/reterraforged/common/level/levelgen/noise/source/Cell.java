@@ -29,6 +29,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise.Visitor;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.CellFunc;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
@@ -103,8 +104,13 @@ public class Cell extends BaseNoise {
 	public Codec<Cell> codec() {
 		return CODEC;
 	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Cell(this.frequency, this.lookup.mapAll(visitor), this.cellFunc, this.distFunc, this.distance));
+	}
 
-    static float min(CellFunc func, Noise lookup) {
+    private static float min(CellFunc func, Noise lookup) {
         if (func == CellFunc.NOISE_LOOKUP) {
             return lookup.minValue();
         }
@@ -114,7 +120,7 @@ public class Cell extends BaseNoise {
         return -1;
     }
 
-    static float max(CellFunc func, Noise lookup) {
+    private static float max(CellFunc func, Noise lookup) {
         if (func == CellFunc.NOISE_LOOKUP) {
             return lookup.maxValue();
         }

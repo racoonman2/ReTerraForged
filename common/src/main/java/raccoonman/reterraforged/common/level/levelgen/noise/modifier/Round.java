@@ -20,4 +20,9 @@ public record Round(Noise source) implements Noise {
 	public float compute(float x, float y, int seed) {
 		return NoiseUtil.round(this.source.compute(x, y, seed));
 	}
+	
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Round(this.source.mapAll(visitor)));
+	}
 }

@@ -10,10 +10,9 @@ import raccoonman.reterraforged.common.level.levelgen.noise.domain.Domain;
 public final class RTFLandForms {
     private static final float TERRAIN_VERTICAL_SCALE = 0.98F;
 	
-    public static Noise deepOcean() {
-    	final int seaLevel = 63;
-        final Noise hills = Source.perlin(150, 3).shift(1).scale(seaLevel * 0.7).bias(Source.perlin(200, 1).shift(2).scale(seaLevel * 0.2f));
-        final Noise canyons = Source.perlin(150, 4).shift(3).powCurve(0.2).invert().scale(seaLevel * 0.7).bias(Source.perlin(170, 1).shift(4).scale(seaLevel * 0.15f));
+    public static Noise deepOcean(Noise seaLevel) {
+        final Noise hills = Source.perlin(150, 3).shift(1).scale(seaLevel.mul(Source.constant(0.7))).bias(Source.perlin(200, 1).shift(2).scale(seaLevel.mul(Source.constant(0.2))));
+        final Noise canyons = Source.perlin(150, 4).shift(3).powCurve(0.2).invert().scale(seaLevel.mul(Source.constant(0.7))).bias(Source.perlin(170, 1).shift(4).scale(seaLevel.mul(Source.constant(0.15))));
         return Source.perlin(500, 1).shift(5).blend(hills, canyons, 0.6, 0.65).warp(50, 2, 50.0).shift(6);
     }
     

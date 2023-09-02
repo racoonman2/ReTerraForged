@@ -13,6 +13,11 @@ public record RegionSelector(Noise selector, WeightMap<Noise> regions) implement
 	).apply(instance, RegionSelector::new));
 	
 	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new RegionSelector(this.selector.mapAll(visitor), mapAll(this.regions, visitor)));
+	}
+	
+	@Override
 	public Codec<RegionSelector> codec() {
 		return CODEC;
 	}
@@ -20,5 +25,13 @@ public record RegionSelector(Noise selector, WeightMap<Noise> regions) implement
 	@Override
 	public float compute(float x, float y, int seed) {
 		return this.regions.getValue(this.selector.compute(x, y, seed)).compute(x, y, seed);
+	}
+	
+	private static WeightMap<Noise> mapAll(WeightMap<Noise> regions, Visitor visitor) {
+		WeightMap.Builder<Noise> builder = new WeightMap.Builder<>();
+		for(int i = 0; i < regions.values.length; i++) {
+			builder.entry(regions.weights[i], ((Noise) regions.values[i]).mapAll(visitor));
+		}
+		return builder.build();
 	}
 }

@@ -30,6 +30,7 @@ import java.util.Arrays;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
@@ -157,4 +158,9 @@ public class Ridge extends BaseNoise {
 
         return value;
     }
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Ridge(this.frequency, this.interpolation, this.lacunarity, this.octaves, this.gain));
+	}
 }

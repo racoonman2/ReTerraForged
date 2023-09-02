@@ -56,7 +56,7 @@ public class FlatCache implements DensityFunction.SimpleFunction {
 	}
 
 	@Override
-	public KeyDispatchDataCodec<? extends DensityFunction> codec() {
+	public KeyDispatchDataCodec<FlatCache> codec() {
 		throw new UnsupportedOperationException();
 	}
 	

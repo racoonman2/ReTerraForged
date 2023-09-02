@@ -31,6 +31,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise.Visitor;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
@@ -100,6 +101,11 @@ public class MultiBlend extends Selector {
     @Override
 	public Codec<MultiBlend> codec() {
 		return CODEC;
+	}
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new MultiBlend(this.blend, this.interpolation, this.control.mapAll(visitor), this.modules.stream().map((noise) -> noise.mapAll(visitor)).toList()));
 	}
     
     private record Node(Noise source, float min, float max) {

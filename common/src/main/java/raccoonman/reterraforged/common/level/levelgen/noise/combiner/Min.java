@@ -63,4 +63,11 @@ public class Min extends Combiner {
 	public Codec<Min> codec() {
 		return CODEC;
 	}
+    
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Min(this.modules.stream().map((noise) -> {
+			return noise.mapAll(visitor);
+		}).toList()));
+	}
 }

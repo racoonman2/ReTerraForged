@@ -11,7 +11,12 @@ public record Humidity(Noise source, int power) implements Noise {
 		Noise.HOLDER_HELPER_CODEC.fieldOf("source").forGetter(Humidity::source),
 		Codec.INT.fieldOf("power").forGetter(Humidity::power)		
 	).apply(instance, Humidity::new));
-        
+
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Humidity(this.source.mapAll(visitor), this.power));
+	}
+	
     @Override
     public float compute(float x, float y, int seed) {
         float noise = this.source.compute(x, y, seed);

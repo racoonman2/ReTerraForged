@@ -48,6 +48,11 @@ public class Terrace extends Modifier {
         }
     }
 
+	@Override
+	public Noise mapAll(Visitor visitor) {
+		return visitor.apply(new Terrace(this.source.mapAll(visitor), this.ramp.mapAll(visitor), this.cliff.mapAll(visitor), this.rampHeight.mapAll(visitor), this.steps.length, this.blend));
+	}
+    
     @Override
     public float compute(float x, float y, int seed) {
         float value = source.compute(x, y, seed);
