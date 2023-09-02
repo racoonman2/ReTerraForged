@@ -28,7 +28,7 @@ package raccoonman.reterraforged.common.level.levelgen.noise.source;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunc;
+import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.EdgeFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
@@ -37,15 +37,15 @@ public class CellEdge extends BaseNoise {
 	public static final Codec<CellEdge> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.optionalFieldOf("frequency", Builder.DEFAULT_FREQUENCY).forGetter((n) -> n.frequency),
 		EdgeFunction.CODEC.optionalFieldOf("edge_func", Builder.DEFAULT_EDGE_FUNC).forGetter((n) -> n.edgeFunc),
-		DistanceFunc.CODEC.optionalFieldOf("dist_func", Builder.DEFAULT_DIST_FUNC).forGetter((n) -> n.distFunc),
+		DistanceFunction.CODEC.optionalFieldOf("dist_func", Builder.DEFAULT_DIST_FUNC).forGetter((n) -> n.distFunc),
 		Codec.FLOAT.optionalFieldOf("distance", Builder.DEFAULT_DISTANCE).forGetter((n) -> n.distance)
 	).apply(instance, CellEdge::new));
 	
     private final EdgeFunction edgeFunc;
-    private final DistanceFunc distFunc;
+    private final DistanceFunction distFunc;
     private final float distance;
 
-    public CellEdge(float frequency, EdgeFunction edgeFunc, DistanceFunc distFunc, float distance) {
+    public CellEdge(float frequency, EdgeFunction edgeFunc, DistanceFunction distFunc, float distance) {
     	super(frequency);
     	this.edgeFunc = edgeFunc;
         this.distFunc = distFunc;

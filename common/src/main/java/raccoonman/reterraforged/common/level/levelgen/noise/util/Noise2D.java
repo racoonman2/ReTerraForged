@@ -27,7 +27,7 @@ package raccoonman.reterraforged.common.level.levelgen.noise.util;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.CellFunc;
-import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunc;
+import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.EdgeFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
 
@@ -189,7 +189,7 @@ public final class Noise2D {
                 * NoiseUtil.CUBIC_2D_BOUNDING;
     }
 
-    public static float cell(float x, float y, int seed, float distance, CellFunc cellFunc, DistanceFunc distanceFunc, Noise lookup) {
+    public static float cell(float x, float y, int seed, float distance, CellFunc cellFunc, DistanceFunction distanceFunc, Noise lookup) {
         int xi = NoiseUtil.floor(x);
         int yi = NoiseUtil.floor(y);
 
@@ -220,7 +220,7 @@ public final class Noise2D {
         return cellFunc.apply(cellX, cellY, nearest, seed, vec2f, lookup);
     }
 
-    public static float cellEdge(float x, float y, int seed, float distance, EdgeFunction edgeFunc, DistanceFunc distanceFunc) {
+    public static float cellEdge(float x, float y, int seed, float distance, EdgeFunction edgeFunc, DistanceFunction distanceFunc) {
         int xi = NoiseUtil.floor(x);
         int yi = NoiseUtil.floor(y);
 

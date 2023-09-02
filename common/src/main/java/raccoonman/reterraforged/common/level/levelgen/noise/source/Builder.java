@@ -28,7 +28,7 @@ package raccoonman.reterraforged.common.level.levelgen.noise.source;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Source;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.CellFunc;
-import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunc;
+import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.EdgeFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
 
@@ -46,7 +46,7 @@ public class Builder {
     public static final float DEFAULT_DISTANCE = 1F;
     public static final CellFunc DEFAULT_CELL_FUNC = CellFunc.CELL_VALUE;
     public static final EdgeFunction DEFAULT_EDGE_FUNC = EdgeFunction.DISTANCE_2;
-    public static final DistanceFunc DEFAULT_DIST_FUNC = DistanceFunc.EUCLIDEAN;
+    public static final DistanceFunction DEFAULT_DIST_FUNC = DistanceFunction.EUCLIDEAN;
     public static final Interpolation DEFAULT_INTERPOLATION = Interpolation.CURVE3;
 
     private int octaves = DEFAULT_OCTAVES;
@@ -57,7 +57,7 @@ public class Builder {
     private Noise source = Source.ZERO;
     private CellFunc cellFunc = DEFAULT_CELL_FUNC;
     private EdgeFunction edgeFunc = DEFAULT_EDGE_FUNC;
-    private DistanceFunc distFunc = DEFAULT_DIST_FUNC;
+    private DistanceFunction distFunc = DEFAULT_DIST_FUNC;
     private Interpolation interpolation = DEFAULT_INTERPOLATION;
 
     public int getOctaves() {
@@ -95,7 +95,7 @@ public class Builder {
         return edgeFunc;
     }
 
-    public DistanceFunc getDistFunc() {
+    public DistanceFunction getDistFunc() {
         return distFunc;
     }
 
@@ -148,7 +148,7 @@ public class Builder {
         return this;
     }
 
-    public Builder distFunc(DistanceFunc cellDistance) {
+    public Builder distFunc(DistanceFunction cellDistance) {
         this.distFunc = cellDistance;
         return this;
     }

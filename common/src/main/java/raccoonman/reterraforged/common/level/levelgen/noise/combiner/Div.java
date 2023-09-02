@@ -1,7 +1,8 @@
 /*
+ *
  * MIT License
  *
- * Copyright (c) 2021 TerraForged
+ * Copyright (c) 2020 TerraForged
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,49 +23,44 @@
  * SOFTWARE.
  */
 
-package raccoonman.reterraforged.common.level.levelgen.noise.river;
+package raccoonman.reterraforged.common.level.levelgen.noise.combiner;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class RiverPieces {
-    public static final RiverPieces NONE = new RiverPieces();
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-    private List<RiverNode> rivers;
-    private List<RiverNode> lakes;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 
-    public RiverPieces() {
-    	this.rivers = new ArrayList<>();
-    	this.lakes = new ArrayList<>();
+/**
+ * @author dags <dags@dags.me>
+ */
+public class Div extends Combiner {
+	public static final Codec<Div> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Noise.HOLDER_HELPER_CODEC.listOf().fieldOf("modules").forGetter((c) -> c.modules)
+	).apply(instance, Div::new));
+
+    public Div(List<Noise> modules) {
+        super(modules);
     }
     
-    public RiverPieces reset() {
-    	this.rivers.clear();
-    	this.lakes.clear();
-    	return this;
+    @Override
+    protected float minTotal(float total, Noise next) {
+        return total / next.minValue();
     }
 
-    public int riverCount() {
-        return this.rivers.size();
+    @Override
+    protected float maxTotal(float total, Noise next) {
+        return total / next.maxValue();
     }
 
-    public int lakeCount() {
-        return this.lakes.size();
+    @Override
+    protected float combine(float total, float value) {
+        return total / value;
     }
 
-    public RiverNode river(int i) {
-        return this.rivers.get(i);
-    }
-
-    public RiverNode lake(int i) {
-        return this.lakes.get(i);
-    }
-
-    public void addRiver(RiverNode node) {
-    	this.rivers.add(node);
-    }
-
-    public void addLake(RiverNode node) {
-    	this.lakes.add(node);
-    }
+    @Override
+	public Codec<Div> codec() {
+		return CODEC;
+	}
 }

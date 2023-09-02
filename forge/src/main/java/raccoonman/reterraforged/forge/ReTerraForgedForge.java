@@ -26,9 +26,10 @@ import raccoonman.reterraforged.common.client.gui.preview.WorldPreviewScreen;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.registries.data.RTFDensityFunctions;
 import raccoonman.reterraforged.common.registries.data.RTFDimensionTypes;
-import raccoonman.reterraforged.common.registries.data.RTFNoise;
 import raccoonman.reterraforged.common.registries.data.RTFNoiseGeneratorSettings;
 import raccoonman.reterraforged.common.registries.data.RTFPlacedFeatures;
+import raccoonman.reterraforged.common.registries.data.noise.RTFClimateNoise;
+import raccoonman.reterraforged.common.registries.data.noise.RTFTerrainNoise;
 import raccoonman.reterraforged.forge.data.provider.RTFBlockTagsProvider;
 import raccoonman.reterraforged.forge.data.provider.RTFLangProvider;
 import raccoonman.reterraforged.platform.registries.forge.RegistryUtilImpl;
@@ -53,7 +54,10 @@ public final class ReTerraForgedForge {
      
     private static void gatherData(GatherDataEvent event) {
     	RegistrySetBuilder builder = new RegistrySetBuilder();
-    	builder.add(RTFRegistries.NOISE, RTFNoise::register);
+    	builder.add(RTFRegistries.NOISE, (ctx) -> {
+    		RTFTerrainNoise.register(ctx);
+    		RTFClimateNoise.register(ctx);
+    	});
     	builder.add(Registries.NOISE_SETTINGS, RTFNoiseGeneratorSettings::register);
     	builder.add(Registries.DIMENSION_TYPE, RTFDimensionTypes::register);
     	builder.add(Registries.DENSITY_FUNCTION, RTFDensityFunctions::register);

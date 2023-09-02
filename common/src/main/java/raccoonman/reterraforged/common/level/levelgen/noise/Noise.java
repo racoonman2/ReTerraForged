@@ -39,6 +39,7 @@ import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.world.level.levelgen.DensityFunctions;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Add;
+import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Div;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Max;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Min;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Mul;
@@ -62,6 +63,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Map;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Modulate;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Power;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.PowerCurve;
+import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Round;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Scale;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Shift;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Steps;
@@ -431,6 +433,13 @@ public interface Noise {
         }
         return new Mul(ImmutableList.of(this, other));
     }
+    
+    default Noise div(Noise other) {
+        if (other.minValue() == 1F && other.maxValue() == 1F) {
+            return this;
+        }
+        return new Div(ImmutableList.of(this, other));
+    }
 
     default Noise blend(double blend, Noise... sources) {
         return blend(blend, Interpolation.LINEAR, sources);
@@ -469,6 +478,10 @@ public interface Noise {
         return scale(Source.constant(scale));
     }
 
+    default Noise round() {
+    	return new Round(this);
+    }
+    
     default Noise select(Noise lower, Noise upper, double lowerBound, double upperBound, double falloff) {
         return select(lower, upper, lowerBound, upperBound, falloff, Interpolation.CURVE3);
     }

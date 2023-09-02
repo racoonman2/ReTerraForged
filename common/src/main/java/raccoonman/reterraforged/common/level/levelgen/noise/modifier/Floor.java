@@ -1,8 +1,9 @@
-package raccoonman.reterraforged.common.level.levelgen.noise;
+package raccoonman.reterraforged.common.level.levelgen.noise.modifier;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
 public record Floor(Noise source) implements Noise {

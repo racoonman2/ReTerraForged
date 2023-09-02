@@ -53,7 +53,7 @@ public interface Domain {
     default Domain add(Domain next) {
         return new AddWarp(this, next);
     }
-
+    
     default Domain warp(Domain next) {
         return new CompoundWarp(this, next);
     }

@@ -1,6 +1,3 @@
-/*
- * Decompiled with CFR 0.150.
- */
 package raccoonman.reterraforged.common.level.levelgen.noise.climate;
 
 import com.mojang.serialization.Codec;
@@ -12,19 +9,9 @@ import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 public record Humidity(Noise source, int power) implements Noise {
 	public static final Codec<Humidity> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Noise.HOLDER_HELPER_CODEC.fieldOf("source").forGetter(Humidity::source),
-		Codec.INT.fieldOf("power").forGetter(Humidity::power)
+		Codec.INT.fieldOf("power").forGetter(Humidity::power)		
 	).apply(instance, Humidity::new));
-
-	@Override
-	public float minValue() {
-		return -1.0F;
-	}
-	
-	@Override
-	public float maxValue() {
-		return 1.0F;
-	}
-	
+        
     @Override
     public float compute(float x, float y, int seed) {
         float noise = this.source.compute(x, y, seed);
@@ -42,4 +29,3 @@ public record Humidity(Noise source, int power) implements Noise {
 		return CODEC;
 	}
 }
-

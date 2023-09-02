@@ -185,6 +185,10 @@ public class NoiseUtil {
         return (f >= 0 ? (int) f : (int) f - 1);
     }
 
+    public static int floor(double d) {
+        return (d >= 0 ? (int) d : (int) d - 1);
+    }
+    
     public static int toInt(float f) {
         int i = Float.floatToRawIntBits(f);
         return i ^ (i >> 16);

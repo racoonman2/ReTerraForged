@@ -30,7 +30,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.CellFunc;
-import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunc;
+import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
 
 public class Cell extends BaseNoise {
@@ -38,19 +38,19 @@ public class Cell extends BaseNoise {
 		Codec.FLOAT.fieldOf("frequency").forGetter((c) -> c.frequency),
 		Noise.HOLDER_HELPER_CODEC.fieldOf("source").forGetter((c) -> c.lookup),
 		CellFunc.CODEC.fieldOf("cell_func").forGetter((c) -> c.cellFunc),
-		DistanceFunc.CODEC.fieldOf("dist_func").forGetter((c) -> c.distFunc),
+		DistanceFunction.CODEC.fieldOf("dist_func").forGetter((c) -> c.distFunc),
 		Codec.FLOAT.fieldOf("distance").forGetter((c) -> c.distance)
 	).apply(instance, Cell::new));
 	
     private final Noise lookup;
     private final CellFunc cellFunc;
-    private final DistanceFunc distFunc;
+    private final DistanceFunction distFunc;
     private final float distance;
     private final float min;
     private final float max;
     private final float range;
 
-    public Cell(float frequency, Noise lookup, CellFunc cellFunc, DistanceFunc distFunc, float distance) {
+    public Cell(float frequency, Noise lookup, CellFunc cellFunc, DistanceFunction distFunc, float distance) {
     	super(frequency);
     	this.lookup = lookup;
         this.cellFunc = cellFunc;

@@ -31,7 +31,7 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.util.StringRepresentable;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.CellFunc;
-import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunc;
+import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.EdgeFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Builder;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Constant;
@@ -116,7 +116,7 @@ public enum Source implements StringRepresentable {
         return Source.cell(scale, CellFunc.CELL_VALUE);
     }
 
-    public static Noise cell(int scale, DistanceFunc distFunc) {
+    public static Noise cell(int scale, DistanceFunction distFunc) {
         return Source.builder().scale(scale).distFunc(distFunc).cell();
     }
 
@@ -124,7 +124,7 @@ public enum Source implements StringRepresentable {
         return Source.builder().scale(scale).cellFunc(cellFunc).cell();
     }
 
-    public static Noise cell(int scale, DistanceFunc distFunc, CellFunc cellFunc) {
+    public static Noise cell(int scale, DistanceFunction distFunc, CellFunc cellFunc) {
         return Source.builder().scale(scale).distFunc(distFunc).cellFunc(cellFunc).cell();
     }
 
@@ -132,7 +132,7 @@ public enum Source implements StringRepresentable {
         return builder().scale(scale).cellFunc(CellFunc.NOISE_LOOKUP).source(source).cell();
     }
 
-    public static Noise cellNoise(int scale, DistanceFunc distFunc, Noise source) {
+    public static Noise cellNoise(int scale, DistanceFunction distFunc, Noise source) {
         return builder().scale(scale)
                 .cellFunc(CellFunc.NOISE_LOOKUP)
                 .distFunc(distFunc)
@@ -148,7 +148,7 @@ public enum Source implements StringRepresentable {
         return Source.builder().scale(scale).edgeFunc(func).cellEdge();
     }
 
-    public static Noise cellEdge(int scale, DistanceFunc distFunc, EdgeFunction edgeFunc) {
+    public static Noise cellEdge(int scale, DistanceFunction distFunc, EdgeFunction edgeFunc) {
         return Source.builder().scale(scale).distFunc(distFunc).edgeFunc(edgeFunc).cellEdge();
     }
 
