@@ -7,6 +7,7 @@ import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.common.level.levelgen.density.FlatCache;
 import raccoonman.reterraforged.common.level.levelgen.density.NoiseWrapper;
 import raccoonman.reterraforged.common.level.levelgen.density.Ridges;
+import raccoonman.reterraforged.common.level.levelgen.density.WorldHeightMarker;
 import raccoonman.reterraforged.common.level.levelgen.density.YGradient;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
@@ -17,6 +18,7 @@ public final class RTFDensityFunctionTypes {
 		register("flat_cache", FlatCache.Marker.CODEC);
 		register("y_gradient", YGradient.CODEC);
 		register("ridges", Ridges.CODEC);
+		register("world_height", WorldHeightMarker.CODEC);
 	}
 	
 	private static void register(String name, Codec<? extends DensityFunction> type) {

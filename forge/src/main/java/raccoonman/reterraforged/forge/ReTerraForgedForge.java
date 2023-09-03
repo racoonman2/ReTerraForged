@@ -12,6 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.client.event.RegisterPresetEditorsEvent;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -60,7 +61,7 @@ public final class ReTerraForgedForge {
     	builder.add(Registries.DIMENSION_TYPE, RTFDimensionTypes::register);
     	builder.add(Registries.DENSITY_FUNCTION, RTFDensityFunctions::register);
     	builder.add(Registries.PLACED_FEATURE, RTFPlacedFeatures::register);
-        	
+
     	boolean includeClient = event.includeClient();
     	boolean includeServer = event.includeServer();
     	CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider().thenApply(r -> constructRegistries(r, builder));

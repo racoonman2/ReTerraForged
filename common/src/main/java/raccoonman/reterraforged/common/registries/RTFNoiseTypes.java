@@ -46,8 +46,6 @@ import raccoonman.reterraforged.common.level.levelgen.noise.selector.Blend;
 import raccoonman.reterraforged.common.level.levelgen.noise.selector.MultiBlend;
 import raccoonman.reterraforged.common.level.levelgen.noise.selector.Select;
 import raccoonman.reterraforged.common.level.levelgen.noise.selector.VariableBlend;
-import raccoonman.reterraforged.common.level.levelgen.noise.settings.SeaLevelMarker;
-import raccoonman.reterraforged.common.level.levelgen.noise.settings.WorldHeightMarker;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Billow;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Cell;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.CellEdge;
@@ -130,8 +128,6 @@ public final class RTFNoiseTypes {
 		register("blender", Blender.CODEC);
 		register("continent_lerper_2", ContinentLerper2.CODEC);
 		register("continent_lerper_3", ContinentLerper3.CODEC);
-		register("world_height", WorldHeightMarker.CODEC);
-		register("sea_level", SeaLevelMarker.CODEC);
 	}
 	
 	private static void register(String name, Codec<? extends Noise> value) {

@@ -57,7 +57,6 @@ public final class RTFTerrainNoise {
 	public static final ResourceKey<Noise> COAST = resolve("coast");
 	public static final ResourceKey<Noise> OCEANS = resolve("oceans");
 	public static final ResourceKey<Noise> ROOT = resolve("root");
-	public static final ResourceKey<Noise> HEIGHT = resolve("height");
 	
 	public static void register(BootstapContext<Noise> ctx) {
 		HolderGetter<Noise> noise = ctx.lookup(RTFRegistries.NOISE);
@@ -91,10 +90,7 @@ public final class RTFTerrainNoise {
 		Noise shallowOcean = register(ctx, SHALLOW_OCEAN, seaLevel.min(Source.constant(7)).div(worldHeight));
 		Noise coast = register(ctx, COAST, seaLevel.div(worldHeight));
 		Noise oceans = register(ctx, OCEANS, new ContinentLerper3(continent, deepOcean, shallowOcean, coast, deepOceanPoint, shallowOceanPoint, coastPoint, Interpolation.CURVE3));
-        Noise root = register(ctx, ROOT, new ContinentLerper2(continent, oceans, land, shallowOceanPoint, inlandPoint, Interpolation.LINEAR));
-
-		//TODO this needs to be scaled correctly
-		Noise height = register(ctx, HEIGHT, root.mul(worldHeight));
+        register(ctx, ROOT, new ContinentLerper2(continent, oceans, land, shallowOceanPoint, inlandPoint, Interpolation.LINEAR));
 	}
 	
 	private static Noise createContinentCliff(int continentScale, Noise frequency) {
