@@ -158,43 +158,47 @@ public class Builder {
         return this;
     }
 
-    public BaseNoise perlin() {
+    public NoiseSource perlin() {
         return new Perlin(this.frequency, this.lacunarity, this.interpolation, this.octaves, this.getGain());
     }
-
-    public BaseNoise legacySimplex() {
-        return new LegacySimplex(this.frequency, this.lacunarity, this.octaves, this.getGain());
+    
+    public NoiseSource perlin2() {
+        return new Perlin2(this.frequency, this.lacunarity, this.interpolation, this.octaves, this.getGain());
     }
 
-    public BaseNoise simplex() {
+    public NoiseSource simplex() {
         return new Simplex(this.frequency, this.lacunarity, this.octaves, this.getGain());
     }
 
-    public BaseNoise ridge() {
+    public NoiseSource simplex2() {
+        return new Simplex2(this.frequency, this.lacunarity, this.octaves, this.getGain());
+    }
+
+    public NoiseSource ridge() {
         return new Ridge(this.frequency, this.interpolation, this.lacunarity, this.octaves, this.getGain());
     }
 
-    public BaseNoise simplexRidge() {
+    public NoiseSource simplexRidge() {
         return new SimplexRidge(this.frequency, this.lacunarity, this.octaves, this.getGain());
     }
 
-    public BaseNoise billow() {
+    public NoiseSource billow() {
         return new Billow(this.frequency, this.interpolation, this.lacunarity, this.octaves, this.getGain());
     }
 
-    public BaseNoise cubic() {
+    public NoiseSource cubic() {
         return new Cubic(this.frequency, this.lacunarity, this.octaves, this.getGain());
     }
 
-    public BaseNoise cell() {
+    public NoiseSource cell() {
         return new Cell(this.frequency, this.source, this.cellFunc, this.distFunc, this.distance);
     }
 
-    public BaseNoise cellEdge() {
+    public NoiseSource cellEdge() {
         return new CellEdge(this.frequency, this.edgeFunc, this.distFunc, this.distance);
     }
 
-    public BaseNoise sin() {
+    public NoiseSource sin() {
         return new Sin(this.frequency, this.source);
     }
 

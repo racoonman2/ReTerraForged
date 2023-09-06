@@ -29,12 +29,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
-import raccoonman.reterraforged.common.level.levelgen.noise.Noise.Visitor;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
-public class Perlin extends BaseNoise {
+public class Perlin extends NoiseSource {
 	public static final Codec<Perlin> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.optionalFieldOf("frequency", Builder.DEFAULT_FREQUENCY).forGetter((n) -> n.frequency),
 		Codec.FLOAT.optionalFieldOf("lacunarity", Builder.DEFAULT_LACUNARITY).forGetter((n) -> n.lacunarity),
@@ -72,7 +70,7 @@ public class Perlin extends BaseNoise {
         float amp = gain;
 
         for (int i = 0; i < octaves; i++) {
-            sum += Noise2D.singlePerlin(x, y, seed + i, interpolation) * amp;
+            sum += single(x, y, seed + i, interpolation) * amp;
             x *= lacunarity;
             y *= lacunarity;
             amp *= gain;
@@ -126,6 +124,26 @@ public class Perlin extends BaseNoise {
             amp *= gain;
         }
         return sum;
+    }
+
+    public static float single(float x, float y, int seed, Interpolation interp) {
+        int x0 = NoiseUtil.floor(x);
+        int y0 = NoiseUtil.floor(y);
+        int x1 = x0 + 1;
+        int y1 = y0 + 1;
+
+        float xs = interp.apply(x - x0);
+        float ys = interp.apply(y - y0);
+
+        float xd0 = x - x0;
+        float yd0 = y - y0;
+        float xd1 = xd0 - 1;
+        float yd1 = yd0 - 1;
+
+        float xf0 = NoiseUtil.lerp(NoiseUtil.gradCoord2D(seed, x0, y0, xd0, yd0), NoiseUtil.gradCoord2D(seed, x1, y0, xd1, yd0), xs);
+        float xf1 = NoiseUtil.lerp(NoiseUtil.gradCoord2D(seed, x0, y1, xd0, yd1), NoiseUtil.gradCoord2D(seed, x1, y1, xd1, yd1), xs);
+
+        return NoiseUtil.lerp(xf0, xf1, ys);
     }
 
     private static float signal(int octaves) {

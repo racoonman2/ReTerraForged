@@ -28,7 +28,7 @@ package raccoonman.reterraforged.common.level.levelgen.noise.curve;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.util.StringRepresentable;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 
 /**
  * https://github.com/Auburns/FastNoise_Java

@@ -29,10 +29,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 
-public class Cubic extends BaseNoise {
+public class Cubic extends NoiseSource {
 	public static final Codec<Cubic> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.optionalFieldOf("frequency", Builder.DEFAULT_FREQUENCY).forGetter((n) -> n.frequency),
 		Codec.FLOAT.optionalFieldOf("lacunarity", Builder.DEFAULT_LACUNARITY).forGetter((n) -> n.lacunarity),
@@ -72,7 +71,7 @@ public class Cubic extends BaseNoise {
         x *= frequency;
         y *= frequency;
 
-        float sum = Noise2D.singleCubic(x, y, seed);
+        float sum = single(x, y, seed);
         float amp = 1;
         int i = 0;
 
@@ -81,7 +80,7 @@ public class Cubic extends BaseNoise {
             y *= lacunarity;
 
             amp *= gain;
-            sum += Noise2D.singleCubic(x, y, ++seed) * amp;
+            sum += single(x, y, ++seed) * amp;
         }
 
         return NoiseUtil.map(sum, min, max, range);
@@ -127,5 +126,27 @@ public class Cubic extends BaseNoise {
             value += signal * amp;
         }
         return value;
+    }
+    
+    public static float single(float x, float y, int seed) {
+        int x1 = NoiseUtil.floor(x);
+        int y1 = NoiseUtil.floor(y);
+
+        int x0 = x1 - 1;
+        int y0 = y1 - 1;
+        int x2 = x1 + 1;
+        int y2 = y1 + 1;
+        int x3 = x1 + 2;
+        int y3 = y1 + 2;
+
+        float xs = x - (float) x1;
+        float ys = y - (float) y1;
+
+        return NoiseUtil.cubicLerp(
+                NoiseUtil.cubicLerp(NoiseUtil.valCoord2D(seed, x0, y0), NoiseUtil.valCoord2D(seed, x1, y0), NoiseUtil.valCoord2D(seed, x2, y0), NoiseUtil.valCoord2D(seed, x3, y0), xs),
+                NoiseUtil.cubicLerp(NoiseUtil.valCoord2D(seed, x0, y1), NoiseUtil.valCoord2D(seed, x1, y1), NoiseUtil.valCoord2D(seed, x2, y1), NoiseUtil.valCoord2D(seed, x3, y1), xs),
+                NoiseUtil.cubicLerp(NoiseUtil.valCoord2D(seed, x0, y2), NoiseUtil.valCoord2D(seed, x1, y2), NoiseUtil.valCoord2D(seed, x2, y2), NoiseUtil.valCoord2D(seed, x3, y2), xs),
+                NoiseUtil.cubicLerp(NoiseUtil.valCoord2D(seed, x0, y3), NoiseUtil.valCoord2D(seed, x1, y3), NoiseUtil.valCoord2D(seed, x2, y3), NoiseUtil.valCoord2D(seed, x3, y3), xs), ys)
+                * NoiseUtil.CUBIC_2D_BOUNDING;
     }
 }

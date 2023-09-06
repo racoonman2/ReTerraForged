@@ -3,7 +3,6 @@ package raccoonman.reterraforged.common.level.levelgen.density;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.Holder;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
@@ -30,9 +29,9 @@ public record NoiseWrapper(Noise noise, int seed) implements DensityFunction.Sim
 		throw new UnsupportedOperationException();
 	}
 
-	public record Marker(Holder<Noise> noise) implements DensityFunction.SimpleFunction {
+	public record Marker(Noise noise) implements DensityFunction.SimpleFunction {
 		public static final Codec<NoiseWrapper.Marker> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Noise.CODEC.fieldOf("noise").forGetter(NoiseWrapper.Marker::noise)
+			Noise.HOLDER_HELPER_CODEC.fieldOf("noise").forGetter(NoiseWrapper.Marker::noise)
 		).apply(instance, NoiseWrapper.Marker::new));
 
 		@Override

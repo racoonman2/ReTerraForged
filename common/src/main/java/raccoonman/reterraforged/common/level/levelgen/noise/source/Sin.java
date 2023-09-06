@@ -29,11 +29,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
-import raccoonman.reterraforged.common.level.levelgen.noise.Noise.Visitor;
-import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Sub;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 
-public class Sin extends BaseNoise {
+public class Sin extends NoiseSource {
 	public static final Codec<Sin> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.optionalFieldOf("frequency", Builder.DEFAULT_FREQUENCY).forGetter((n) -> n.frequency),
 		Noise.HOLDER_HELPER_CODEC.fieldOf("alpha").forGetter((n) -> n.alpha)

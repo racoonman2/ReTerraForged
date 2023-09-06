@@ -9,8 +9,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.util.StringRepresentable;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.Vec2f;
 
 public record Valley(Noise source, int octaves, float strength, float gridSize, float amplitude, float lacunarity, float falloff, Valley.Mode blendMode, ThreadLocal<float[]> erosionCache) implements Noise {
 	public static final Codec<Valley> CODEC = RecordCodecBuilder.create(instance -> instance.group(

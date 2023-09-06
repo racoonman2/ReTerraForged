@@ -5,31 +5,31 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 
 //TODO do block scaling here
 //TODO don't hardcode min / max values
-public record YGradient(DensityFunction y, int surfaceExtent) implements DensityFunction.SimpleFunction {
+public record YGradient(DensityFunction y, DensityFunction scale) implements DensityFunction.SimpleFunction {
 	public static final Codec<YGradient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		DensityFunction.HOLDER_HELPER_CODEC.fieldOf("y").forGetter(YGradient::y),
-		Codec.INT.fieldOf("surface_extent").forGetter(YGradient::surfaceExtent)
+		DensityFunction.HOLDER_HELPER_CODEC.fieldOf("scale").forGetter(YGradient::scale)
 	).apply(instance, YGradient::new));
 	
 	@Override
 	public double compute(FunctionContext ctx) {
 		double blockY = ctx.blockY();
-		double noiseY = NoiseUtil.floor((float) this.y.compute(ctx));
-		return blockY > noiseY - this.surfaceExtent && blockY <= noiseY ? (noiseY - blockY) / this.surfaceExtent : blockY < noiseY ? 1.0F : 0.0F;
-//		return blockY <= noiseY ? 1.0F - (blockY / noiseY) : this.above.compute(ctx);
+		double scale = this.scale.compute(ctx);
+		double noiseY = NoiseUtil.floor((float) this.y.compute(ctx) * scale);
+		if(blockY > noiseY) {
+			return 0.0F;
+		} else {
+			return 1.0F;
+		}
 	}
 
-	private static float gradient() {
-		return 0;
-	}
-	
 	@Override
 	public DensityFunction mapAll(Visitor visitor) {
-		return visitor.apply(new YGradient(this.y.mapAll(visitor), this.surfaceExtent));
+		return visitor.apply(new YGradient(this.y.mapAll(visitor), this.scale.mapAll(visitor)));
 	}
 
 	@Override

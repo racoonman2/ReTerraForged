@@ -29,10 +29,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 
-public class Simplex extends BaseNoise {
+public class Simplex extends NoiseSource {
 	public static final Codec<Simplex> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.optionalFieldOf("frequency", Builder.DEFAULT_FREQUENCY).forGetter((n) -> n.frequency),
 		Codec.FLOAT.optionalFieldOf("lacunarity", Builder.DEFAULT_LACUNARITY).forGetter((n) -> n.lacunarity),
@@ -41,6 +40,9 @@ public class Simplex extends BaseNoise {
 	).apply(instance, Simplex::new));
 	
     private static final float[] SIGNALS = { 1.00F, 0.989F, 0.810F, 0.781F, 0.708F, 0.702F, 0.696F };
+    private static final float F2 = 0.366025403784439F;
+    private static final float G2 = 0.211324865405187F;
+    private static final float LEGACY_SIMPLEX = 79.86948357042918F;
 	private final float lacunarity;
 	private final int octaves;
 	private final float gain;
@@ -55,25 +57,25 @@ public class Simplex extends BaseNoise {
         this.gain = gain;
         this.min = -max(octaves, gain);
         this.max = max(octaves, gain);
-        this.range = max - min;
+        this.range = this.max - this.min;
     }
 
     @Override
     public float compute(float x, float y, int seed) {
-        x *= frequency;
-        y *= frequency;
+        x *= this.frequency;
+        y *= this.frequency;
 
         float sum = 0;
         float amp = 1;
 
-        for (int i = 0; i < octaves; i++) {
-            sum += Noise2D.singleSimplex(x, y, seed + i) * amp;
-            x *= lacunarity;
-            y *= lacunarity;
-            amp *= gain;
+        for (int i = 0; i < this.octaves; i++) {
+            sum += singleLegacy(x, y, seed + i) * amp;
+            x *= this.lacunarity;
+            y *= this.lacunarity;
+            amp *= this.gain;
         }
-
-        return NoiseUtil.map(sum, min, max, range);
+        
+        return NoiseUtil.map(sum, this.min, this.max, this.range);
     }
 
     @Override
@@ -84,17 +86,17 @@ public class Simplex extends BaseNoise {
 
         Simplex that = (Simplex) o;
 
-        if (Float.compare(that.min, min) != 0) return false;
-        if (Float.compare(that.max, max) != 0) return false;
-        return Float.compare(that.range, range) == 0;
+        if (Float.compare(that.min, this.min) != 0) return false;
+        if (Float.compare(that.max, this.max) != 0) return false;
+        return Float.compare(that.range, this.range) == 0;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (min != +0.0f ? Float.floatToIntBits(min) : 0);
-        result = 31 * result + (max != +0.0f ? Float.floatToIntBits(max) : 0);
-        result = 31 * result + (range != +0.0f ? Float.floatToIntBits(range) : 0);
+        result = 31 * result + (this.min != +0.0f ? Float.floatToIntBits(this.min) : 0);
+        result = 31 * result + (this.max != +0.0f ? Float.floatToIntBits(this.max) : 0);
+        result = 31 * result + (this.range != +0.0f ? Float.floatToIntBits(this.range) : 0);
         return result;
     }
     
@@ -102,13 +104,72 @@ public class Simplex extends BaseNoise {
 	public Codec<Simplex> codec() {
 		return CODEC;
 	}
-    
+
 	@Override
 	public Noise mapAll(Visitor visitor) {
 		return visitor.apply(new Simplex(this.frequency, this.lacunarity, this.octaves, this.gain));
 	}
+	
+	public static float singleLegacy(float x, float y, int seed) {
+        return single(x, y, seed, LEGACY_SIMPLEX);
+    }
 
-    protected static float max(int octaves, float gain) {
+    public static float single(float x, float y, int seed, float scaler) {
+        float t = (x + y) * F2;
+        int i = NoiseUtil.floor(x + t);
+        int j = NoiseUtil.floor(y + t);
+
+        t = (i + j) * G2;
+        float X0 = i - t;
+        float Y0 = j - t;
+
+        float x0 = x - X0;
+        float y0 = y - Y0;
+
+        int i1, j1;
+        if (x0 > y0) {
+            i1 = 1;
+            j1 = 0;
+        } else {
+            i1 = 0;
+            j1 = 1;
+        }
+
+        float x1 = x0 - i1 + G2;
+        float y1 = y0 - j1 + G2;
+        float x2 = x0 - 1 + 2 * G2;
+        float y2 = y0 - 1 + 2 * G2;
+
+        float n0, n1, n2;
+
+        t = 0.5F - x0 * x0 - y0 * y0;
+        if (t < 0) {
+            n0 = 0;
+        } else {
+            t *= t;
+            n0 = t * t * NoiseUtil.gradCoord2D_24(seed, i, j, x0, y0);
+        }
+
+        t = 0.5F - x1 * x1 - y1 * y1;
+        if (t < 0) {
+            n1 = 0;
+        } else {
+            t *= t;
+            n1 = t * t * NoiseUtil.gradCoord2D_24(seed, i + i1, j + j1, x1, y1);
+        }
+
+        t = 0.5F - x2 * x2 - y2 * y2;
+        if (t < 0) {
+            n2 = 0;
+        } else {
+            t *= t;
+            n2 = t * t * NoiseUtil.gradCoord2D_24(seed, i + 1, j + 1, x2, y2);
+        }
+
+        return scaler * (n0 + n1 + n2);
+    }
+
+    private static float max(int octaves, float gain) {
         float signal = signal(octaves);
 
         float sum = 0;

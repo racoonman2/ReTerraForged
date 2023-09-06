@@ -29,8 +29,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
 public class LegacyTerrace extends Modifier {
 	public static final Codec<LegacyTerrace> CODEC = RecordCodecBuilder.create(instance -> instance.group(

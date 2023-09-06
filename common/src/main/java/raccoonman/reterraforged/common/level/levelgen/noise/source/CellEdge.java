@@ -29,12 +29,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.Vec2f;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.EdgeFunction;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
-public class CellEdge extends BaseNoise {
+public class CellEdge extends NoiseSource {
 	public static final Codec<CellEdge> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.optionalFieldOf("frequency", Builder.DEFAULT_FREQUENCY).forGetter((n) -> n.frequency),
 		EdgeFunction.CODEC.optionalFieldOf("edge_func", Builder.DEFAULT_EDGE_FUNC).forGetter((n) -> n.edgeFunc),
@@ -57,7 +57,7 @@ public class CellEdge extends BaseNoise {
     public float compute(float x, float y, int seed) {
         x *= frequency;
         y *= frequency;
-        float value = Noise2D.cellEdge(x, y, seed, distance, edgeFunc, distFunc);
+        float value = single(x, y, seed, distance, edgeFunc, distFunc);
         return NoiseUtil.map(value, edgeFunc.min(), edgeFunc.max(), edgeFunc.range());
     }
 
@@ -92,4 +92,33 @@ public class CellEdge extends BaseNoise {
 	public Noise mapAll(Visitor visitor) {
 		return visitor.apply(new CellEdge(this.frequency, this.edgeFunc, this.distFunc, this.distance));
 	}
+
+    public static float single(float x, float y, int seed, float distance, EdgeFunction edgeFunc, DistanceFunction distanceFunc) {
+        int xi = NoiseUtil.floor(x);
+        int yi = NoiseUtil.floor(y);
+
+        float nearest1 = Float.MAX_VALUE;
+        float nearest2 = Float.MAX_VALUE;
+
+        for (int dy = -1; dy <= 1; dy++) {
+            for (int dx = -1; dx <= 1; dx++) {
+                int cx = xi + dx;
+                int cy = yi + dy;
+                Vec2f vec = NoiseUtil.cell(seed, cx, cy);
+
+                float deltaX = cx + vec.x() * distance - x;
+                float deltaY = cy + vec.y() * distance - y;
+                float dist = distanceFunc.apply(deltaX, deltaY);
+
+                if (dist < nearest1) {
+                    nearest2 = nearest1;
+                    nearest1 = dist;
+                } else if (dist < nearest2) {
+                    nearest2 = dist;
+                }
+            }
+        }
+
+        return edgeFunc.apply(nearest1, nearest2);
+    }
 }

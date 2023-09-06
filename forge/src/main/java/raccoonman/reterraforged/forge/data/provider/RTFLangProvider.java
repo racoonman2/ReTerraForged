@@ -1,8 +1,9 @@
 package raccoonman.reterraforged.forge.data.provider;
 
 import net.minecraft.data.PackOutput;
+import raccoonman.reterraforged.common.client.data.RTFTranslationKeys;
 
-// TODO more translations?
+// TODO add more languages
 public final class RTFLangProvider {
 	
 	public static final class EnglishUS extends LanguageProvider {
@@ -13,10 +14,18 @@ public final class RTFLangProvider {
 
 		@Override
 		protected void addTranslations() {
-			this.add("generator.reterraforged.reterraforged", "ReTerraForged");
-			this.add("createWorld.customize.reterraforged.world_preview.layer", "Noise");
-			this.add("createWorld.customize.reterraforged.world_preview.zoom", "Zoom");
-			this.add("createWorld.customize.reterraforged.title", "Noise Visualizer");
+			this.add(RTFTranslationKeys.CUSTOMIZE_WORLD_CREATE, "Create Preset");
+			this.add(RTFTranslationKeys.CUSTOMIZE_WORLD_SAVE, "Save Preset");
+			this.add(RTFTranslationKeys.CUSTOMIZE_WORLD_RESET, "Reset Preset");
+			this.add(RTFTranslationKeys.CUSTOMIZE_WORLD_DELETE, "Delete Preset");
+			this.add(RTFTranslationKeys.CUSTOMIZE_WORLD_PAGE_PRESETS, "Presets & Defaults");
+			this.add(RTFTranslationKeys.CUSTOMIZE_WORLD_PAGE_WORLD, "World Settings");
+			this.add(RTFTranslationKeys.CUSTOMIZE_WORLD_PAGE_CLIMATE, "Climate Settings");
+			this.add(RTFTranslationKeys.CUSTOMIZE_WORLD_PAGE_TERRAIN, "Terrain Settings");
+			this.add(RTFTranslationKeys.CUSTOMIZE_WORLD_PAGE_RIVER, "River Settings");
+			this.add(RTFTranslationKeys.CUSTOMIZE_WORLD_PAGE_FILTERS, "Filter Settings");
+			this.add(RTFTranslationKeys.CUSTOMIZE_WORLD_PAGE_STRUCTURES, "Structure Settings");
+			this.add(RTFTranslationKeys.CUSTOMIZE_WORLD_PAGE_MISCELLANEOUS, "Miscellaneous Settings");
 		}
 	}
 }

@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
 public record Blender(Noise control, Noise lower, Noise upper, float blendLower, float blendUpper, float split, Interpolation interpolation) implements Noise {
 	public static final Codec<Blender> CODEC = RecordCodecBuilder.create(instance -> instance.group(

@@ -4,9 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.Vec2f;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.Vec2f;
 
 public record RegionId(DistanceFunction distance, float jitter) implements Noise {
 	public static final Codec<RegionId> CODEC = RecordCodecBuilder.create(instance -> instance.group(

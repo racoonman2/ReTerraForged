@@ -28,9 +28,9 @@ package raccoonman.reterraforged.common.level.levelgen.noise.selector;
 import java.util.List;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Combiner;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
 /**
  * @author dags <dags@dags.me>

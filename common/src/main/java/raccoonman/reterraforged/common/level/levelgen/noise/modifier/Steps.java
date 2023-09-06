@@ -29,8 +29,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.CurveFunction;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
 /**
  * @author dags <dags@dags.me>

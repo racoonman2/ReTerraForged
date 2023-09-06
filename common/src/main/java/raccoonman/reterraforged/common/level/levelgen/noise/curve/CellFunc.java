@@ -29,8 +29,8 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.util.StringRepresentable;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.Vec2f;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.Vec2f;
 
 /**
  * @author dags <dags@dags.me>

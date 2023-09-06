@@ -12,7 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.minecraftforge.client.event.RegisterPresetEditorsEvent;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -22,13 +22,14 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistriesHooks;
 import raccoonman.reterraforged.common.ReTerraForged;
+import raccoonman.reterraforged.common.client.gui.screen.WorldConfigScreen;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
-import raccoonman.reterraforged.common.registries.data.RTFDensityFunctions;
+import raccoonman.reterraforged.common.registries.data.RTFBiomes;
 import raccoonman.reterraforged.common.registries.data.RTFDimensionTypes;
+import raccoonman.reterraforged.common.registries.data.RTFNoiseData;
 import raccoonman.reterraforged.common.registries.data.RTFNoiseGeneratorSettings;
+import raccoonman.reterraforged.common.registries.data.RTFNoiseRouterData;
 import raccoonman.reterraforged.common.registries.data.RTFPlacedFeatures;
-import raccoonman.reterraforged.common.registries.data.noise.RTFClimateNoise;
-import raccoonman.reterraforged.common.registries.data.noise.RTFTerrainNoise;
 import raccoonman.reterraforged.forge.data.provider.RTFBlockTagsProvider;
 import raccoonman.reterraforged.forge.data.provider.RTFLangProvider;
 import raccoonman.reterraforged.platform.registries.forge.RegistryUtilImpl;
@@ -47,20 +48,18 @@ public final class ReTerraForgedForge {
     }
     
     private static void registerPresetEditors(RegisterPresetEditorsEvent event) {
-    	// TODO we shouldn't register this for the default preset
-//    	event.register(WorldPresets.NORMAL, WorldPreviewScreen::new);
+    	// TODO we probably shouldn't register this for the default preset
+    	event.register(WorldPresets.NORMAL, WorldConfigScreen::new);
     }
      
     private static void gatherData(GatherDataEvent event) {
     	RegistrySetBuilder builder = new RegistrySetBuilder();
-    	builder.add(RTFRegistries.NOISE, (ctx) -> {
-    		RTFTerrainNoise.register(ctx);
-    		RTFClimateNoise.register(ctx);
-    	});
-    	builder.add(Registries.NOISE_SETTINGS, RTFNoiseGeneratorSettings::register);
-    	builder.add(Registries.DIMENSION_TYPE, RTFDimensionTypes::register);
-    	builder.add(Registries.DENSITY_FUNCTION, RTFDensityFunctions::register);
-    	builder.add(Registries.PLACED_FEATURE, RTFPlacedFeatures::register);
+    	builder.add(RTFRegistries.NOISE, RTFNoiseData::bootstrap);
+    	builder.add(Registries.BIOME, RTFBiomes::bootstrap);
+    	builder.add(Registries.NOISE_SETTINGS, RTFNoiseGeneratorSettings::bootstrap);
+    	builder.add(Registries.DIMENSION_TYPE, RTFDimensionTypes::bootstrap);
+    	builder.add(Registries.DENSITY_FUNCTION, RTFNoiseRouterData::bootstrap);
+    	builder.add(Registries.PLACED_FEATURE, RTFPlacedFeatures::bootstrap);
 
     	boolean includeClient = event.includeClient();
     	boolean includeServer = event.includeServer();

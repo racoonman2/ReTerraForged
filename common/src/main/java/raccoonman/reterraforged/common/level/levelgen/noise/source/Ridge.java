@@ -31,11 +31,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
-public class Ridge extends BaseNoise {
+public class Ridge extends NoiseSource {
 	public static final Codec<Ridge> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.fieldOf("frequency").forGetter((n) -> n.frequency),
 		Interpolation.CODEC.fieldOf("interpolation").forGetter((r) -> r.interpolation),
@@ -88,7 +87,7 @@ public class Ridge extends BaseNoise {
         float amp = 2.0F;
 
         for (int octave = 0; octave < octaves; octave++) {
-            signal = Noise2D.singlePerlin(x, y, seed + octave, interpolation);
+            signal = Perlin.single(x, y, seed + octave, interpolation);
             signal = Math.abs(signal);
             signal = offset - signal;
             signal *= signal;

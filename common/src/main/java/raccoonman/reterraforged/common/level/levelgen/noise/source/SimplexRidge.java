@@ -31,10 +31,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 
-public class SimplexRidge extends BaseNoise {
+public class SimplexRidge extends NoiseSource {
 	public static final Codec<SimplexRidge> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.optionalFieldOf("frequency", Builder.DEFAULT_FREQUENCY).forGetter((n) -> n.frequency),
 		Codec.FLOAT.optionalFieldOf("lacunarity", Builder.DEFAULT_LACUNARITY).forGetter((n) -> n.lacunarity),
@@ -66,7 +65,7 @@ public class SimplexRidge extends BaseNoise {
         }
 
         min = 0;
-        max = Simplex.max(octaves, gain);
+        max = Simplex2.max(octaves, gain);
         range = Math.abs(max - min);
     }
 
@@ -83,7 +82,7 @@ public class SimplexRidge extends BaseNoise {
         float amp = 2.0F;
 
         for (int octave = 0; octave < octaves; octave++) {
-            signal = Noise2D.singleSimplex(x, y, seed + octave);
+            signal = Simplex2.single(x, y, seed + octave);
             signal = Math.abs(signal);
             signal = offset - signal;
             signal *= signal;

@@ -29,12 +29,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
-import raccoonman.reterraforged.common.level.levelgen.noise.Noise.Visitor;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.Vec2f;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.CellFunc;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
 
-public class Cell extends BaseNoise {
+public class Cell extends NoiseSource {
 	public static final Codec<Cell> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.fieldOf("frequency").forGetter((c) -> c.frequency),
 		Noise.HOLDER_HELPER_CODEC.fieldOf("source").forGetter((c) -> c.lookup),
@@ -66,7 +66,7 @@ public class Cell extends BaseNoise {
     public float compute(float x, float y, int seed) {
         x *= frequency;
         y *= frequency;
-        float value = Noise2D.cell(x, y, seed, distance, cellFunc, distFunc, lookup);
+        float value = single(x, y, seed, distance, cellFunc, distFunc, lookup);
         return cellFunc.mapValue(value, min, max, range);
     }
 
@@ -109,6 +109,37 @@ public class Cell extends BaseNoise {
 	public Noise mapAll(Visitor visitor) {
 		return visitor.apply(new Cell(this.frequency, this.lookup.mapAll(visitor), this.cellFunc, this.distFunc, this.distance));
 	}
+	
+	public static float single(float x, float y, int seed, float distance, CellFunc cellFunc, DistanceFunction distanceFunc, Noise lookup) {
+        int xi = NoiseUtil.floor(x);
+        int yi = NoiseUtil.floor(y);
+
+        int cellX = xi;
+        int cellY = yi;
+        Vec2f vec2f = null;
+        float nearest = Float.MAX_VALUE;
+
+        for (int dy = -1; dy <= 1; dy++) {
+            for (int dx = -1; dx <= 1; dx++) {
+                int cx = xi + dx;
+                int cy = yi + dy;
+                Vec2f vec = NoiseUtil.cell(seed, cx, cy);
+
+                float deltaX = cx + vec.x() * distance - x;
+                float deltaY = cy + vec.y() * distance - y;
+                float dist = distanceFunc.apply(deltaX, deltaY);
+
+                if (dist < nearest) {
+                    nearest = dist;
+                    vec2f = vec;
+                    cellX = cx;
+                    cellY = cy;
+                }
+            }
+        }
+
+        return cellFunc.apply(cellX, cellY, nearest, seed, vec2f, lookup);
+    }
 
     private static float min(CellFunc func, Noise lookup) {
         if (func == CellFunc.NOISE_LOOKUP) {

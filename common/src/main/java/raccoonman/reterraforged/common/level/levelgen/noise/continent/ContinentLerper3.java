@@ -8,8 +8,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.NoiseUtil;
 
 public record ContinentLerper3(Noise continent, Noise lower, Noise middle, Noise upper, Noise blendLower, Noise midpoint, Noise blendUpper, Interpolation interpolation) implements Noise {
     public static final Codec<ContinentLerper3> CODEC = RecordCodecBuilder.create(instance -> instance.group(

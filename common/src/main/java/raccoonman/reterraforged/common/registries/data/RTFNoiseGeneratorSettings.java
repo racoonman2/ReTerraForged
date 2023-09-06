@@ -6,44 +6,24 @@ import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.world.level.biome.OverworldBiomeBuilder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
-import net.minecraft.world.level.levelgen.NoiseRouter;
-import net.minecraft.world.level.levelgen.NoiseRouterData;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
 public final class RTFNoiseGeneratorSettings {
 	
-	public static void register(BootstapContext<NoiseGeneratorSettings> ctx) {
+	public static void bootstrap(BootstapContext<NoiseGeneratorSettings> ctx) {
 		HolderGetter<DensityFunction> densityFunctions = ctx.lookup(Registries.DENSITY_FUNCTION);
 		HolderGetter<NormalNoise.NoiseParameters> noiseParams = ctx.lookup(Registries.NOISE);
 		ctx.register(NoiseGeneratorSettings.OVERWORLD, createOverworld(densityFunctions, noiseParams));
     }
 
     private static NoiseGeneratorSettings createOverworld(HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams) {
-    	NoiseRouter overworld = NoiseRouterData.overworld(densityFunctions, noiseParams, false, false);
     	return new NoiseGeneratorSettings(
-	  		new NoiseSettings(-64, 256, 1, 1),
+	  		new NoiseSettings(-64, 384, 1, 1),
 	  		Blocks.STONE.defaultBlockState(),
 	  		Blocks.WATER.defaultBlockState(),
-	  		new NoiseRouter(
-	  			overworld.barrierNoise(),
-	  			overworld.fluidLevelFloodednessNoise(),
-	  			overworld.fluidLevelSpreadNoise(),
-	  			overworld.lavaNoise(),
-	  			DensityFunctions.zero(), 
-	  			DensityFunctions.zero(), 
-	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.CONTINENT)),
-	  			DensityFunctions.constant(-0.65D), 
-	  			DensityFunctions.zero(), 
-	  			DensityFunctions.zero(), 
-	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.FINAL_DENSITY)),
-	  			new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(RTFDensityFunctions.FINAL_DENSITY)),
-	  			overworld.veinToggle(),
-	  			overworld.veinRidged(),
-	  			overworld.veinGap()
-	  		),
+	  		RTFNoiseRouterData.overworld(densityFunctions, noiseParams),
 	  		RTFSurfaceRuleData.overworld(),
 	  		new OverworldBiomeBuilder().spawnTarget(),
 	  		63,

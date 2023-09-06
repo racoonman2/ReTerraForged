@@ -29,9 +29,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
-import raccoonman.reterraforged.common.level.levelgen.noise.util.Noise2D;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 
-public class Rand extends BaseNoise {
+public class Rand extends NoiseSource {
 	public static final Codec<Rand> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.fieldOf("frequency").forGetter((n) -> n.frequency)
 	).apply(instance, Rand::new));
@@ -45,7 +45,7 @@ public class Rand extends BaseNoise {
         x *= frequency;
         y *= frequency;
         // -1 to 1
-        float value = Noise2D.rand(x, y, seed);
+        float value = rand(x, y, seed);
         return Math.abs(value);
     }
 
@@ -69,10 +69,15 @@ public class Rand extends BaseNoise {
 	public Codec<Rand> codec() {
 		return CODEC;
 	}
-    
 
 	@Override
 	public Noise mapAll(Visitor visitor) {
 		return visitor.apply(new Rand(this.frequency));
+	}
+	
+	public static float rand(float x, float y, int seed) {
+		int xi = NoiseUtil.round(x);
+		int yi = NoiseUtil.round(y);
+		return NoiseUtil.valCoord2D(seed, xi, yi);
 	}
 }

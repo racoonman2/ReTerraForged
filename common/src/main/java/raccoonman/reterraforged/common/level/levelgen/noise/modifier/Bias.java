@@ -30,7 +30,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Source;
-import raccoonman.reterraforged.common.level.levelgen.noise.Noise.Visitor;
 
 /**
  * @author dags <dags@dags.me>

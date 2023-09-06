@@ -108,7 +108,6 @@ public interface Noise {
 	public interface Visitor {
 		Noise apply(Noise noise);
 	}
-
 	
 	//TODO these shouldn't be default
     default float minValue() {

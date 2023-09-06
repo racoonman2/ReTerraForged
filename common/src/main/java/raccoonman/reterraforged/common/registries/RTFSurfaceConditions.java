@@ -9,7 +9,7 @@ import raccoonman.reterraforged.platform.registries.RegistryUtil;
 public final class RTFSurfaceConditions {
 
 	public static void bootstrap() {
-
+	
 	}
 	
 	private static void register(String name, Codec<? extends ConditionSource> value) {

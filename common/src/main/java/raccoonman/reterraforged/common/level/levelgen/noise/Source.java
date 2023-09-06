@@ -46,10 +46,11 @@ public enum Source implements StringRepresentable {
     CONSTANT("const", Builder::constant),
     CUBIC("cubic", Builder::cubic),
     PERLIN("perlin", Builder::perlin),
+    PERLIN2("perlin", Builder::perlin2),
     RIDGE("ridge", Builder::ridge),
-    LEGACY_SIMPLEX("legacy_simplex", Builder::legacySimplex),
     SIMPLEX("simplex", Builder::simplex),
-    SIMPLEX_RIDGE("simplex_ridge", Builder::simplex),
+    SIMPLEX2("simplex2", Builder::simplex2),
+    SIMPLEX_RIDGE("simplex_ridge", Builder::simplexRidge),
     SIN("sin", Builder::sin),
     RAND("rand", Builder::rand);
 
@@ -93,7 +94,7 @@ public enum Source implements StringRepresentable {
     }
 
     public static Noise simplex(int scale, int octaves) {
-        return Source.builder().scale(scale).octaves(octaves).legacySimplex();
+        return Source.builder().scale(scale).octaves(octaves).simplex();
     }
 
     public static Noise billow(int scale, int octaves) {
