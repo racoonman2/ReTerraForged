@@ -87,7 +87,6 @@ public abstract class Page implements GuiEventListener, OverlayRenderer {
 	}
 
 	public void close() {
-
 	}
 
 	public Component getTitle() {
@@ -136,36 +135,6 @@ public abstract class Page implements GuiEventListener, OverlayRenderer {
 			onAddWidget(button);
 		}
 	}
-
-//	public AbstractWidget createButton(String name, CompoundTag value, Runnable callback) {
-//		Tag tag = value.get(name);
-//		if (tag == null) {
-//			return null;
-//		}
-//
-//		byte type = tag.getId();
-//		if (type == Tag.TAG_INT) {
-//			if (isRand(name, value)) {
-//				return new RTFRandButton(name, value).callback(callback);
-//			}
-//			if (hasLimit(name, value)) {
-//				return new RTFSlider.BoundInt(name, value).callback(callback);
-//			}
-//			return new RTFSlider.Int(name, value).callback(callback);
-//		} else if (type == Constants.NBT.TAG_FLOAT) {
-//			if (hasLimit(name, value)) {
-//				return new RTFSlider.BoundFloat(name, value).callback(callback);
-//			}
-//			return new RTFSlider.Float(name, value).callback(callback);
-//		} else if (hasOptions(name, value)) {
-//			return new RTFToggle(name, value).callback(callback);
-//		} else if (type == Constants.NBT.TAG_STRING) {
-//			return new RTFTextBox(name, value);
-//		} else {
-//			return null;
-//		}
-//	}
-
 	public AbstractWidget createLabel(String name, CompoundTag settings) {
 		if (settings.getCompound("#" + name).contains("noname")) {
 			return null;
@@ -174,7 +143,6 @@ public abstract class Page implements GuiEventListener, OverlayRenderer {
 	}
 
 	public void onAddWidget(AbstractWidget widget) {
-
 	}
 
 	public static class Column {

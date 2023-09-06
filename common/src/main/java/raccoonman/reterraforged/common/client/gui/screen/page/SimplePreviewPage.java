@@ -29,8 +29,8 @@ import net.minecraft.network.chat.Component;
 public class SimplePreviewPage extends SimplePage {
     private final UpdatablePage preview;
 
-    public SimplePreviewPage(Component title, String sectionName, UpdatablePage preview) {
-        super(title, sectionName);
+    public SimplePreviewPage(Component title, UpdatablePage preview) {
+        super(title);
         this.preview = preview;
     }
 

@@ -24,20 +24,23 @@
 
 package raccoonman.reterraforged.common.client.gui.screen.page;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import raccoonman.reterraforged.common.client.gui.screen.element.RTFLabel;
 import raccoonman.reterraforged.common.client.gui.screen.overlay.OverlayScreen;
+import raccoonman.reterraforged.common.client.gui.screen.page.Page.Column;
 
-public class SimplePage extends BasePage {
+public abstract class SimplePage extends BasePage {
+	private static final int SLIDER_HEIGHT = 20;
+	private static final int SLIDER_PAD = 2;
 
     private final Component title;
-    private final String sectionName;
-    
-    protected CompoundTag sectionSettings = null;
 
-    public SimplePage(Component title, String sectionName) {
+    public SimplePage(Component title) {
         this.title = title;
-        this.sectionName = sectionName;
     }
 
     @Override
@@ -52,20 +55,25 @@ public class SimplePage extends BasePage {
 
     @Override
     public void init(OverlayScreen parent) {
-        sectionSettings = getSectionSettings();
         Column left = getColumn(0);
-        addElements(left.left, left.top, left, sectionSettings, true, left.scrollPane::addButton, this::update);
+        addElements(left.left, left.top, left, new CompoundTag(), true, left.scrollPane::addButton, this::update);
     }
 
+	AtomicInteger top = new AtomicInteger();
+    public void addWidget(int columnIndex, AbstractWidget widget) {
+		Column column = this.getColumn(columnIndex);
+		if (widget != null) {
+			widget.setWidth(column.width);
+			widget.height = SLIDER_HEIGHT;
+			widget.setX(column.left);
+			widget.setY(column.top + top.getAndAdd(SLIDER_HEIGHT + SLIDER_PAD));
+			column.scrollPane.addButton(widget);
+			onAddWidget(widget);
+		}
+    }
+    
     @Override
     protected void update() {
         super.update();
-    }
-
-    private CompoundTag getSectionSettings() {
-    	CompoundTag tag = new CompoundTag();
-    	tag.putString("test_1", "hello world");
-    	tag.putFloat("test_2", 0.123F);
-    	return tag;
     }
 }

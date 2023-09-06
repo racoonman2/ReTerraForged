@@ -39,8 +39,8 @@ public class WorldPage extends BasePage {
 
 	private final UpdatablePage preview;
 
-    private CompoundTag worldSettings = null;
-    private CompoundTag dimSettings = null;
+    private CompoundTag worldSettings = new CompoundTag();
+    private CompoundTag dimSettings = new CompoundTag();
     
 	public WorldPage(UpdatablePage preview) {
 		this.preview = preview;
@@ -58,10 +58,6 @@ public class WorldPage extends BasePage {
 
 	@Override
 	public void init(OverlayScreen parent) {
-		// re-sync settings from the settings object to the data structure
-		worldSettings = getWorldSettings();
-		dimSettings = getDimSettings();
-
 		Column left = getColumn(0);
 		addElements(left.left, left.top, left, worldSettings, true, left.scrollPane::addButton, this::update);
 
@@ -82,40 +78,5 @@ public class WorldPage extends BasePage {
 //			DataUtils.fromNBT(worldSettings, settings.world);
 //			DataUtils.fromNBT(dimSettings, settings.dimensions);
 //		});
-	}
-
-	private CompoundTag getWorldSettings() {
-		CompoundTag tag = new CompoundTag();
-		tag.putString("test3", "test4");
-		return tag;
-	}
-
-	private CompoundTag getDimSettings() {
-//		CompoundTag dimSettings = instance.settingsData.getCompound("dimensions");
-//		CompoundTag generators = dimSettings.getCompound("dimensions");
-//		for (String name : generators.getAllKeys()) {
-//			if (name.startsWith("#")) {
-//				INBT value = generators.get(name.substring(1));
-//				if (value instanceof StringNBT) {
-//					CompoundNBT metadata = generators.getCompound(name);
-//					metadata.put("options", getWorldTypes());
-//				}
-//			}
-//		}
-		CompoundTag tag = new CompoundTag();
-		tag.putString("test", "test2");
-		return tag;
-	}
-
-	private static ListTag getWorldTypes() {
-//		ListNBT options = new ListNBT();
-//		for (ForgeWorldType type : ForgeRegistries.WORLD_TYPES) {
-//			String name = DimUtils.getDisplayString(type);
-//			INBT value = StringNBT.valueOf(name);
-//			options.add(value);
-//		}
-		ListTag list = new ListTag();
-		list.add(StringTag.valueOf("test"));
-		return list;
 	}
 }
