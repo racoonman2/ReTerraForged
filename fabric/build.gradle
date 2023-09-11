@@ -42,6 +42,7 @@ sourceSets {
 }
 
 processResources {
+    duplicatesStrategy 'exclude'
     inputs.property "version", project.version
 
     filesMatching("fabric.mod.json") {
@@ -62,6 +63,10 @@ remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
     archiveClassifier = loom.platform.get().name()
+}
+
+sourcesJar {
+   duplicatesStrategy 'exclude'
 }
 
 jar {

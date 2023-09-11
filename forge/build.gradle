@@ -71,6 +71,10 @@ remapJar {
     archiveClassifier = loom.platform.get().name()
 }
 
+sourcesJar {
+   duplicatesStrategy 'exclude'
+}
+
 jar {
     archiveClassifier = "dev"
 }
