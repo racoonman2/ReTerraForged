@@ -126,4 +126,4 @@ run/
 
 .project
 
-.launch
+*.launch
