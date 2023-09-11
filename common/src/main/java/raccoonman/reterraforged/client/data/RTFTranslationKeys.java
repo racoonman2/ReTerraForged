@@ -17,6 +17,7 @@ public final class RTFTranslationKeys {
 	public static final String PRESET_CONFIG_PAGE_PRESETS_COPY = resolve("presetConfig.page.presets.copy");
 	public static final String PRESET_CONFIG_PAGE_PRESETS_DELETE = resolve("presetConfig.page.presets.delete");
 	public static final String PRESET_CONFIG_PAGE_PRESETS_IMPORT_LEGACY = resolve("presetConfig.page.presets.importLegacy");
+	public static final String PRESET_CONFIG_PAGE_PRESETS_IMPORT_LEGACY_DISABLED = resolve("presetConfig.page.presets.importLegacy.missing");
 	public static final String PRESET_CONFIG_PAGE_WORLD_SETTINGS_TITLE = resolve("presetConfig.page.worldSettings.title");
 	public static final String PRESET_CONFIG_LABEL_CONTINENT = resolve("presetConfig.label.continent");
 	public static final String PRESET_CONFIG_LABEL_CONTROL_POINTS = resolve("presetConfig.label.controlPoints");

@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.client.gui.screen.config;
+package raccoonman.reterraforged.client.gui.screen;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -38,7 +38,6 @@ import raccoonman.reterraforged.client.gui.ColumnAlignment;
 import raccoonman.reterraforged.client.gui.Toasts;
 import raccoonman.reterraforged.client.gui.Tooltips;
 import raccoonman.reterraforged.client.gui.UnsizedWidgets;
-import raccoonman.reterraforged.client.gui.screen.MultiPageScreen;
 import raccoonman.reterraforged.client.gui.widget.Label;
 import raccoonman.reterraforged.client.gui.widget.WidgetList;
 import raccoonman.reterraforged.common.ReTerraForged;
@@ -209,7 +208,11 @@ public class PresetConfigScreen extends MultiPageScreen {
 				}
 				this.buildPresetList();
 			});
-			this.importLegacy.active = Files.exists(LEGACY_PRESET_PATH);
+			
+			if(Files.notExists(LEGACY_PRESET_PATH)) {
+				this.importLegacy.active = false;
+				this.importLegacy.setTooltip(Tooltips.create(RTFTranslationKeys.PRESET_CONFIG_PAGE_PRESETS_IMPORT_LEGACY_DISABLED));
+			}
 
 			this.right.addWidget(this.input);
 			this.right.addWidget(this.create);

@@ -28,6 +28,7 @@ public final class RTFLangProvider {
 			this.add(RTFTranslationKeys.PRESET_CONFIG_PAGE_PRESETS_COPY, "Copy");
 			this.add(RTFTranslationKeys.PRESET_CONFIG_PAGE_PRESETS_DELETE, "Delete");
 			this.add(RTFTranslationKeys.PRESET_CONFIG_PAGE_PRESETS_IMPORT_LEGACY, "Import Legacy");
+			this.add(RTFTranslationKeys.PRESET_CONFIG_PAGE_PRESETS_IMPORT_LEGACY_DISABLED, "Couldn't find legacy preset directory");
 			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.PRESET_CONFIG_PAGE_PRESETS_CREATE), "Failed to create preset");
 			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.PRESET_CONFIG_PAGE_PRESETS_SAVE), "Failed to save preset");
 			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.PRESET_CONFIG_PAGE_PRESETS_EXPORT), "Failed to export preset");

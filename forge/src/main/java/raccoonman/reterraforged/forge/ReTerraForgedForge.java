@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistriesHooks;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
-import raccoonman.reterraforged.client.gui.screen.config.PresetConfigScreen;
+import raccoonman.reterraforged.client.gui.screen.PresetConfigScreen;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.registries.data.RTFBiomes;
