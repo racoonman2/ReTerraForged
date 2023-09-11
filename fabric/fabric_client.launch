@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+        <listEntry value="/fabric"/>
+    </listAttribute>
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+        <listEntry value="4"/>
+    </listAttribute>
+    <mapAttribute key="org.eclipse.debug.core.environmentVariables"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="true"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="dev.architectury.transformer.TransformerRuntime"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value=""/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="fabric"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dfabric.dli.config=C:\Users\Ayden\Desktop\reterraforged\repository\fabric\.gradle\loom-cache\launch.cfg -Dfabric.dli.env=client -Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient -Darchitectury.main.class=C:\Users\Ayden\Desktop\reterraforged\repository\fabric\.gradle\architectury\.main_class -Darchitectury.runtime.transformer=C:\Users\Ayden\Desktop\reterraforged\repository\fabric\.gradle\architectury\.transforms -Darchitectury.properties=C:\Users\Ayden\Desktop\reterraforged\repository\fabric\.gradle\architectury\.properties -Djdk.attach.allowAttachSelf=true -javaagent:C:\Users\Ayden\Desktop\reterraforged\repository\.gradle\architectury\architectury-transformer-agent.jar"/>
+    <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:fabric}/run"/>
+</launchConfiguration>

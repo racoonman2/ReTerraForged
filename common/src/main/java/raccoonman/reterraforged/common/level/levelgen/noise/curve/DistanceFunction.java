@@ -33,34 +33,29 @@ import net.minecraft.util.StringRepresentable;
  * https://github.com/Auburns/FastNoise_Java
  */
 public enum DistanceFunction implements StringRepresentable {
-    EUCLIDEAN("euclidean") {
+    EUCLIDEAN {
         @Override
         public float apply(float vecX, float vecY) {
             return vecX * vecX + vecY * vecY;
         }
     },
-    MANHATTAN("manhattan") {
+    MANHATTAN {
         @Override
         public float apply(float vecX, float vecY) {
             return Math.abs(vecX) + Math.abs(vecY);
         }
     },
-    NATURAL("natural") {
+    NATURAL {
         @Override
         public float apply(float vecX, float vecY) {
             return (Math.abs(vecX) + Math.abs(vecY)) + (vecX * vecX + vecY * vecY);
         }
     };
 	public static final Codec<DistanceFunction> CODEC = StringRepresentable.fromEnum(DistanceFunction::values);
-	private String name;
-	
-	private DistanceFunction(String name) {
-		this.name = name;
-	}
 	
 	@Override
 	public String getSerializedName() {
-		return this.name;
+		return this.name();
 	}
 	
     public abstract float apply(float vecX, float vecY);

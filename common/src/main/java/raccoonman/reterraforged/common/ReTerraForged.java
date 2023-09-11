@@ -24,6 +24,8 @@
 
 package raccoonman.reterraforged.common;
 
+import java.nio.file.Path;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,6 +42,7 @@ import raccoonman.reterraforged.common.registries.RTFNoiseTypes;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.registries.RTFSurfaceConditions;
 import raccoonman.reterraforged.common.registries.RTFSurfaceRules;
+import raccoonman.reterraforged.platform.config.ConfigUtil;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 public final class ReTerraForged {
@@ -57,6 +60,10 @@ public final class ReTerraForged {
 		RTFSurfaceRules.bootstrap();
 
 		RegistryUtil.createDataRegistry(RTFRegistries.NOISE, Noise.DIRECT_CODEC);
+	}
+	
+	public static Path getConfigPath() {
+		return ConfigUtil.getConfigPath().resolve(MOD_ID);
 	}
 	
 	// does this belong here?

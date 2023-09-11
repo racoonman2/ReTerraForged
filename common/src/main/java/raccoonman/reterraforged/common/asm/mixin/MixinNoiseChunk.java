@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseChunk;
-import raccoonman.reterraforged.common.level.levelgen.density.XZCache;
+import raccoonman.reterraforged.common.level.levelgen.density.FlatCache;
 
 @Mixin(NoiseChunk.class)
 class MixinNoiseChunk {
@@ -27,8 +27,8 @@ class MixinNoiseChunk {
 		method = "wrapNew"
 	)
 	private void wrapNew(DensityFunction densityFunction, CallbackInfoReturnable<DensityFunction> callback) {
-		if(densityFunction instanceof XZCache.Marker function) {
-			XZCache cache = new XZCache(new Context(), function.function(), this.cellWidth * this.cellCountXZ + 1);
+		if(densityFunction instanceof FlatCache.Marker function) {
+			FlatCache cache = new FlatCache(new Context(), function.function(), this.cellWidth * this.cellCountXZ + 1);
     		cache.fillCache(QuartPos.toBlock(this.firstNoiseX), QuartPos.toBlock(this.firstNoiseZ));
 			callback.setReturnValue(cache);
 		}

@@ -146,21 +146,21 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
     }
     
     public static enum Mode implements StringRepresentable {
-        CONSTANT("constant") {
+        CONSTANT {
 
             @Override
             public float blend(float value, float erosion, float strength) {
                 return 1.0F - strength;
             }
         },
-        INPUT_LINEAR("input_linear") {
+        INPUT_LINEAR {
 
             @Override
             public float blend(float value, float erosion, float strength) {
                 return 1.0F - strength * value;
             }
         },
-        OUTPUT_LINEAR("output_linear") {
+        OUTPUT_LINEAR {
 
             @Override
             public float blend(float value, float erosion, float strength) {
@@ -169,18 +169,13 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
         };
 
     	public static final Codec<Mode> CODEC = StringRepresentable.fromEnum(Mode::values);
-    	private String name;
-    	
-    	private Mode(String name) {
-    		this.name = name;
-    	}
-    	
-    	@Override
-    	public String getSerializedName() {
-    		return this.name;
-    	}
-    	
+
         public abstract float blend(float value, float erosion, float strength);
+        
+        @Override
+    	public String getSerializedName() {
+    		return this.name();
+    	}
     }
 }
 

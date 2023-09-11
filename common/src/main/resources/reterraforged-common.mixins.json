@@ -7,6 +7,9 @@
   	"MixinNoiseChunk",
   	"MixinRandomState"
   ],
+  "client": [
+  	"ScreenInvoker"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

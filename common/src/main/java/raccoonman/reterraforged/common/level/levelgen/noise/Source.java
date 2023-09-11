@@ -38,21 +38,21 @@ import raccoonman.reterraforged.common.level.levelgen.noise.source.Constant;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Line;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Rand;
 
-@Deprecated
+//@Deprecated <- this should be deprecated but this has to stay for now because preset settings rely on it
 public enum Source implements StringRepresentable {
-    BILLOW("billow", Builder::billow),
-    CELL("cell", Builder::cell),
-    CELL_EDGE("cell_edge", Builder::cellEdge),
-    CONSTANT("const", Builder::constant),
-    CUBIC("cubic", Builder::cubic),
-    PERLIN("perlin", Builder::perlin),
-    PERLIN2("perlin", Builder::perlin2),
-    RIDGE("ridge", Builder::ridge),
-    SIMPLEX("simplex", Builder::simplex),
-    SIMPLEX2("simplex2", Builder::simplex2),
-    SIMPLEX_RIDGE("simplex_ridge", Builder::simplexRidge),
-    SIN("sin", Builder::sin),
-    RAND("rand", Builder::rand);
+    BILLOW(Builder::billow),
+    CELL(Builder::cell),
+    CELL_EDGE(Builder::cellEdge),
+    CONSTANT(Builder::constant),
+    CUBIC(Builder::cubic),
+    PERLIN(Builder::perlin),
+    PERLIN2(Builder::perlin2),
+    RIDGE(Builder::ridge),
+    SIMPLEX(Builder::simplex),
+    SIMPLEX2(Builder::simplex2),
+    SIMPLEX_RIDGE(Builder::simplexRidge),
+    SIN(Builder::sin),
+    RAND(Builder::rand);
 
 	public static final Codec<Source> CODEC = StringRepresentable.fromEnum(Source::values);
 	
@@ -60,11 +60,9 @@ public enum Source implements StringRepresentable {
     public static final Noise ZERO = new Constant(0F);
     public static final Noise HALF = new Constant(0.5F);
 
-    private final String name;
     private final Function<Builder, Noise> fn;
 
-    Source(String name, Function<Builder, Noise> fn) {
-    	this.name = name;
+    Source(Function<Builder, Noise> fn) {
     	this.fn = fn;
     }
 
@@ -74,7 +72,7 @@ public enum Source implements StringRepresentable {
 
     @Override
     public String getSerializedName() {
-    	return this.name;
+    	return this.name();
     }
     
     public static Builder builder() {

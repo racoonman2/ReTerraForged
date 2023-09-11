@@ -12,6 +12,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.metadata.PackMetadataGenerator;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.minecraftforge.client.event.RegisterPresetEditorsEvent;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
@@ -21,8 +23,9 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistriesHooks;
+import raccoonman.reterraforged.client.data.RTFTranslationKeys;
+import raccoonman.reterraforged.client.gui.screen.config.PresetConfigScreen;
 import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.client.gui.screen.WorldConfigScreen;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.registries.data.RTFBiomes;
 import raccoonman.reterraforged.common.registries.data.RTFDimensionTypes;
@@ -49,7 +52,7 @@ public final class ReTerraForgedForge {
     
     private static void registerPresetEditors(RegisterPresetEditorsEvent event) {
     	// TODO we probably shouldn't register this for the default preset
-    	event.register(WorldPresets.NORMAL, WorldConfigScreen::new);
+    	event.register(WorldPresets.NORMAL, PresetConfigScreen::new);
     }
      
     private static void gatherData(GatherDataEvent event) {
@@ -68,7 +71,8 @@ public final class ReTerraForgedForge {
     	DataGenerator generator = event.getGenerator();
     	PackOutput output = generator.getPackOutput();
 
-    	generator.addProvider(includeClient, new RTFLangProvider.EnglishUS(output, ReTerraForged.MOD_ID));
+    	generator.addProvider(includeClient, new RTFLangProvider.EnglishUS(output));
+    	generator.addProvider(includeClient, PackMetadataGenerator.forFeaturePack(output, Component.translatable(RTFTranslationKeys.METADATA_DESCRIPTION)));
     	generator.addProvider(includeServer, new DatapackBuiltinEntriesProvider(output, lookupProvider, ImmutableSet.of(ReTerraForged.MOD_ID, "minecraft")));
     	generator.addProvider(includeServer, new RTFBlockTagsProvider(output, lookupProvider, existingFileHelper));
     }

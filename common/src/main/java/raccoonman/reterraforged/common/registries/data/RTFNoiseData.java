@@ -6,12 +6,18 @@ import net.minecraft.resources.ResourceKey;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.Source;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
+import raccoonman.reterraforged.common.registries.data.preset.Preset;
 
 public final class RTFNoiseData {
-
+	
 	public static void bootstrap(BootstapContext<Noise> ctx) {
-		HolderGetter<Noise> noise = ctx.lookup(RTFRegistries.NOISE);
+		bootstrap(ctx, Preset.DEFAULT);
+	}
+	
+	public static void bootstrap(BootstapContext<Noise> ctx, Preset preset) {
+		ctx.register(createKey("test"), Source.constant(1));
 	}
 	
 	private static Noise getNoise(HolderGetter<Noise> getter, ResourceKey<Noise> key) {
