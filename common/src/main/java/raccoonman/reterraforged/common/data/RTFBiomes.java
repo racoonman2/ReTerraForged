@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.registries.data;
+package raccoonman.reterraforged.common.data;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;

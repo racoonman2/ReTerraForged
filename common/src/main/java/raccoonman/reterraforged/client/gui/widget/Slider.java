@@ -1,5 +1,7 @@
 package raccoonman.reterraforged.client.gui.widget;
 
+import java.util.function.DoubleConsumer;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.gui.components.AbstractSliderButton;
@@ -14,6 +16,8 @@ public class Slider extends AbstractSliderButton {
 	private Format format;
 	@Nullable
 	private Slider minSlider, maxSlider;
+	@Nullable
+	private DoubleConsumer callback;
     
     public Slider(int x, int y, int width, int height, float initialValue, float min, float max, Component name, Format format) {
         super(x, y, width, height, CommonComponents.EMPTY, 0.0);
@@ -25,19 +29,23 @@ public class Slider extends AbstractSliderButton {
         this.updateMessage();
     }
     
-    public void clamp(Slider min, Slider max) {
+    public void setClamp(Slider min, Slider max) {
     	this.minSlider = min;
     	this.maxSlider = max;
     }
     
-    public void min(Slider min) {
+    public void setMin(Slider min) {
     	this.minSlider = min;
     }
     
-    public void max(Slider max) {
+    public void setMax(Slider max) {
     	this.maxSlider = max;
     }
 
+    public void setCallback(DoubleConsumer callback) {
+    	this.callback = callback;
+    }
+    
     public double getLerpedValue() {
     	return Mth.lerp(Mth.clamp(this.value, 0.0, 1.0F), this.min, this.max);
     }
@@ -52,6 +60,9 @@ public class Slider extends AbstractSliderButton {
     		this.minSlider != null ? this.minSlider.getLerpedValue() : 0.0F,
     		this.maxSlider != null ? this.maxSlider.getLerpedValue() : 1.0F
     	);
+    	if(this.callback != null) {
+        	this.callback.accept(this.value);
+    	}
     }
 
     @Override

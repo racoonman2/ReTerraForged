@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.registries.data.preset.settings;
+package raccoonman.reterraforged.common.data.preset.settings;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -12,8 +12,6 @@ public class RiverSettings {
 		Lake.CODEC.fieldOf("lakes").forGetter((o) -> o.lakes),
 		Wetland.CODEC.fieldOf("wetlands").forGetter((o) -> o.wetlands)
 	).apply(instance, RiverSettings::new));
-	
-	public static final RiverSettings DEFAULT = new RiverSettings(0, 8, new River(5, 2, 6, 20, 8, 0.75F), new River(4, 1, 4, 14, 5, 0.975F), Lake.DEFAULT, Wetland.DEFAULT);
 	
     public int seedOffset;
     public int riverCount;
@@ -30,14 +28,22 @@ public class RiverSettings {
         this.lakes = lakes;
         this.wetlands = wetlands;
     }
+    
+    public RiverSettings copy() {
+    	return new RiverSettings(this.seedOffset, this.riverCount, this.mainRivers.copy(), this.branchRivers.copy(), this.lakes.copy(), this.wetlands.copy());
+    }
+    
+    public static RiverSettings makeDefault() {
+    	return new RiverSettings(0, 8, new River(5, 2, 6, 20, 8, 0.75F), new River(4, 1, 4, 14, 5, 0.975F), Lake.makeDefault(), Wetland.makeDefault());
+    }
 
     public static class River {
     	public static final Codec<River> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.INT.fieldOf("bedDepth").forGetter((o) -> o.bedDepth),
     		Codec.INT.fieldOf("minBankHeight").forGetter((o) -> o.minBankHeight),
     		Codec.INT.fieldOf("maxBankHeight").forGetter((o) -> o.maxBankHeight),
-    		Codec.INT.fieldOf("bedWidth").forGetter((o) -> o.bedWidth),
     		Codec.INT.fieldOf("bankWidth").forGetter((o) -> o.bankWidth),
+    		Codec.INT.fieldOf("bedWidth").forGetter((o) -> o.bedWidth),
     		Codec.FLOAT.fieldOf("fade").forGetter((o) -> o.fade)
     	).apply(instance, River::new));
     	
@@ -48,13 +54,17 @@ public class RiverSettings {
         public int bankWidth;
         public float fade;
         
-        public River(int depth, int minBank, int maxBank, int outer, int inner, float fade) {
-            this.minBankHeight = minBank;
-            this.maxBankHeight = maxBank;
-            this.bankWidth = outer;
-            this.bedWidth = inner;
-            this.bedDepth = depth;
+        public River(int bedDepth, int minBankHeight, int maxBankHeight, int bankWidth, int bedWidth, float fade) {
+            this.bedDepth = bedDepth;
+            this.minBankHeight = minBankHeight;
+            this.maxBankHeight = maxBankHeight;
+            this.bankWidth = bankWidth;
+            this.bedWidth = bedWidth;
             this.fade = fade;
+        }
+        
+        public River copy() {
+        	return new River(this.bedDepth, this.minBankHeight, this.maxBankHeight, this.bankWidth, this.bedWidth, this.fade);
         }
     }
     
@@ -69,9 +79,7 @@ public class RiverSettings {
     		Codec.INT.fieldOf("minBankHeight").forGetter((o) -> o.minBankHeight),
     		Codec.INT.fieldOf("maxBankHeight").forGetter((o) -> o.maxBankHeight)
     	).apply(instance, Lake::new));
-    	
-    	public static final Lake DEFAULT = new Lake(0.3F, 0.0F, 0.03F, 10, 75, 150, 2, 10);
-    	
+
         public float chance;
         public float minStartDistance;
         public float maxStartDistance;
@@ -91,6 +99,14 @@ public class RiverSettings {
         	this.minBankHeight = minBankHeight;
         	this.maxBankHeight = maxBankHeight;
         }
+        
+        public Lake copy() {
+        	return new Lake(this.chance, this.minStartDistance, this.maxStartDistance, this.depth, this.sizeMin, this.sizeMax, this.minBankHeight, this.maxBankHeight);
+        }
+        
+        public static Lake makeDefault() {
+        	return new Lake(0.3F, 0.0F, 0.03F, 10, 75, 150, 2, 10);
+        }
     }
     
     public static class Wetland {
@@ -100,8 +116,6 @@ public class RiverSettings {
     		Codec.INT.fieldOf("sizeMax").forGetter((o) -> o.sizeMax)
     	).apply(instance, Wetland::new));
     	
-    	public static final Wetland DEFAULT = new Wetland(0.6F, 175, 225);
-    	
         public float chance;
         public int sizeMin;
         public int sizeMax;
@@ -110,6 +124,14 @@ public class RiverSettings {
         	this.chance = chance;
         	this.sizeMin = sizeMin;
         	this.sizeMax = sizeMax;
+        }
+        
+        public Wetland copy() {
+        	return new Wetland(this.chance, this.sizeMin, this.sizeMax);
+        }
+        
+        public static Wetland makeDefault() {
+        	return new Wetland(0.6F, 175, 225);
         }
     }
 }

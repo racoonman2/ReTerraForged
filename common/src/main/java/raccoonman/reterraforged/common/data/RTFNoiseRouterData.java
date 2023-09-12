@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.registries.data;
+package raccoonman.reterraforged.common.data;
 
 import java.util.stream.Stream;
 

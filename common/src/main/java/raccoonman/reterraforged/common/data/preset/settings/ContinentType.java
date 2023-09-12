@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.level.levelgen.continent;
+package raccoonman.reterraforged.common.data.preset.settings;
 
 import com.mojang.serialization.Codec;
 

@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.registries.data.preset.settings;
+package raccoonman.reterraforged.common.data.preset.settings;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -15,8 +15,6 @@ public class ClimateSettings {
 		BiomeNoise.CODEC.fieldOf("biomeEdgeShape").forGetter((o) -> o.biomeEdgeShape)
 	).apply(instance, ClimateSettings::new));
 	
-	public static final ClimateSettings DEFAULT = new ClimateSettings(new RangeValue(0, 6, 2, 0.0F, 0.98F, 0.05F), new RangeValue(0, 6, 1, 0.0F, 1.0F, 0.0F), BiomeShape.DEFAULT, BiomeNoise.DEFAULT);
-	
 	public RangeValue temperature;
     public RangeValue moisture;
     public BiomeShape biomeShape;
@@ -27,6 +25,14 @@ public class ClimateSettings {
     	this.moisture = moisture;
     	this.biomeShape = biomeShape;
     	this.biomeEdgeShape = biomeEdgeShape;
+    }
+    
+    public ClimateSettings copy() {
+    	return new ClimateSettings(this.temperature.copy(), this.moisture.copy(), this.biomeShape.copy(), this.biomeEdgeShape.copy());
+    }
+    
+    public static ClimateSettings makeDefault() {
+    	return new ClimateSettings(new RangeValue(0, 6, 2, 0.0F, 0.98F, 0.05F), new RangeValue(0, 6, 1, 0.0F, 1.0F, 0.0F), BiomeShape.makeDefault(), BiomeNoise.makeDefault());
     }
     
     public static class RangeValue {
@@ -73,6 +79,10 @@ public class ClimateSettings {
             float bias = this.getBias() / 2.0F;
             return module.bias(bias).clamp(min, max);
         }
+        
+        public RangeValue copy() {
+        	return new RangeValue(this.seedOffset, this.scale, this.falloff, this.min, this.max, this.bias);
+        }
     }
     
     public static class BiomeShape {
@@ -82,8 +92,6 @@ public class ClimateSettings {
     		Codec.INT.fieldOf("biomeWarpScale").forGetter((o) -> o.biomeWarpScale),
     		Codec.INT.fieldOf("biomeWarpStrength").forGetter((o) -> o.biomeWarpStrength)    		
     	).apply(instance, BiomeShape::new));
-    	
-    	public static final BiomeShape DEFAULT = new BiomeShape(225, 8, 150, 80);
     	
         public int biomeSize;
         public int macroNoiseSize;
@@ -96,6 +104,14 @@ public class ClimateSettings {
         	this.biomeWarpScale = biomeWarpScale;
         	this.biomeWarpStrength = biomeWarpStrength;
         }
+        
+        public BiomeShape copy() {
+        	return new BiomeShape(this.biomeSize, this.macroNoiseSize, this.biomeWarpScale, this.biomeWarpStrength);
+        }
+        
+        public static BiomeShape makeDefault() {
+        	return new BiomeShape(225, 8, 150, 80);
+        }
     }
     
     public static class BiomeNoise {
@@ -107,8 +123,6 @@ public class ClimateSettings {
     		Codec.FLOAT.fieldOf("lacunarity").forGetter((o) -> o.lacunarity),
     		Codec.INT.fieldOf("strength").forGetter((o) -> o.strength)
     	).apply(instance, BiomeNoise::new));
-    	
-    	public static final BiomeNoise DEFAULT = new BiomeNoise(Source.SIMPLEX, 24, 2, 0.5F, 2.65F, 14);
     	
         public Source type;
         public int scale;
@@ -128,6 +142,14 @@ public class ClimateSettings {
         
         public Noise build() {
             return Source.build(this.scale, this.octaves).gain(this.gain).lacunarity(this.lacunarity).build(this.type).bias(-0.5F);
+        }
+        
+        public BiomeNoise copy() {
+        	return new BiomeNoise(this.type, this.scale, this.octaves, this.gain, this.lacunarity, this.strength);
+        }
+        
+        public static BiomeNoise makeDefault() {
+        	return new BiomeNoise(Source.SIMPLEX, 24, 2, 0.5F, 2.65F, 14);
         }
     }
 }

@@ -18,6 +18,9 @@
   "entrypoints": {
     "main": [
       "raccoonman.reterraforged.fabric.ReTerraForgedFabric"
+    ],
+    "fabric-datagen": [
+      "raccoonman.reterraforged.fabric.ReTerraForgedFabric"
     ]
   },
   "depends": {

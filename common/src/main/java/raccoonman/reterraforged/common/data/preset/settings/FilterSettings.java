@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.registries.data.preset.settings;
+package raccoonman.reterraforged.common.data.preset.settings;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -9,14 +9,20 @@ public class FilterSettings {
 		Smoothing.CODEC.fieldOf("smoothing").forGetter((o) -> o.smoothing)
 	).apply(instance, FilterSettings::new));
 	
-	public static final FilterSettings DEFAULT = new FilterSettings(Erosion.DEFAULT, Smoothing.DEFAULT);
-	
     public Erosion erosion;
     public Smoothing smoothing;
     
     public FilterSettings(Erosion erosion, Smoothing smoothing) {
     	this.erosion = erosion;
     	this.smoothing = smoothing;
+    }
+    
+    public FilterSettings copy() {
+    	return new FilterSettings(this.erosion.copy(), this.smoothing.copy());
+    }
+    
+    public static FilterSettings makeDefault() {
+    	return new FilterSettings(Erosion.makeDefault(), Smoothing.makeDefault());
     }
     
     public static class Erosion {
@@ -28,8 +34,6 @@ public class FilterSettings {
     		Codec.FLOAT.fieldOf("erosionRate").forGetter((o) -> o.erosionRate),
     		Codec.FLOAT.fieldOf("depositeRate").forGetter((o) -> o.depositeRate)
     	).apply(instance, Erosion::new));
-    	
-    	public static final Erosion DEFAULT = new Erosion(135, 12, 0.7F, 0.7F, 0.5F, 0.5F);
     	
     	public int dropletsPerChunk;
         public int dropletLifetime;
@@ -46,6 +50,14 @@ public class FilterSettings {
         	this.erosionRate = erosionRate;
         	this.depositeRate = depositeRate;
         }
+        
+        public Erosion copy() {
+        	return new Erosion(this.dropletsPerChunk, this.dropletLifetime, this.dropletVolume, this.dropletVelocity, this.erosionRate, this.depositeRate);
+        }
+        
+        public static Erosion makeDefault() {
+        	return new Erosion(135, 12, 0.7F, 0.7F, 0.5F, 0.5F);
+        }
     }
     
     public static class Smoothing {
@@ -55,16 +67,22 @@ public class FilterSettings {
     		Codec.FLOAT.fieldOf("smoothingRate").forGetter((o) -> o.smoothingRate)    		
     	).apply(instance, Smoothing::new));
     	
-    	public static final Smoothing DEFAULT = new Smoothing(1, 1.8F, 0.9F);
-    	
         public int iterations;
         public float smoothingRadius;
         public float smoothingRate;
         
-        public Smoothing(int iterations, float smoothingRadius, float smoothingRate)  {
+        public Smoothing(int iterations, float smoothingRadius, float smoothingRate) {
         	this.iterations = iterations;
         	this.smoothingRadius = smoothingRadius;
         	this.smoothingRate = smoothingRate;
+        }
+        
+        public Smoothing copy() {
+        	return new Smoothing(this.iterations, this.smoothingRadius, this.smoothingRate);
+        }
+        
+        public static Smoothing makeDefault() {
+        	return new Smoothing(1, 1.8F, 0.9F);
         }
     }
 }

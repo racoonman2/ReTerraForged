@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.registries.data.preset;
+package raccoonman.reterraforged.common.data.preset;
 
 import java.io.IOException;
 import java.net.URI;
@@ -31,14 +31,14 @@ import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.data.registries.RegistriesDatapackGenerator;
 import net.minecraft.network.chat.Component;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
+import raccoonman.reterraforged.common.data.MCNoiseGeneratorSettings;
+import raccoonman.reterraforged.common.data.RTFNoiseData;
+import raccoonman.reterraforged.common.data.preset.settings.ClimateSettings;
+import raccoonman.reterraforged.common.data.preset.settings.FilterSettings;
+import raccoonman.reterraforged.common.data.preset.settings.RiverSettings;
+import raccoonman.reterraforged.common.data.preset.settings.TerrainSettings;
+import raccoonman.reterraforged.common.data.preset.settings.WorldSettings;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
-import raccoonman.reterraforged.common.registries.data.RTFNoiseData;
-import raccoonman.reterraforged.common.registries.data.RTFNoiseGeneratorSettings;
-import raccoonman.reterraforged.common.registries.data.preset.settings.ClimateSettings;
-import raccoonman.reterraforged.common.registries.data.preset.settings.FilterSettings;
-import raccoonman.reterraforged.common.registries.data.preset.settings.RiverSettings;
-import raccoonman.reterraforged.common.registries.data.preset.settings.TerrainSettings;
-import raccoonman.reterraforged.common.registries.data.preset.settings.WorldSettings;
 
 public record Preset(WorldSettings world, ClimateSettings climate, TerrainSettings terrain, RiverSettings rivers, FilterSettings filters) {
 	public static final Codec<Preset> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -49,9 +49,15 @@ public record Preset(WorldSettings world, ClimateSettings climate, TerrainSettin
 		FilterSettings.CODEC.fieldOf("filters").forGetter(Preset::filters)		
 	).apply(instance, Preset::new));
 	
-	public static final Preset DEFAULT = new Preset(WorldSettings.DEFAULT, ClimateSettings.DEFAULT, TerrainSettings.DEFAULT, RiverSettings.DEFAULT, FilterSettings.DEFAULT);
+	public Preset copy() {
+		return new Preset(this.world.copy(), this.climate.copy(), this.terrain.copy(), this.rivers.copy(), this.filters.copy());
+	}
 	
-	//TODO cull unchanged registry entries
+	public static Preset makeDefault() {
+		return new Preset(WorldSettings.makeDefault(), ClimateSettings.makeDefault(), TerrainSettings.makeDefault(), RiverSettings.makeDefault(), FilterSettings.makeDefault()); 
+	}
+	
+	//TODO: cull unchanged registry entries
 	public void exportAsDatapack(RegistryAccess.Frozen registries, Path outputPath) throws IOException {
 		Path tempPath = Files.createTempDirectory("datapack-");
 		DataGenerator generator = new DataGenerator(tempPath, SharedConstants.getCurrentVersion(), true);
@@ -75,7 +81,7 @@ public record Preset(WorldSettings world, ClimateSettings climate, TerrainSettin
 	public HolderLookup.Provider createLookup(RegistryAccess.Frozen registries) {
 		RegistrySetBuilder builder = new RegistrySetBuilder();
 		builder.add(RTFRegistries.NOISE, (ctx) -> RTFNoiseData.bootstrap(ctx, this));
-		builder.add(Registries.NOISE_SETTINGS, (ctx) -> RTFNoiseGeneratorSettings.bootstrap(ctx, this));
+		builder.add(Registries.NOISE_SETTINGS, (ctx) -> MCNoiseGeneratorSettings.bootstrap(ctx, this));
 		HolderLookup.Provider provider = builder.buildPatch(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), registries);
 		return provider;
 	}

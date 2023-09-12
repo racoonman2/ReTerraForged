@@ -23,7 +23,7 @@ public final class Toasts {
 			if(message != null) {
 				messageComponent = Component.literal(message);
 			} else {
-				messageComponent = Component.translatable(RTFTranslationKeys.TOASTS_NO_ERROR_MESSAGE);
+				messageComponent = Component.translatable(RTFTranslationKeys.NO_ERROR_MESSAGE);
 			}
 			
 			notify(errorMessage, messageComponent, SystemToastIds.PACK_LOAD_FAILURE);

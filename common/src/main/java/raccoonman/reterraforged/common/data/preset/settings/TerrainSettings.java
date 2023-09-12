@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.registries.data.preset.settings;
+package raccoonman.reterraforged.common.data.preset.settings;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -18,19 +18,6 @@ public class TerrainSettings {
 		Terrain.CODEC.fieldOf("mountains").forGetter((o) -> o.mountains),
 		Terrain.CODEC.fieldOf("volcano").forGetter((o) -> o.volcano)		
 	).apply(instance, TerrainSettings::new));
-	
-	public static final TerrainSettings DEFAULT = new TerrainSettings(
-		General.DEFAULT,
-		new Terrain(1.0F, 1.0F, 1.0F, 1.0F), 
-		new Terrain(2.0F, 1.0F, 1.0F, 1.0F), 
-		new Terrain(2.0F, 1.0F, 1.0F, 1.0F),
-		new Terrain(1.5F, 1.0F, 1.0F, 1.0F),
-		new Terrain(1.5F, 1.0F, 1.0F, 1.0F), 
-		new Terrain(1.0F, 1.0F, 1.0F, 1.0F), 
-		new Terrain(2.0F, 1.0F, 1.0F, 1.0F), 
-		new Terrain(2.5F, 1.0F, 1.0F, 1.0F),
-		new Terrain(5.0F, 1.0F, 1.0F, 1.0F)
-    );
 	
     public General general;
     public Terrain steppe;
@@ -56,6 +43,25 @@ public class TerrainSettings {
     	this.volcano = volcano;
     }
     
+    public TerrainSettings copy() {
+    	return new TerrainSettings(this.general.copy(), this.steppe.copy(), this.plains.copy(), this.hills.copy(), this.dales.copy(), this.plateau.copy(), this.badlands.copy(), this.torridonian.copy(), this.mountains.copy(), this.volcano.copy());
+    }
+    
+    public static TerrainSettings makeDefault() {
+    	return new TerrainSettings(
+    		General.makeDefault(),
+    		new Terrain(1.0F, 1.0F, 1.0F, 1.0F), 
+    		new Terrain(2.0F, 1.0F, 1.0F, 1.0F), 
+    		new Terrain(2.0F, 1.0F, 1.0F, 1.0F),
+    		new Terrain(1.5F, 1.0F, 1.0F, 1.0F),
+    		new Terrain(1.5F, 1.0F, 1.0F, 1.0F), 
+    		new Terrain(1.0F, 1.0F, 1.0F, 1.0F), 
+    		new Terrain(2.0F, 1.0F, 1.0F, 1.0F), 
+    		new Terrain(2.5F, 1.0F, 1.0F, 1.0F),
+    		new Terrain(5.0F, 1.0F, 1.0F, 1.0F)
+    	);
+    }
+    
     public static class General {
     	public static final Codec<General> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.INT.fieldOf("terrainSeedOffset").forGetter((o) -> o.terrainSeedOffset),
@@ -64,8 +70,6 @@ public class TerrainSettings {
     		Codec.FLOAT.fieldOf("globalHorizontalScale").forGetter((o) -> o.globalHorizontalScale),
     		Codec.BOOL.fieldOf("fancyMountains").forGetter((o) -> o.fancyMountains)
     	).apply(instance, General::new));
-    	
-    	public static final General DEFAULT = new General(0, 1200, 0.98F, 1.0F, true);
     	
         public int terrainSeedOffset;
         public int terrainRegionSize;
@@ -79,6 +83,14 @@ public class TerrainSettings {
         	this.globalVerticalScale = globalVerticalScale;
         	this.globalHorizontalScale = globalHorizontalScale;
         	this.fancyMountains = fancyMountains;
+        }
+        
+        public General copy() {
+        	return new General(this.terrainSeedOffset, this.terrainRegionSize, this.globalVerticalScale, this.globalHorizontalScale, this.fancyMountains);
+        }
+        
+        public static General makeDefault() {
+        	return new General(0, 1200, 0.98F, 1.0F, true);
         }
     }
     
@@ -107,6 +119,10 @@ public class TerrainSettings {
             double moduleScale = scale * this.verticalScale;
             Noise outputModule = module.scale(moduleScale).bias(moduleBias);
             return clamp(outputModule);
+        }
+        
+        public Terrain copy() {
+        	return new Terrain(this.weight, this.baseScale, this.verticalScale, this.horizontalScale);
         }
         
         private static Noise clamp(Noise module) {

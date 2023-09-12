@@ -44,6 +44,7 @@ import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 public final class ReTerraForged {
 	public static final String MOD_ID = "reterraforged";
+	public static final String LEGACY_MOD_ID = "terraforged";
 	public static final Logger LOGGER = LogManager.getLogger("ReTerraForged");
 
 	public static void bootstrap() {

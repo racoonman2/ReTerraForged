@@ -9,6 +9,18 @@ architectury {
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
+    
+    runs {
+	    data {
+            inherit client
+            
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+            vmArg "-Dfabric-api.datagen.modid=reterraforged"
+ 
+            runDir "build/datagen"
+        }
+    }
 }
 
 configurations {
@@ -31,7 +43,7 @@ sourceSets {
     main {
         resources {
             srcDirs += [
-                 project(":forge").file("src/generated/resources").absolutePath
+                "src/generated/resources"
             ]
         }
     }

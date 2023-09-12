@@ -1,10 +1,8 @@
-package raccoonman.reterraforged.common.registries.data.preset.settings;
+package raccoonman.reterraforged.common.data.preset.settings;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import raccoonman.reterraforged.common.level.levelgen.continent.ContinentType;
-import raccoonman.reterraforged.common.level.levelgen.continent.SpawnType;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
 
 public class WorldSettings {
@@ -14,8 +12,6 @@ public class WorldSettings {
 		Properties.CODEC.fieldOf("properties").forGetter((o) -> o.properties)
 	).apply(instance, WorldSettings::new));
 	
-	public static final WorldSettings DEFAULT = new WorldSettings(Continent.DEFAULT, ControlPoints.DEFAULT, Properties.DEFAULT);
-	
     public Continent continent;
     public ControlPoints controlPoints;
     public Properties properties;
@@ -24,6 +20,14 @@ public class WorldSettings {
         this.continent = continent;
         this.controlPoints = controlPoints;
         this.properties = properties;
+    }
+    
+    public WorldSettings copy() {
+    	return new WorldSettings(this.continent.copy(), this.controlPoints.copy(), this.properties.copy());
+    }
+    
+    public static WorldSettings makeDefault() {
+    	return new WorldSettings(Continent.makeDefault(), ControlPoints.makeDefault(), Properties.makeDefault());
     }
     
     public static class Continent {
@@ -38,8 +42,6 @@ public class WorldSettings {
     		Codec.FLOAT.fieldOf("continentNoiseGain").forGetter((o) -> o.continentNoiseGain),
     		Codec.FLOAT.fieldOf("continentNoiseLacunarity").forGetter((o) -> o.continentNoiseLacunarity)
     	).apply(instance, Continent::new));
-    	
-    	public static final Continent DEFAULT = new Continent(ContinentType.MULTI_IMPROVED, DistanceFunction.EUCLIDEAN, 3000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F);
     	
         public ContinentType continentType;
         public DistanceFunction continentShape;
@@ -62,6 +64,14 @@ public class WorldSettings {
             this.continentNoiseGain = continentNoiseGain;
             this.continentNoiseLacunarity = continentNoiseLacunarity;
         }
+        
+        public Continent copy() {
+        	return new Continent(this.continentType, this.continentShape, this.continentScale, this.continentJitter, this.continentSkipping, this.continentSizeVariance, this.continentNoiseOctaves, this.continentNoiseGain, this.continentNoiseLacunarity);
+        }
+        
+        public static Continent makeDefault() {
+        	return new Continent(ContinentType.MULTI_IMPROVED, DistanceFunction.EUCLIDEAN, 3000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F);
+        }
     }
     
     public static class ControlPoints {
@@ -72,9 +82,7 @@ public class WorldSettings {
     		Codec.FLOAT.fieldOf("coast").forGetter((o) -> o.coast),
     		Codec.FLOAT.fieldOf("inland").forGetter((o) -> o.inland)
         ).apply(instance, ControlPoints::new));
-    	
-    	public static final ControlPoints DEFAULT = new ControlPoints(0.1F, 0.25F, 0.327F, 0.448F, 0.502F);
-    	
+
         public float deepOcean;
         public float shallowOcean;
         public float beach;
@@ -88,25 +96,42 @@ public class WorldSettings {
             this.coast = coast;
             this.inland = inland;
         }
+        
+        public ControlPoints copy() {
+        	return new ControlPoints(this.deepOcean, this.shallowOcean, this.beach, this.coast, this.inland);
+        }
+        
+        public static ControlPoints makeDefault() {
+        	return new ControlPoints(0.1F, 0.25F, 0.327F, 0.448F, 0.502F);
+        }
     }
     
     public static class Properties {
     	public static final Codec<Properties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		SpawnType.CODEC.fieldOf("spawnType").forGetter((o) -> o.spawnType),
     		Codec.INT.fieldOf("worldHeight").forGetter((o) -> o.worldHeight),
+    		Codec.INT.optionalFieldOf("minY", 0).forGetter((o) -> o.minY), // this has to be defaulted to be able to parse legacy presets
     		Codec.INT.fieldOf("seaLevel").forGetter((o) -> o.seaLevel)
     	).apply(instance, Properties::new));
     	
-    	public static final Properties DEFAULT = new Properties(SpawnType.CONTINENT_CENTER, 256, 63);
-    	
         public SpawnType spawnType;
         public int worldHeight;
+        public int minY;
         public int seaLevel;
         
-        public Properties(SpawnType spawnType, int worldHeight, int seaLevel) {
+        public Properties(SpawnType spawnType, int worldHeight, int minY, int seaLevel) {
         	this.spawnType = spawnType;
         	this.worldHeight = worldHeight;
+        	this.minY = minY;
         	this.seaLevel = seaLevel;
+        }
+        
+        public Properties copy() {
+        	return new Properties(this.spawnType, this.worldHeight, this.minY, this.seaLevel);
+        }
+        
+        public static Properties makeDefault() {
+        	return new Properties(SpawnType.CONTINENT_CENTER, 256, -64, 63);
         }
     }
 }

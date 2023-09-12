@@ -26,6 +26,6 @@ public class Label extends Button {
 	@Override
 	public void renderWidget(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
 		Minecraft minecraft = Minecraft.getInstance();
-        minecraft.font.draw(matrix, this.getMessage().getString(), this.getX(), this.getY() + (this.height - 8.0F) / 2.0F, 0xFFFFFF);
+        minecraft.font.draw(matrix, this.getMessage(), this.getX(), this.getY() + (this.height - 8.0F) / 2.0F, 0xFFFFFF);
 	}
 }
