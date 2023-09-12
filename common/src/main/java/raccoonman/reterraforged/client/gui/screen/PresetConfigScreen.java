@@ -89,9 +89,6 @@ public class PresetConfigScreen extends MultiPageScreen {
 			if(repository.addPack("file/" + path.getFileName())) {
 				this.parent.tryApplyNewDataPacks(repository, false, (c) -> {
 				});
-			} else {
-				//TODO show a toast or something instead
-				ReTerraForged.LOGGER.warn("Preset already applied!");
 			}
 		});
 	}
@@ -190,15 +187,16 @@ public class PresetConfigScreen extends MultiPageScreen {
 				Toasts.notify(RTFTranslationKeys.PRESET_CONFIG_PAGE_PRESETS_EXPORT_SUCCESS, Component.literal(path.toString()), SystemToastIds.WORLD_BACKUP);
 			});
 			this.copy = UnsizedWidgets.createReportingButton(RTFTranslationKeys.PRESET_CONFIG_PAGE_PRESETS_COPY, () -> {
-				String presetName = PresetConfigScreen.this.selectedPreset.getPresetName();
-				Path selectedPresetPath = PresetConfigScreen.this.selectedPreset.getPath();
-				Path targetPresetPath = getUniquePath(PRESET_PATH, presetName);
-				Files.copy(selectedPresetPath, targetPresetPath);
+				Files.copy(
+					PresetConfigScreen.this.selectedPreset.getPath(), 
+					getUniquePath(PRESET_PATH, PresetConfigScreen.this.selectedPreset.getPresetName())
+				);
 				this.buildPresetList();
 			});
 			this.delete = UnsizedWidgets.createReportingButton(RTFTranslationKeys.PRESET_CONFIG_PAGE_PRESETS_DELETE, () -> {
-				Path path = PresetConfigScreen.this.selectedPreset.getPath();
-				Files.delete(path);
+				Files.delete(
+					PresetConfigScreen.this.selectedPreset.getPath()
+				);
 				this.buildPresetList();
 			});
 			this.importLegacy = UnsizedWidgets.createReportingButton(RTFTranslationKeys.PRESET_CONFIG_PAGE_PRESETS_IMPORT_LEGACY, () -> {

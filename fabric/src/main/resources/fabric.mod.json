@@ -22,11 +22,12 @@
   },
   "depends": {
     "fabricloader": ">=0.14.14",
+    "fabric": ">=0.86.1",
     "minecraft": ">=1.19.4"
   },
-  "accessWidener" : "reterraforged.accesswidener",
   "mixins": [
-    "reterraforged-common.mixins.json"
+    "reterraforged-common.mixins.json",
+    "reterraforged-fabric.mixins.json"
   ],
   "icon": "assets/reterraforged/icon.png"
 }

@@ -1,11 +1,23 @@
-dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-}
-
 architectury {
     common("forge", "fabric")
 }
 
 loom {
     accessWidenerPath = file("src/main/resources/reterraforged.accesswidener")
+}
+
+dependencies {
+    modImplementation( "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}") { exclude group: 'net.fabricmc', module: 'fabric-loader' }
+}
+
+publishing {
+    publications {
+        mavenCommon(MavenPublication) {
+            artifactId = rootProject.archives_base_name
+            from components.java
+        }
+    }
+
+    repositories {
+    }
 }

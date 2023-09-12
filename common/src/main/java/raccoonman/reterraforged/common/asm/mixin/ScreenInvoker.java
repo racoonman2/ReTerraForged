@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 
 //a bit unnecessary but whatever
+//addRenderableWidget can be overriden so we don't use an access widener
 @Mixin(Screen.class)
 public interface ScreenInvoker {
 
