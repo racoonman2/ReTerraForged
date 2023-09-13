@@ -38,9 +38,9 @@ public enum ContinentType implements StringRepresentable {
 	public static final Codec<ContinentType> CODEC = StringRepresentable.fromEnum(ContinentType::values);
 
     public abstract Noise create(int seed);
-    
-    @Override
-    public String getSerializedName() {
-    	return this.name();
-    }
+
+	@Override
+	public String getSerializedName() {
+		return this.name();
+	}
 }

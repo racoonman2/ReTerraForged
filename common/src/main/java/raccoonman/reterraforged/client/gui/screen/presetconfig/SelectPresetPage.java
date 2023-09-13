@@ -83,14 +83,14 @@ public class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEnt
 			this.createPresetButton.active = isValid;
 			this.inputBox.setTextColor(isValid ? white : red);
 		});
-		this.createPresetButton = UnsizedWidgets.createThrowingButton("Create", () -> {
+		this.createPresetButton = UnsizedWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_CREATE, () -> {
 			this.createPreset(this.inputBox.getValue());
 			this.inputBox.setValue(StringUtil.EMPTY_STRING);
 		});
 		this.createPresetButton.active = this.isValidPresetName(this.inputBox.getValue());
-		this.copyPresetButton = UnsizedWidgets.createThrowingButton("Copy", () -> this.copyPreset(this.left.getSelected().getWidget()));
-		this.deletePresetButton = UnsizedWidgets.createThrowingButton("Delete", () -> this.deletePreset(this.left.getSelected().getWidget()));
-		this.importLegacyPresetsButton = UnsizedWidgets.createThrowingButton("Import Legacy", this::importLegacyPresets);
+		this.copyPresetButton = UnsizedWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_COPY, () -> this.copyPreset(this.left.getSelected().getWidget()));
+		this.deletePresetButton = UnsizedWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_DELETE, () -> this.deletePreset(this.left.getSelected().getWidget()));
+		this.importLegacyPresetsButton = UnsizedWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_IMPORT_LEGACY, this::importLegacyPresets);
 		
 		try {
 			// this probably shouldn't go here
@@ -124,7 +124,7 @@ public class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEnt
 		// note: its possible for left to be null when this is called
 		return Optional.ofNullable(this.left).map(WidgetList::getSelected).map((e) -> {
 			PresetEntry entry = e.getWidget();
-			return entry.isBuiltin() ? null : null;
+			return !entry.isBuiltin() ? new WorldSettingsPage(this.screen, entry) : null;
 		});
 	}
 
@@ -160,9 +160,11 @@ public class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEnt
 	
 	private void onSelectPreset(@Nullable PresetEntry entry) {
 		boolean active = entry != null;
+		boolean builtin = active && entry.isBuiltin();
 		this.screen.doneButton.active = active;
 		this.copyPresetButton.active = active;
-		this.deletePresetButton.active = active && !entry.isBuiltin();
+		this.deletePresetButton.active = active && !builtin;
+		this.screen.nextButton.active = active && !builtin;
 	}
 	
 	//FIXME: don't terminate the loop if parse fails
@@ -170,7 +172,7 @@ public class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEnt
 		this.onSelectPreset(null);
 		
 		List<PresetEntry> entries = new ArrayList<>();
-		entries.add(new PresetEntry(Component.literal("Default").withStyle(ChatFormatting.GRAY), Preset.makeDefault(), true));
+		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_BEAUTIFUL_PRESET_NAME).withStyle(ChatFormatting.GRAY), Preset.makeDefault(), true));
 		for(Path presetPath : Files.list(RTF_PRESET_PATH)
 			.filter(Files::isRegularFile)
 			.toList()

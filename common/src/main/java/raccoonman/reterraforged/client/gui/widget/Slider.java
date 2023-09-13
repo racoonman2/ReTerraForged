@@ -1,6 +1,7 @@
 package raccoonman.reterraforged.client.gui.widget;
 
-import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
+import java.util.function.DoubleUnaryOperator;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -15,9 +16,7 @@ public class Slider extends AbstractSliderButton {
 	private Component name;
 	private Format format;
 	@Nullable
-	private Slider minSlider, maxSlider;
-	@Nullable
-	private DoubleConsumer callback;
+	private DoubleUnaryOperator callback;
     
     public Slider(int x, int y, int width, int height, float initialValue, float min, float max, Component name, Format format) {
         super(x, y, width, height, CommonComponents.EMPTY, 0.0);
@@ -28,21 +27,8 @@ public class Slider extends AbstractSliderButton {
         this.value = (Mth.clamp(initialValue, min, max) - min) / (max - min);
         this.updateMessage();
     }
-    
-    public void setClamp(Slider min, Slider max) {
-    	this.minSlider = min;
-    	this.maxSlider = max;
-    }
-    
-    public void setMin(Slider min) {
-    	this.minSlider = min;
-    }
-    
-    public void setMax(Slider max) {
-    	this.maxSlider = max;
-    }
 
-    public void setCallback(DoubleConsumer callback) {
+    public void setCallback(DoubleUnaryOperator callback) {
     	this.callback = callback;
     }
     
@@ -56,18 +42,23 @@ public class Slider extends AbstractSliderButton {
     
     @Override
     public void applyValue() {
-    	this.value = Mth.clamp(this.value, 
-    		this.minSlider != null ? this.minSlider.getLerpedValue() : 0.0F,
-    		this.maxSlider != null ? this.maxSlider.getLerpedValue() : 1.0F
-    	);
     	if(this.callback != null) {
-        	this.callback.accept(this.value);
+        	this.value = this.callback.applyAsDouble(this.value);
     	}
     }
 
     @Override
     protected void updateMessage() {
         this.setMessage(CommonComponents.optionNameValue(this.name, Component.literal(this.format.getMessage(this.getScaledValue()))));
+    }
+    
+    public static DoubleUnaryOperator clamp(DoubleSupplier min, DoubleSupplier max)	{
+    	return (value) -> {
+    		return Mth.clamp(value,
+	    		min != null ? min.getAsDouble() : 0.0F,
+	    		max != null ? max.getAsDouble() : 1.0F
+	    	);
+    	};
     }
     
     public static enum Format {

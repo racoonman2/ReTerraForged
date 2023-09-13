@@ -1,8 +1,10 @@
 package raccoonman.reterraforged.client.gui.widget;
 
+import java.util.Collection;
 import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
-import java.util.function.Supplier;
+import java.util.function.DoubleUnaryOperator;
+
+import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
@@ -26,27 +28,30 @@ public final class UnsizedWidgets {
 		return new Label(-1, -1, -1, -1, Component.translatable(text));
 	}
 
-	private static Slider createSlider(float initial, float min, float max, String text, Slider.Format format, DoubleConsumer callback) {
+	private static Slider createSlider(float initial, float min, float max, String text, Slider.Format format, DoubleUnaryOperator callback) {
 		Slider slider = new Slider(-1, -1, -1, -1, initial, min, max, Component.translatable(text), format);
 		slider.setTooltip(Tooltips.create(Tooltips.translationKey(text)));
 		slider.setCallback(callback);
 		return slider;
 	}
 
-	public static Slider createFloatSlider(float initial, float min, float max, String text, DoubleConsumer callback) {
+	public static Slider createFloatSlider(float initial, float min, float max, String text, DoubleUnaryOperator callback) {
 		return createSlider(initial, min, max, text, Format.FLOAT, callback);
 	}
 	
-	public static Slider createIntSlider(int initial, int min, int max, String text, DoubleConsumer callback) {
+	public static Slider createIntSlider(int initial, int min, int max, String text, DoubleUnaryOperator callback) {
 		return createSlider(initial, min, max, text, Format.INT, callback);
 	}
 	
-	public static <T extends Enum<T>> CycleButton<T> createCycle(Supplier<T[]> values, T initial, String text, CycleButton.OnValueChange<T> callback) {
+	public static <T extends Enum<T>> CycleButton<T> createCycle(T[] values, T initial, String text, CycleButton.OnValueChange<T> callback) {
+		return createCycle(ImmutableList.copyOf(values), initial, text, callback);
+	}
+	
+	public static <T extends Enum<T>> CycleButton<T> createCycle(Collection<T> values, T initial, String text, CycleButton.OnValueChange<T> callback) {
 		CycleButton<T> button = CycleButton.<T>builder((e) -> {
 			return Component.literal(e.name());
-		}).withValues(values.get()).withInitialValue(initial).create(-1, -1, -1, -1, Component.translatable(text), callback);
+		}).withInitialValue(initial).withValues(values).create(-1, -1, -1, -1, Component.translatable(text), callback);
 		button.setTooltip(Tooltips.create(Tooltips.translationKey(text)));
-		button.onPress();
 		return button;
 	}
 	

@@ -10,7 +10,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import raccoonman.reterraforged.client.gui.widget.Label;
 
-public class LinkedPageScreen extends Screen {
+public abstract class LinkedPageScreen extends Screen {
 	protected Button previousButton,
 					 nextButton,
 					 cancelButton,
@@ -52,7 +52,8 @@ public class LinkedPageScreen extends Screen {
 		}).bounds(buttonsCenter - buttonWidth - buttonPad, buttonsRow, buttonWidth, buttonHeight).build();
 
 		this.doneButton = Button.builder(CommonComponents.GUI_DONE, (b) -> {
-
+			this.onDone();
+			this.onClose();
 		}).bounds(buttonsCenter + buttonPad, buttonsRow, buttonWidth, buttonHeight).build();
 		
 		this.currentPage.init();
@@ -76,6 +77,8 @@ public class LinkedPageScreen extends Screen {
 	public void onClose() {
 		this.currentPage.close();
 	}
+	
+	protected abstract void onDone();
 	
 	public interface Page {
 		Component title();
