@@ -6,6 +6,7 @@ import raccoonman.reterraforged.client.gui.ColumnAlignment;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.widget.WidgetList;
 
+// if this is in the presetconfig package, why do we need the S generic?
 public abstract class BisectedPage<S extends Screen, L extends AbstractWidget, R extends AbstractWidget> implements Page {
 	protected S screen;
 	protected WidgetList<L> left;

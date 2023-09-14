@@ -33,7 +33,6 @@ import raccoonman.reterraforged.client.gui.Tooltips;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Label;
-import raccoonman.reterraforged.client.gui.widget.UnsizedWidgets;
 import raccoonman.reterraforged.client.gui.widget.WidgetList;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.data.preset.Preset;
@@ -76,21 +75,21 @@ public class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEnt
 	public void init() {
 		super.init();
 		
-		this.inputBox = UnsizedWidgets.createEditBox(this.screen.font, (text) -> {
+		this.inputBox = PresetWidgets.createEditBox(this.screen.font, (text) -> {
 			boolean isValid = this.isValidPresetName(text);
 			final int white = 14737632;
 			final int red = 0xFFFF3F30;
 			this.createPresetButton.active = isValid;
 			this.inputBox.setTextColor(isValid ? white : red);
 		});
-		this.createPresetButton = UnsizedWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_CREATE, () -> {
+		this.createPresetButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_CREATE, () -> {
 			this.createPreset(this.inputBox.getValue());
 			this.inputBox.setValue(StringUtil.EMPTY_STRING);
 		});
 		this.createPresetButton.active = this.isValidPresetName(this.inputBox.getValue());
-		this.copyPresetButton = UnsizedWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_COPY, () -> this.copyPreset(this.left.getSelected().getWidget()));
-		this.deletePresetButton = UnsizedWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_DELETE, () -> this.deletePreset(this.left.getSelected().getWidget()));
-		this.importLegacyPresetsButton = UnsizedWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_IMPORT_LEGACY, this::importLegacyPresets);
+		this.copyPresetButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_COPY, () -> this.copyPreset(this.left.getSelected().getWidget()));
+		this.deletePresetButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_DELETE, () -> this.deletePreset(this.left.getSelected().getWidget()));
+		this.importLegacyPresetsButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_IMPORT_LEGACY, this::importLegacyPresets);
 		
 		try {
 			// this probably shouldn't go here

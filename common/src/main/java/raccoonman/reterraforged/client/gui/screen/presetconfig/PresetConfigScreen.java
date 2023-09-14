@@ -14,12 +14,7 @@ public class PresetConfigScreen extends LinkedPageScreen {
 	@Override
 	public void onClose() {
 		super.onClose();
-		
-		this.minecraft.setScreen(this.parent);
-	}
 
-	@Override
-	protected void onDone() {
-		//TODO
+		this.minecraft.setScreen(this.parent);
 	}
 }

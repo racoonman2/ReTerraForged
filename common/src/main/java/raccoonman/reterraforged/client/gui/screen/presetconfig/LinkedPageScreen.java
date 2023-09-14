@@ -75,10 +75,11 @@ public abstract class LinkedPageScreen extends Screen {
 	
 	@Override
 	public void onClose() {
-		this.currentPage.close();
 	}
 	
-	protected abstract void onDone();
+	protected void onDone() {
+		this.currentPage.close();
+	}
 	
 	public interface Page {
 		Component title();
