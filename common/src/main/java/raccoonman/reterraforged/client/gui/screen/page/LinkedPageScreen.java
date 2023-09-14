@@ -23,7 +23,7 @@ public abstract class LinkedPageScreen extends Screen {
 	
 	public void setPage(Page page) {
 		this.currentPage = page;
-		page.close();
+		page.onClose();
 		this.rebuildWidgets();
 	}
 	
@@ -75,10 +75,11 @@ public abstract class LinkedPageScreen extends Screen {
 	
 	@Override
 	public void onClose() {
+		this.currentPage.onClose();
 	}
 	
-	protected void onDone() {
-		this.currentPage.close();
+	public void onDone() {
+		this.currentPage.onDone();
 	}
 	
 	public interface Page {
@@ -90,7 +91,10 @@ public abstract class LinkedPageScreen extends Screen {
 		
 		Optional<Page> next();
 		
-		default void close() {
+		default void onClose() {
+		}
+		
+		default void onDone() {
 		}
 	}
 }

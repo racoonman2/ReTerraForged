@@ -11,7 +11,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import raccoonman.reterraforged.client.gui.preview.Preview;
+import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetEditorPage;
 
 public class WidgetList<T extends AbstractWidget> extends ContainerObjectSelectionList<WidgetList.Entry<T>> {
 
@@ -75,7 +75,8 @@ public class WidgetList<T extends AbstractWidget> extends ContainerObjectSelecti
             widget.visible = true;
             widget.setWidth(optionWidth);
             widget.height = height - 1;
-            if (widget instanceof Preview) {
+            // TODO: don't do this
+            if (widget instanceof PresetEditorPage.Preview) {
                 widget.height = (widget.getWidth());
             }
             widget.render(matrixStack, mouseX, mouseY, partialTicks);

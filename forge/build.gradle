@@ -31,9 +31,9 @@ configurations {
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.forge_version}"
+    forge ("net.minecraftforge:forge:${rootProject.forge_version}") { exclude group: 'org.spongepowered', module: 'mixin' }
     
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    common(project(path: ":common", configuration: "namedElements")) { transitive = false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 }
 
