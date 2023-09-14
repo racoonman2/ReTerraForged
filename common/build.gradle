@@ -7,7 +7,16 @@ loom {
 }
 
 dependencies {
-    modImplementation( "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}") { exclude group: 'net.fabricmc', module: 'fabric-loader' }
+	modImplementation "dev.architectury:mixin-patched:0.8.5.10"
+    modImplementation ("net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}")
+}
+
+configurations.implementation {
+	exclude group: "net.fabricmc", module: "sponge-mixin"
+}
+
+repositories {
+
 }
 
 publishing {

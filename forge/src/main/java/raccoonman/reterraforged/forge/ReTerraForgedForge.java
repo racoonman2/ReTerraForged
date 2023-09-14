@@ -54,7 +54,7 @@ public final class ReTerraForgedForge {
     	// TODO we probably shouldn't register this for the default preset
     	event.register(WorldPresets.NORMAL, (screen, ctx) -> new PresetConfigScreen(screen));
     }
-    
+
     private static void gatherData(GatherDataEvent event) {
     	Preset preset = Preset.makeDefault();
     	
