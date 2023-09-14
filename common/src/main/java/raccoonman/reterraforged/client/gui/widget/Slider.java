@@ -31,13 +31,17 @@ public class Slider extends AbstractSliderButton {
     public void setCallback(DoubleUnaryOperator callback) {
     	this.callback = callback;
     }
-    
+
     public double getLerpedValue() {
-    	return Mth.lerp(Mth.clamp(this.value, 0.0, 1.0F), this.min, this.max);
+    	return this.lerpValue(this.value);
     }
     
-    public float getScaledValue() {
-        return this.format.scale((float) this.getLerpedValue());
+    public double lerpValue(double value) {
+    	return Mth.lerp(Mth.clamp(value, 0.0, 1.0F), this.min, this.max);
+    }
+    
+    public float scaleValue(float value) {
+        return this.format.scale((float) this.lerpValue(value));
     }
     
     @Override
@@ -49,7 +53,7 @@ public class Slider extends AbstractSliderButton {
 
     @Override
     protected void updateMessage() {
-        this.setMessage(CommonComponents.optionNameValue(this.name, Component.literal(this.format.getMessage(this.getScaledValue()))));
+        this.setMessage(CommonComponents.optionNameValue(this.name, Component.literal(this.format.getMessage(this.scaleValue((float) this.value)))));
     }
     
     public static DoubleUnaryOperator clamp(DoubleSupplier min, DoubleSupplier max)	{

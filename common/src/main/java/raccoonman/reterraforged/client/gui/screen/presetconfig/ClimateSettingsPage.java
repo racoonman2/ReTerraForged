@@ -61,23 +61,23 @@ public class ClimateSettingsPage extends PresetEditorPage {
 			temperature.seedOffset = offset;
 		});
 		this.temperatureScale = PresetWidgets.createIntSlider(temperature.scale, 1, 20, RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_SCALE, (value) -> {
-			temperature.scale = (int) value;
+			temperature.scale = (int) this.temperatureScale.scaleValue((float) value);
 			return value;
 		});
 		this.temperatureFalloff = PresetWidgets.createIntSlider(temperature.falloff, 1, 10, RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_FALLOFF, (value) -> {
-			temperature.falloff = (int) value;
+			temperature.falloff = (int) this.temperatureFalloff.scaleValue((float) value);
 			return value;
 		});
 		this.temperatureMin = PresetWidgets.createFloatSlider(temperature.min, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_MIN, (value) -> {
-			temperature.min = (float) value;
+			temperature.min = (float) this.temperatureMin.scaleValue((float) value);
 			return value;
 		});
 		this.temperatureMax = PresetWidgets.createFloatSlider(temperature.max, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_MAX, (value) -> {
-			temperature.max = (float) value;
+			temperature.max = (float) this.temperatureMax.scaleValue((float) value);
 			return value;
 		});
 		this.temperatureBias = PresetWidgets.createFloatSlider(temperature.bias, -1.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_BIAS, (value) -> {
-			temperature.bias = (float) value;
+			temperature.bias = (float) this.temperatureBias.scaleValue((float) value);
 			return value;
 		});
 
@@ -86,41 +86,41 @@ public class ClimateSettingsPage extends PresetEditorPage {
 			moisture.seedOffset = offset;
 		});
 		this.moistureScale = PresetWidgets.createIntSlider(moisture.scale, 1, 20, RTFTranslationKeys.GUI_SLIDER_MOISTURE_SCALE, (value) -> {
-			moisture.scale = (int) value;
+			moisture.scale = (int) this.moistureScale.scaleValue((float) value);
 			return value;
 		});
 		this.moistureFalloff = PresetWidgets.createIntSlider(moisture.falloff, 1, 10, RTFTranslationKeys.GUI_SLIDER_MOISTURE_FALLOFF, (value) -> {
-			moisture.falloff = (int) value;
+			moisture.falloff = (int) this.moistureFalloff.scaleValue((float) value);
 			return value;
 		});
 		this.moistureMin = PresetWidgets.createFloatSlider(moisture.min, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_MOISTURE_MIN, (value) -> {
-			moisture.min = (float) value;
+			moisture.min = (float) this.moistureMin.scaleValue((float) value);
 			return value;
 		});
 		this.moistureMax = PresetWidgets.createFloatSlider(moisture.max, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_MOISTURE_MAX, (value) -> {
-			moisture.max = (float) value;
+			moisture.max = (float) this.moistureMax.scaleValue((float) value);
 			return value;
 		});
 		this.moistureBias = PresetWidgets.createFloatSlider(moisture.bias, -1.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_MOISTURE_BIAS, (value) -> {
-			moisture.bias = (float) value;
+			moisture.bias = (float) this.moistureBias.scaleValue((float) value);
 			return value;
 		});
 
 		ClimateSettings.BiomeShape biomeShape = climate.biomeShape;
 		this.biomeSize = PresetWidgets.createIntSlider(biomeShape.biomeSize, 50, 2000, RTFTranslationKeys.GUI_SLIDER_BIOME_SIZE, (value) -> {
-			biomeShape.biomeSize = (int) value;
+			biomeShape.biomeSize = (int) this.biomeSize.scaleValue((float) value);
 			return value;
 		});
 		this.macroNoiseSize = PresetWidgets.createIntSlider(biomeShape.macroNoiseSize, 1, 20, RTFTranslationKeys.GUI_SLIDER_MACRO_NOISE_SIZE, (value) -> {
-			biomeShape.macroNoiseSize = (int) value;
+			biomeShape.macroNoiseSize = (int) this.macroNoiseSize.scaleValue((float) value);
 			return value;
 		});
 		this.biomeWarpScale = PresetWidgets.createIntSlider(biomeShape.biomeWarpScale, 1, 500, RTFTranslationKeys.GUI_SLIDER_BIOME_WARP_SCALE, (value) -> {
-			biomeShape.biomeWarpScale = (int) value;
+			biomeShape.biomeWarpScale = (int) this.biomeWarpScale.scaleValue((float) value);
 			return value;
 		});
 		this.biomeWarpStrength = PresetWidgets.createIntSlider(biomeShape.biomeWarpStrength, 1, 500, RTFTranslationKeys.GUI_SLIDER_BIOME_WARP_STRENGTH, (value) -> {
-			biomeShape.biomeWarpStrength = (int) value;
+			biomeShape.biomeWarpStrength = (int) this.biomeWarpStrength.scaleValue((float) value);
 			return value;
 		});
 		
@@ -129,23 +129,23 @@ public class ClimateSettingsPage extends PresetEditorPage {
 			biomeEdgeShape.type = value;
 		});
 		this.biomeEdgeScale = PresetWidgets.createIntSlider(biomeEdgeShape.scale, 1, 500, RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_SCALE, (value) -> {
-			biomeEdgeShape.scale = (int) value;
+			biomeEdgeShape.scale = (int) this.biomeEdgeScale.scaleValue((float) value);
 			return value;
 		});
 		this.biomeEdgeOcaves = PresetWidgets.createIntSlider(biomeEdgeShape.octaves, 1, 5, RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_OCTAVES, (value) -> {
-			biomeEdgeShape.octaves = (int) value;
+			biomeEdgeShape.octaves = (int) this.biomeEdgeOcaves.scaleValue((float) value);
 			return value;
 		});
 		this.biomeEdgeGain = PresetWidgets.createFloatSlider(biomeEdgeShape.gain, 0.0F, 5.5F, RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_GAIN, (value) -> {
-			biomeEdgeShape.gain = (float) value;
+			biomeEdgeShape.gain = (float) this.biomeEdgeGain.scaleValue((float) value);
 			return value;
 		});
 		this.biomeEdgeLacunarity = PresetWidgets.createFloatSlider(biomeEdgeShape.lacunarity, 0.0F, 10.5F, RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_LACUNARITY, (value) -> {
-			biomeEdgeShape.lacunarity = (float) value;
+			biomeEdgeShape.lacunarity = (float) this.biomeEdgeLacunarity.scaleValue((float) value);
 			return value;
 		});
 		this.biomeEdgeStrength = PresetWidgets.createIntSlider(biomeEdgeShape.strength, 1, 500, RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_STRENGTH, (value) -> {
-			biomeEdgeShape.strength = (int) value;
+			biomeEdgeShape.strength = (int) this.biomeEdgeStrength.scaleValue((float) value);
 			return value;
 		});
 		

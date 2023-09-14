@@ -43,6 +43,7 @@ public final class RTFLangProvider {
 			this.add(RTFTranslationKeys.GUI_BUTTON_BIOME_EDGE_TYPE, "Type");
 			this.add(RTFTranslationKeys.GUI_BUTTON_TERRAIN_SEED_OFFSET, "Terrain Seed Offset");
 			this.add(RTFTranslationKeys.GUI_BUTTON_FANCY_MOUNTAINS, "Fancy Mountains");
+			this.add(RTFTranslationKeys.GUI_BUTTON_RIVER_SEED_OFFSET, "Seed Offset");
 			
 			this.add(RTFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE, "Continent Scale");
 			this.add(RTFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER, "Continent Jitter");
@@ -85,7 +86,35 @@ public final class RTFLangProvider {
 			this.add(RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, "Base Scale");
 			this.add(RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, "Vertical Scale");
 			this.add(RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, "Horizontal Scale");
-
+			this.add(RTFTranslationKeys.GUI_SLIDER_RIVER_COUNT, "River Count");
+			this.add(RTFTranslationKeys.GUI_SLIDER_RIVER_BED_DEPTH, "Bed Depth");
+			this.add(RTFTranslationKeys.GUI_SLIDER_RIVER_MIN_BANK_HEIGHT, "Min Bank Height");
+			this.add(RTFTranslationKeys.GUI_SLIDER_RIVER_MAX_BANK_HEIGHT, "Max Bank Height");
+			this.add(RTFTranslationKeys.GUI_SLIDER_RIVER_BED_WIDTH, "Bed width");
+			this.add(RTFTranslationKeys.GUI_SLIDER_RIVER_BANK_WIDTH, "Bank width");
+			this.add(RTFTranslationKeys.GUI_SLIDER_RIVER_FADE, "Fade");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_CHANCE, "Chance");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_MIN_START_DISTANCE, "Min Start Distance");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_MAX_START_DISTANCE, "Max Start Distance");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_DEPTH, "Depth");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_SIZE_MIN, "Size Min");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_SIZE_MAX, "Size Max");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_MIN_BANK_HEIGHT, "Min Bank Height");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_MAX_BANK_HEIGHT, "Max Bank Height");
+			this.add(RTFTranslationKeys.GUI_SLIDER_WETLAND_CHANCE, "Chance");
+			this.add(RTFTranslationKeys.GUI_SLIDER_WETLAND_SIZE_MIN, "Size Min");
+			this.add(RTFTranslationKeys.GUI_SLIDER_WETLAND_SIZE_MAX, "Size Max");
+			
+			this.add(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLETS_PER_CHUNK, "Droplets Per Chunk");
+			this.add(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_LIFETIME, "Droplet Lifetime");
+			this.add(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_VOLUME, "Droplet Volume");
+			this.add(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_VELOCITY, "Droplet Velocity");
+			this.add(RTFTranslationKeys.GUI_SLIDER_EROSION_RATE, "Erosion Rate");
+			this.add(RTFTranslationKeys.GUI_SLIDER_DEPOSITE_RATE, "Deposite Rate");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_ITERATIONS, "Smoothing Iterations");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_RADIUS, "Smoothing Radius");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_RATE, "Smoothing Rate");
+			
 			this.add(RTFTranslationKeys.GUI_LABEL_CONTINENT, "Continent");
 			this.add(RTFTranslationKeys.GUI_LABEL_CONTROL_POINTS, "Control Points");
 			this.add(RTFTranslationKeys.GUI_LABEL_PROPERTIES, "Properties");
@@ -103,6 +132,12 @@ public final class RTFLangProvider {
 			this.add(RTFTranslationKeys.GUI_LABEL_TORRIDONIAN, "Torridonian");
 			this.add(RTFTranslationKeys.GUI_LABEL_MOUNTAINS, "Mountains");
 			this.add(RTFTranslationKeys.GUI_LABEL_VOLCANO, "Volcano");
+			this.add(RTFTranslationKeys.GUI_LABEL_MAIN_RIVERS, "Main Rivers");
+			this.add(RTFTranslationKeys.GUI_LABEL_BRANCH_RIVERS, "Branch Rivers");
+			this.add(RTFTranslationKeys.GUI_LABEL_LAKES, "Lakes");
+			this.add(RTFTranslationKeys.GUI_LABEL_WETLANDS, "Wetlands");
+			this.add(RTFTranslationKeys.GUI_LABEL_EROSION, "Erosion");
+			this.add(RTFTranslationKeys.GUI_LABEL_SMOOTHING, "Smoothing");
 			
 			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_CREATE), "Failed to create preset");
 			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_COPY), "Failed to copy preset");
@@ -115,6 +150,7 @@ public final class RTFLangProvider {
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_BIOME_EDGE_TYPE), "The noise type");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_TERRAIN_SEED_OFFSET), "A seed offset used to randomise terrain distribution");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_FANCY_MOUNTAINS), "Carries out extra processing on mountains to make them look even nicer. Can be disabled to improve performance slightly.");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_RIVER_SEED_OFFSET), "A seed offset used to randomise river distribution");
 			
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE), "Controls the size of continents. You may also need to adjust the transition points to ensure beaches etc still form.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER), "Controls how much continent centers are offset from the underlying noise grid.");
@@ -157,6 +193,33 @@ public final class RTFLangProvider {
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE), "Controls the base height of this terrain");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE), "Stretches or compresses the terrain vertically");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE), "Stretches or compresses the terrain horizontally");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RIVER_COUNT), "Controls the number of main rivers per continent.");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RIVER_BED_DEPTH), "Controls the depth of the river");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RIVER_MIN_BANK_HEIGHT), "Controls the height of river banks");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RIVER_MAX_BANK_HEIGHT), "Controls the height of river banks");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RIVER_BED_WIDTH), "Controls the river-bed width");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RIVER_BANK_WIDTH), "Controls the river-banks width");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RIVER_FADE), "Controls how much rivers taper");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_CHANCE), "Controls the chance of a lake spawning");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_MIN_START_DISTANCE), "The minimum distance along a river that a lake will spawn");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_MAX_START_DISTANCE), "The maximum distance along a river that a lake will spawn");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_DEPTH), "The max depth of the lake");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_SIZE_MIN), "The minimum size of the lake");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_SIZE_MAX), "The maximum size of the lake");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_MIN_BANK_HEIGHT), "The minimum bank height");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_MAX_BANK_HEIGHT), "The maximum bank height");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WETLAND_CHANCE), "Controls how common wetlands are");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WETLAND_SIZE_MIN), "The minimum size of the wetlands");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WETLAND_SIZE_MAX), "The maximum size of the wetlands");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLETS_PER_CHUNK), "The average number of water droplets to simulate per chunk");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_LIFETIME), "Controls the number of iterations that a single water droplet is simulated for");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_VOLUME), "Controls the starting volume of water that a simulated water droplet carries");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_VELOCITY), "Controls the starting velocity of the simulated water droplet");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_EROSION_RATE), "Controls how quickly material dissolves (during erosion)");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_DEPOSITE_RATE), "Controls how quickly material is deposited (during erosion)");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_ITERATIONS), "Controls the number of smoothing iterations");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_RADIUS), "Controls the smoothing radius");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_RATE), "Controls how strongly smoothing is applied");
 		}
 	}
 }

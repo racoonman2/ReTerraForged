@@ -29,6 +29,7 @@ public final class RTFTranslationKeys {
 	public static final String GUI_BUTTON_BIOME_EDGE_TYPE = resolve("gui.button.biomeEdgeType");
 	public static final String GUI_BUTTON_TERRAIN_SEED_OFFSET = resolve("gui.button.terrainSeedOffset");
 	public static final String GUI_BUTTON_FANCY_MOUNTAINS = resolve("gui.button.fancyMountains");
+	public static final String GUI_BUTTON_RIVER_SEED_OFFSET = resolve("gui.button.riverSeedOffset");
 	
 	public static final String GUI_SLIDER_CONTINENT_SCALE = resolve("gui.slider.continentScale");
 	public static final String GUI_SLIDER_CONTINENT_JITTER = resolve("gui.slider.continentJitter");
@@ -71,6 +72,33 @@ public final class RTFTranslationKeys {
 	public static final String GUI_SLIDER_TERRAIN_BASE_SCALE = resolve("gui.slider.terrain.baseScale");
 	public static final String GUI_SLIDER_TERRAIN_VERTICAL_SCALE = resolve("gui.slider.terrain.verticalScale");
 	public static final String GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE = resolve("gui.slider.terrain.horizontalScale");
+	public static final String GUI_SLIDER_RIVER_COUNT = resolve("gui.slider.riverCount");
+	public static final String GUI_SLIDER_RIVER_BED_DEPTH = resolve("gui.slider.river.bedDepth");
+	public static final String GUI_SLIDER_RIVER_MIN_BANK_HEIGHT = resolve("gui.slider.river.minBankHeight");
+	public static final String GUI_SLIDER_RIVER_MAX_BANK_HEIGHT = resolve("gui.slider.river.maxBankHeight");
+	public static final String GUI_SLIDER_RIVER_BED_WIDTH = resolve("gui.slider.river.bedWidth");
+	public static final String GUI_SLIDER_RIVER_BANK_WIDTH = resolve("gui.slider.river.bankWidth");
+	public static final String GUI_SLIDER_RIVER_FADE = resolve("gui.slider.river.fade");
+	public static final String GUI_SLIDER_LAKE_CHANCE = resolve("gui.slider.lake.chance");
+	public static final String GUI_SLIDER_LAKE_MIN_START_DISTANCE = resolve("gui.slider.lake.minStartDistance");
+	public static final String GUI_SLIDER_LAKE_MAX_START_DISTANCE = resolve("gui.slider.lake.maxStartDistance");
+	public static final String GUI_SLIDER_LAKE_DEPTH = resolve("gui.slider.lake.depth");
+	public static final String GUI_SLIDER_LAKE_SIZE_MIN = resolve("gui.slider.lake.sizeMin");
+	public static final String GUI_SLIDER_LAKE_SIZE_MAX = resolve("gui.slider.lake.sizeMax");
+	public static final String GUI_SLIDER_LAKE_MIN_BANK_HEIGHT = resolve("gui.slider.lake.minBankHeight");
+	public static final String GUI_SLIDER_LAKE_MAX_BANK_HEIGHT = resolve("gui.slider.lake.maxBankHeight");
+	public static final String GUI_SLIDER_WETLAND_CHANCE = resolve("gui.slider.wetlandChance");
+	public static final String GUI_SLIDER_WETLAND_SIZE_MIN = resolve("gui.slider.wetland.sizeMin");
+	public static final String GUI_SLIDER_WETLAND_SIZE_MAX = resolve("gui.slider.wetland.sizeMax");
+	public static final String GUI_SLIDER_EROSION_DROPLETS_PER_CHUNK = resolve("gui.slider.erosion.dropletsPerChunk");
+	public static final String GUI_SLIDER_EROSION_DROPLET_LIFETIME = resolve("gui.slider.erosion.dropletLifetime");
+	public static final String GUI_SLIDER_EROSION_DROPLET_VOLUME = resolve("gui.slider.erosion.dropletVolume");
+	public static final String GUI_SLIDER_EROSION_DROPLET_VELOCITY = resolve("gui.slider.erosion.dropletVelocity");
+	public static final String GUI_SLIDER_EROSION_RATE = resolve("gui.slider.erosion.rate");
+	public static final String GUI_SLIDER_DEPOSITE_RATE = resolve("gui.slider.erosion.depositeRate");
+	public static final String GUI_SLIDER_SMOOTHING_ITERATIONS = resolve("gui.slider.smoothing.iterations");
+	public static final String GUI_SLIDER_SMOOTHING_RADIUS = resolve("gui.slider.smoothing.radius");
+	public static final String GUI_SLIDER_SMOOTHING_RATE = resolve("gui.slider.smoothing.rate");
 	
 	public static final String GUI_LABEL_CONTINENT = resolve("gui.label.continent");
 	public static final String GUI_LABEL_CONTROL_POINTS = resolve("gui.label.controlPoints");
@@ -89,6 +117,12 @@ public final class RTFTranslationKeys {
 	public static final String GUI_LABEL_TORRIDONIAN = resolve("gui.label.torridonian");
 	public static final String GUI_LABEL_MOUNTAINS = resolve("gui.label.mountains");
 	public static final String GUI_LABEL_VOLCANO = resolve("gui.label.volcano");
+	public static final String GUI_LABEL_MAIN_RIVERS = resolve("gui.labels.mainRivers");
+	public static final String GUI_LABEL_BRANCH_RIVERS = resolve("gui.labels.branchRivers");
+	public static final String GUI_LABEL_LAKES = resolve("gui.labels.lakes");
+	public static final String GUI_LABEL_WETLANDS = resolve("gui.labels.wetlands");
+	public static final String GUI_LABEL_EROSION = resolve("gui.labels.erosion");
+	public static final String GUI_LABEL_SMOOTHING = resolve("gui.labels.smoothing");
 	
 	private static String resolve(String key) {
 		return ReTerraForged.MOD_ID + "." + key;

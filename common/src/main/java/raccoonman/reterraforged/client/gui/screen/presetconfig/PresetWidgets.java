@@ -60,9 +60,9 @@ public final class PresetWidgets {
 		return button;
 	}
 	
-	public static CycleButton<Boolean> createToggle(boolean initial, String title, CycleButton.OnValueChange<Boolean> callback) {
-		CycleButton<Boolean> button = CycleButton.booleanBuilder(Component.translatable(RTFTranslationKeys.GUI_BUTTON_TRUE), Component.translatable(RTFTranslationKeys.GUI_BUTTON_FALSE)).withInitialValue(initial).create(-1, -1, -1, -1, Component.translatable(title), callback);
-		button.setTooltip(Tooltips.create(Tooltips.translationKey(title)));
+	public static CycleButton<Boolean> createToggle(boolean initial, String text, CycleButton.OnValueChange<Boolean> callback) {
+		CycleButton<Boolean> button = CycleButton.booleanBuilder(Component.translatable(RTFTranslationKeys.GUI_BUTTON_TRUE), Component.translatable(RTFTranslationKeys.GUI_BUTTON_FALSE)).withInitialValue(initial).create(-1, -1, -1, -1, Component.translatable(text), callback);
+		button.setTooltip(Tooltips.create(Tooltips.translationKey(text)));
 		return button;
 	}
 	
@@ -73,7 +73,9 @@ public final class PresetWidgets {
 	}
 	
 	public static <T> ValueButton<T> createValueButton(String text, Button.OnPress onPress, T initial) {
-		return new ValueButton<>(-1, -1, -1, -1, Component.translatable(text), onPress, initial);
+		ValueButton<T> button = new ValueButton<>(-1, -1, -1, -1, Component.translatable(text), onPress, initial);
+		button.setTooltip(Tooltips.create(Tooltips.translationKey(text)));
+		return button;
 	}
 	
 	@SuppressWarnings("unchecked")
