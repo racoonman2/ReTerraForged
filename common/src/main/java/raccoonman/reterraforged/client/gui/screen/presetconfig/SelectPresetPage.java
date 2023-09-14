@@ -28,15 +28,18 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.toasts.SystemToast.SystemToastIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
+import raccoonman.reterraforged.client.gui.Toasts;
 import raccoonman.reterraforged.client.gui.Tooltips;
 import raccoonman.reterraforged.client.gui.screen.page.BisectedPage;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Label;
 import raccoonman.reterraforged.client.gui.widget.WidgetList;
+import raccoonman.reterraforged.client.gui.widget.WidgetList.Entry;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.data.preset.Preset;
 import raccoonman.reterraforged.platform.config.ConfigUtil;
@@ -53,10 +56,11 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 	private static final Path LEGACY_PRESET_PATH = LEGACY_CONFIG_PATH.resolve("presets");
 	
 	private EditBox inputBox;
-	private Button createPresetButton,
-				   deletePresetButton,
-				   copyPresetButton,
-				   importLegacyPresetsButton;
+	private Button createPresetButton;
+	private Button deletePresetButton;
+	private Button exportPresetButton;
+	private Button copyPresetButton;
+	private Button importLegacyPresetsButton;
 	
 	public SelectPresetPage(PresetConfigScreen screen) {
 		super(screen);
@@ -86,13 +90,43 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 			this.inputBox.setTextColor(isValid ? white : red);
 		});
 		this.createPresetButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_CREATE, () -> {
-			this.createPreset(this.inputBox.getValue());
+			new PresetEntry(Component.literal(this.inputBox.getValue()), Preset.makeDefault(), false).save();
+			this.rebuildPresets();
 			this.inputBox.setValue(StringUtil.EMPTY_STRING);
 		});
 		this.createPresetButton.active = this.isValidPresetName(this.inputBox.getValue());
-		this.copyPresetButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_COPY, () -> this.copyPreset(this.left.getSelected().getWidget()));
-		this.deletePresetButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_DELETE, () -> this.deletePreset(this.left.getSelected().getWidget()));
-		this.importLegacyPresetsButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_IMPORT_LEGACY, this::importLegacyPresets);
+		this.copyPresetButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_COPY, () -> {
+			PresetEntry preset = this.left.getSelected().getWidget();
+			String name = preset.getName().getString();
+			int counter = 1;
+			String uniqueName;
+			while(Files.exists(RTF_PRESET_PATH.resolve((uniqueName = name + " (" + counter + ")") + ".json"))) { 
+				counter++;
+			}
+			new PresetEntry(Component.literal(uniqueName), preset.getPreset().copy(), false).save();
+			this.rebuildPresets();
+		});
+		this.deletePresetButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_DELETE, () -> {
+			PresetEntry preset = this.left.getSelected().getWidget();
+			Files.delete(preset.getPath());
+			this.rebuildPresets();
+		});
+		this.exportPresetButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_EXPORT, () -> {
+			PresetEntry preset = this.left.getSelected().getWidget();
+			Path path = RTF_CONFIG_PATH.resolve("datapacks").resolve(preset.getName().getString() + ".zip");
+			this.screen.exportAsDatapack(path, preset);
+			this.rebuildPresets();
+			
+			Toasts.notify(RTFTranslationKeys.GUI_BUTTON_EXPORT_SUCCESS, Component.literal(path.toString()), SystemToastIds.WORLD_BACKUP);
+		});
+		this.importLegacyPresetsButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_IMPORT_LEGACY, () -> {
+			for(Path from : Files.list(LEGACY_PRESET_PATH).toList()) {
+				String fromStr = from.toString();
+				Path target = RTF_PRESET_PATH.resolve(FileNameUtils.getBaseName(fromStr) + " (Legacy)." + FilenameUtils.getExtension(fromStr));
+				Files.copy(from, target);
+			}
+			this.rebuildPresets();
+		});
 		
 		try {
 			// this probably shouldn't go here
@@ -113,6 +147,7 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 		this.right.addWidget(this.createPresetButton);
 		this.right.addWidget(this.copyPresetButton);
 		this.right.addWidget(this.deletePresetButton);
+		this.right.addWidget(this.exportPresetButton);
 		this.right.addWidget(this.importLegacyPresetsButton);
 	}
 
@@ -129,35 +164,19 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 			return !entry.isBuiltin() ? new WorldSettingsPage(this.screen, entry) : null;
 		});
 	}
-
-	private void createPreset(String name) throws IOException {
-		new PresetEntry(Component.literal(name), Preset.makeDefault(), false).save();
-		this.rebuildPresets();
-	}
 	
-	private void deletePreset(PresetEntry entry) throws IOException {
-		Files.delete(entry.getPath());
-		this.rebuildPresets();
-	}
-	
-	private void copyPreset(PresetEntry entry) throws IOException {
-		String name = entry.getName().getString();
-		int counter = 1;
-		String uniqueName;
-		while(Files.exists(RTF_PRESET_PATH.resolve((uniqueName = name + " (" + counter + ")") + ".json"))) { 
-			counter++;
+	@Override
+	public void onDone() {
+		super.onDone();
+		
+		Entry<PresetEntry> selected = this.left.getSelected();
+		if(selected != null) {
+			try {
+				this.screen.applyPreset(selected.getWidget());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		new PresetEntry(Component.literal(uniqueName), entry.getPreset().copy(), false).save();
-		this.rebuildPresets();
-	}
-	
-	private void importLegacyPresets() throws IOException {
-		for(Path from : Files.list(LEGACY_PRESET_PATH).toList()) {
-			String fromStr = from.toString();
-			Path target = RTF_PRESET_PATH.resolve(FileNameUtils.getBaseName(fromStr) + " (Legacy)." + FilenameUtils.getExtension(fromStr));
-			Files.copy(from, target);
-		}
-		this.rebuildPresets();
 	}
 	
 	private void onSelectPreset(@Nullable PresetEntry entry) {

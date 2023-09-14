@@ -38,7 +38,11 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	public void onDone() {
 		super.onDone();
 		
-		this.screen.applyPreset(this.preset.getPreset());
+		try {
+			this.screen.applyPreset(this.preset);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	//TODO

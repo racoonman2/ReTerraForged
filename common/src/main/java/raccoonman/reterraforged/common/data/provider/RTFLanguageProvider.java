@@ -37,6 +37,8 @@ public final class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_BUTTON_CREATE, "Create");
 			this.add(RTFTranslationKeys.GUI_BUTTON_COPY, "Copy");
 			this.add(RTFTranslationKeys.GUI_BUTTON_DELETE, "Delete");
+			this.add(RTFTranslationKeys.GUI_BUTTON_EXPORT, "Export");
+			this.add(RTFTranslationKeys.GUI_BUTTON_EXPORT_SUCCESS, "Exported Preset");
 			this.add(RTFTranslationKeys.GUI_BUTTON_IMPORT_LEGACY, "Import Legacy");
 			this.add(RTFTranslationKeys.GUI_BUTTON_CONTINENT_TYPE, "Continent Type");
 			this.add(RTFTranslationKeys.GUI_BUTTON_CONTINENT_SHAPE, "Continent Shape");
@@ -159,6 +161,7 @@ public final class RTFLanguageProvider {
 			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_CREATE), "Failed to create preset");
 			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_COPY), "Failed to copy preset");
 			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_DELETE), "Failed to delete preset");
+			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_EXPORT), "Failed to export preset");
 			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_IMPORT_LEGACY), "Failed to import legacy presets");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_CONTINENT_TYPE), "Controls the continent generator type");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_CONTINENT_SHAPE), "Controls how continent shapes are calculated. You may also need to adjust the transition points to ensure beaches etc still form.");
