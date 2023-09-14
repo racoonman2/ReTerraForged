@@ -9,11 +9,11 @@ import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
-import raccoonman.reterraforged.common.data.preset.ContinentType;
-import raccoonman.reterraforged.common.data.preset.Preset;
-import raccoonman.reterraforged.common.data.preset.SpawnType;
-import raccoonman.reterraforged.common.data.preset.WorldSettings;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
+import raccoonman.reterraforged.common.worldgen.data.preset.ContinentType;
+import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
+import raccoonman.reterraforged.common.worldgen.data.preset.SpawnType;
+import raccoonman.reterraforged.common.worldgen.data.preset.WorldSettings;
 
 public class WorldSettingsPage extends PresetEditorPage {
 	private CycleButton<ContinentType> continentType;

@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.data;
+package raccoonman.reterraforged.common.worldgen.data;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
@@ -9,7 +9,7 @@ import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
-import raccoonman.reterraforged.common.data.preset.Preset;
+import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
 
 public final class MCNoiseGeneratorSettings {
 	

@@ -4,7 +4,7 @@
  */
 
 // copy of net/minecraftforge/common/data/LanguageProvider
-package raccoonman.reterraforged.common.data.provider;
+package raccoonman.reterraforged.client.data.provider;
 
 import com.google.gson.JsonObject;
 import java.nio.file.Path;

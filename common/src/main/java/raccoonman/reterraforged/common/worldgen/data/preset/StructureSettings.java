@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.data.preset;
+package raccoonman.reterraforged.common.worldgen.data.preset;
 
 import java.util.HashMap;
 import java.util.Map;

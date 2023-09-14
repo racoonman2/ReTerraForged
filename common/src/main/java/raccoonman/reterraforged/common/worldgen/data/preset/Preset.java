@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.data.preset;
+package raccoonman.reterraforged.common.worldgen.data.preset;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -7,8 +7,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import raccoonman.reterraforged.common.data.RTFNoiseData;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
+import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData;
 
 public record Preset(WorldSettings world, ClimateSettings climate, TerrainSettings terrain, RiverSettings rivers, FilterSettings filters, StructureSettings structures, MiscellaneousSettings miscellaneous) {
 	public static final Codec<Preset> CODEC = RecordCodecBuilder.create(instance -> instance.group(

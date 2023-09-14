@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.data;
+package raccoonman.reterraforged.common.worldgen.data;
 
 import java.util.OptionalLong;
 
@@ -7,8 +7,8 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
-import raccoonman.reterraforged.common.data.preset.Preset;
-import raccoonman.reterraforged.common.data.preset.WorldSettings.Properties;
+import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
+import raccoonman.reterraforged.common.worldgen.data.preset.WorldSettings.Properties;
 
 public final class MCDimensionTypes {
 	

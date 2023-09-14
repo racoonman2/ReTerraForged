@@ -24,17 +24,17 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistriesHooks;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
+import raccoonman.reterraforged.client.data.provider.RTFLanguageProvider;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetConfigScreen;
 import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.data.MCDimensionTypes;
-import raccoonman.reterraforged.common.data.MCNoiseGeneratorSettings;
-import raccoonman.reterraforged.common.data.MCPlacedFeatures;
-import raccoonman.reterraforged.common.data.RTFBiomes;
-import raccoonman.reterraforged.common.data.RTFNoiseData;
-import raccoonman.reterraforged.common.data.RTFNoiseRouterData;
-import raccoonman.reterraforged.common.data.preset.Preset;
-import raccoonman.reterraforged.common.data.provider.RTFLanguageProvider;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
+import raccoonman.reterraforged.common.worldgen.data.MCDimensionTypes;
+import raccoonman.reterraforged.common.worldgen.data.MCNoiseGeneratorSettings;
+import raccoonman.reterraforged.common.worldgen.data.MCPlacedFeatures;
+import raccoonman.reterraforged.common.worldgen.data.RTFBiomes;
+import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData;
+import raccoonman.reterraforged.common.worldgen.data.RTFNoiseRouterData;
+import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
 import raccoonman.reterraforged.platform.registries.forge.RegistryUtilImpl;
 
 @Mod(ReTerraForged.MOD_ID)

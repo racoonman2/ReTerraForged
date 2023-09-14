@@ -9,10 +9,10 @@ import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.client.gui.widget.ValueButton;
-import raccoonman.reterraforged.common.data.preset.Preset;
-import raccoonman.reterraforged.common.data.preset.TerrainSettings;
-import raccoonman.reterraforged.common.data.preset.TerrainSettings.General;
-import raccoonman.reterraforged.common.data.preset.TerrainSettings.Terrain;
+import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
+import raccoonman.reterraforged.common.worldgen.data.preset.TerrainSettings;
+import raccoonman.reterraforged.common.worldgen.data.preset.TerrainSettings.General;
+import raccoonman.reterraforged.common.worldgen.data.preset.TerrainSettings.Terrain;
 
 public class TerrainSettingsPage extends PresetEditorPage {
 	private ValueButton<Integer> terrainSeedOffset;

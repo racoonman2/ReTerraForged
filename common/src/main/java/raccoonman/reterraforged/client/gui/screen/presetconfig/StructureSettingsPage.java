@@ -19,9 +19,9 @@ import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.client.gui.widget.ValueButton;
-import raccoonman.reterraforged.common.data.preset.Preset;
-import raccoonman.reterraforged.common.data.preset.StructureSettings;
-import raccoonman.reterraforged.common.data.preset.StructureSettings.StructureSetEntry;
+import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
+import raccoonman.reterraforged.common.worldgen.data.preset.StructureSettings;
+import raccoonman.reterraforged.common.worldgen.data.preset.StructureSettings.StructureSetEntry;
 
 public class StructureSettingsPage extends PresetEditorPage {
 

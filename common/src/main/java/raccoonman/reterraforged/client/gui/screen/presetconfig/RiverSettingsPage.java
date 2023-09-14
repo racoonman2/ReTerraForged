@@ -8,11 +8,11 @@ import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.client.gui.widget.ValueButton;
-import raccoonman.reterraforged.common.data.preset.Preset;
-import raccoonman.reterraforged.common.data.preset.RiverSettings;
-import raccoonman.reterraforged.common.data.preset.RiverSettings.Lake;
-import raccoonman.reterraforged.common.data.preset.RiverSettings.River;
-import raccoonman.reterraforged.common.data.preset.RiverSettings.Wetland;
+import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
+import raccoonman.reterraforged.common.worldgen.data.preset.RiverSettings;
+import raccoonman.reterraforged.common.worldgen.data.preset.RiverSettings.Lake;
+import raccoonman.reterraforged.common.worldgen.data.preset.RiverSettings.River;
+import raccoonman.reterraforged.common.worldgen.data.preset.RiverSettings.Wetland;
 
 class RiverSettingsPage extends PresetEditorPage {
 	private ValueButton<Integer> seedOffset;

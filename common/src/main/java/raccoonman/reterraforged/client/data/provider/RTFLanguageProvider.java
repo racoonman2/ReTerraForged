@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.data.provider;
+package raccoonman.reterraforged.client.data.provider;
 
 import net.minecraft.data.PackOutput;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;

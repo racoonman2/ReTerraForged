@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.data.tags;
+package raccoonman.reterraforged.common.worldgen.data.tags;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;

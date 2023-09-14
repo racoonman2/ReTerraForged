@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.data;
+package raccoonman.reterraforged.common.worldgen.data;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;

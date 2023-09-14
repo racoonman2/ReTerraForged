@@ -41,7 +41,7 @@ import raccoonman.reterraforged.client.gui.widget.Label;
 import raccoonman.reterraforged.client.gui.widget.WidgetList;
 import raccoonman.reterraforged.client.gui.widget.WidgetList.Entry;
 import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.data.preset.Preset;
+import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
 import raccoonman.reterraforged.platform.config.ConfigUtil;
 
 class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, AbstractWidget> {

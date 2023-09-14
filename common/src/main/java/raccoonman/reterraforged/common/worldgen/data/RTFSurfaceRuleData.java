@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.data;
+package raccoonman.reterraforged.common.worldgen.data;
 
 import com.google.common.collect.ImmutableList;
 

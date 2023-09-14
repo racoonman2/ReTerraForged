@@ -11,7 +11,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.data.tags.RTFBlockTags;
+import raccoonman.reterraforged.common.worldgen.data.tags.RTFBlockTags;
 
 public class RTFBlockTagsProvider extends TagsProvider<Block> {
 

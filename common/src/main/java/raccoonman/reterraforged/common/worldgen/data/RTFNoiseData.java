@@ -1,14 +1,14 @@
-package raccoonman.reterraforged.common.data;
+package raccoonman.reterraforged.common.worldgen.data;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.data.preset.Preset;
 import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Source;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
+import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
 
 public final class RTFNoiseData {
 	
