@@ -19,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DataResult.PartialResult;
 import com.mojang.serialization.JsonOps;
 
 import io.netty.util.internal.StringUtil;
@@ -30,7 +32,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.Tooltips;
-import raccoonman.reterraforged.client.gui.screen.presetconfig.LinkedPageScreen.Page;
+import raccoonman.reterraforged.client.gui.screen.page.BisectedPage;
+import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Label;
 import raccoonman.reterraforged.client.gui.widget.WidgetList;
@@ -38,7 +41,7 @@ import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.data.preset.Preset;
 import raccoonman.reterraforged.platform.config.ConfigUtil;
 
-public class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, AbstractWidget> {
+class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, AbstractWidget> {
 	private static final Predicate<String> IS_VALID = Pattern.compile("^[A-Za-z0-9\\-_ ]+$").asPredicate();
 
 	private static final Path CONFIG_PATH = ConfigUtil.getConfigPath();
@@ -166,7 +169,6 @@ public class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEnt
 		this.screen.nextButton.active = active && !builtin;
 	}
 	
-	//FIXME: don't terminate the loop if parse fails
 	private void rebuildPresets() throws IOException {
 		this.onSelectPreset(null);
 		
@@ -178,9 +180,14 @@ public class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEnt
 		) {
 			try(Reader reader = Files.newBufferedReader(presetPath)) {
 				String base = FileNameUtils.getBaseName(presetPath.toString());
-				Preset result = Preset.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).result().orElseThrow();
-
-				entries.add(new PresetEntry(Component.literal(base), result, false));
+				DataResult<Preset> result = Preset.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader));
+				Optional<PartialResult<Preset>> error = result.error();
+				if(error.isPresent()) {
+					ReTerraForged.LOGGER.error(error.get().message());
+					continue;
+				}
+				Preset preset = result.result().get();
+				entries.add(new PresetEntry(Component.literal(base), preset, false));
 			}
 		}
 		this.left.replaceEntries(entries.stream().map(WidgetList.Entry::new).toList());

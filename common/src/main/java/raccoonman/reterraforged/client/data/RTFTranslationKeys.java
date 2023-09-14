@@ -15,6 +15,8 @@ public final class RTFTranslationKeys {
 	public static final String GUI_TERRAIN_SETTINGS_TITLE = resolve("gui.terrainSettings.title");
 	public static final String GUI_RIVER_SETTINGS_TITLE = resolve("gui.riverSettings.title");
 	public static final String GUI_FILTER_SETTINGS_TITLE = resolve("gui.filterSettings.title");
+	public static final String GUI_STRUCTURE_SETTINGS_TITLE = resolve("gui.structureSettings.title");
+	public static final String GUI_MISCELLANEOUS_SETTINGS_TITLE = resolve("gui.miscellaneousSettings.title");
 
 	public static final String GUI_BUTTON_TRUE = resolve("gui.button.true");
 	public static final String GUI_BUTTON_FALSE = resolve("gui.button.false");
@@ -30,6 +32,19 @@ public final class RTFTranslationKeys {
 	public static final String GUI_BUTTON_TERRAIN_SEED_OFFSET = resolve("gui.button.terrainSeedOffset");
 	public static final String GUI_BUTTON_FANCY_MOUNTAINS = resolve("gui.button.fancyMountains");
 	public static final String GUI_BUTTON_RIVER_SEED_OFFSET = resolve("gui.button.riverSeedOffset");
+	public static final String GUI_BUTTON_SALT = resolve("gui.button.salt");
+	public static final String GUI_BUTTON_DISABLED = resolve("gui.button.disabled");
+	public static final String GUI_BUTTON_SMOOTH_LAYER_DECORATOR = resolve("gui.button.smoothLayerDecorator");
+	public static final String GUI_BUTTON_STRATA_DECORATOR = resolve("gui.button.strataDecorator");
+	public static final String GUI_BUTTON_ORE_COMPATIBLE_STONE_ONLY = resolve("gui.button.oreCompatibleStoneOnly");
+	public static final String GUI_BUTTON_EROSION_DECORATOR = resolve("gui.button.erosionDecorator");
+	public static final String GUI_BUTTON_PLAIN_STONE_EROSION = resolve("gui.button.stoneErosion");
+	public static final String GUI_BUTTON_NATURAL_SNOW_DECORATOR = resolve("gui.button.naturalSnowDecorator");
+	public static final String GUI_BUTTON_CUSTOM_BIOME_FEATURES = resolve("gui.button.customBiomeFeatures");
+	public static final String GUI_BUTTON_VANILLA_LAKES = resolve("gui.button.vanillaLakes");
+	public static final String GUI_BUTTON_VANILLA_SPRINGS = resolve("gui.button.vanillaSprings");
+	public static final String GUI_BUTTON_VANILLA_LAVA_LAKES = resolve("gui.button.vanillaLavaLakes");
+	public static final String GUI_BUTTON_VANILLA_LAVA_SPRINGS = resolve("gui.button.vanillaLavaSprings");
 	
 	public static final String GUI_SLIDER_CONTINENT_SCALE = resolve("gui.slider.continentScale");
 	public static final String GUI_SLIDER_CONTINENT_JITTER = resolve("gui.slider.continentJitter");
@@ -99,6 +114,9 @@ public final class RTFTranslationKeys {
 	public static final String GUI_SLIDER_SMOOTHING_ITERATIONS = resolve("gui.slider.smoothing.iterations");
 	public static final String GUI_SLIDER_SMOOTHING_RADIUS = resolve("gui.slider.smoothing.radius");
 	public static final String GUI_SLIDER_SMOOTHING_RATE = resolve("gui.slider.smoothing.rate");
+	public static final String GUI_SLIDER_SPACING = resolve("gui.slider.spacing");
+	public static final String GUI_SLIDER_SEPARATION = resolve("gui.slider.separation");
+	public static final String GUI_SLIDER_STRATA_REGION_SIZE = resolve("gui.slider.strataRegionSize");
 	
 	public static final String GUI_LABEL_CONTINENT = resolve("gui.label.continent");
 	public static final String GUI_LABEL_CONTROL_POINTS = resolve("gui.label.controlPoints");

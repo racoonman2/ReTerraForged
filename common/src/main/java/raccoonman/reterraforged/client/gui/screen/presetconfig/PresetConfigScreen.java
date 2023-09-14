@@ -1,12 +1,14 @@
 package raccoonman.reterraforged.client.gui.screen.presetconfig;
 
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
-import net.minecraft.client.gui.screens.worldselection.WorldCreationContext;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.level.levelgen.WorldDimensions;
+import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen;
 
 public class PresetConfigScreen extends LinkedPageScreen {
 	private CreateWorldScreen parent;
 	
-	public PresetConfigScreen(CreateWorldScreen parent, WorldCreationContext settings) {
+	public PresetConfigScreen(CreateWorldScreen parent) {
 		this.parent = parent;
 		this.currentPage = new SelectPresetPage(this);
 	}
@@ -16,5 +18,13 @@ public class PresetConfigScreen extends LinkedPageScreen {
 		super.onClose();
 
 		this.minecraft.setScreen(this.parent);
+	}
+	
+	public RegistryAccess.Frozen getRegistryAccess() {
+		return this.parent.getUiState().getSettings().worldgenLoadContext();
+	}
+	
+	public WorldDimensions getDimensions() {
+		return this.parent.getUiState().getSettings().selectedDimensions();
 	}
 }

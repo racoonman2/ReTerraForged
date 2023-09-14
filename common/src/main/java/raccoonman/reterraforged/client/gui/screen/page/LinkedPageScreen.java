@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.client.gui.screen.presetconfig;
+package raccoonman.reterraforged.client.gui.screen.page;
 
 import java.util.Optional;
 
@@ -11,10 +11,10 @@ import net.minecraft.network.chat.Component;
 import raccoonman.reterraforged.client.gui.widget.Label;
 
 public abstract class LinkedPageScreen extends Screen {
-	protected Button previousButton,
-					 nextButton,
-					 cancelButton,
-					 doneButton;
+	public Button previousButton,
+				  nextButton,
+				  cancelButton,
+				  doneButton;
 	protected Page currentPage;
 	
 	protected LinkedPageScreen() {

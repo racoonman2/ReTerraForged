@@ -5,14 +5,14 @@ import java.util.Optional;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.network.chat.Component;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
-import raccoonman.reterraforged.client.gui.screen.presetconfig.LinkedPageScreen.Page;
+import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.client.gui.widget.ValueButton;
 import raccoonman.reterraforged.common.data.preset.Preset;
-import raccoonman.reterraforged.common.data.preset.settings.TerrainSettings;
-import raccoonman.reterraforged.common.data.preset.settings.TerrainSettings.General;
-import raccoonman.reterraforged.common.data.preset.settings.TerrainSettings.Terrain;
+import raccoonman.reterraforged.common.data.preset.TerrainSettings;
+import raccoonman.reterraforged.common.data.preset.TerrainSettings.General;
+import raccoonman.reterraforged.common.data.preset.TerrainSettings.Terrain;
 
 public class TerrainSettingsPage extends PresetEditorPage {
 	private ValueButton<Integer> terrainSeedOffset;
@@ -65,7 +65,7 @@ public class TerrainSettingsPage extends PresetEditorPage {
 	private Slider volcanoBaseScale;
 	private Slider volcanoVerticalScale;
 	private Slider volcanoHorizontalScale;
-	
+
 	public TerrainSettingsPage(PresetConfigScreen screen, PresetEntry preset) {
 		super(screen, preset);
 	}
@@ -86,16 +86,16 @@ public class TerrainSettingsPage extends PresetEditorPage {
 		this.terrainSeedOffset = PresetWidgets.createRandomButton(RTFTranslationKeys.GUI_BUTTON_TERRAIN_SEED_OFFSET, general.terrainSeedOffset, (value) -> {
 			general.terrainSeedOffset = value;
 		});
-		this.terrainRegionSize = PresetWidgets.createIntSlider(general.terrainRegionSize, 125, 5000, RTFTranslationKeys.GUI_SLIDER_TERRAIN_REGION_SIZE, (value) -> {
-			general.terrainRegionSize = (int) this.terrainRegionSize.scaleValue((float) value);
+		this.terrainRegionSize = PresetWidgets.createIntSlider(general.terrainRegionSize, 125, 5000, RTFTranslationKeys.GUI_SLIDER_TERRAIN_REGION_SIZE, (slider, value) -> {
+			general.terrainRegionSize = (int) slider.scaleValue((float) value);
 			return value;
 		});
-		this.globalVerticalScale = PresetWidgets.createFloatSlider(general.globalVerticalScale, 0.01F, 1.0F, RTFTranslationKeys.GUI_SLIDER_GLOBAL_VERTICAL_SCALE, (value) -> {
-			general.globalVerticalScale = (int) this.globalVerticalScale.scaleValue((float) value);
+		this.globalVerticalScale = PresetWidgets.createFloatSlider(general.globalVerticalScale, 0.01F, 1.0F, RTFTranslationKeys.GUI_SLIDER_GLOBAL_VERTICAL_SCALE, (slider, value) -> {
+			general.globalVerticalScale = (int) slider.scaleValue((float) value);
 			return value;
 		});
-		this.globalHorizontalScale = PresetWidgets.createFloatSlider(general.globalHorizontalScale, 0.01F, 5.0F, RTFTranslationKeys.GUI_SLIDER_GLOBAL_HORIZONTAL_SCALE, (value) -> {
-			general.globalHorizontalScale = (int) this.globalHorizontalScale.scaleValue((float) value);
+		this.globalHorizontalScale = PresetWidgets.createFloatSlider(general.globalHorizontalScale, 0.01F, 5.0F, RTFTranslationKeys.GUI_SLIDER_GLOBAL_HORIZONTAL_SCALE, (slider, value) -> {
+			general.globalHorizontalScale = (int) slider.scaleValue((float) value);
 			return value;
 		});
 		this.fancyMountains = PresetWidgets.createToggle(general.fancyMountains, RTFTranslationKeys.GUI_BUTTON_FANCY_MOUNTAINS, (button, value) -> {
@@ -103,164 +103,164 @@ public class TerrainSettingsPage extends PresetEditorPage {
 		});
 		
 		Terrain steppe = terrain.steppe;
-		this.steppeWeight = PresetWidgets.createFloatSlider(steppe.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (value) -> {
-			steppe.weight = (float) this.steppeWeight.scaleValue((float) value);
+		this.steppeWeight = PresetWidgets.createFloatSlider(steppe.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (slider, value) -> {
+			steppe.weight = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.steppeBaseScale = PresetWidgets.createFloatSlider(steppe.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (value) -> {
-			steppe.baseScale = (float) this.steppeBaseScale.scaleValue((float) value);
+		this.steppeBaseScale = PresetWidgets.createFloatSlider(steppe.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (slider, value) -> {
+			steppe.baseScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.steppeVerticalScale = PresetWidgets.createFloatSlider(steppe.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (value) -> {
-			steppe.verticalScale = (float) this.steppeVerticalScale.scaleValue((float) value);
+		this.steppeVerticalScale = PresetWidgets.createFloatSlider(steppe.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (slider, value) -> {
+			steppe.verticalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.steppeHorizontalScale = PresetWidgets.createFloatSlider(steppe.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (value) -> {
-			steppe.horizontalScale = (float) this.steppeHorizontalScale.scaleValue((float) value);
+		this.steppeHorizontalScale = PresetWidgets.createFloatSlider(steppe.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (slider, value) -> {
+			steppe.horizontalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
 		
 		Terrain plains = terrain.plains;
-		this.plainsWeight = PresetWidgets.createFloatSlider(plains.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (value) -> {
-			plains.weight = (float) this.plainsWeight.scaleValue((float) value);
+		this.plainsWeight = PresetWidgets.createFloatSlider(plains.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (slider, value) -> {
+			plains.weight = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.plainsBaseScale = PresetWidgets.createFloatSlider(plains.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (value) -> {
-			plains.baseScale = (float) this.plainsBaseScale.scaleValue((float) value);
+		this.plainsBaseScale = PresetWidgets.createFloatSlider(plains.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (slider, value) -> {
+			plains.baseScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.plainsVerticalScale = PresetWidgets.createFloatSlider(plains.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (value) -> {
-			plains.verticalScale = (float) this.plainsVerticalScale.scaleValue((float) value);
+		this.plainsVerticalScale = PresetWidgets.createFloatSlider(plains.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (slider, value) -> {
+			plains.verticalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.plainsHorizontalScale = PresetWidgets.createFloatSlider(plains.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (value) -> {
-			plains.horizontalScale = (float) this.plainsHorizontalScale.scaleValue((float) value);
+		this.plainsHorizontalScale = PresetWidgets.createFloatSlider(plains.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (slider, value) -> {
+			plains.horizontalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
 		
 		Terrain hills = terrain.hills;
-		this.hillsWeight = PresetWidgets.createFloatSlider(hills.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (value) -> {
-			hills.weight = (float) this.hillsWeight.scaleValue((float) value);
+		this.hillsWeight = PresetWidgets.createFloatSlider(hills.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (slider, value) -> {
+			hills.weight = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.hillsBaseScale = PresetWidgets.createFloatSlider(hills.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (value) -> {
-			hills.baseScale = (float) this.hillsBaseScale.scaleValue((float) value);
+		this.hillsBaseScale = PresetWidgets.createFloatSlider(hills.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (slider, value) -> {
+			hills.baseScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.hillsVerticalScale = PresetWidgets.createFloatSlider(hills.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (value) -> {
-			hills.verticalScale = (float) this.hillsVerticalScale.scaleValue((float) value);
+		this.hillsVerticalScale = PresetWidgets.createFloatSlider(hills.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (slider, value) -> {
+			hills.verticalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.hillsHorizontalScale = PresetWidgets.createFloatSlider(hills.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (value) -> {
-			hills.horizontalScale = (float) this.hillsHorizontalScale.scaleValue((float) value);
+		this.hillsHorizontalScale = PresetWidgets.createFloatSlider(hills.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (slider, value) -> {
+			hills.horizontalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
 		
 		Terrain dales = terrain.dales;
-		this.dalesWeight = PresetWidgets.createFloatSlider(dales.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (value) -> {
-			dales.weight = (float) this.dalesWeight.scaleValue((float) value);
+		this.dalesWeight = PresetWidgets.createFloatSlider(dales.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (slider, value) -> {
+			dales.weight = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.dalesBaseScale = PresetWidgets.createFloatSlider(dales.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (value) -> {
-			dales.baseScale = (float) this.dalesBaseScale.scaleValue((float) value);
+		this.dalesBaseScale = PresetWidgets.createFloatSlider(dales.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (slider, value) -> {
+			dales.baseScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.dalesVerticalScale = PresetWidgets.createFloatSlider(dales.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (value) -> {
-			dales.verticalScale = (float) this.dalesVerticalScale.scaleValue((float) value);
+		this.dalesVerticalScale = PresetWidgets.createFloatSlider(dales.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (slider, value) -> {
+			dales.verticalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.dalesHorizontalScale = PresetWidgets.createFloatSlider(dales.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (value) -> {
-			dales.horizontalScale = (float) this.dalesHorizontalScale.scaleValue((float) value);
+		this.dalesHorizontalScale = PresetWidgets.createFloatSlider(dales.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (slider, value) -> {
+			dales.horizontalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
 		
 		Terrain plateau = terrain.plateau;
-		this.plateauWeight = PresetWidgets.createFloatSlider(plateau.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (value) -> {
-			plateau.weight = (float) this.plateauWeight.scaleValue((float) value);
+		this.plateauWeight = PresetWidgets.createFloatSlider(plateau.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (slider, value) -> {
+			plateau.weight = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.plateauBaseScale = PresetWidgets.createFloatSlider(plateau.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (value) -> {
-			plateau.baseScale = (float) this.plateauBaseScale.scaleValue((float) value);
+		this.plateauBaseScale = PresetWidgets.createFloatSlider(plateau.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (slider, value) -> {
+			plateau.baseScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.plateauVerticalScale = PresetWidgets.createFloatSlider(plateau.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (value) -> {
-			plateau.verticalScale = (float) this.plateauVerticalScale.scaleValue((float) value);
+		this.plateauVerticalScale = PresetWidgets.createFloatSlider(plateau.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (slider, value) -> {
+			plateau.verticalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.plateauHorizontalScale = PresetWidgets.createFloatSlider(plateau.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (value) -> {
-			plateau.horizontalScale = (float) this.plateauHorizontalScale.scaleValue((float) value);
+		this.plateauHorizontalScale = PresetWidgets.createFloatSlider(plateau.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (slider, value) -> {
+			plateau.horizontalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
 		
 		Terrain badlands = terrain.badlands;
-		this.badlandsWeight = PresetWidgets.createFloatSlider(badlands.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (value) -> {
-			badlands.weight = (float) this.badlandsWeight.scaleValue((float) value);
+		this.badlandsWeight = PresetWidgets.createFloatSlider(badlands.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (slider, value) -> {
+			badlands.weight = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.badlandsBaseScale = PresetWidgets.createFloatSlider(badlands.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (value) -> {
-			badlands.baseScale = (float) this.badlandsBaseScale.scaleValue((float) value);
+		this.badlandsBaseScale = PresetWidgets.createFloatSlider(badlands.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (slider, value) -> {
+			badlands.baseScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.badlandsVerticalScale = PresetWidgets.createFloatSlider(badlands.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (value) -> {
-			badlands.verticalScale = (float) this.badlandsVerticalScale.scaleValue((float) value);
+		this.badlandsVerticalScale = PresetWidgets.createFloatSlider(badlands.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (slider, value) -> {
+			badlands.verticalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.badlandsHorizontalScale = PresetWidgets.createFloatSlider(badlands.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (value) -> {
-			badlands.horizontalScale = (float) this.badlandsHorizontalScale.scaleValue((float) value);
+		this.badlandsHorizontalScale = PresetWidgets.createFloatSlider(badlands.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (slider, value) -> {
+			badlands.horizontalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
 		
 		Terrain torridonian = terrain.torridonian;
-		this.torridonianWeight = PresetWidgets.createFloatSlider(torridonian.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (value) -> {
-			torridonian.weight = (float) this.torridonianWeight.scaleValue((float) value);
+		this.torridonianWeight = PresetWidgets.createFloatSlider(torridonian.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (slider, value) -> {
+			torridonian.weight = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.torridonianBaseScale = PresetWidgets.createFloatSlider(torridonian.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (value) -> {
-			torridonian.baseScale = (float) this.torridonianBaseScale.scaleValue((float) value);
+		this.torridonianBaseScale = PresetWidgets.createFloatSlider(torridonian.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (slider, value) -> {
+			torridonian.baseScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.torridonianVerticalScale = PresetWidgets.createFloatSlider(torridonian.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (value) -> {
-			torridonian.verticalScale = (float) this.torridonianVerticalScale.scaleValue((float) value);
+		this.torridonianVerticalScale = PresetWidgets.createFloatSlider(torridonian.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (slider, value) -> {
+			torridonian.verticalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.torridonianHorizontalScale = PresetWidgets.createFloatSlider(torridonian.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (value) -> {
-			torridonian.horizontalScale = (float) this.torridonianHorizontalScale.scaleValue((float) value);
+		this.torridonianHorizontalScale = PresetWidgets.createFloatSlider(torridonian.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (slider, value) -> {
+			torridonian.horizontalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
 		
 		Terrain mountains = terrain.mountains;
-		this.mountainsWeight = PresetWidgets.createFloatSlider(mountains.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (value) -> {
-			mountains.weight = (float) this.mountainsWeight.scaleValue((float) value);
+		this.mountainsWeight = PresetWidgets.createFloatSlider(mountains.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (slider, value) -> {
+			mountains.weight = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.mountainsBaseScale = PresetWidgets.createFloatSlider(mountains.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (value) -> {
-			mountains.baseScale = (float) this.mountainsBaseScale.scaleValue((float) value);
+		this.mountainsBaseScale = PresetWidgets.createFloatSlider(mountains.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (slider, value) -> {
+			mountains.baseScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.mountainsVerticalScale = PresetWidgets.createFloatSlider(mountains.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (value) -> {
-			mountains.verticalScale = (float) this.mountainsVerticalScale.scaleValue((float) value);
+		this.mountainsVerticalScale = PresetWidgets.createFloatSlider(mountains.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (slider, value) -> {
+			mountains.verticalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.mountainsHorizontalScale = PresetWidgets.createFloatSlider(mountains.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (value) -> {
-			mountains.horizontalScale = (float) this.mountainsHorizontalScale.scaleValue((float) value);
+		this.mountainsHorizontalScale = PresetWidgets.createFloatSlider(mountains.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (slider, value) -> {
+			mountains.horizontalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
 		
 		Terrain volcano = terrain.volcano;
-		this.volcanoWeight = PresetWidgets.createFloatSlider(volcano.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (value) -> {
-			volcano.weight = (float) this.volcanoWeight.scaleValue((float) value);
+		this.volcanoWeight = PresetWidgets.createFloatSlider(volcano.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (slider, value) -> {
+			volcano.weight = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.volcanoBaseScale = PresetWidgets.createFloatSlider(volcano.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (value) -> {
-			volcano.baseScale = (float) this.volcanoBaseScale.scaleValue((float) value);
+		this.volcanoBaseScale = PresetWidgets.createFloatSlider(volcano.baseScale, 0.0F, 2.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, (slider, value) -> {
+			volcano.baseScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.volcanoVerticalScale = PresetWidgets.createFloatSlider(volcano.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (value) -> {
-			volcano.verticalScale = (float) this.volcanoVerticalScale.scaleValue((float) value);
+		this.volcanoVerticalScale = PresetWidgets.createFloatSlider(volcano.verticalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, (slider, value) -> {
+			volcano.verticalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
-		this.volcanoHorizontalScale = PresetWidgets.createFloatSlider(volcano.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (value) -> {
-			volcano.horizontalScale = (float) this.volcanoHorizontalScale.scaleValue((float) value);
+		this.volcanoHorizontalScale = PresetWidgets.createFloatSlider(volcano.horizontalScale, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, (slider, value) -> {
+			volcano.horizontalScale = (float) slider.scaleValue((float) value);
 			return value;
 		});
 		

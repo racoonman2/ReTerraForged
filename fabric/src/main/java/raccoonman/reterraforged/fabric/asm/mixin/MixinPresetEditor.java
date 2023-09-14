@@ -30,7 +30,7 @@ interface MixinPresetEditor {
 		Map<Object, Object> map = new HashMap<>();
 		map.put(k1, v1);
 		map.put(k2, v2);
-		map.put(Optional.of(WorldPresets.NORMAL), (PresetEditor) PresetConfigScreen::new);
+		map.put(Optional.of(WorldPresets.NORMAL), (PresetEditor) (screen, ctx) -> new PresetConfigScreen(screen));
 		return map;
     }
 }

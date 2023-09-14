@@ -31,3 +31,4 @@ accessible method net/minecraft/client/gui/screens/worldselection/CreateWorldScr
 accessible method net/minecraft/client/gui/screens/worldselection/CreateWorldScreen tryApplyNewDataPacks (Lnet/minecraft/server/packs/repository/PackRepository;ZLjava/util/function/Consumer;)V
 accessible field net/minecraft/data/DataGenerator vanillaPackOutput Lnet/minecraft/data/PackOutput;
 accessible method net/minecraft/data/DataGenerator$PackGenerator <init> (Lnet/minecraft/data/DataGenerator;ZLjava/lang/String;Lnet/minecraft/data/PackOutput;)V
+accessible method net/minecraft/world/level/levelgen/structure/placement/StructurePlacement salt ()I

@@ -33,7 +33,7 @@ import raccoonman.reterraforged.common.data.RTFBiomes;
 import raccoonman.reterraforged.common.data.RTFNoiseData;
 import raccoonman.reterraforged.common.data.RTFNoiseRouterData;
 import raccoonman.reterraforged.common.data.preset.Preset;
-import raccoonman.reterraforged.common.data.provider.RTFLangProvider;
+import raccoonman.reterraforged.common.data.provider.RTFLanguageProvider;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.platform.registries.forge.RegistryUtilImpl;
 
@@ -52,7 +52,7 @@ public final class ReTerraForgedForge {
     
     private static void registerPresetEditors(RegisterPresetEditorsEvent event) {
     	// TODO we probably shouldn't register this for the default preset
-    	event.register(WorldPresets.NORMAL, PresetConfigScreen::new);
+    	event.register(WorldPresets.NORMAL, (screen, ctx) -> new PresetConfigScreen(screen));
     }
     
     private static void gatherData(GatherDataEvent event) {
@@ -73,7 +73,7 @@ public final class ReTerraForgedForge {
     	DataGenerator generator = event.getGenerator();
     	PackOutput output = generator.getPackOutput();
 
-    	generator.addProvider(includeClient, new RTFLangProvider.EnglishUS(output));
+    	generator.addProvider(includeClient, new RTFLanguageProvider.EnglishUS(output));
     	generator.addProvider(includeClient, PackMetadataGenerator.forFeaturePack(output, Component.translatable(RTFTranslationKeys.METADATA_DESCRIPTION)));
     	generator.addProvider(includeServer, new DatapackBuiltinEntriesProvider(output, lookupProvider, ImmutableSet.of(ReTerraForged.MOD_ID, "minecraft")));
 //    	generator.addProvider(includeServer, new RTFBlockTagsProvider(output, lookupProvider, existingFileHelper));

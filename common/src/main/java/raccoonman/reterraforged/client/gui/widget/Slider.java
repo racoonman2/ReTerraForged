@@ -1,8 +1,5 @@
 package raccoonman.reterraforged.client.gui.widget;
 
-import java.util.function.DoubleSupplier;
-import java.util.function.DoubleUnaryOperator;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.gui.components.AbstractSliderButton;
@@ -16,22 +13,27 @@ public class Slider extends AbstractSliderButton {
 	private Component name;
 	private Format format;
 	@Nullable
-	private DoubleUnaryOperator callback;
+	private Callback callback;
     
-    public Slider(int x, int y, int width, int height, float initialValue, float min, float max, Component name, Format format) {
+    public Slider(int x, int y, int width, int height, float initialValue, float min, float max, Component name, Format format, @Nullable Callback callback) {
         super(x, y, width, height, CommonComponents.EMPTY, 0.0);
         this.name = name;
         this.format = format;
         this.min = min;
         this.max = max;
-        this.value = (Mth.clamp(initialValue, min, max) - min) / (max - min);
+        this.value = this.getSliderValue(initialValue);
+        this.callback = callback;
         this.updateMessage();
     }
-
-    public void setCallback(DoubleUnaryOperator callback) {
-    	this.callback = callback;
+    
+    public double getValue() {
+    	return this.value;
     }
-
+    
+    public double getSliderValue(float value) {
+    	return (Mth.clamp(value, this.min, this.max) - this.min) / (this.max - this.min);
+    }
+    
     public double getLerpedValue() {
     	return this.lerpValue(this.value);
     }
@@ -47,22 +49,13 @@ public class Slider extends AbstractSliderButton {
     @Override
     public void applyValue() {
     	if(this.callback != null) {
-        	this.value = this.callback.applyAsDouble(this.value);
+        	this.value = this.callback.apply(this, this.value);
     	}
     }
 
     @Override
     protected void updateMessage() {
         this.setMessage(CommonComponents.optionNameValue(this.name, Component.literal(this.format.getMessage(this.scaleValue((float) this.value)))));
-    }
-    
-    public static DoubleUnaryOperator clamp(DoubleSupplier min, DoubleSupplier max)	{
-    	return (value) -> {
-    		return Mth.clamp(value,
-	    		min != null ? min.getAsDouble() : 0.0F,
-	    		max != null ? max.getAsDouble() : 1.0F
-	    	);
-    	};
     }
     
     public static enum Format {
@@ -92,5 +85,9 @@ public class Slider extends AbstractSliderButton {
     	public abstract float scale(float input);
     	
     	public abstract String getMessage(float input);
+    }
+    
+    public interface Callback {
+    	double apply(Slider slider, double value);
     }
 }

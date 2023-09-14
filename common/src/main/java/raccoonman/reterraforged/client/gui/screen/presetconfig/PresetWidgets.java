@@ -3,7 +3,6 @@ package raccoonman.reterraforged.client.gui.screen.presetconfig;
 import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
-import java.util.function.DoubleUnaryOperator;
 
 import com.google.common.collect.ImmutableList;
 
@@ -30,21 +29,24 @@ public final class PresetWidgets {
 	}
 	
 	public static Label createLabel(String text) {
-		return new Label(-1, -1, -1, -1, Component.translatable(text));
+		return createLabel(Component.translatable(text));
+	}
+	
+	public static Label createLabel(Component text) {
+		return new Label(-1, -1, -1, -1, text);
 	}
 
-	private static Slider createSlider(float initial, float min, float max, String text, Slider.Format format, DoubleUnaryOperator callback) {
-		Slider slider = new Slider(-1, -1, -1, -1, initial, min, max, Component.translatable(text), format);
+	private static Slider createSlider(float initial, float min, float max, String text, Slider.Format format, Slider.Callback callback) {
+		Slider slider = new Slider(-1, -1, -1, -1, initial, min, max, Component.translatable(text), format, callback);
 		slider.setTooltip(Tooltips.create(Tooltips.translationKey(text)));
-		slider.setCallback(callback);
 		return slider;
 	}
 
-	public static Slider createFloatSlider(float initial, float min, float max, String text, DoubleUnaryOperator callback) {
+	public static Slider createFloatSlider(float initial, float min, float max, String text, Slider.Callback callback) {
 		return createSlider(initial, min, max, text, Format.FLOAT, callback);
 	}
 	
-	public static Slider createIntSlider(int initial, int min, int max, String text, DoubleUnaryOperator callback) {
+	public static Slider createIntSlider(int initial, int min, int max, String text, Slider.Callback callback) {
 		return createSlider(initial, min, max, text, Format.INT, callback);
 	}
 	

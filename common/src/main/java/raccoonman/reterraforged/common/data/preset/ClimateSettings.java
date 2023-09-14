@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.data.preset.settings;
+package raccoonman.reterraforged.common.data.preset;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

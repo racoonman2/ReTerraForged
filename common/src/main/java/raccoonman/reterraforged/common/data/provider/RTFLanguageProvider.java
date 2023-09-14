@@ -6,7 +6,7 @@ import raccoonman.reterraforged.client.gui.Tooltips;
 import raccoonman.reterraforged.common.ReTerraForged;
 
 // TODO add some more languages
-public final class RTFLangProvider {
+public final class RTFLanguageProvider {
 	
 	public static final class EnglishUS extends LanguageProvider {
 
@@ -29,6 +29,8 @@ public final class RTFLangProvider {
 			this.add(RTFTranslationKeys.GUI_TERRAIN_SETTINGS_TITLE, "Terrain Settings");
 			this.add(RTFTranslationKeys.GUI_RIVER_SETTINGS_TITLE, "River Settings");
 			this.add(RTFTranslationKeys.GUI_FILTER_SETTINGS_TITLE, "Filter Settings");
+			this.add(RTFTranslationKeys.GUI_STRUCTURE_SETTINGS_TITLE, "Structure Settings");
+			this.add(RTFTranslationKeys.GUI_MISCELLANEOUS_SETTINGS_TITLE, "Miscellaneous Settings");
 
 			this.add(RTFTranslationKeys.GUI_BUTTON_TRUE, "true");
 			this.add(RTFTranslationKeys.GUI_BUTTON_FALSE, "false");
@@ -44,6 +46,19 @@ public final class RTFLangProvider {
 			this.add(RTFTranslationKeys.GUI_BUTTON_TERRAIN_SEED_OFFSET, "Terrain Seed Offset");
 			this.add(RTFTranslationKeys.GUI_BUTTON_FANCY_MOUNTAINS, "Fancy Mountains");
 			this.add(RTFTranslationKeys.GUI_BUTTON_RIVER_SEED_OFFSET, "Seed Offset");
+			this.add(RTFTranslationKeys.GUI_BUTTON_SALT, "Salt");
+			this.add(RTFTranslationKeys.GUI_BUTTON_DISABLED, "Disabled");
+			this.add(RTFTranslationKeys.GUI_BUTTON_SMOOTH_LAYER_DECORATOR, "Smooth Layer Decorator");
+			this.add(RTFTranslationKeys.GUI_BUTTON_STRATA_DECORATOR, "Strata Decorator");
+			this.add(RTFTranslationKeys.GUI_BUTTON_ORE_COMPATIBLE_STONE_ONLY, "Ore Compatible Stone Only");
+			this.add(RTFTranslationKeys.GUI_BUTTON_EROSION_DECORATOR, "Erosion Decorator");
+			this.add(RTFTranslationKeys.GUI_BUTTON_PLAIN_STONE_EROSION, "Plain Stone Erosion");
+			this.add(RTFTranslationKeys.GUI_BUTTON_NATURAL_SNOW_DECORATOR, "Natural Snow Decorator");
+			this.add(RTFTranslationKeys.GUI_BUTTON_CUSTOM_BIOME_FEATURES, "Custom Biome Features");
+			this.add(RTFTranslationKeys.GUI_BUTTON_VANILLA_LAKES, "Vanilla Lakes");
+			this.add(RTFTranslationKeys.GUI_BUTTON_VANILLA_SPRINGS, "Vanilla Springs");
+			this.add(RTFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKES, "Vanilla Lava Lakes");
+			this.add(RTFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS, "Vanilla Lava Springs");
 			
 			this.add(RTFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE, "Continent Scale");
 			this.add(RTFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER, "Continent Jitter");
@@ -104,7 +119,6 @@ public final class RTFLangProvider {
 			this.add(RTFTranslationKeys.GUI_SLIDER_WETLAND_CHANCE, "Chance");
 			this.add(RTFTranslationKeys.GUI_SLIDER_WETLAND_SIZE_MIN, "Size Min");
 			this.add(RTFTranslationKeys.GUI_SLIDER_WETLAND_SIZE_MAX, "Size Max");
-			
 			this.add(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLETS_PER_CHUNK, "Droplets Per Chunk");
 			this.add(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_LIFETIME, "Droplet Lifetime");
 			this.add(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_VOLUME, "Droplet Volume");
@@ -114,6 +128,9 @@ public final class RTFLangProvider {
 			this.add(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_ITERATIONS, "Smoothing Iterations");
 			this.add(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_RADIUS, "Smoothing Radius");
 			this.add(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_RATE, "Smoothing Rate");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SPACING, "Spacing");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SEPARATION, "Separation");
+			this.add(RTFTranslationKeys.GUI_SLIDER_STRATA_REGION_SIZE, "Strata Region Size");
 			
 			this.add(RTFTranslationKeys.GUI_LABEL_CONTINENT, "Continent");
 			this.add(RTFTranslationKeys.GUI_LABEL_CONTROL_POINTS, "Control Points");
@@ -151,7 +168,20 @@ public final class RTFLangProvider {
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_TERRAIN_SEED_OFFSET), "A seed offset used to randomise terrain distribution");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_FANCY_MOUNTAINS), "Carries out extra processing on mountains to make them look even nicer. Can be disabled to improve performance slightly.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_RIVER_SEED_OFFSET), "A seed offset used to randomise river distribution");
-			
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_SALT), "A random seed value for the structure.");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_DISABLED), "Prevent this structure from generating.");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_SMOOTH_LAYER_DECORATOR), "Modifies layer block levels (ie snow) to fit the terrain");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_STRATA_DECORATOR), "Generates strata (rock layers) instead of just stone");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_ORE_COMPATIBLE_STONE_ONLY), "Only use stone types that ores can generate in");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_EROSION_DECORATOR), "Replace surface materials where erosion has occurred");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_PLAIN_STONE_EROSION), "Changes most exposed rock surfaces to plain stone");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_NATURAL_SNOW_DECORATOR), "Removes snow from the terrain where it shouldn't naturally settle");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_CUSTOM_BIOME_FEATURES), "Use custom biome features in place of vanilla ones (such as trees)");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_VANILLA_LAKES), "Allow vanilla lakes to generate");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_VANILLA_SPRINGS), "Allow vanilla springs (water source blocks) to generate");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKES), "Allow vanilla lava-lakes to generate");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS), "Allow vanilla springs (lava source blocks) to generate");
+
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE), "Controls the size of continents. You may also need to adjust the transition points to ensure beaches etc still form.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER), "Controls how much continent centers are offset from the underlying noise grid.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING), "Reduces the number of continents to create more vast oceans.");
@@ -220,6 +250,19 @@ public final class RTFLangProvider {
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_ITERATIONS), "Controls the number of smoothing iterations");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_RADIUS), "Controls the smoothing radius");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_RATE), "Controls how strongly smoothing is applied");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SPACING),
+				  "Controls the size of the grid used to generate the structure. "
+				+ "Structures will attempt to generate once per grid cell. Larger "
+				+ "spacing values will make the structure appear less frequently."
+			);
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SEPARATION),
+				  "Controls the minimum distance between instances of the structure. "
+				+ "Larger values guarantee larger distances between structures of the "
+				+ "same type but cause them to generate more 'grid-aligned'. "
+				+ "Lower values will produce a more random distribution but may allow "
+				+ "instances to generate closer together."
+			);
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_STRATA_REGION_SIZE), "Controls the size of strata regions");
 		}
 	}
 }
