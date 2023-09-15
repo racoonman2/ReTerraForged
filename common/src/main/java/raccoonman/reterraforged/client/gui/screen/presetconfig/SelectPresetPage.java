@@ -25,6 +25,7 @@ import com.mojang.serialization.JsonOps;
 
 import io.netty.util.internal.StringUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -63,6 +64,7 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 	private Button exportPreset;
 	private Button copyPreset;
 	private Button importLegacyPresets;
+	private Button openPresetFolder;
 	
 	public SelectPresetPage(PresetConfigScreen screen) {
 		super(screen);
@@ -130,6 +132,10 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 			}
 			this.rebuildPresets();
 		});
+		this.openPresetFolder = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_OPEN_PRESET_FOLDER, () -> {
+			Util.getPlatform().openUri(RTF_PRESET_PATH.toUri());
+			this.rebuildPresets();
+		});
 		
 		try {
 			// this probably shouldn't go here
@@ -152,6 +158,7 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 		this.right.addWidget(this.deletePreset);
 		this.right.addWidget(this.exportPreset);
 		this.right.addWidget(this.importLegacyPresets);
+		this.right.addWidget(this.openPresetFolder);
 	}
 
 	@Override

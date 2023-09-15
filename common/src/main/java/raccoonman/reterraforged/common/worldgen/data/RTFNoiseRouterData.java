@@ -194,9 +194,9 @@ public class RTFNoiseRouterData {
         DensityFunction oreVeinB = yLimitedInterpolatable(y, DensityFunctions.noise(noiseParams.getOrThrow(Noises.ORE_VEIN_B), 4.0, 4.0), veinMin, veinMax, 0).abs();
         DensityFunction oreVeinSelector = DensityFunctions.add(DensityFunctions.constant(-0.08f), DensityFunctions.max(oreVeinA, oreVeinB));
         DensityFunction oreGap = DensityFunctions.noise(noiseParams.getOrThrow(Noises.ORE_GAP));
+        DensityFunction initialDensity = new YGradient(DensityFunctions.constant(53.0F / 256.0F), DensityFunctions.constant(256.0D));
         DensityFunction finalDensity = new YGradient(new FlatCache.Marker(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(RTFNoiseData.ROOT)))), DensityFunctions.constant(256.0D));
-        
-        return new NoiseRouter(aquiferBarrier, aquiferFluidLevelFloodedness, aquiferFluidLevelSpread, aquiferLava, temperature, vegetation, getFunction(functions, CONTINENTS), getFunction(functions, EROSION), depth, getFunction(functions, RIDGES), finalDensity, finalDensity, oreVeinness, oreVeinSelector, oreGap);
+        return new NoiseRouter(aquiferBarrier, aquiferFluidLevelFloodedness, aquiferFluidLevelSpread, aquiferLava, temperature, vegetation, getFunction(functions, CONTINENTS), getFunction(functions, EROSION), depth, getFunction(functions, RIDGES), initialDensity, finalDensity, oreVeinness, oreVeinSelector, oreGap);
     }
 
     private static DensityFunction slideOverworld(DensityFunction density) {

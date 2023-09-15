@@ -13,6 +13,7 @@ import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.level.levelgen.noise.Blender;
 import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.noise.Seed;
 import raccoonman.reterraforged.common.level.levelgen.noise.Source;
 import raccoonman.reterraforged.common.level.levelgen.noise.Valley;
@@ -59,7 +60,7 @@ public final class RTFNoiseData {
         Noise mountainShapeBase = Source.cellEdge(mountainSeed.next(), 1000, EdgeFunction.DISTANCE_2_ADD).warp(mountainSeed.next(), 333, 2, 250.0);
         Noise mountainShape = mountainShapeBase.curve(Interpolation.CURVE3).clamp(0.0, 0.9).map(0.0, 1.0);
 
-        float waterLevel = (float) worldSettings.properties.seaLevel / worldSettings.properties.worldHeight;
+        float waterLevel = (float) worldSettings.properties.seaLevel / 256;
 		Noise base = Source.constant(waterLevel);
         Noise regionSelector = createRegionSelector(regionId, base, seed.offset(terrainSettings.general.terrainSeedOffset), regionConfig, worldSettings, terrainSettings);
         Noise regionBorders = makeLandForm(terrainSettings.steppe, base, makePlains(seed, terrainSettings));
@@ -72,12 +73,12 @@ public final class RTFNoiseData {
         Noise land = new Blender(mountainShape, regionLerper, mountains, 0.3F, 0.8F, 0.575F, Interpolation.LINEAR);
         
         Noise deepOcean = makeDeepOcean(seed.next(), worldSettings, terrainSettings);
-        Noise shallowOcean = Source.constant(((float) worldSettings.properties.seaLevel + 7) / worldSettings.properties.worldHeight);
+        Noise shallowOcean = Source.constant(((float) worldSettings.properties.seaLevel - 7) / 256);
         
         Noise ocean = new ContinentLerper3(continent, deepOcean, shallowOcean, base, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast, Interpolation.CURVE3);
         Noise root = new ContinentLerper2(continent, ocean, land, controlPoints.shallowOcean, controlPoints.inland, Interpolation.LINEAR);
 
-        ctx.register(ROOT, root);
+        ctx.register(ROOT, land);
 	}
 	
 	private static Noise makeRegionId(Domain regionWarp, float frequency) {
@@ -89,7 +90,7 @@ public final class RTFNoiseData {
 	}
 	
 	private static Noise makeDeepOcean(int seed, WorldSettings worldSettings, TerrainSettings terrainSettings) {
-        float waterLevel = (float) worldSettings.properties.seaLevel / worldSettings.properties.worldHeight;
+        float waterLevel = (float) worldSettings.properties.seaLevel / 256;
         Noise hills = Source.perlin(++seed, 150, 3).scale(waterLevel * 0.7).bias(Source.perlin(++seed, 200, 1).scale(waterLevel * 0.2f));
         Noise canyons = Source.perlin(++seed, 150, 4).powCurve(0.2).invert().scale(waterLevel * 0.7).bias(Source.perlin(++seed, 170, 1).scale(waterLevel * 0.15f));
         return Source.perlin(++seed, 500, 1).blend(hills, canyons, 0.6, 0.65).warp(++seed, 50, 2, 50.0).freq(1.0F / terrainSettings.general.globalHorizontalScale, 1.0F / terrainSettings.general.globalHorizontalScale);
@@ -208,11 +209,11 @@ public final class RTFNoiseData {
     }
 
     private static Noise makeLandForm(Terrain settings, Noise base, Noise variance) {
-    	return new LandForm(base.mul(Source.constant(settings.horizontalScale)), variance.mul(Source.constant(settings.verticalScale)));
+    	return new LandForm(base.mul(Source.constant(settings.baseScale)), variance.mul(Source.constant(settings.verticalScale)));
     }
     
     private static RegionSelector.Region combine(Noise base, RegionSelector.Region tp1, RegionSelector.Region tp2, Seed seed, int scale) {
-		Noise combinedVariance = Source.perlin(seed.next(), scale, 1).warp(seed.next(), scale / 2, 2, scale / 2.0F).blend(tp1.variance(), tp2.variance(), 0.5F, 0.25F).clamp(0.0, 1.0);
+		Noise combinedVariance = Source.perlin(seed.next(), scale, 1).warp(seed.next(), scale / 2, 2, scale / 2.0F).blend(tp1.variance(), tp2.variance(), 0.5F, 0.25F);
 		float weight = (tp1.weight() + tp2.weight()) / 2.0F;
 		return new RegionSelector.Region(weight, new LandForm(base, combinedVariance));
 	}

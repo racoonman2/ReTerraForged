@@ -114,22 +114,8 @@ public class TerrainSettings {
             this.horizontalScale = horizontalScale;
         }
         
-        public Noise apply(double bias, double scale, Noise module) {
-            double moduleBias = bias * this.baseScale;
-            double moduleScale = scale * this.verticalScale;
-            Noise outputModule = module.scale(moduleScale).bias(moduleBias);
-            return clamp(outputModule);
-        }
-        
         public Terrain copy() {
         	return new Terrain(this.weight, this.baseScale, this.verticalScale, this.horizontalScale);
-        }
-        
-        private static Noise clamp(Noise module) {
-            if (module.minValue() < 0.0F || module.maxValue() > 1.0F) {
-                return module.clamp(0.0F, 1.0F);
-            }
-            return module;
         }
     }
 }

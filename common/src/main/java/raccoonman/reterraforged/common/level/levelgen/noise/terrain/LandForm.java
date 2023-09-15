@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
-import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 
 public record LandForm(Noise base, Noise terrain) implements Noise {
 	public static final Codec<LandForm> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -19,7 +18,8 @@ public record LandForm(Noise base, Noise terrain) implements Noise {
 
 	@Override
 	public float compute(float x, float y, int seed) {
-		return NoiseUtil.clamp(this.base.compute(x, y, seed) + this.terrain.compute(x, y, seed), 0.0F, 1.0F);
+//		System.out.println(this.base.compute(x, y, seed) + this.terrain.compute(x, y, seed));
+		return this.base.compute(x, y, seed) + this.terrain.compute(x, y, seed);
 	}
 
 	@Override

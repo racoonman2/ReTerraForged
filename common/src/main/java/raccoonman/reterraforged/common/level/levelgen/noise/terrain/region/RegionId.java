@@ -46,7 +46,7 @@ public record RegionId(DistanceFunction distance, float jitter, Domain warp, flo
             for (int dx = -1; dx <= 1; ++dx) {
                 final int cx = xi + dx;
                 final int cy = yi + dy;
-                final Vec2f vec = NoiseUtil.cell(seed + 7, cx, cy);
+                final Vec2f vec = NoiseUtil.cell(seed, cx, cy);
                 final float vecX = cx + vec.x() * this.jitter;
                 final float vecY = cy + vec.y() * this.jitter;
                 final float distance = dist.apply(vecX - px, vecY - py);

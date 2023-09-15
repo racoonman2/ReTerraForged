@@ -119,10 +119,10 @@ public class WorldSettings {
         public int worldDepth;
         public int seaLevel;
         
-        public Properties(SpawnType spawnType, int worldHeight, int minY, int seaLevel) {
+        public Properties(SpawnType spawnType, int worldHeight, int worldDepth, int seaLevel) {
         	this.spawnType = spawnType;
         	this.worldHeight = worldHeight;
-        	this.worldDepth = minY;
+        	this.worldDepth = worldDepth;
         	this.seaLevel = seaLevel;
         }
         

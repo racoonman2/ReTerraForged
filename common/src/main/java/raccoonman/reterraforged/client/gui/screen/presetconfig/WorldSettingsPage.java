@@ -34,7 +34,7 @@ public class WorldSettingsPage extends PresetEditorPage {
 	
 	private CycleButton<SpawnType> spawnType;
 	private Slider worldHeight;
-	private Slider minY;
+	private Slider worldDepth;
 	private Slider seaLevel;
 	
 	public WorldSettingsPage(PresetConfigScreen screen, PresetEntry preset) {
@@ -140,13 +140,13 @@ public class WorldSettingsPage extends PresetEditorPage {
 			properties.spawnType = value;
 		});
 		this.worldHeight = PresetWidgets.createIntSlider(properties.worldHeight, 0, 1024, RTFTranslationKeys.GUI_SLIDER_WORLD_HEIGHT, (slider, value) -> {
-			int nearestMultiple = getNearestMultiple(slider, (float) value, 16);
-			properties.worldDepth = nearestMultiple;
+			int nearestMultiple = Math.max(getNearestMultiple(slider, (float) value, 16), 16);
+			properties.worldHeight = nearestMultiple;
 			return slider.getSliderValue(nearestMultiple);
 		});
-		this.minY = PresetWidgets.createIntSlider(properties.worldDepth, 0, 256, RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH, (slider, value) -> {
+		this.worldDepth = PresetWidgets.createIntSlider(properties.worldDepth, 0, 256, RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH, (slider, value) -> {
 			int nearestMultiple = getNearestMultiple(slider, (float) value, 16);
-			properties.worldHeight = nearestMultiple;
+			properties.worldDepth = nearestMultiple;
 			return slider.getSliderValue(nearestMultiple);
 		});
 		this.seaLevel = PresetWidgets.createIntSlider(properties.seaLevel, 0, 255, RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL, (slider, value) -> {
@@ -175,7 +175,7 @@ public class WorldSettingsPage extends PresetEditorPage {
 		this.left.addWidget(PresetWidgets.createLabel(RTFTranslationKeys.GUI_LABEL_PROPERTIES));
 		this.left.addWidget(this.spawnType);
 		this.left.addWidget(this.worldHeight);
-		this.left.addWidget(this.minY);
+		this.left.addWidget(this.worldDepth);
 		this.left.addWidget(this.seaLevel);
 	}
 

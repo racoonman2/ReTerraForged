@@ -7,7 +7,6 @@ import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 
-//TODO do block scaling here
 //TODO don't hardcode min / max values
 public record YGradient(DensityFunction y, DensityFunction scale) implements DensityFunction.SimpleFunction {
 	public static final Codec<YGradient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -18,8 +17,7 @@ public record YGradient(DensityFunction y, DensityFunction scale) implements Den
 	@Override
 	public double compute(FunctionContext ctx) {
 		double blockY = ctx.blockY();
-		double scale = this.scale.compute(ctx);
-		double noiseY = NoiseUtil.floor((float) this.y.compute(ctx) * scale);
+		double noiseY = NoiseUtil.floor(this.y.compute(ctx) * this.scale.compute(ctx));
 		if(blockY > noiseY) {
 			return 0.0F;
 		} else {

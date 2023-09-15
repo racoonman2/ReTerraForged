@@ -38,10 +38,10 @@ public abstract class LanguageProvider implements DataProvider {
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
-        addTranslations();
+      	this.addTranslations();
 
-        if (!data.isEmpty())
-            return save(cache, this.output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(this.modid).resolve("lang").resolve(this.locale + ".json"));
+        if (!this.data.isEmpty())
+            return this.save(cache, this.output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(this.modid).resolve("lang").resolve(this.locale + ".json"));
 
         return CompletableFuture.allOf();
     }
@@ -52,10 +52,8 @@ public abstract class LanguageProvider implements DataProvider {
     }
 
     private CompletableFuture<?> save(CachedOutput cache, Path target) {
-        // TODO: DataProvider.saveStable handles the caching and hashing already, but creating the JSON Object this way seems unreliable. -C
         JsonObject json = new JsonObject();
         this.data.forEach(json::addProperty);
-
         return DataProvider.saveStable(cache, json, target);
     }
 
