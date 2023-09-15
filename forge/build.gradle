@@ -9,7 +9,7 @@ architectury {
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
-
+    
     forge {
         dataGen {
             mod "reterraforged"

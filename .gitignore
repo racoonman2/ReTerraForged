@@ -112,6 +112,7 @@ gradle-app.setting
 **/build/
 
 **/src/generated/
+**/src/main/generated/
 
 # Common working directory
 run/

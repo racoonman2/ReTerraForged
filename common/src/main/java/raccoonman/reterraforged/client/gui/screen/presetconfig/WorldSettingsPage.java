@@ -141,10 +141,12 @@ public class WorldSettingsPage extends PresetEditorPage {
 		});
 		this.worldHeight = PresetWidgets.createIntSlider(properties.worldHeight, 0, 1024, RTFTranslationKeys.GUI_SLIDER_WORLD_HEIGHT, (slider, value) -> {
 			int nearestMultiple = getNearestMultiple(slider, (float) value, 16);
+			properties.worldDepth = nearestMultiple;
 			return slider.getSliderValue(nearestMultiple);
 		});
 		this.minY = PresetWidgets.createIntSlider(properties.worldDepth, 0, 256, RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH, (slider, value) -> {
 			int nearestMultiple = getNearestMultiple(slider, (float) value, 16);
+			properties.worldHeight = nearestMultiple;
 			return slider.getSliderValue(nearestMultiple);
 		});
 		this.seaLevel = PresetWidgets.createIntSlider(properties.seaLevel, 0, 255, RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL, (slider, value) -> {
