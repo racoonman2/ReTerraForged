@@ -17,7 +17,7 @@ import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.client.gui.screens.worldselection.WorldCreationContext;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataGenerator.PackGenerator;
 import net.minecraft.data.PackOutput;
@@ -25,7 +25,6 @@ import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.data.registries.RegistriesDatapackGenerator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.repository.PackRepository;
-import net.minecraft.world.level.levelgen.WorldDimensions;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
@@ -46,12 +45,8 @@ public class PresetConfigScreen extends LinkedPageScreen {
 		this.minecraft.setScreen(this.parent);
 	}
 	
-	public RegistryAccess.Frozen getRegistryAccess() {
-		return this.parent.getUiState().getSettings().worldgenLoadContext();
-	}
-	
-	public WorldDimensions getDimensions() {
-		return this.parent.getUiState().getSettings().selectedDimensions();
+	public WorldCreationContext getSettings() {
+		return this.parent.getUiState().getSettings();
 	}
 
 	public void applyPreset(PresetEntry preset) throws IOException {		
@@ -73,7 +68,7 @@ public class PresetConfigScreen extends LinkedPageScreen {
 		DataGenerator dataGenerator = new DataGenerator(datagenPath, SharedConstants.getCurrentVersion(), true);
 		PackGenerator packGenerator = dataGenerator.new PackGenerator(true, preset.getName().getString(), new PackOutput(datagenOutputPath));
 		packGenerator.addProvider((output) -> {
-			return new RegistriesDatapackGenerator(output, CompletableFuture.supplyAsync(() -> preset.getPreset().buildPatch(this.getRegistryAccess())));
+			return new RegistriesDatapackGenerator(output, CompletableFuture.supplyAsync(() -> preset.getPreset().buildPatch(this.getSettings().worldgenLoadContext())));
 		});
 		packGenerator.addProvider((output) -> {
 			return PackMetadataGenerator.forFeaturePack(output, Component.translatable(RTFTranslationKeys.PRESET_METADATA_DESCRIPTION));

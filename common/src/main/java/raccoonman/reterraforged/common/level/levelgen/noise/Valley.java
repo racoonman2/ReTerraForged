@@ -22,14 +22,6 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
 		Valley.Mode.CODEC.fieldOf("blend_mode").forGetter((v) -> v.blendMode)
 	).apply(instance, Valley::new));
 
-    public Valley(Noise source, float strength, float gridSize, Valley.Mode blendMode) {
-        this(source, 1, strength, gridSize, blendMode);
-    }
-
-    public Valley(Noise source, int octaves, float strength, float gridSize, Valley.Mode blendMode) {
-        this(source, octaves, strength, gridSize, 1.0F / (float) (octaves + 1), 2.25F, 0.75F, blendMode);
-    }
-
     public Valley(Noise source, int octaves, float strength, float gridSize, float amplitude, float lacunarity, float falloff, Valley.Mode blendMode) {
 		this(source, octaves, strength, gridSize, amplitude, lacunarity, falloff, blendMode, ThreadLocal.withInitial(() -> new float[25]));
     }
@@ -104,7 +96,7 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
                         Vec2f vec2 = pbx == pax && pby == pay ? vec1 : NoiseUtil.cell(seed, pbx, pby);
                         float candidateX = ((float) pbx + vec2.x()) * gridSize;
                         float candidateY = ((float) pby + vec2.y()) * gridSize;
-                        float height = Valley.getNoiseValue(dx1 + dx2, dy1 + dy2, candidateX, candidateY, seed, source, cache);
+                        float height = getNoiseValue(dx1 + dx2, dy1 + dy2, candidateX, candidateY, this.source, seed, cache);
                         if (!(height < lowestNeighbour)) continue;
                         lowestNeighbour = height;
                         bx = candidateX;
@@ -119,7 +111,7 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
         return NoiseUtil.clamp((float) Math.sqrt(minHeight2) / gridSize, 0.0F, 1.0F);
     }
 
-    private static float getNoiseValue(int dx, int dy, float px, float py, int seed, Noise noise, float[] cache) {
+    private static float getNoiseValue(int dx, int dy, float px, float py, Noise noise, int seed, float[] cache) {
         int index = (dy + 2) * 5 + (dx + 2);
         float value = cache[index];
         if (value == -1.0F) {

@@ -45,8 +45,6 @@ import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
 import raccoonman.reterraforged.platform.config.ConfigUtil;
 
 class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, AbstractWidget> {
-	private static final Predicate<String> IS_VALID = Pattern.compile("^[A-Za-z0-9\\-_ ]+$").asPredicate();
-
 	private static final Path CONFIG_PATH = ConfigUtil.getConfigPath();
 
 	private static final Path RTF_CONFIG_PATH = CONFIG_PATH.resolve(ReTerraForged.MOD_ID);
@@ -55,19 +53,24 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 	private static final Path RTF_PRESET_PATH = RTF_CONFIG_PATH.resolve("presets");
 	private static final Path LEGACY_PRESET_PATH = LEGACY_CONFIG_PATH.resolve("presets");
 	
-	private EditBox inputBox;
-	private Button createPresetButton;
-	private Button deletePresetButton;
-	private Button exportPresetButton;
-	private Button copyPresetButton;
-	private Button importLegacyPresetsButton;
+	private static final Path RTF_DATAPACK_PATH = RTF_CONFIG_PATH.resolve("datapacks");
+	
+	private static final Predicate<String> IS_VALID = Pattern.compile("^[A-Za-z0-9\\-_ ]+$").asPredicate();
+
+	private EditBox input;
+	private Button createPreset;
+	private Button deletePreset;
+	private Button exportPreset;
+	private Button copyPreset;
+	private Button importLegacyPresets;
 	
 	public SelectPresetPage(PresetConfigScreen screen) {
 		super(screen);
 		
 		try {
-			if(!Files.exists(RTF_CONFIG_PATH)) Files.createFile(RTF_CONFIG_PATH);
-			if(!Files.exists(RTF_PRESET_PATH)) Files.createFile(RTF_PRESET_PATH);
+			if(!Files.exists(RTF_CONFIG_PATH)) Files.createDirectory(RTF_CONFIG_PATH);
+			if(!Files.exists(RTF_PRESET_PATH)) Files.createDirectory(RTF_PRESET_PATH);
+			if(!Files.exists(RTF_DATAPACK_PATH)) Files.createDirectory(RTF_DATAPACK_PATH);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -82,20 +85,20 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 	public void init() {
 		super.init();
 		
-		this.inputBox = PresetWidgets.createEditBox(this.screen.font, (text) -> {
+		this.input = PresetWidgets.createEditBox(this.screen.font, (text) -> {
 			boolean isValid = this.isValidPresetName(text);
 			final int white = 14737632;
 			final int red = 0xFFFF3F30;
-			this.createPresetButton.active = isValid;
-			this.inputBox.setTextColor(isValid ? white : red);
+			this.createPreset.active = isValid;
+			this.input.setTextColor(isValid ? white : red);
 		});
-		this.createPresetButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_CREATE, () -> {
-			new PresetEntry(Component.literal(this.inputBox.getValue()), Preset.makeDefault(), false).save();
+		this.createPreset = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_CREATE, () -> {
+			new PresetEntry(Component.literal(this.input.getValue()), Preset.makeDefault(), false).save();
 			this.rebuildPresets();
-			this.inputBox.setValue(StringUtil.EMPTY_STRING);
+			this.input.setValue(StringUtil.EMPTY_STRING);
 		});
-		this.createPresetButton.active = this.isValidPresetName(this.inputBox.getValue());
-		this.copyPresetButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_COPY, () -> {
+		this.createPreset.active = this.isValidPresetName(this.input.getValue());
+		this.copyPreset = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_COPY, () -> {
 			PresetEntry preset = this.left.getSelected().getWidget();
 			String name = preset.getName().getString();
 			int counter = 1;
@@ -106,20 +109,20 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 			new PresetEntry(Component.literal(uniqueName), preset.getPreset().copy(), false).save();
 			this.rebuildPresets();
 		});
-		this.deletePresetButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_DELETE, () -> {
+		this.deletePreset = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_DELETE, () -> {
 			PresetEntry preset = this.left.getSelected().getWidget();
 			Files.delete(preset.getPath());
 			this.rebuildPresets();
 		});
-		this.exportPresetButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_EXPORT, () -> {
+		this.exportPreset = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_EXPORT, () -> {
 			PresetEntry preset = this.left.getSelected().getWidget();
-			Path path = RTF_CONFIG_PATH.resolve("datapacks").resolve(preset.getName().getString() + ".zip");
+			Path path = RTF_DATAPACK_PATH.resolve(preset.getName().getString() + ".zip");
 			this.screen.exportAsDatapack(path, preset);
 			this.rebuildPresets();
 			
 			Toasts.notify(RTFTranslationKeys.GUI_BUTTON_EXPORT_SUCCESS, Component.literal(path.toString()), SystemToastIds.WORLD_BACKUP);
 		});
-		this.importLegacyPresetsButton = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_IMPORT_LEGACY, () -> {
+		this.importLegacyPresets = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_IMPORT_LEGACY, () -> {
 			for(Path from : Files.list(LEGACY_PRESET_PATH).toList()) {
 				String fromStr = from.toString();
 				Path target = RTF_PRESET_PATH.resolve(FileNameUtils.getBaseName(fromStr) + " (Legacy)." + FilenameUtils.getExtension(fromStr));
@@ -131,8 +134,8 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 		try {
 			// this probably shouldn't go here
 			if(!Files.exists(LEGACY_PRESET_PATH) || PathUtils.isEmptyDirectory(LEGACY_PRESET_PATH)) {
-				this.importLegacyPresetsButton.active = false;
-				this.importLegacyPresetsButton.setTooltip(Tooltips.create(RTFTranslationKeys.GUI_SELECT_PRESET_MISSING_LEGACY_PRESETS));
+				this.importLegacyPresets.active = false;
+				this.importLegacyPresets.setTooltip(Tooltips.create(RTFTranslationKeys.GUI_SELECT_PRESET_MISSING_LEGACY_PRESETS));
 			}
 			
 			this.rebuildPresets();
@@ -143,12 +146,12 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 		
 		this.left.setRenderSelection(true);
 		
-		this.right.addWidget(this.inputBox);
-		this.right.addWidget(this.createPresetButton);
-		this.right.addWidget(this.copyPresetButton);
-		this.right.addWidget(this.deletePresetButton);
-		this.right.addWidget(this.exportPresetButton);
-		this.right.addWidget(this.importLegacyPresetsButton);
+		this.right.addWidget(this.input);
+		this.right.addWidget(this.createPreset);
+		this.right.addWidget(this.copyPreset);
+		this.right.addWidget(this.deletePreset);
+		this.right.addWidget(this.exportPreset);
+		this.right.addWidget(this.importLegacyPresets);
 	}
 
 	@Override
@@ -183,8 +186,9 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 		boolean active = entry != null;
 		boolean builtin = active && entry.isBuiltin();
 		this.screen.doneButton.active = active;
-		this.copyPresetButton.active = active;
-		this.deletePresetButton.active = active && !builtin;
+		this.copyPreset.active = active;
+		this.deletePreset.active = active && !builtin;
+		this.exportPreset.active = active;
 		this.screen.nextButton.active = active && !builtin;
 	}
 	

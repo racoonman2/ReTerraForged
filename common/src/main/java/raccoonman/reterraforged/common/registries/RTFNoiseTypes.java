@@ -14,10 +14,9 @@ import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Max;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Min;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Mul;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Sub;
-import raccoonman.reterraforged.common.level.levelgen.noise.continent.AdvancedContinent;
 import raccoonman.reterraforged.common.level.levelgen.noise.continent.ContinentLerper2;
 import raccoonman.reterraforged.common.level.levelgen.noise.continent.ContinentLerper3;
-import raccoonman.reterraforged.common.level.levelgen.noise.continent.MultiContinent;
+import raccoonman.reterraforged.common.level.levelgen.noise.continent.MultiImprovedContinent;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Abs;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.AdvancedTerrace;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Alpha;
@@ -51,15 +50,16 @@ import raccoonman.reterraforged.common.level.levelgen.noise.source.Cell;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.CellEdge;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Constant;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Cubic;
-import raccoonman.reterraforged.common.level.levelgen.noise.source.Simplex;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Perlin;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Perlin2;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Rand;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Ridge;
+import raccoonman.reterraforged.common.level.levelgen.noise.source.Simplex;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Simplex2;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.SimplexRidge;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Sin;
 import raccoonman.reterraforged.common.level.levelgen.noise.terrain.LandForm;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.Volcano;
 import raccoonman.reterraforged.common.level.levelgen.noise.terrain.region.RegionEdge;
 import raccoonman.reterraforged.common.level.levelgen.noise.terrain.region.RegionId;
 import raccoonman.reterraforged.common.level.levelgen.noise.terrain.region.RegionLerper;
@@ -126,10 +126,10 @@ public final class RTFNoiseTypes {
 		register("region_selector", RegionSelector.CODEC);
 		register("land_form", LandForm.CODEC);
 		register("blender", Blender.CODEC);
-		register("continent_lerper_2", ContinentLerper2.CODEC);
-		register("continent_lerper_3", ContinentLerper3.CODEC);
-		register("multi_continent", MultiContinent.CODEC);
-		register("advanced_continent", AdvancedContinent.CODEC);
+		register("multi_improved_continent", MultiImprovedContinent.CODEC);
+		register("continent_lerper3", ContinentLerper3.CODEC);
+		register("continent_lerper2", ContinentLerper2.CODEC);
+		register("volcano", Volcano.CODEC);
 	}
 	
 	private static void register(String name, Codec<? extends Noise> value) {

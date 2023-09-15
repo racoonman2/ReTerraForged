@@ -110,28 +110,28 @@ public class WorldSettings {
     	public static final Codec<Properties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		SpawnType.CODEC.fieldOf("spawnType").forGetter((o) -> o.spawnType),
     		Codec.INT.fieldOf("worldHeight").forGetter((o) -> o.worldHeight),
-    		Codec.INT.optionalFieldOf("minY", 0).forGetter((o) -> o.minY), // this has to be defaulted to be able to parse legacy presets
+    		Codec.INT.optionalFieldOf("worldDepth", 0).forGetter((o) -> o.worldDepth), // this has to be defaulted to be able to parse legacy presets
     		Codec.INT.fieldOf("seaLevel").forGetter((o) -> o.seaLevel)
     	).apply(instance, Properties::new));
     	
         public SpawnType spawnType;
         public int worldHeight;
-        public int minY;
+        public int worldDepth;
         public int seaLevel;
         
         public Properties(SpawnType spawnType, int worldHeight, int minY, int seaLevel) {
         	this.spawnType = spawnType;
         	this.worldHeight = worldHeight;
-        	this.minY = minY;
+        	this.worldDepth = minY;
         	this.seaLevel = seaLevel;
         }
         
         public Properties copy() {
-        	return new Properties(this.spawnType, this.worldHeight, this.minY, this.seaLevel);
+        	return new Properties(this.spawnType, this.worldHeight, this.worldDepth, this.seaLevel);
         }
         
         public static Properties makeDefault() {
-        	return new Properties(SpawnType.CONTINENT_CENTER, 256, -64, 63);
+        	return new Properties(SpawnType.CONTINENT_CENTER, 256, 64, 63);
         }
     }
 }

@@ -22,8 +22,8 @@ public abstract class LinkedPageScreen extends Screen {
 	}
 	
 	public void setPage(Page page) {
+		this.currentPage.onClose();
 		this.currentPage = page;
-		page.onClose();
 		this.rebuildWidgets();
 	}
 	

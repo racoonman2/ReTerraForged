@@ -1,7 +1,6 @@
-package raccoonman.reterraforged.client.data.provider;
+package raccoonman.reterraforged.client.data;
 
 import net.minecraft.data.PackOutput;
-import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.Tooltips;
 import raccoonman.reterraforged.common.ReTerraForged;
 
@@ -75,7 +74,7 @@ public final class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_SLIDER_COAST, "Coast Ocean");
 			this.add(RTFTranslationKeys.GUI_SLIDER_INLAND, "Inland Ocean");
 			this.add(RTFTranslationKeys.GUI_SLIDER_WORLD_HEIGHT, "World Height");
-			this.add(RTFTranslationKeys.GUI_SLIDER_MIN_Y, "Min Y Level");
+			this.add(RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH, "World Depth");
 			this.add(RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL, "Sea Level");
 			this.add(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_SCALE, "Scale");
 			this.add(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_FALLOFF, "Falloff");
@@ -198,7 +197,7 @@ public final class RTFLanguageProvider {
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_COAST), "Controls the size of coastal regions and is also the point below which inland terrain transitions into oceans. Certain biomes such as Mushroom Fields only generate in coastal areas.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_INLAND), "Controls the overall transition from ocean to inland terrain.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WORLD_HEIGHT), "Controls the world height");
-			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_MIN_Y), "Controls the minimum y level");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH), "Controls the minimum y level");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL), "Controls the sea level");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_SCALE), "The horizontal scale");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_FALLOFF), "How quickly values transition from an extremity");

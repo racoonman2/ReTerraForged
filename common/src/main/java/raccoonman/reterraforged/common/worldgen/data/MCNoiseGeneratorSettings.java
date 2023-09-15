@@ -9,22 +9,27 @@ import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
+import raccoonman.reterraforged.common.worldgen.data.preset.WorldSettings;
 
 public final class MCNoiseGeneratorSettings {
 	
 	public static void bootstrap(BootstapContext<NoiseGeneratorSettings> ctx, Preset preset) {
 		HolderGetter<DensityFunction> densityFunctions = ctx.lookup(Registries.DENSITY_FUNCTION);
 		HolderGetter<NormalNoise.NoiseParameters> noiseParams = ctx.lookup(Registries.NOISE);
-		ctx.register(NoiseGeneratorSettings.OVERWORLD, createOverworld(densityFunctions, noiseParams, preset));
+		HolderGetter<Noise> noise = ctx.lookup(RTFRegistries.NOISE);
+		ctx.register(NoiseGeneratorSettings.OVERWORLD, createOverworld(densityFunctions, noiseParams, noise, preset));
     }
 
-    private static NoiseGeneratorSettings createOverworld(HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, Preset preset) {
+    private static NoiseGeneratorSettings createOverworld(HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, HolderGetter<Noise> noise, Preset preset) {
+    	WorldSettings world = preset.world();
     	return new NoiseGeneratorSettings(
-	  		new NoiseSettings(-64, 384, 1, 1),
+	  		new NoiseSettings(-world.properties.worldDepth, world.properties.worldHeight, 1, 1),
 	  		Blocks.STONE.defaultBlockState(),
 	  		Blocks.WATER.defaultBlockState(),
-	  		RTFNoiseRouterData.overworld(densityFunctions, noiseParams),
+	  		RTFNoiseRouterData.overworld(densityFunctions, noiseParams, noise),
 	  		RTFSurfaceRuleData.overworld(),
 	  		new OverworldBiomeBuilder().spawnTarget(),
 	  		preset.world().properties.seaLevel,

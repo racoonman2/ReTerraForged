@@ -119,9 +119,9 @@ public interface Noise {
     }
 	
     /**
-     * Create a Module who's output is the absolute value of this Module's output (ie negative values return positive)
+     * Create a Noise who's output is the absolute value of this Noise's output (ie negative values return positive)
      *
-     * @return a new Abs Module
+     * @return a new Abs Noise
      */
     default Noise abs() {
         if (this instanceof Abs) {
@@ -131,32 +131,32 @@ public interface Noise {
     }
 
     /**
-     * Add the output of another Module to this Module's output
+     * Add the output of another Noise to this Noise's output
      *
-     * @param other - the Module to add
-     * @return a new Add Module
+     * @param other - the Noise to add
+     * @return a new Add Noise
      */
     default Noise add(Noise other) {
         return new Add(ImmutableList.of(this, other));
     }
 
     /**
-     * A utility to Scale and Bias the output of this Module such that the output is scaled by the alpha amount
+     * A utility to Scale and Bias the output of this Noise such that the output is scaled by the alpha amount
      * and biased by 1 - alpha
      *
      * @param alpha - the alpha value (expected to be within the range 0-1)
-     * @return a new Alpha Module
+     * @return a new Alpha Noise
      */
     default Noise alpha(double alpha) {
         return alpha(Source.constant(alpha));
     }
 
     /**
-     * A utility to Scale and Bias the output of this Module such that the output is scaled by the alpha value
+     * A utility to Scale and Bias the output of this Noise such that the output is scaled by the alpha value
      * and biased by 1 - alpha
      *
-     * @param alpha - a Module who's output provides the alpha value
-     * @return a new Alpha Module
+     * @param alpha - a Noise who's output provides the alpha value
+     * @return a new Alpha Noise
      */
     default Noise alpha(Noise alpha) {
         if (alpha.minValue() < 0 || alpha.maxValue() > 1) {
@@ -166,43 +166,43 @@ public interface Noise {
     }
 
     /**
-     * Combines this and the other Module by blending their outputs only when the other Module's output
+     * Combines this and the other Noise by blending their outputs only when the other Noise's output
      * falls below the provided falloff value.
      *
-     * This Module's output becomes more dominant the lower the other Module's output becomes.
+     * This Noise's output becomes more dominant the lower the other Noise's output becomes.
      *
-     * When the output is above the falloff value only the other Module's output is returned.
+     * When the output is above the falloff value only the other Noise's output is returned.
      *
-     * @param other - the Module that this Module should form the 'base' for
+     * @param other - the Noise that this Noise should form the 'base' for
      * @param falloff - the value below which the blending will occur
-     * @return a new Base Module
+     * @return a new Base Noise
      */
     default Noise base(Noise other, double falloff) {
         return base(other, falloff, Interpolation.CURVE3);
     }
 
     /**
-     * Combines this and the other Module by blending their outputs only when the other Module's output
+     * Combines this and the other Noise by blending their outputs only when the other Noise's output
      * falls below the provided falloff value.
      *
-     * This Module's output becomes more dominant the lower the other Module's output becomes.
+     * This Noise's output becomes more dominant the lower the other Noise's output becomes.
      *
-     * When the output is above the falloff value only the other Module's output is returned.
+     * When the output is above the falloff value only the other Noise's output is returned.
      *
-     * @param other - the Module that this Module should form the 'base' for
+     * @param other - the Noise that this Noise should form the 'base' for
      * @param falloff - the value below which the blending will occur
      * @param interpolation - the interpolation method to use while blending the outputs
-     * @return a new Base Module
+     * @return a new Base Noise
      */
     default Noise base(Noise other, double falloff, Interpolation interpolation) {
         return new Base(this, other, (float) falloff, interpolation);
     }
 
     /**
-     * Modifies this Module's output by adding the bias Module's output to the returned value.
+     * Modifies this Noise's output by adding the bias Noise's output to the returned value.
      *
-     * @param bias - the Module that biases the output
-     * @return a new Bias Module
+     * @param bias - the Noise that biases the output
+     * @return a new Bias Noise
      */
     default Noise bias(Noise bias) {
         if (bias.minValue() == 0 && bias.maxValue() == 0) {
@@ -212,75 +212,75 @@ public interface Noise {
     }
 
     /**
-     * Modifies this Module's output by adding the bias to the returned value.
+     * Modifies this Noise's output by adding the bias to the returned value.
      *
-     * @param bias - the amount to bias this Module's output by
-     * @return a new Bias Module
+     * @param bias - the amount to bias this Noise's output by
+     * @return a new Bias Noise
      */
     default Noise bias(double bias) {
         return bias(Source.constant(bias));
     }
 
     /**
-     * Combine two other Modules by using this one to d)ecide how much of each should be blended together
+     * Combine two other Noises by using this one to d)ecide how much of each should be blended together
      *
-     * @param source0 - the first of the two Modules to blend
-     * @param source1 - the second of the two Modules to blend
+     * @param source0 - the first of the two Noises to blend
+     * @param source1 - the second of the two Noises to blend
      * @param midpoint - the value at which source0 & source1 will be blended 50%:50% - values either side of this point
-     *                 will strengthen the effect of either source Module proportionally to the distance from the midpoint
+     *                 will strengthen the effect of either source Noise proportionally to the distance from the midpoint
      * @param blendRange - the range over which blending occurs, outside of which will produce 100% source 1 or 2
-     * @return a new Blend Module
+     * @return a new Blend Noise
      */
     default Noise blend(Noise source0, Noise source1, double midpoint, double blendRange) {
         return blend(source0, source1, midpoint, blendRange, Interpolation.LINEAR);
     }
 
     /**
-     * Combine two other Modules by using this one to decide how much of each should be blended together
+     * Combine two other Noises by using this one to decide how much of each should be blended together
      *
-     * @param source0 - the first of the two Modules to blend
-     * @param source1 - the second of the two Modules to blend
+     * @param source0 - the first of the two Noises to blend
+     * @param source1 - the second of the two Noises to blend
      * @param midpoint - the value at which source0 & source1 will be blended 50%:50% - values either side of this point
-     *                 will strengthen the effect of either source Module proportionally to the distance from the midpoint
+     *                 will strengthen the effect of either source Noise proportionally to the distance from the midpoint
      * @param blendRange - the range over which blending occurs, outside of which will produce 100% source 1 or 2
      * @param interpolation - the interpolation method to use while blending the outputs
-     * @return a new Blend Module
+     * @return a new Blend Noise
      */
     default Noise blend(Noise source0, Noise source1, double midpoint, double blendRange, Interpolation interpolation) {
         return new Blend(this, source0, source1, (float) midpoint, (float) blendRange, interpolation);
     }
 
     /**
-     * Similar to the Blend Module but uses an additional Module (blendVar) to vary the blend range at a given position
+     * Similar to the Blend Noise but uses an additional Noise (blendVar) to vary the blend range at a given position
      *
      * @param variable
-     * @param source0 - the first of the two Modules to blend
-     * @param source1 - the second of the two Modules to blend
+     * @param source0 - the first of the two Noises to blend
+     * @param source1 - the second of the two Noises to blend
      * @param midpoint - the value at which source0 & source1 will be blended 50%:50% - values either side of this point
-     *                  will strengthen the effect of either source Module proportionally to the distance from the midpoint
+     *                  will strengthen the effect of either source Noise proportionally to the distance from the midpoint
      * @param min - the lowest possible bound of the blend range
      * @param max - the highest possible bound of the blend range
      * @param interpolation - the interpolation method to use while blending the outputs
-     * @return a new BlendVar Module
+     * @return a new BlendVar Noise
      */
     default Noise blendVar(Noise variable, Noise source0, Noise source1, double midpoint, double min, double max, Interpolation interpolation) {
         return new VariableBlend(this, variable, source0, source1, (float) midpoint, (float) min, (float) max, interpolation);
     }
 
     /**
-     * Modifies this Module's output by amplifying lower values while higher values amplify less
+     * Modifies this Noise's output by amplifying lower values while higher values amplify less
      *
-     * @return a new Boost Module
+     * @return a new Boost Noise
      */
     default Noise boost() {
         return boost(1);
     }
 
     /**
-     * Modifies this Module's output by amplifying lower values while higher values amplify less
+     * Modifies this Noise's output by amplifying lower values while higher values amplify less
      *
-     * @param iterations - the number of times this Module should be boosted
-     * @return a new Boost Module
+     * @param iterations - the number of times this Noise should be boosted
+     * @return a new Boost Noise
      */
     default Noise boost(int iterations) {
         if (iterations < 1) {
@@ -290,11 +290,11 @@ public interface Noise {
     }
     
     /**
-     * Clamps the output of this Module between the provided min and max Module's output at a given coordinate
+     * Clamps the output of this Noise between the provided min and max Noise's output at a given coordinate
      *
-     * @param min - a Module that provides the lower bound of the clamp
-     * @param max - a Module that provides the upper bound of the clamp
-     * @return a new Clamp Module
+     * @param min - a Noise that provides the lower bound of the clamp
+     * @param max - a Noise that provides the upper bound of the clamp
+     * @return a new Clamp Noise
      */
     default Noise clamp(Noise min, Noise max) {
         if (min.minValue() == min.maxValue() && min.minValue() == minValue() && max.minValue() == max.maxValue() && max.maxValue() == maxValue()) {
@@ -304,32 +304,32 @@ public interface Noise {
     }
 
     /**
-     * Clamps the output of this Module between the min and max values
+     * Clamps the output of this Noise between the min and max values
      *
      * @param min - the lower bound of the clamp
      * @param max - the upper bound of the clamp
-     * @return a new Clamp Module
+     * @return a new Clamp Noise
      */
     default Noise clamp(double min, double max) {
         return clamp(Source.constant(min), Source.constant(max));
     }
 
     /**
-     * Applies a Curve function to the output of this Module
+     * Applies a Curve function to the output of this Noise
      *
      * @param func - the Curve function to apply to the output
-     * @return a new Curve Module
+     * @return a new Curve Noise
      */
     default Noise curve(CurveFunction func) {
         return new Curve(this, func);
     }
 
     /**
-     * Applies a custom Curve function to the output of this Module
+     * Applies a custom Curve function to the output of this Noise
      *
      * @param mid - the mid point of the curve
      * @param steepness - the steepness of the curve
-     * @return a new Curve Module
+     * @return a new Curve Noise
      */
     default Noise curve(double mid, double steepness) {
         return new Curve(this, new MidPointCurve((float) mid, (float) steepness));
@@ -344,11 +344,11 @@ public interface Noise {
     }
 
     /**
-     * Applies a custom Curve function to the output of this Module
+     * Applies a custom Curve function to the output of this Noise
      *
      * @param mid - the mid point of the curve
      * @param steepness - the steepness of the curve
-     * @return a new Curve Module
+     * @return a new Curve Noise
      */
     default Noise curve(Noise mid, Noise steepness) {
         return new VariableCurve(this, mid, steepness);
@@ -365,72 +365,72 @@ public interface Noise {
     }
 
     /**
-     * Inverts the output of this Module (0.1 becomes 0.9 for a standard Module who's output is between 0 and 1)
+     * Inverts the output of this Noise (0.1 becomes 0.9 for a standard Noise who's output is between 0 and 1)
      *
-     * @return a new Invert Module
+     * @return a new Invert Noise
      */
     default Noise invert() {
         return new Invert(this);
     }
 
     /**
-     * Maps the output of this Module so that it lies proportionally between the min and max values at a given coordinate
+     * Maps the output of this Noise so that it lies proportionally between the min and max values at a given coordinate
      *
      * @param min - the lower bound
      * @param max - the upper bound
-     * @return a new Map module
+     * @return a new Map Noise
      */
     default Noise map(Noise min, Noise max) {
         return new Map(this, min, max);
     }
 
     /**
-     * Maps the output of this Module so that it lies proportionally between the min and max values at a given coordinate
+     * Maps the output of this Noise so that it lies proportionally between the min and max values at a given coordinate
      *
      * @param min - the lower bound
      * @param max - the upper bound
-     * @return a new Map module
+     * @return a new Map Noise
      */
     default Noise map(double min, double max) {
         return map(Source.constant(min), Source.constant(max));
     }
 
     /**
-     * Returns the highest value out of this and the other Module's outputs
+     * Returns the highest value out of this and the other Noise's outputs
      *
-     * @param other - the other Module to use
-     * @return a new Max Module
+     * @param other - the other Noise to use
+     * @return a new Max Noise
      */
     default Noise max(Noise other) {
         return new Max(ImmutableList.of(this, other));
     }
 
     /**
-     * Returns the lowest value out of this and the other Module's outputs
+     * Returns the lowest value out of this and the other Noise's outputs
      *
-     * @param other - the other Module to use
-     * @return a new Min Module
+     * @param other - the other Noise to use
+     * @return a new Min Noise
      */
     default Noise min(Noise other) {
         return new Min(ImmutableList.of(this, other));
     }
 
     /**
-     * Modulates the coordinates before querying this Module for an output
+     * Modulates the coordinates before querying this Noise for an output
      *
-     * @param direction - a Module that controls the direction of the modulation
-     * @param strength - a Module that controls the strength of deviation in the given direction
-     * @return a new Modulate Module
+     * @param direction - a Noise that controls the direction of the modulation
+     * @param strength - a Noise that controls the strength of deviation in the given direction
+     * @return a new Modulate Noise
      */
     default Noise mod(Noise direction, Noise strength) {
         return new Modulate(this, direction, strength);
     }
 
     /**
-     * Multiplies the outputs of this and the other Module
+     * Multiplies the outputs of this and the other Noise
      *
-     * @param other - the other Module to multiply
-     * @return a new Multiply Module
+     * @param other - the other Noise to multiply
+     * @return a new Multiply Noise
      */
     default Noise mul(Noise other) {
         if (other.minValue() == 1F && other.maxValue() == 1F) {
@@ -555,27 +555,27 @@ public interface Noise {
         return new AdvancedTerrace(this, modulation, mask, slope, (float) blendMin, (float) blendMax, steps, octaves);
     }
 
-    default Noise warp(Domain domain) {
+    default Noise warp(final Domain domain) {
         return new Warp(this, domain);
     }
-
-    default Noise warp(Noise warpX, Noise warpZ, double power) {
-        return warp(warpX, warpZ, Source.constant(power));
+    
+    default Noise warp(final Noise warpX, final Noise warpZ, final double power) {
+        return this.warp(warpX, warpZ, Source.constant(power));
     }
-
-    default Noise warp(Noise warpX, Noise warpZ, Noise power) {
-        return warp(Domain.warp(warpX, warpZ, power));
+    
+    default Noise warp(final Noise warpX, final Noise warpZ, final Noise power) {
+        return this.warp(Domain.warp(warpX, warpZ, power));
     }
-
-    default Noise warp(int scale, int octaves, double power) {
-        return warp(Source.PERLIN, scale, octaves, power);
+    
+    default Noise warp(final int seed, final int scale, final int octaves, final double power) {
+        return this.warp(Source.PERLIN, seed, scale, octaves, power);
     }
-
-    default Noise warp(Source source, int scale, int octaves, double power) {
-        Noise x = Source.build(scale, octaves).build(source);
-        Noise y = Source.build(scale, octaves).build(source).shift(1);
-        Noise p = Source.constant(power);
-        return warp(x, y, p);
+    
+    default Noise warp(final Source source, final int seed, final int scale, final int octaves, final double power) {
+        final Noise x = Source.build(seed, scale, octaves).build(source);
+        final Noise y = Source.build(seed + 1, scale, octaves).build(source);
+        final Noise p = Source.constant(power);
+        return this.warp(x, y, p);
     }
     
     default Noise shift(int offset) {

@@ -30,6 +30,14 @@ public class Slider extends AbstractSliderButton {
     	return this.value;
     }
     
+	public double getMin() {
+		return this.min;
+	}
+
+	public double getMax() {
+		return this.max;
+	}
+    
     public double getSliderValue(float value) {
     	return (Mth.clamp(value, this.min, this.max) - this.min) / (this.max - this.min);
     }
@@ -39,7 +47,7 @@ public class Slider extends AbstractSliderButton {
     }
     
     public double lerpValue(double value) {
-    	return Mth.lerp(Mth.clamp(value, 0.0, 1.0F), this.min, this.max);
+    	return Mth.lerp(value, this.min, this.max);
     }
     
     public float scaleValue(float value) {

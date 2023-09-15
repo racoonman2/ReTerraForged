@@ -38,6 +38,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
 
 @Deprecated
 public class Builder {
+	public static final int DEFAULT_SHIFT = 0;
     public static final int DEFAULT_OCTAVES = 1;
     public static final float DEFAULT_GAIN = 0.5F;
     public static final float DEFAULT_RIDGE_GAIN = 0.975F;
@@ -49,6 +50,7 @@ public class Builder {
     public static final DistanceFunction DEFAULT_DIST_FUNC = DistanceFunction.EUCLIDEAN;
     public static final Interpolation DEFAULT_INTERPOLATION = Interpolation.CURVE3;
 
+    private int shift = DEFAULT_SHIFT;
     private int octaves = DEFAULT_OCTAVES;
     private float gain = Float.MAX_VALUE;
     private float lacunarity = DEFAULT_LACUNARITY;
@@ -60,6 +62,10 @@ public class Builder {
     private DistanceFunction distFunc = DEFAULT_DIST_FUNC;
     private Interpolation interpolation = DEFAULT_INTERPOLATION;
 
+    public int getShift() {
+    	return shift;
+    }
+    
     public int getOctaves() {
         return octaves;
     }
@@ -101,6 +107,11 @@ public class Builder {
 
     public Noise getSource() {
         return source;
+    }
+    
+    public Builder shift(int shift) {
+    	this.shift = shift;
+    	return this;
     }
 
     public Builder octaves(int octaves) {
@@ -158,56 +169,56 @@ public class Builder {
         return this;
     }
 
-    public NoiseSource perlin() {
-        return new Perlin(this.frequency, this.lacunarity, this.interpolation, this.octaves, this.getGain());
+    public Noise perlin() {
+        return new Perlin(this.frequency, this.lacunarity, this.interpolation, this.octaves, this.getGain()).shift(this.shift);
     }
     
-    public NoiseSource perlin2() {
-        return new Perlin2(this.frequency, this.lacunarity, this.interpolation, this.octaves, this.getGain());
+    public Noise perlin2() {
+        return new Perlin2(this.frequency, this.lacunarity, this.interpolation, this.octaves, this.getGain()).shift(this.shift);
     }
 
-    public NoiseSource simplex() {
-        return new Simplex(this.frequency, this.lacunarity, this.octaves, this.getGain());
+    public Noise simplex() {
+        return new Simplex(this.frequency, this.lacunarity, this.octaves, this.getGain()).shift(this.shift);
     }
 
-    public NoiseSource simplex2() {
-        return new Simplex2(this.frequency, this.lacunarity, this.octaves, this.getGain());
+    public Noise simplex2() {
+        return new Simplex2(this.frequency, this.lacunarity, this.octaves, this.getGain()).shift(this.shift);
     }
 
-    public NoiseSource ridge() {
-        return new Ridge(this.frequency, this.interpolation, this.lacunarity, this.octaves, this.getGain());
+    public Noise ridge() {
+        return new Ridge(this.frequency, this.interpolation, this.lacunarity, this.octaves, this.getGain()).shift(this.shift);
     }
 
-    public NoiseSource simplexRidge() {
-        return new SimplexRidge(this.frequency, this.lacunarity, this.octaves, this.getGain());
+    public Noise simplexRidge() {
+        return new SimplexRidge(this.frequency, this.lacunarity, this.octaves, this.getGain()).shift(this.shift);
     }
 
-    public NoiseSource billow() {
-        return new Billow(this.frequency, this.interpolation, this.lacunarity, this.octaves, this.getGain());
+    public Noise billow() {
+        return new Billow(this.frequency, this.interpolation, this.lacunarity, this.octaves, this.getGain()).shift(this.shift);
     }
 
-    public NoiseSource cubic() {
-        return new Cubic(this.frequency, this.lacunarity, this.octaves, this.getGain());
+    public Noise cubic() {
+        return new Cubic(this.frequency, this.lacunarity, this.octaves, this.getGain()).shift(this.shift);
     }
 
-    public NoiseSource cell() {
-        return new Cell(this.frequency, this.source, this.cellFunc, this.distFunc, this.distance);
+    public Noise cell() {
+        return new Cell(this.frequency, this.source, this.cellFunc, this.distFunc, this.distance).shift(this.shift);
     }
 
-    public NoiseSource cellEdge() {
-        return new CellEdge(this.frequency, this.edgeFunc, this.distFunc, this.distance);
+    public Noise cellEdge() {
+        return new CellEdge(this.frequency, this.edgeFunc, this.distFunc, this.distance).shift(this.shift);
     }
 
-    public NoiseSource sin() {
-        return new Sin(this.frequency, this.source);
+    public Noise sin() {
+        return new Sin(this.frequency, this.source).shift(this.shift);
     }
 
     public Noise constant() {
-        return new Constant(this.frequency);
+        return new Constant(this.frequency).shift(this.shift);
     }
 
-    public Rand rand() {
-        return new Rand(this.frequency);
+    public Noise rand() {
+        return new Rand(this.frequency).shift(this.shift);
     }
 
     public Noise build(Source source) {

@@ -16,6 +16,11 @@ import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.OreVeinifier;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.common.ReTerraForged;
+import raccoonman.reterraforged.common.level.levelgen.density.FlatCache;
+import raccoonman.reterraforged.common.level.levelgen.density.NoiseWrapper;
+import raccoonman.reterraforged.common.level.levelgen.density.YGradient;
+import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 
 public class RTFNoiseRouterData {
     private static final DensityFunction BLENDING_FACTOR = DensityFunctions.constant(10.0);
@@ -165,7 +170,7 @@ public class RTFNoiseRouterData {
         return DensityFunctions.mul(DensityFunctions.interpolated(blend), DensityFunctions.constant(0.64)).squeeze();
     }
 
-    protected static NoiseRouter overworld(HolderGetter<DensityFunction> functions, HolderGetter<NormalNoise.NoiseParameters> noiseParams) {
+    protected static NoiseRouter overworld(HolderGetter<DensityFunction> functions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, HolderGetter<Noise> noise) {
         DensityFunction aquiferBarrier = DensityFunctions.noise(noiseParams.getOrThrow(Noises.AQUIFER_BARRIER), 0.5);
         DensityFunction aquiferFluidLevelFloodedness = DensityFunctions.noise(noiseParams.getOrThrow(Noises.AQUIFER_FLUID_LEVEL_FLOODEDNESS), 0.67);
         DensityFunction aquiferFluidLevelSpread = DensityFunctions.noise(noiseParams.getOrThrow(Noises.AQUIFER_FLUID_LEVEL_SPREAD), 0.7142857142857143);
@@ -189,7 +194,9 @@ public class RTFNoiseRouterData {
         DensityFunction oreVeinB = yLimitedInterpolatable(y, DensityFunctions.noise(noiseParams.getOrThrow(Noises.ORE_VEIN_B), 4.0, 4.0), veinMin, veinMax, 0).abs();
         DensityFunction oreVeinSelector = DensityFunctions.add(DensityFunctions.constant(-0.08f), DensityFunctions.max(oreVeinA, oreVeinB));
         DensityFunction oreGap = DensityFunctions.noise(noiseParams.getOrThrow(Noises.ORE_GAP));
-        return new NoiseRouter(aquiferBarrier, aquiferFluidLevelFloodedness, aquiferFluidLevelSpread, aquiferLava, temperature, vegetation, getFunction(functions, CONTINENTS), getFunction(functions, EROSION), depth, getFunction(functions, RIDGES), slideOverworld(DensityFunctions.add(factorDepthGradient, DensityFunctions.constant(-0.703125)).clamp(-64.0, 64.0)), slopedCaveSelectorWithNoodle, oreVeinness, oreVeinSelector, oreGap);
+        DensityFunction finalDensity = new YGradient(new FlatCache.Marker(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(RTFNoiseData.ROOT)))), DensityFunctions.constant(256.0D));
+        
+        return new NoiseRouter(aquiferBarrier, aquiferFluidLevelFloodedness, aquiferFluidLevelSpread, aquiferLava, temperature, vegetation, getFunction(functions, CONTINENTS), getFunction(functions, EROSION), depth, getFunction(functions, RIDGES), finalDensity, finalDensity, oreVeinness, oreVeinSelector, oreGap);
     }
 
     private static DensityFunction slideOverworld(DensityFunction density) {

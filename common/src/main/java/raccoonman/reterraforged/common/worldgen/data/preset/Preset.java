@@ -7,8 +7,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
+import raccoonman.reterraforged.common.worldgen.data.MCNoiseGeneratorSettings;
 import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData;
+import raccoonman.reterraforged.common.worldgen.data.RTFNoiseRouterData;
 
 public record Preset(WorldSettings world, ClimateSettings climate, TerrainSettings terrain, RiverSettings rivers, FilterSettings filters, StructureSettings structures, MiscellaneousSettings miscellaneous) {
 	public static final Codec<Preset> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -32,7 +35,8 @@ public record Preset(WorldSettings world, ClimateSettings climate, TerrainSettin
 	public HolderLookup.Provider buildPatch(RegistryAccess.Frozen registries) {
 		RegistrySetBuilder builder = new RegistrySetBuilder();
 		builder.add(RTFRegistries.NOISE, (ctx) -> RTFNoiseData.bootstrap(ctx, this));
-//		builder.add(Registries.NOISE_SETTINGS, (ctx) -> MCNoiseGeneratorSettings.bootstrap(ctx, this));
-		return  builder.buildPatch(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), registries);
+		builder.add(Registries.DENSITY_FUNCTION, (ctx) -> RTFNoiseRouterData.bootstrap(ctx));
+		builder.add(Registries.NOISE_SETTINGS, (ctx) -> MCNoiseGeneratorSettings.bootstrap(ctx, this));
+		return builder.buildPatch(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), registries);
 	}
 }

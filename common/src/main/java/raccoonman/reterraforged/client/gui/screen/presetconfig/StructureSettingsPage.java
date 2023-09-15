@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.screens.worldselection.WorldCreationContext;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
@@ -40,10 +41,12 @@ public class StructureSettingsPage extends PresetEditorPage {
 		
 		Preset preset = this.preset.getPreset();
 		StructureSettings structures = preset.structures();
-		RegistryAccess.Frozen registries = this.screen.getRegistryAccess();
+		
+		WorldCreationContext settings = this.screen.getSettings();
+		RegistryAccess.Frozen registries = settings.worldgenLoadContext();
 		
 		registries.lookupOrThrow(Registries.STRUCTURE_SET).listElements().filter((holder) -> {
-			return isOverworldStructureSet(this.screen.getDimensions(), holder);
+			return isOverworldStructureSet(settings.selectedDimensions(), holder);
 		}).forEach((holder) -> {
 			StructureSet set = holder.value();
 			if(set.placement() instanceof RandomSpreadStructurePlacement placement) {

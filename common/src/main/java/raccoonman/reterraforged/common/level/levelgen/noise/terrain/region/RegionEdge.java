@@ -8,14 +8,17 @@ import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.noise.Vec2f;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.EdgeFunction;
+import raccoonman.reterraforged.common.level.levelgen.noise.domain.Domain;
 
-public record RegionEdge(float edgeMin, float edgeMax, EdgeFunction edge, DistanceFunction distance, float jitter) implements Noise {
+public record RegionEdge(float edgeMin, float edgeMax, EdgeFunction edge, DistanceFunction distance, float jitter, Domain warp, float frequency) implements Noise {
 	public static final Codec<RegionEdge> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.fieldOf("edge_min").forGetter(RegionEdge::edgeMin),
 		Codec.FLOAT.fieldOf("edge_max").forGetter(RegionEdge::edgeMax),
 		EdgeFunction.CODEC.fieldOf("edge").forGetter(RegionEdge::edge),
 		DistanceFunction.CODEC.fieldOf("distance").forGetter(RegionEdge::distance),
-		Codec.FLOAT.fieldOf("jitter").forGetter(RegionEdge::jitter)
+		Codec.FLOAT.fieldOf("jitter").forGetter(RegionEdge::jitter),
+		Domain.CODEC.fieldOf("warp").forGetter(RegionEdge::warp),
+		Codec.FLOAT.fieldOf("frequency").forGetter(RegionEdge::frequency)
 	).apply(instance, RegionEdge::new));
 	
 	@Override
@@ -30,8 +33,14 @@ public record RegionEdge(float edgeMin, float edgeMax, EdgeFunction edge, Distan
 
 	@Override
 	public float compute(float x, float y, int seed) {
-        final int xi = NoiseUtil.floor(x);
-        final int yi = NoiseUtil.floor(y);
+        final float ox = this.warp.getOffsetX(x, y, 0);
+        final float oz = this.warp.getOffsetY(x, y, 0);
+        float px = x + ox;
+        float py = y + oz;
+        px *= this.frequency;
+        py *= this.frequency;
+        final int xi = NoiseUtil.floor(px);
+        final int yi = NoiseUtil.floor(py);
         float edgeDistance = Float.MAX_VALUE;
         float edgeDistance2 = Float.MAX_VALUE;
         for (int dy = -1; dy <= 1; ++dy) {
@@ -41,7 +50,7 @@ public record RegionEdge(float edgeMin, float edgeMax, EdgeFunction edge, Distan
                 final Vec2f vec = NoiseUtil.cell(seed, cx, cy);
                 final float vecX = cx + vec.x() * this.jitter;
                 final float vecY = cy + vec.y() * this.jitter;
-                final float distance = this.distance.apply(vecX - x, vecY - y);
+                final float distance = this.distance.apply(vecX - px, vecY - py);
                 if (distance < edgeDistance) {
                     edgeDistance2 = edgeDistance;
                     edgeDistance = distance;

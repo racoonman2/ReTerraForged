@@ -25,6 +25,7 @@
 
 package raccoonman.reterraforged.common.level.levelgen.noise;
 
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
@@ -36,7 +37,6 @@ import raccoonman.reterraforged.common.level.levelgen.noise.curve.EdgeFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Builder;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Constant;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Line;
-import raccoonman.reterraforged.common.level.levelgen.noise.source.Rand;
 
 //@Deprecated <- this should be deprecated but this has to stay for now because preset settings rely on it
 public enum Source implements StringRepresentable {
@@ -79,80 +79,128 @@ public enum Source implements StringRepresentable {
         return new Builder();
     }
 
-    public static Builder build(int scale, int octaves) {
-        return builder().scale(scale).octaves(octaves);
-    }
-
-	public static Noise perlin(double freq, int octaves) {
-        return Source.builder().frequency(freq).octaves(octaves).perlin();
-    }
-
-    public static Noise perlin(int scale, int octaves) {
-        return Source.builder().scale(scale).octaves(octaves).perlin();
-    }
-
-    public static Noise simplex(int scale, int octaves) {
-        return Source.builder().scale(scale).octaves(octaves).simplex();
-    }
-
-    public static Noise billow(int scale, int octaves) {
-        return Source.builder().scale(scale).octaves(octaves).billow();
-    }
-
-    public static Noise ridge(int scale, int octaves) {
-        return Source.builder().scale(scale).octaves(octaves).ridge();
-    }
-
-    public static Noise simplexRidge(int scale, int octaves) {
-        return Source.builder().scale(scale).octaves(octaves).simplexRidge();
-    }
-
-    public static Noise cubic(int scale, int octaves) {
-        return Source.builder().scale(scale).octaves(octaves).cubic();
-    }
-
-    public static Noise cell(int scale) {
-        return Source.cell(scale, CellFunc.CELL_VALUE);
-    }
-
-    public static Noise cell(int scale, DistanceFunction distFunc) {
-        return Source.builder().scale(scale).distFunc(distFunc).cell();
-    }
-
-    public static Noise cell(int scale, CellFunc cellFunc) {
-        return Source.builder().scale(scale).cellFunc(cellFunc).cell();
-    }
-
-    public static Noise cell(int scale, DistanceFunction distFunc, CellFunc cellFunc) {
-        return Source.builder().scale(scale).distFunc(distFunc).cellFunc(cellFunc).cell();
-    }
-
-    public static Noise cellNoise(int scale, Noise source) {
-        return builder().scale(scale).cellFunc(CellFunc.NOISE_LOOKUP).source(source).cell();
-    }
-
-    public static Noise cellNoise(int scale, DistanceFunction distFunc, Noise source) {
-        return builder().scale(scale)
-                .cellFunc(CellFunc.NOISE_LOOKUP)
-                .distFunc(distFunc)
-                .source(source)
-                .cell();
+    public static Builder build(final int scale, final int octaves) {
+        return build(ThreadLocalRandom.current().nextInt(), scale, octaves);
     }
     
-    public static Noise cellEdge(int scale) {
-        return Source.builder().scale(scale).cellEdge();
+    public static Builder build(final int seed, final int scale, final int octaves) {
+        return builder().shift(seed).scale(scale).octaves(octaves);
     }
-
-    public static Noise cellEdge(int scale, EdgeFunction func) {
-        return Source.builder().scale(scale).edgeFunc(func).cellEdge();
+    
+    public static Noise perlin(final int scale, final int octaves) {
+        return perlin(ThreadLocalRandom.current().nextInt(), scale, octaves);
     }
-
-    public static Noise cellEdge(int scale, DistanceFunction distFunc, EdgeFunction edgeFunc) {
-        return Source.builder().scale(scale).distFunc(distFunc).edgeFunc(edgeFunc).cellEdge();
+    
+    public static Noise perlin(final int seed, final double freq, final int octaves) {
+        return builder().shift(seed).frequency(freq).octaves(octaves).perlin();
     }
-
-    public static Rand rand(int scale) {
-        return Source.build(scale, 0).rand();
+    
+    public static Noise perlin(final int seed, final int scale, final int octaves) {
+        return builder().shift(seed).scale(scale).octaves(octaves).perlin();
+    }
+    
+    public static Noise simplex(final int scale, final int octaves) {
+        return simplex(ThreadLocalRandom.current().nextInt(), scale, octaves);
+    }
+    
+    public static Noise simplex(final int seed, final int scale, final int octaves) {
+        return builder().shift(seed).scale(scale).octaves(octaves).simplex();
+    }
+    
+    public static Noise billow(final int scale, final int octaves) {
+        return billow(ThreadLocalRandom.current().nextInt(), scale, octaves);
+    }
+    
+    public static Noise billow(final int seed, final int scale, final int octaves) {
+        return builder().shift(seed).scale(scale).octaves(octaves).billow();
+    }
+    
+    public static Noise ridge(final int scale, final int octaves) {
+        return ridge(ThreadLocalRandom.current().nextInt(), scale, octaves);
+    }
+    
+    public static Noise ridge(final int seed, final int scale, final int octaves) {
+        return builder().shift(seed).scale(scale).octaves(octaves).ridge();
+    }
+    
+    public static Noise simplexRidge(final int scale, final int octaves) {
+        return ridge(ThreadLocalRandom.current().nextInt(), scale, octaves);
+    }
+    
+    public static Noise simplexRidge(final int seed, final int scale, final int octaves) {
+        return builder().shift(seed).scale(scale).octaves(octaves).simplexRidge();
+    }
+    
+    public static Noise cubic(final int scale, final int octaves) {
+        return cubic(ThreadLocalRandom.current().nextInt(), scale, octaves);
+    }
+    
+    public static Noise cubic(final int seed, final int scale, final int octaves) {
+        return builder().shift(seed).scale(scale).octaves(octaves).cubic();
+    }
+    
+    public static Noise cell(final int scale) {
+        return cell(ThreadLocalRandom.current().nextInt(), scale);
+    }
+    
+    public static Noise cell(final int scale, final CellFunc cellFunc) {
+        return cell(ThreadLocalRandom.current().nextInt(), scale, cellFunc);
+    }
+    
+    public static Noise cell(final int seed, final int scale) {
+        return cell(seed, scale, CellFunc.CELL_VALUE);
+    }
+    
+    public static Noise cell(final int seed, final int scale, final DistanceFunction distFunc) {
+        return builder().shift(seed).scale(scale).distFunc(distFunc).cell();
+    }
+    
+    public static Noise cell(final int seed, final int scale, final CellFunc cellFunc) {
+        return builder().shift(seed).scale(scale).cellFunc(cellFunc).cell();
+    }
+    
+    public static Noise cell(final int seed, final int scale, final DistanceFunction distFunc, final CellFunc cellFunc) {
+        return builder().shift(seed).scale(scale).distFunc(distFunc).cellFunc(cellFunc).cell();
+    }
+    
+    public static Noise cellNoise(final int scale, final Noise source) {
+        return cellNoise(ThreadLocalRandom.current().nextInt(), scale, source);
+    }
+    
+    public static Noise cellNoise(final int seed, final int scale, final Noise source) {
+        return builder().shift(seed).scale(scale).cellFunc(CellFunc.NOISE_LOOKUP).source(source).cell();
+    }
+    
+    public static Noise cellNoise(final int seed, final int scale, final DistanceFunction distFunc, final Noise source) {
+        return builder().shift(seed).scale(scale).cellFunc(CellFunc.NOISE_LOOKUP).distFunc(distFunc).source(source).cell();
+    }
+    
+    public static Noise cellEdge(final int scale) {
+        return cellEdge(ThreadLocalRandom.current().nextInt(), scale);
+    }
+    
+    public static Noise cellEdge(final int scale, final EdgeFunction func) {
+        return cellEdge(ThreadLocalRandom.current().nextInt(), scale, func);
+    }
+    
+    public static Noise cellEdge(final int seed, final int scale) {
+        return builder().shift(seed).scale(scale).cellEdge();
+    }
+    
+    public static Noise cellEdge(final int seed, final int scale, final EdgeFunction func) {
+        return builder().shift(seed).scale(scale).edgeFunc(func).cellEdge();
+    }
+    
+    public static Noise cellEdge(final int seed, final int scale, final DistanceFunction distFunc, final EdgeFunction edgeFunc) {
+        return builder().shift(seed).scale(scale).distFunc(distFunc).edgeFunc(edgeFunc).cellEdge();
+    }
+    
+    public static Noise rand(final int scale) {
+        return rand(ThreadLocalRandom.current().nextInt(), scale);
+    }
+    
+    public static Noise rand(final int seed, final int scale) {
+        return build(seed, scale, 0).rand();
     }
 
     public static Noise sin(int scale, Noise source) {

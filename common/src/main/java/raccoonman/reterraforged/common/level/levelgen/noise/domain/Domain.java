@@ -70,16 +70,12 @@ public interface Domain {
         return new DomainWarp(x, y, distance);
     }
 
-    public static Domain warp(int scale, int octaves, double strength) {
-        return warp(Source.PERLIN, scale, octaves, strength);
+    public static Domain warp(final int seed, final int scale, final int octaves, final double strength) {
+        return warp(Source.PERLIN, seed, scale, octaves, strength);
     }
-
-    public static Domain warp(Source type, int scale, int octaves, double strength) {
-        return warp(
-        	Source.build(scale, octaves).build(type).shift(0),
-        	Source.build(scale, octaves).build(type).shift(1),
-        	Source.constant(strength)
-        );
+    
+    public static Domain warp(final Source type, final int seed, final int scale, final int octaves, final double strength) {
+        return warp(Source.build(seed, scale, octaves).build(type), Source.build(seed + 1, scale, octaves).build(type), Source.constant(strength));
     }
 
     public static Domain direction(Noise direction, Noise distance) {

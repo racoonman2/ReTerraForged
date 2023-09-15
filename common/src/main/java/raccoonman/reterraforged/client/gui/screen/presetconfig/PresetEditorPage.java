@@ -2,25 +2,52 @@ package raccoonman.reterraforged.client.gui.screen.presetconfig;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.worldselection.WorldCreationContext;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import raccoonman.reterraforged.client.gui.screen.page.BisectedPage;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.registries.RTFRegistries;
+import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData;
 
 public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, AbstractWidget, AbstractWidget> {
+	private Preview preview;
 	protected PresetEntry preset;
 	
 	public PresetEditorPage(PresetConfigScreen screen, PresetEntry preset) {
 		super(screen);
 		
 		this.preset = preset;
+	}
+	
+	protected void regenerate() {
+		this.preview.regenerate();
+	}
+	
+	@Override
+	public void init() {
+		super.init();
+		
+		if(this.preview != null) {
+			this.preview.close();
+		}
+		this.preview = new Preview((int) this.screen.getSettings().options().seed());
+		this.preview.regenerate();
+		this.right.addWidget(this.preview);
 	}
 	
 	@Override
@@ -32,6 +59,8 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		this.preview.close();
 	}
 	
 	@Override
@@ -45,8 +74,8 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 		}
 	}
 	
-	//TODO
-	public static class Preview extends Button {
+	//FIXME: this should be private
+	public class Preview extends Button {
 
 	    private static final int FACTOR = 4;
 	    public static final int SIZE = (1 << 4) << FACTOR;
@@ -54,10 +83,8 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 
 	    private final int offsetX;
 	    private final int offsetZ;
-//	    private final ThreadPool threadPool = ThreadPools.createDefault();
 	    private final Random random = new Random(System.currentTimeMillis());
-//	    private final PreviewSettings previewSettings = new PreviewSettings();
-	    private final DynamicTexture texture = new DynamicTexture(new NativeImage(SIZE, SIZE, true));
+	    private final DynamicTexture texture = new DynamicTexture(new NativeImage(SIZE, SIZE, false));
 
 	    private int seed;
 	    private long lastUpdate = 0L;
@@ -86,14 +113,48 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 
 	    public void regenerate() {
 	        this.seed = random.nextInt();
+	        
+	        WorldCreationContext settings = PresetEditorPage.this.screen.getSettings();
+	        HolderLookup.Provider provider = PresetEditorPage.this.preset.getPreset().buildPatch(
+	        	settings.worldgenLoadContext(
+	        ));
+	        HolderGetter<Noise> noiseLookup = provider.lookupOrThrow(RTFRegistries.NOISE);
+	        Noise rootNoise = noiseLookup.getOrThrow(RTFNoiseData.ROOT).value();
+	        
+	        final int cellCount = 16;
+			NativeImage pixels = this.texture.getPixels();
+			int cellWidth = pixels.getWidth() / cellCount;
+			int cellHeight = pixels.getHeight() / cellCount;
+
+			CompletableFuture<?>[] futures = new CompletableFuture[cellCount * cellCount];
+			for(int x = 0; x < cellCount; x++) {
+				for(int y = 0; y < cellCount; y++) {
+					final int cx = x * cellWidth;
+					final int cy = y * cellHeight;
+					futures[x + y * cellCount] = CompletableFuture.runAsync(() -> {
+						for(int lx = 0; lx < cellWidth; lx++) {
+							for(int ly = 0; ly < cellHeight; ly++) {
+								int tx = cx + lx;
+								int ty = cy + ly;
+								int color = (int) (rootNoise.compute(tx * 60, ty * 60, (int) settings.options().seed()) * 255);
+								
+					            pixels.setPixelRGBA(tx, ty, rgba(color, color, color));
+							}
+						}
+					}, Util.backgroundExecutor());
+				}
+			}
+			CompletableFuture.allOf(futures).join();
+	        this.texture.upload();
 //	        this.lastWorldSettings = null;
 //	        this.lastPreviewSettings = null;
 	    }
-
+	    private static int rgba(int r, int g, int b) {
+	        return r + (g << 8) + (b << 16) + (255 << 24);
+	    }
+	    
 	    public void close() {
 	        texture.close();
-//	        threadPool.shutdown();
-//	        CacheManager.get().clear();
 	    }
 
 	    public boolean click(double mx, double my) {
@@ -111,43 +172,21 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	//
 //	        preRender();
 	//
-//	        texture.bind();
+	    	RenderSystem.setShaderTexture(0, this.texture.getId());
 //	        RenderSystem.enableBlend();
-//	        RenderSystem.enableRescaleNormal();
+////	        RenderSystem.enableRescaleNormal();
 //	        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 //	        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-	//
-//	        AbstractGui.blit(matrixStack, x, y, 0, 0, width, height, width, height);
+	
+	        Screen.blit(matrixStack, this.getX(), this.getY(), 0, 0, this.width, this.height, this.width, this.height);
+	        
+	        
 //	        RenderSystem.disableRescaleNormal();
 	//
 //	        updateLegend(mx, my);
 	//
 //	        renderLegend(matrixStack, mx, my, labels, values, x, y + width, 10, 0xFFFFFF);
 	    }
-
-//	    public void update(Settings settings, CompoundNBT prevSettings) {
-//	        long time = System.currentTimeMillis();
-//	        if (time - lastUpdate < 20) {
-//	            return;
-//	        }
-	//
-	//
-//	        // Dumb way of preventing the image repainting when nothing has changed
-//	        CompoundNBT previewSettings = prevSettings.copy();
-//	        CompoundNBT worldSettings = DataUtils.toCompactNBT(settings);
-//	        if (Objects.equals(lastWorldSettings, worldSettings) && Objects.equals(lastPreviewSettings, previewSettings)) {
-//	            return;
-//	        }
-	//
-//	        lastUpdate = time;
-//	        lastWorldSettings = worldSettings;
-//	        lastPreviewSettings = previewSettings;
-	//
-//	        DataUtils.fromNBT(prevSettings, previewSettings);
-//	        settings.world.seed = seed;
-	//
-//	        task = generate(settings, prevSettings);
-//	    }
 
 //	    private int getSize() {
 //	        return width;

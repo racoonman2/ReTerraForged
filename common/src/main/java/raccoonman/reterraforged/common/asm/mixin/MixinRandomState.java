@@ -26,7 +26,7 @@ class MixinRandomState {
 	private NoiseRouter RandomState(NoiseRouter router, DensityFunction.Visitor visitor, NoiseGeneratorSettings settings, HolderGetter<NormalNoise.NoiseParameters> params, final long seed) {
 		return router.mapAll((function) -> {
 			if(function instanceof NoiseWrapper.Marker marker) {
-				return visitor.apply(new NoiseWrapper(marker.noise(), Long.hashCode(seed)));
+				return visitor.apply(new NoiseWrapper(marker.noise(), (int) seed)); // we cast to int here instead of using Long.hashCode() to keep compatibility with 1.16 seeds
 			}
 			return function.mapAll(visitor);
 		});
