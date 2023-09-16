@@ -19,13 +19,14 @@ public record YGradient(DensityFunction y, DensityFunction scale) implements Den
 	public double compute(FunctionContext ctx) {
 		double blockY = ctx.blockY();
 		double noiseY = NoiseUtil.floor(this.y.compute(ctx) * this.scale.compute(ctx));
-		if(blockY > noiseY) {
-			double gradientSize = 5; //5 blocks up
+		if(noiseY > blockY) {
+			double gradientSize = 50; //TODO: make this configurable
 			double amount = Mth.clamp(noiseY - blockY, -gradientSize, gradientSize);
-			
-			return (amount/gradientSize);
+			return amount / gradientSize;
 		} else {
-			return 1.0D;
+			double gradientSize = 15; //TODO: make this configurable
+			double amount = Mth.clamp(noiseY - blockY, -gradientSize, gradientSize);
+			return amount / gradientSize;
 		}
 	}
 
