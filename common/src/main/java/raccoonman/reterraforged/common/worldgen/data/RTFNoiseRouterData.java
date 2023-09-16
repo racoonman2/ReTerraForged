@@ -18,6 +18,7 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.level.levelgen.density.FlatCache;
 import raccoonman.reterraforged.common.level.levelgen.density.NoiseWrapper;
+import raccoonman.reterraforged.common.level.levelgen.density.XZGradient;
 import raccoonman.reterraforged.common.level.levelgen.density.YGradient;
 import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
@@ -40,6 +41,7 @@ public class RTFNoiseRouterData {
     public static final ResourceKey<DensityFunction> JAGGEDNESS = createKey("overworld/jaggedness");
     public static final ResourceKey<DensityFunction> DEPTH = createKey("overworld/depth");
     public static final ResourceKey<DensityFunction> HEIGHT = createKey("overworld/height");
+    public static final ResourceKey<DensityFunction> GRADIENT = createKey("overworld/gradient");
     private static final ResourceKey<DensityFunction> SLOPED_CHEESE = createKey("overworld/sloped_cheese");
     private static final ResourceKey<DensityFunction> SPAGHETTI_ROUGHNESS_FUNCTION = createKey("overworld/caves/spaghetti_roughness_function");
     private static final ResourceKey<DensityFunction> ENTRANCES = createKey("overworld/caves/entrances");
@@ -52,6 +54,7 @@ public class RTFNoiseRouterData {
         return ResourceKey.create(Registries.DENSITY_FUNCTION, ReTerraForged.resolve(string));
     }
 
+    // can we use the height gradient for the ridge noise?
     public static void bootstrap(BootstapContext<DensityFunction> ctx) {
         HolderGetter<NormalNoise.NoiseParameters> noiseParams = ctx.lookup(Registries.NOISE);
         HolderGetter<DensityFunction> functions = ctx.lookup(Registries.DENSITY_FUNCTION);
@@ -76,7 +79,8 @@ public class RTFNoiseRouterData {
         ctx.register(ENTRANCES, entrances(functions, noiseParams));
         ctx.register(NOODLE, noodle(functions, noiseParams));
         ctx.register(PILLARS, pillars(noiseParams));
-        ctx.register(HEIGHT, new FlatCache.Marker(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(RTFNoiseData.ROOT))), 1));
+        ctx.register(HEIGHT, new FlatCache.Marker(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(RTFNoiseData.ROOT))), 2));
+//        ctx.register(GRADIENT, new XZGradient(height, 63.0F / 256.0F, 10.0F, 1));
     }
 
     private static void registerTerrainNoises(BootstapContext<DensityFunction> ctx, HolderGetter<DensityFunction> functions, DensityFunction jaggedness, Holder<DensityFunction> continents, Holder<DensityFunction> erosion, ResourceKey<DensityFunction> offsetKey, ResourceKey<DensityFunction> factorKey, ResourceKey<DensityFunction> jaggednessKey, ResourceKey<DensityFunction> depthKey, ResourceKey<DensityFunction> slopedCheeseKey) {

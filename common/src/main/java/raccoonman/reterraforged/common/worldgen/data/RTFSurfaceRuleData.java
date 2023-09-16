@@ -87,7 +87,9 @@ public class RTFSurfaceRuleData {
         builder.add(bl ? aboveSurface : floor);
         builder.add(SurfaceRules.ifTrue(SurfaceRules.verticalGradient("deepslate", VerticalAnchor.absolute(0), VerticalAnchor.absolute(8)), DEEPSLATE));
         builder.add(new FilterSurfaceRuleSource(ImmutableList.of(
-        	new ErosionFilterSource(densityFunctions.getOrThrow(RTFNoiseRouterData.HEIGHT))
+        	new ErosionFilterSource(
+        		densityFunctions.getOrThrow(RTFNoiseRouterData.HEIGHT)
+        	)
         )));
         return SurfaceRules.sequence(builder.build().toArray(SurfaceRules.RuleSource[]::new));
     }

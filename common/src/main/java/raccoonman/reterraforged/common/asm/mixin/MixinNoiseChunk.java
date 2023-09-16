@@ -11,6 +11,7 @@ import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseChunk;
 import raccoonman.reterraforged.common.level.levelgen.density.FlatCache;
+import raccoonman.reterraforged.common.level.levelgen.density.XZGradient;
 
 @Mixin(NoiseChunk.class)
 class MixinNoiseChunk {
@@ -28,27 +29,11 @@ class MixinNoiseChunk {
 	)
 	private void wrapNew(DensityFunction densityFunction, CallbackInfoReturnable<DensityFunction> callback) {
 		if(densityFunction instanceof FlatCache.Marker function) {
-			FlatCache cache = new FlatCache(new Context(), function.function(), this.cellWidth * this.cellCountXZ, function.padding());
-    		cache.fillCache(QuartPos.toBlock(this.firstNoiseX), QuartPos.toBlock(this.firstNoiseZ));
+			FlatCache cache = new FlatCache(function.function(), this.cellWidth * this.cellCountXZ, function.padding(), QuartPos.toBlock(this.firstNoiseX), QuartPos.toBlock(this.firstNoiseZ));
 			callback.setReturnValue(cache);
 		}
-	}
-	
-	private class Context implements DensityFunction.FunctionContext {
-
-		@Override
-		public int blockX() {
-			return ((NoiseChunk) (Object) MixinNoiseChunk.this).blockX() - QuartPos.toBlock(MixinNoiseChunk.this.firstNoiseX);
-		}
-
-		@Override
-		public int blockY() {
-			return 0;
-		}
-
-		@Override
-		public int blockZ() {
-			return ((NoiseChunk) (Object) MixinNoiseChunk.this).blockZ() - QuartPos.toBlock(MixinNoiseChunk.this.firstNoiseZ);
-		}
+//		if(densityFunction instanceof XZGradient function) {
+//			callback.setReturnValue(function.cache());
+//		}
 	}
 }

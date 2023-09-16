@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.util.KeyDispatchDataCodec;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 
@@ -19,9 +20,12 @@ public record YGradient(DensityFunction y, DensityFunction scale) implements Den
 		double blockY = ctx.blockY();
 		double noiseY = NoiseUtil.floor(this.y.compute(ctx) * this.scale.compute(ctx));
 		if(blockY > noiseY) {
-			return 0.0F;
+			double gradientSize = 5; //5 blocks up
+			double amount = Mth.clamp(noiseY - blockY, -gradientSize, gradientSize);
+			
+			return (amount/gradientSize);
 		} else {
-			return 1.0F;
+			return 1.0D;
 		}
 	}
 

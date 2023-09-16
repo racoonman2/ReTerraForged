@@ -30,6 +30,7 @@ import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
 import raccoonman.reterraforged.common.ReTerraForged;
 
+//FIXME pressing the create world screen before the pack is copied will fuck the game up
 public class PresetConfigScreen extends LinkedPageScreen {
 	private CreateWorldScreen parent;
 	

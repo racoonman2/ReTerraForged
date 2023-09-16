@@ -36,8 +36,11 @@ class MixinSurfaceSystem {
 	)
     public void buildSurface(RandomState randomState, BiomeManager biomeManager, Registry<Biome> registry, boolean bl, WorldGenerationContext worldGenerationContext, ChunkAccess chunkAccess, NoiseChunk noiseChunk, SurfaceRules.RuleSource ruleSource, CallbackInfo callback, BlockPos.MutableBlockPos mutableBlockPos, ChunkPos chunkPos, int i, int j, BlockColumn column, SurfaceRules.Context context, SurfaceRules.SurfaceRule surfaceRule, BlockPos.MutableBlockPos mutableBlockPos2, int k, int l, int m, int n, int o, Holder<Biome> holder) {
     	if((Object) context instanceof ContextExtension extension) {
+    		ChunkPos pos = chunkAccess.getPos();
+    		int worldX = pos.getBlockX(k);
+    		int worldZ = pos.getBlockZ(l);
     		for(FilterSurfaceRuleSource.Filter filter : extension.filters()) {
-    			filter.apply(k, l, m, n, column);
+    			filter.apply(worldX, worldZ, k, l, column);
     		}
     	} else {
     		throw new IllegalStateException();
