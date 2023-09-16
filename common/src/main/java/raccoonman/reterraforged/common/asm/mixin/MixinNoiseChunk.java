@@ -28,7 +28,7 @@ class MixinNoiseChunk {
 	)
 	private void wrapNew(DensityFunction densityFunction, CallbackInfoReturnable<DensityFunction> callback) {
 		if(densityFunction instanceof FlatCache.Marker function) {
-			FlatCache cache = new FlatCache(new Context(), function.function(), this.cellWidth * this.cellCountXZ + 1);
+			FlatCache cache = new FlatCache(new Context(), function.function(), this.cellWidth * this.cellCountXZ, function.padding());
     		cache.fillCache(QuartPos.toBlock(this.firstNoiseX), QuartPos.toBlock(this.firstNoiseZ));
 			callback.setReturnValue(cache);
 		}

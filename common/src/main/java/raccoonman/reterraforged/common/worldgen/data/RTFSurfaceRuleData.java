@@ -2,12 +2,16 @@ package raccoonman.reterraforged.common.worldgen.data;
 
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
+import raccoonman.reterraforged.common.level.levelgen.surface.filter.ErosionFilterSource;
+import raccoonman.reterraforged.common.level.levelgen.surface.filter.FilterSurfaceRuleSource;
 
 public class RTFSurfaceRuleData {
     private static final SurfaceRules.RuleSource AIR = RTFSurfaceRuleData.makeStateRule(Blocks.AIR);
@@ -39,11 +43,12 @@ public class RTFSurfaceRuleData {
         return SurfaceRules.state(block.defaultBlockState());
     }
 
-    public static SurfaceRules.RuleSource overworld() {
-        return RTFSurfaceRuleData.overworldLike(true, false, true);
+    public static SurfaceRules.RuleSource overworld(HolderGetter<DensityFunction> densityFunction) {
+        return RTFSurfaceRuleData.overworldLike(true, false, true, densityFunction);
     }
 
-    public static SurfaceRules.RuleSource overworldLike(boolean bl, boolean bl2, boolean bl3) {
+    //TODO we need to apply the preset config here
+    public static SurfaceRules.RuleSource overworldLike(boolean bl, boolean bl2, boolean bl3, HolderGetter<DensityFunction> densityFunctions) {
         SurfaceRules.ConditionSource conditionSource = SurfaceRules.yBlockCheck(VerticalAnchor.absolute(97), 2);
         SurfaceRules.ConditionSource conditionSource2 = SurfaceRules.yBlockCheck(VerticalAnchor.absolute(256), 0);
         SurfaceRules.ConditionSource conditionSource3 = SurfaceRules.yStartCheck(VerticalAnchor.absolute(63), -1);
@@ -80,15 +85,11 @@ public class RTFSurfaceRuleData {
         }
         SurfaceRules.RuleSource aboveSurface = SurfaceRules.ifTrue(SurfaceRules.abovePreliminarySurface(), floor);
         builder.add(bl ? aboveSurface : floor);
-        
-//        int scale = 600;
-//        builder.add(
-//        	SurfaceRules.ifTrue(SurfaceRules.not(SurfaceRules.abovePreliminarySurface()), 
-//        		new StrataSurfaceRule.Source(Source.cell(scale)
-//        	.warp(scale / 4, 2, scale / 2D)
-//        	.warp(15, 2, 30), n)));
         builder.add(SurfaceRules.ifTrue(SurfaceRules.verticalGradient("deepslate", VerticalAnchor.absolute(0), VerticalAnchor.absolute(8)), DEEPSLATE));
-        return SurfaceRules.sequence((SurfaceRules.RuleSource[])builder.build().toArray(SurfaceRules.RuleSource[]::new));
+        builder.add(new FilterSurfaceRuleSource(ImmutableList.of(
+        	new ErosionFilterSource(densityFunctions.getOrThrow(RTFNoiseRouterData.HEIGHT))
+        )));
+        return SurfaceRules.sequence(builder.build().toArray(SurfaceRules.RuleSource[]::new));
     }
 
     private static SurfaceRules.ConditionSource surfaceNoiseAbove(double d) {

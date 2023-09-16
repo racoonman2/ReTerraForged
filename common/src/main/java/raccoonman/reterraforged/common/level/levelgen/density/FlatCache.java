@@ -5,39 +5,65 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
+import raccoonman.reterraforged.common.ReTerraForged;
 
 public class FlatCache implements DensityFunction.SimpleFunction {
-	private final FunctionContext cellPos;
-    private final DensityFunction filler;
-    private final int width;
-    private final double[] values;
+	private FunctionContext cellPos;
+    private DensityFunction filler;
+    private int width;
+    private int padding;
+    private double[] values;
 
-    public FlatCache(FunctionContext cellPos, DensityFunction filler, int width) {
+    public FlatCache(FunctionContext cellPos, DensityFunction filler, int width, int padding) {
     	this.cellPos = cellPos;
     	this.filler = filler;
-    	this.width = width;
-    	this.values = new double[width * width];
+    	this.width = width + padding * 2;
+    	this.padding = padding;
+    	this.values = new double[this.width * this.width];
     }
     
     public void fillCache(int offsetX, int offsetZ) {
     	MutableContext ctx = new MutableContext();
-		ctx.y = 0;
-		for(int x = 0; x < this.width; x++) {
-			for(int z = 0; z < this.width; z++) {
+		for(int x = -this.padding; x < this.width - this.padding; x++) {
+			for(int z = -this.padding; z < this.width - this.padding; z++) {
 				ctx.x = offsetX + x;
 				ctx.z = offsetZ + z;
-    			this.values[x * this.width + z] = this.filler.compute(ctx);
+    			this.values[this.indexOf(x, z)] = this.filler.compute(ctx);
     		}
 		}
+    }
+    
+    private int indexOf(int x, int z) {
+    	return (x + this.padding) * this.width + (z + this.padding);
     }
 
     @Override
     public double compute(DensityFunction.FunctionContext functionContext) {
-        int index = this.cellPos.blockX() * this.width + this.cellPos.blockZ();
+    	int cellX = this.cellPos.blockX();
+    	int cellZ = this.cellPos.blockZ();
+    	
+        int index = this.indexOf(cellX, cellZ);
         if (index >= 0 && index < this.values.length) {
             return this.values[index];
         }
-        return this.filler.compute(functionContext);
+//        ReTerraForged.LOGGER.warn("cache miss! cache width: {}, padding: {}, cellX: {}, cellZ: {}", this.width, this.padding, cellX, cellZ);
+        return this.filler.compute(new FunctionContext() {
+			
+			@Override
+			public int blockZ() {
+				return functionContext.blockX() + 1;
+			}
+			
+			@Override
+			public int blockY() {
+				return 0;
+			}
+			
+			@Override
+			public int blockX() {
+				return functionContext.blockZ() + 1;
+			}
+		});
     }
 
     @Override
@@ -81,9 +107,10 @@ public class FlatCache implements DensityFunction.SimpleFunction {
 		}
 	}
 	
-	public record Marker(DensityFunction function) implements DensityFunction.SimpleFunction {
+	public record Marker(DensityFunction function, int padding) implements DensityFunction.SimpleFunction {
 		public static final Codec<FlatCache.Marker> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			DensityFunction.HOLDER_HELPER_CODEC.fieldOf("function").forGetter(FlatCache.Marker::function)
+			DensityFunction.HOLDER_HELPER_CODEC.fieldOf("function").forGetter(FlatCache.Marker::function),
+			Codec.INT.fieldOf("padding").forGetter(FlatCache.Marker::padding)
 		).apply(instance, FlatCache.Marker::new));
 		
 		@Override
@@ -103,7 +130,7 @@ public class FlatCache implements DensityFunction.SimpleFunction {
 
         @Override
         public DensityFunction mapAll(Visitor visitor) {
-            return visitor.apply(new Marker(this.function.mapAll(visitor)));
+            return visitor.apply(new Marker(this.function.mapAll(visitor), this.padding));
         }
 
 		@Override

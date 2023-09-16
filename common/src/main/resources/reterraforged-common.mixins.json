@@ -6,7 +6,9 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
   	"MixinNoiseChunk",
-  	"MixinRandomState"
+  	"MixinRandomState",
+  	"MixinContext",
+  	"MixinSurfaceSystem"
   ],
   "client": [
   	"ScreenInvoker"

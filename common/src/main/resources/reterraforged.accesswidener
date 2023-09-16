@@ -32,3 +32,10 @@ accessible method net/minecraft/client/gui/screens/worldselection/CreateWorldScr
 accessible field net/minecraft/data/DataGenerator vanillaPackOutput Lnet/minecraft/data/PackOutput;
 accessible method net/minecraft/data/DataGenerator$PackGenerator <init> (Lnet/minecraft/data/DataGenerator;ZLjava/lang/String;Lnet/minecraft/data/PackOutput;)V
 accessible method net/minecraft/world/level/levelgen/structure/placement/StructurePlacement salt ()I
+accessible method net/minecraft/world/level/levelgen/NoiseChunk wrap (Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;
+accessible field net/minecraft/world/level/levelgen/NoiseChunk cellStartBlockX I
+accessible field net/minecraft/world/level/levelgen/NoiseChunk cellStartBlockY I
+accessible field net/minecraft/world/level/levelgen/NoiseChunk cellStartBlockZ I
+accessible field net/minecraft/world/level/levelgen/NoiseChunk inCellX I
+accessible field net/minecraft/world/level/levelgen/NoiseChunk inCellY I
+accessible field net/minecraft/world/level/levelgen/NoiseChunk inCellZ I
