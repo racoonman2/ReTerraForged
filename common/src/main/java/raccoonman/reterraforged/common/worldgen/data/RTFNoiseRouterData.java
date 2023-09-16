@@ -179,6 +179,7 @@ public class RTFNoiseRouterData {
         return DensityFunctions.mul(DensityFunctions.interpolated(blend), DensityFunctions.constant(0.64)).squeeze();
     }
 
+    //FIXME all the vanilla caves under y 63 are aquifers and it slows shit down a bunch
     protected static NoiseRouter overworld(HolderGetter<DensityFunction> functions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, HolderGetter<Noise> noise) {
         DensityFunction aquiferBarrier = DensityFunctions.noise(noiseParams.getOrThrow(Noises.AQUIFER_BARRIER), 0.5);
         DensityFunction aquiferFluidLevelFloodedness = DensityFunctions.noise(noiseParams.getOrThrow(Noises.AQUIFER_FLUID_LEVEL_FLOODEDNESS), 0.67);
@@ -203,7 +204,7 @@ public class RTFNoiseRouterData {
         DensityFunction oreVeinB = yLimitedInterpolatable(y, DensityFunctions.noise(noiseParams.getOrThrow(Noises.ORE_VEIN_B), 4.0, 4.0), veinMin, veinMax, 0).abs();
         DensityFunction oreVeinSelector = DensityFunctions.add(DensityFunctions.constant(-0.08f), DensityFunctions.max(oreVeinA, oreVeinB));
         DensityFunction oreGap = DensityFunctions.noise(noiseParams.getOrThrow(Noises.ORE_GAP));
-        DensityFunction initialDensity = new YGradient(DensityFunctions.constant(53.0F / 256.0F), DensityFunctions.constant(256.0D));
+        DensityFunction initialDensity = new YGradient(DensityFunctions.constant(83.0F / 256.0F), DensityFunctions.constant(256.0D));
         DensityFunction finalDensity = new YGradient(getFunction(functions, HEIGHT), DensityFunctions.constant(256.0D));
         return new NoiseRouter(aquiferBarrier, aquiferFluidLevelFloodedness, aquiferFluidLevelSpread, aquiferLava, temperature, vegetation, getFunction(functions, CONTINENTS), getFunction(functions, EROSION), depth, getFunction(functions, RIDGES), initialDensity, finalDensity, oreVeinness, oreVeinSelector, oreGap);
     }

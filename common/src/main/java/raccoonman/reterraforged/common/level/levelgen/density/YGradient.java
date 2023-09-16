@@ -19,15 +19,8 @@ public record YGradient(DensityFunction y, DensityFunction scale) implements Den
 	public double compute(FunctionContext ctx) {
 		double blockY = ctx.blockY();
 		double noiseY = NoiseUtil.floor(this.y.compute(ctx) * this.scale.compute(ctx));
-		if(noiseY > blockY) {
-			double gradientSize = 50; //TODO: make this configurable
-			double amount = Mth.clamp(noiseY - blockY, -gradientSize, gradientSize);
-			return amount / gradientSize;
-		} else {
-			double gradientSize = 15; //TODO: make this configurable
-			double amount = Mth.clamp(noiseY - blockY, -gradientSize, gradientSize);
-			return amount / gradientSize;
-		}
+		double delta = noiseY - blockY;
+		return lerp(delta, noiseY > blockY ? 50 : 15); // TODO: don't hardcode these values
 	}
 
 	@Override
@@ -48,5 +41,9 @@ public record YGradient(DensityFunction y, DensityFunction scale) implements Den
 	@Override
 	public KeyDispatchDataCodec<YGradient> codec() {
 		return new KeyDispatchDataCodec<>(CODEC);
+	}
+	
+	private static double lerp(double value, double gradientSize) {
+		return Mth.clamp(value, -gradientSize, gradientSize) / gradientSize;
 	}
 }
