@@ -3,6 +3,7 @@ package raccoonman.reterraforged.common.level.levelgen.surface.filter;
 import java.util.List;
 import java.util.function.Function;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -20,6 +21,10 @@ public record FilterSurfaceRuleSource(List<FilterSource> filters) implements Sur
 	).apply(instance, FilterSurfaceRuleSource::new));
 	
 	private static final SurfaceRule RULE = (x, y, z) -> null;
+	
+	public FilterSurfaceRuleSource {
+		filters = ImmutableList.copyOf(filters);
+	}
 	
 	@Override
 	public SurfaceRule apply(Context ctx) {

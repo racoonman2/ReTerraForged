@@ -11,7 +11,6 @@ import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseChunk;
 import raccoonman.reterraforged.common.level.levelgen.density.FlatCache;
-import raccoonman.reterraforged.common.level.levelgen.density.XZGradient;
 
 @Mixin(NoiseChunk.class)
 class MixinNoiseChunk {
@@ -29,7 +28,8 @@ class MixinNoiseChunk {
 	)
 	private void wrapNew(DensityFunction densityFunction, CallbackInfoReturnable<DensityFunction> callback) {
 		if(densityFunction instanceof FlatCache.Marker function) {
-			FlatCache cache = new FlatCache(function.function(), this.cellWidth * this.cellCountXZ, function.padding(), QuartPos.toBlock(this.firstNoiseX), QuartPos.toBlock(this.firstNoiseZ));
+			//TODO don't add the padding to the width here, pass it through the padding parameter when we add that
+			FlatCache cache = new FlatCache(function.function(), this.cellWidth * this.cellCountXZ + 1, function.padding(), QuartPos.toBlock(this.firstNoiseX), QuartPos.toBlock(this.firstNoiseZ));
 			callback.setReturnValue(cache);
 		}
 //		if(densityFunction instanceof XZGradient function) {

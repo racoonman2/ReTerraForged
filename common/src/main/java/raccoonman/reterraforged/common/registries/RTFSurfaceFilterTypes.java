@@ -4,12 +4,14 @@ import com.mojang.serialization.Codec;
 
 import raccoonman.reterraforged.common.level.levelgen.surface.filter.ErosionFilterSource;
 import raccoonman.reterraforged.common.level.levelgen.surface.filter.FilterSurfaceRuleSource;
+import raccoonman.reterraforged.common.level.levelgen.surface.filter.StrataFilterSource;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 public final class RTFSurfaceFilterTypes {
 
 	public static void bootstrap() {
 		register("erosion", ErosionFilterSource.CODEC);
+		register("strata", StrataFilterSource.CODEC);
 	}
 	
 	private static void register(String name, Codec<? extends FilterSurfaceRuleSource.FilterSource> value) {

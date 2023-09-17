@@ -20,7 +20,7 @@ public record YGradient(DensityFunction y, DensityFunction scale) implements Den
 		double blockY = ctx.blockY();
 		double noiseY = NoiseUtil.floor(this.y.compute(ctx) * this.scale.compute(ctx));
 		double delta = noiseY - blockY;
-		return lerp(delta, noiseY > blockY ? 50 : 15); // TODO: don't hardcode these values
+		return lerp(delta, noiseY > blockY ? 50 : 50); // TODO: don't hardcode these values
 	}
 
 	@Override

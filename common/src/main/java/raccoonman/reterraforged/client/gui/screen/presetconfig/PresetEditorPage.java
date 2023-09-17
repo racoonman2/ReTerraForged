@@ -17,9 +17,18 @@ import net.minecraft.client.gui.screens.worldselection.WorldCreationContext;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.NoiseRouterData;
+import net.minecraft.world.level.levelgen.RandomState;
 import raccoonman.reterraforged.client.gui.screen.page.BisectedPage;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
+import raccoonman.reterraforged.common.asm.extensions.RandomStateExtension;
+import raccoonman.reterraforged.common.level.levelgen.density.MutableFunctionContext;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData;
@@ -45,7 +54,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 		if(this.preview != null) {
 			this.preview.close();
 		}
-		this.preview = new Preview((int) this.screen.getSettings().options().seed());
+		this.preview = new Preview(this.screen.getSettings().options().seed());
 		this.preview.regenerate();
 		this.right.addWidget(this.preview);
 	}
@@ -76,7 +85,6 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	
 	//FIXME: this should be private
 	public class Preview extends Button {
-
 	    private static final int FACTOR = 4;
 	    public static final int SIZE = (1 << 4) << FACTOR;
 	    private static final float[] LEGEND_SCALES = {1, 0.9F, 0.75F, 0.6F};
@@ -86,38 +94,28 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	    private final Random random = new Random(System.currentTimeMillis());
 	    private final DynamicTexture texture = new DynamicTexture(new NativeImage(SIZE, SIZE, false));
 
-	    private int seed;
-	    private long lastUpdate = 0L;
-//	    private Tile tile = null;
-//	    private LazyCallable<Tile> task = null;
-//	    private CompoundNBT lastWorldSettings = null;
-//	    private CompoundNBT lastPreviewSettings = null;
-
-//	    private Settings settings = new Settings();
-//	    private MutableVeci center = new MutableVeci();
-
+	    private long seed;
+	    
 	    private String hoveredCoords = "";
 	    private String[] values = {"", "", ""};
 	    private String[] labels = {"preview_area", "preview_terrain", "preview_biome"};
 
-	    public Preview(int seed) {
+	    public Preview(long seed) {
 	        super(0, 0, 0, 0, Component.literal(""), (b) -> {}, DEFAULT_NARRATION);
 	        this.seed = seed == -1 ? random.nextInt() : seed;
 	        this.offsetX = 0;
 	        this.offsetZ = 0;
 	    }
 
-	    public int getSeed() {
+	    public long getSeed() {
 	        return seed;
 	    }
 
 	    public void regenerate() {
 	        this.seed = random.nextInt();
-	        
 	        WorldCreationContext settings = PresetEditorPage.this.screen.getSettings();
-	        HolderLookup.Provider provider = PresetEditorPage.this.preset.getPreset().buildPatch(
-	        	settings.worldgenLoadContext(
-	        ));
+	        RegistryAccess.Frozen registries = settings.worldgenLoadContext();
+	        HolderLookup.Provider provider = PresetEditorPage.this.preset.getPreset().buildPatch(registries);
 	        HolderGetter<Noise> noiseLookup = provider.lookupOrThrow(RTFRegistries.NOISE);
 	        Noise rootNoise = noiseLookup.getOrThrow(RTFNoiseData.ROOT).value();
 	        
@@ -136,7 +134,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 							for(int ly = 0; ly < cellHeight; ly++) {
 								int tx = cx + lx;
 								int ty = cy + ly;
-								int color = (int) (rootNoise.compute(tx * 60, ty * 60, (int) settings.options().seed()) * 255);
+								int color = (int) (rootNoise.compute(tx * 30, ty * 30, (int) this.seed) * 255);
 								
 					            pixels.setPixelRGBA(tx, ty, rgba(color, color, color));
 							}
@@ -146,9 +144,8 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 			}
 			CompletableFuture.allOf(futures).join();
 	        this.texture.upload();
-//	        this.lastWorldSettings = null;
-//	        this.lastPreviewSettings = null;
 	    }
+	    
 	    private static int rgba(int r, int g, int b) {
 	        return r + (g << 8) + (b << 16) + (255 << 24);
 	    }
@@ -160,7 +157,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	    public boolean click(double mx, double my) {
 	        if (updateLegend((int) mx, (int) my) && !hoveredCoords.isEmpty()) {
 	            super.playDownSound(Minecraft.getInstance().getSoundManager());
-	            Minecraft.getInstance().keyboardHandler.setClipboard(hoveredCoords);
+	            PresetEditorPage.this.screen.minecraft.keyboardHandler.setClipboard(hoveredCoords);
 	            return true;
 	        }
 	        return false;
@@ -173,86 +170,12 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 //	        preRender();
 	//
 	    	RenderSystem.setShaderTexture(0, this.texture.getId());
-//	        RenderSystem.enableBlend();
-////	        RenderSystem.enableRescaleNormal();
-//	        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-//	        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-	
 	        Screen.blit(matrixStack, this.getX(), this.getY(), 0, 0, this.width, this.height, this.width, this.height);
 	        
-	        
-//	        RenderSystem.disableRescaleNormal();
-	//
 //	        updateLegend(mx, my);
 	//
 //	        renderLegend(matrixStack, mx, my, labels, values, x, y + width, 10, 0xFFFFFF);
 	    }
-
-//	    private int getSize() {
-//	        return width;
-//	    }
-
-//	    private void preRender() {
-//	        if (task != null && task.isDone()) {
-//	            try {
-//	                tile = task.get();
-//	                render(tile);
-//	            } catch (Throwable t) {
-//	                t.printStackTrace();
-//	            } finally {
-//	                task = null;
-//	            }
-//	        }
-//	    }
-
-//	    private void render(Tile tile) {
-//	        NativeImage image = texture.getPixels();
-//	        if (image == null) {
-//	            return;
-//	        }
-	//
-//	        RenderMode renderer = previewSettings.display;
-//	        Levels levels = new Levels(settings.world);
-	//
-//	        int stroke = 2;
-//	        int width = tile.getBlockSize().size;
-	//
-//	        tile.iterate((cell, x, z) -> {
-//	            if (x < stroke || z < stroke || x >= width - stroke || z >= width - stroke) {
-//	                image.setPixelRGBA(x, z, Color.BLACK.getRGB());
-//	            } else {
-//	                image.setPixelRGBA(x, z, renderer.getColor(cell, levels));
-//	            }
-//	        });
-	//
-//	        texture.upload();
-//	    }
-	//
-//	    private LazyCallable<Tile> generate(Settings settings, CompoundNBT prevSettings) {
-//	        DataUtils.fromNBT(prevSettings, previewSettings);
-//	        settings.world.seed = seed;
-//	        this.settings = settings;
-	//
-//	        CacheManager.get().clear();
-//	        GeneratorContext context = GeneratorContext.createNoCache(settings);
-//	        if (settings.world.properties.spawnType == SpawnType.CONTINENT_CENTER) {
-//	            long center = context.worldGenerator.get().getHeightmap().getContinent().getNearestCenter(offsetX, offsetZ);
-//	            this.center.x = PosUtil.unpackLeft(center);
-//	            this.center.z = PosUtil.unpackRight(center);
-//	        } else {
-//	            center.x = 0;
-//	            center.z = 0;
-//	        }
-	//
-//	        TileFactory renderer = TileGenerator.builder()
-//	                .factory(context.worldGenerator.get())
-//	                .size(FACTOR, 0)
-//	                .pool(threadPool)
-//	                .batch(6)
-//	                .build().async();
-	//
-//	        return renderer.getTile(center.x, center.z, getZoom(), false);
-//	    }
 
 	    private boolean updateLegend(int mx ,int my) {
 //	        if (tile != null) {
@@ -286,7 +209,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	    }
 
 	    private float getLegendScale() {
-	        int index = Minecraft.getInstance().options.guiScale().get() - 1;
+	        int index = PresetEditorPage.this.screen.minecraft.options.guiScale().get() - 1;
 	        if (index < 0 || index >= LEGEND_SCALES.length) {
 	            // index=-1 == GuiScale(AUTO) which is the same as GuiScale(4)
 	            // values above 4 don't exist but who knows what mods might try set it to

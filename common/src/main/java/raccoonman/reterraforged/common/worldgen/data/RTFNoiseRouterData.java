@@ -18,7 +18,6 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.level.levelgen.density.FlatCache;
 import raccoonman.reterraforged.common.level.levelgen.density.NoiseWrapper;
-import raccoonman.reterraforged.common.level.levelgen.density.XZGradient;
 import raccoonman.reterraforged.common.level.levelgen.density.YGradient;
 import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
@@ -63,13 +62,13 @@ public class RTFNoiseRouterData {
         ctx.register(ZERO, DensityFunctions.zero());
         int minY = DimensionType.MIN_Y * 2;
         int maxY = DimensionType.MAX_Y * 2;
-        ctx.register(SHIFT_X, DensityFunctions.flatCache(DensityFunctions.cache2d(DensityFunctions.shiftA(noiseParams.getOrThrow(Noises.SHIFT)))));
-        ctx.register(SHIFT_Z, DensityFunctions.flatCache(DensityFunctions.cache2d(DensityFunctions.shiftB(noiseParams.getOrThrow(Noises.SHIFT)))));
+        DensityFunction shiftX = new DensityFunctions.HolderHolder(ctx.register(SHIFT_X, DensityFunctions.flatCache(DensityFunctions.cache2d(DensityFunctions.shiftA(noiseParams.getOrThrow(Noises.SHIFT))))));
+        DensityFunction shiftZ = new DensityFunctions.HolderHolder(ctx.register(SHIFT_Z, DensityFunctions.flatCache(DensityFunctions.cache2d(DensityFunctions.shiftB(noiseParams.getOrThrow(Noises.SHIFT))))));
         ctx.register(Y, DensityFunctions.yClampedGradient(minY, maxY, minY, maxY));
         ctx.register(BASE_3D_NOISE_OVERWORLD, DensityFunctions.constant(0.0D));// BlendedNoise.createUnseeded(0.25, 0.125, 80.0, 160.0, 8.0));
-        Holder.Reference<DensityFunction> continents = ctx.register(CONTINENTS, DensityFunctions.constant(1.0D));//DensityFunctions.flatCache(DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, noiseParams.getOrThrow(Noises.CONTINENTALNESS))));
-        Holder.Reference<DensityFunction> erosion = ctx.register(EROSION, DensityFunctions.constant(-0.5D));//DensityFunctions.flatCache(DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, noiseParams.getOrThrow(Noises.EROSION))));
-        DensityFunction ridges = registerAndWrap(ctx, RIDGES, DensityFunctions.constant(0.0D));//DensityFunctions.flatCache(DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, noiseParams.getOrThrow(Noises.RIDGE))));
+        Holder.Reference<DensityFunction> continents = ctx.register(CONTINENTS, DensityFunctions.constant(2.0D));//DensityFunctions.flatCache(DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, noiseParams.getOrThrow(Noises.CONTINENTALNESS))));
+        Holder.Reference<DensityFunction> erosion = ctx.register(EROSION, DensityFunctions.constant(0.25D));//DensityFunctions.flatCache(DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, noiseParams.getOrThrow(Noises.EROSION))));
+        DensityFunction ridges = registerAndWrap(ctx, RIDGES, DensityFunctions.flatCache(DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, noiseParams.getOrThrow(Noises.RIDGE))));
         ctx.register(RIDGES_FOLDED, peaksAndValleys(ridges));
         DensityFunction jaggedness = DensityFunctions.noise(noiseParams.getOrThrow(Noises.JAGGED), 1500.0, 0.0);
         registerTerrainNoises(ctx, functions, jaggedness, continents, erosion, OFFSET, FACTOR, JAGGEDNESS, DEPTH, SLOPED_CHEESE);
@@ -79,7 +78,7 @@ public class RTFNoiseRouterData {
         ctx.register(ENTRANCES, entrances(functions, noiseParams));
         ctx.register(NOODLE, noodle(functions, noiseParams));
         ctx.register(PILLARS, pillars(noiseParams));
-        ctx.register(HEIGHT, new FlatCache.Marker(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(RTFNoiseData.ROOT))), 2));
+        ctx.register(HEIGHT, new FlatCache.Marker(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(RTFNoiseData.ROOT))), 0)); //TODO we should probably only pad this to 1
 //        ctx.register(GRADIENT, new XZGradient(height, 63.0F / 256.0F, 10.0F, 1));
     }
 
@@ -90,7 +89,7 @@ public class RTFNoiseRouterData {
         DensityFunctions.Spline.Coordinate ridgesFolded = new DensityFunctions.Spline.Coordinate(functions.getOrThrow(RIDGES_FOLDED));
         DensityFunction offset = registerAndWrap(ctx, offsetKey, splineWithBlending(DensityFunctions.add(DensityFunctions.constant(-0.50375f), DensityFunctions.spline(TerrainProvider.overworldOffset(continentCoord, erosionCoord, ridgesFolded, false))), DensityFunctions.blendOffset()));
         DensityFunction factor = registerAndWrap(ctx, factorKey, splineWithBlending(DensityFunctions.spline(TerrainProvider.overworldFactor(continentCoord, erosionCoord, ridges, ridgesFolded, false)), BLENDING_FACTOR));
-        DensityFunction depth = registerAndWrap(ctx, depthKey, DensityFunctions.add(DensityFunctions.yClampedGradient(-64, 320, 1.5, -1.5), offset));
+        DensityFunction depth = registerAndWrap(ctx, depthKey, DensityFunctions.add(DensityFunctions.yClampedGradient(-64, 320, 1.5, -1.5), DensityFunctions.constant(-0.5D)));
         DensityFunction jagged = registerAndWrap(ctx, jaggednessKey, splineWithBlending(DensityFunctions.spline(TerrainProvider.overworldJaggedness(continentCoord, erosionCoord, ridges, ridgesFolded, false)), BLENDING_JAGGEDNESS));
         DensityFunction jaggedHalfNegative = DensityFunctions.mul(jagged, jaggedness.halfNegative());
         DensityFunction densityGradient = noiseGradientDensity(factor, DensityFunctions.add(depth, jaggedHalfNegative));
@@ -192,10 +191,10 @@ public class RTFNoiseRouterData {
         DensityFunction factor = getFunction(functions, FACTOR);
         DensityFunction depth = getFunction(functions, DEPTH);
         DensityFunction factorDepthGradient = noiseGradientDensity(DensityFunctions.cache2d(factor), depth);
-        DensityFunction slopedCheese = getFunction(functions, SLOPED_CHEESE);
-        DensityFunction slopedCheeseWithEntrances = DensityFunctions.min(slopedCheese, DensityFunctions.mul(DensityFunctions.constant(5.0), getFunction(functions, ENTRANCES)));
-        DensityFunction slopedCaveSelector = DensityFunctions.rangeChoice(slopedCheese, -1000000.0, 1.5625, slopedCheeseWithEntrances, underground(functions, noiseParams, slopedCheese));
-        DensityFunction slopedCaveSelectorWithNoodle = DensityFunctions.min(postProcess(slideOverworld(slopedCaveSelector)), getFunction(functions, NOODLE));
+//        DensityFunction slopedCheese = getFunction(functions, SLOPED_CHEESE);
+//        DensityFunction slopedCheese = new YGradient(getFunction(functions, HEIGHT), DensityFunctions.constant(256.0D));
+//        DensityFunction slopedCaveSelector = DensityFunctions.rangeChoice(slopedCheese, -1000000.0, 1.5625, slopedCheese, postProcess(underground(functions, noiseParams, slopedCheese)));
+        DensityFunction slopedCaveSelectorWithNoodle = new YGradient(getFunction(functions, HEIGHT), DensityFunctions.constant(256.0D));
         DensityFunction y = getFunction(functions, Y);
         int veinMin = Stream.of(OreVeinifier.VeinType.values()).mapToInt(veinType -> veinType.minY).min().orElse(-DimensionType.MIN_Y * 2);
         int veinMax = Stream.of(OreVeinifier.VeinType.values()).mapToInt(veinType -> veinType.maxY).max().orElse(-DimensionType.MIN_Y * 2);
@@ -205,12 +204,23 @@ public class RTFNoiseRouterData {
         DensityFunction oreVeinSelector = DensityFunctions.add(DensityFunctions.constant(-0.08f), DensityFunctions.max(oreVeinA, oreVeinB));
         DensityFunction oreGap = DensityFunctions.noise(noiseParams.getOrThrow(Noises.ORE_GAP));
         DensityFunction initialDensity = new YGradient(DensityFunctions.constant(83.0F / 256.0F), DensityFunctions.constant(256.0D));
-        DensityFunction finalDensity = new YGradient(getFunction(functions, HEIGHT), DensityFunctions.constant(256.0D));
-        return new NoiseRouter(aquiferBarrier, aquiferFluidLevelFloodedness, aquiferFluidLevelSpread, aquiferLava, temperature, vegetation, getFunction(functions, CONTINENTS), getFunction(functions, EROSION), depth, getFunction(functions, RIDGES), initialDensity, finalDensity, oreVeinness, oreVeinSelector, oreGap);
+        return new NoiseRouter(aquiferBarrier, aquiferFluidLevelFloodedness, aquiferFluidLevelSpread, aquiferLava, temperature, vegetation, getFunction(functions, CONTINENTS), getFunction(functions, EROSION), depth, getFunction(functions, RIDGES), initialDensity, slopedCaveSelectorWithNoodle, oreVeinness, oreVeinSelector, oreGap);
+    }
+	
+	private static DensityFunction finalDensity(HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, DensityFunction terrain) {
+		DensityFunction heightGradient = heightGradient(terrain);
+		DensityFunction heightCaveChoice = DensityFunctions.rangeChoice(terrain, -1000000.0D, 1.5625D, heightGradient, postProcess(underground(densityFunctions, noiseParams, heightGradient)));
+        return DensityFunctions.min(slideOverworld(heightCaveChoice), getFunction(densityFunctions, NOODLE));
+	}
+	
+    private static DensityFunction heightGradient(DensityFunction base) {
+    	DensityFunction heightGradient = DensityFunctions.add(DensityFunctions.yClampedGradient(-64, 384, 1.5D, -1.5D), base);
+    	DensityFunction densityGradient = noiseGradientDensity(base, heightGradient);
+    	return DensityFunctions.add(densityGradient, base);
     }
 
     private static DensityFunction slideOverworld(DensityFunction density) {
-        return slide(density, -64, 384, 80, 64, -0.078125, 0, 24,0.1171875);
+        return slide(density, -64, 384, 80, 64, -0.078125, 0, 24, 0.1171875);
     }
 
     private static DensityFunction splineWithBlending(DensityFunction densityFunction, DensityFunction densityFunction2) {

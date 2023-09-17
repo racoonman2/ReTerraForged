@@ -18,6 +18,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import net.minecraft.client.gui.screens.worldselection.WorldCreationContext;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataGenerator.PackGenerator;
 import net.minecraft.data.PackOutput;
@@ -29,6 +30,7 @@ import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
 import raccoonman.reterraforged.common.ReTerraForged;
+import raccoonman.reterraforged.common.worldgen.data.provider.RTFBlockTagsProvider;
 
 //FIXME pressing the create world screen before the pack is copied will fuck the game up
 public class PresetConfigScreen extends LinkedPageScreen {
@@ -68,13 +70,16 @@ public class PresetConfigScreen extends LinkedPageScreen {
 		
 		DataGenerator dataGenerator = new DataGenerator(datagenPath, SharedConstants.getCurrentVersion(), true);
 		PackGenerator packGenerator = dataGenerator.new PackGenerator(true, preset.getName().getString(), new PackOutput(datagenOutputPath));
+		CompletableFuture<HolderLookup.Provider> lookup = CompletableFuture.supplyAsync(() -> preset.getPreset().buildPatch(this.getSettings().worldgenLoadContext()));
 		packGenerator.addProvider((output) -> {
-			return new RegistriesDatapackGenerator(output, CompletableFuture.supplyAsync(() -> preset.getPreset().buildPatch(this.getSettings().worldgenLoadContext())));
+			return new RegistriesDatapackGenerator(output, lookup);
+		});
+		packGenerator.addProvider((output) -> {
+			return new RTFBlockTagsProvider(output, lookup);
 		});
 		packGenerator.addProvider((output) -> {
 			return PackMetadataGenerator.forFeaturePack(output, Component.translatable(RTFTranslationKeys.PRESET_METADATA_DESCRIPTION));
-		});
-		
+		});		
 		dataGenerator.run();
 		copyToZip(datagenOutputPath, outputPath);
 		PathUtils.deleteDirectory(datagenPath);

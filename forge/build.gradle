@@ -19,6 +19,7 @@ loom {
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
         mixinConfig "reterraforged-common.mixins.json"
+        mixinConfig "reterraforged-forge.mixins.json"
     }
 }
 

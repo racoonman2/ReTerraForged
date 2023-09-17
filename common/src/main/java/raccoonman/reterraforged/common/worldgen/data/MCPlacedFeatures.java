@@ -7,9 +7,7 @@ import net.minecraft.data.worldgen.features.MiscOverworldFeatures;
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.LakeFeature;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
-import net.minecraft.world.level.levelgen.placement.CountPlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import raccoonman.reterraforged.common.level.levelgen.placement.NeverPlacementModifier;
 import raccoonman.reterraforged.common.worldgen.data.preset.MiscellaneousSettings;
@@ -23,7 +21,7 @@ public final class MCPlacedFeatures {
 		
         HolderGetter<ConfiguredFeature<?, ?>> features = ctx.lookup(Registries.CONFIGURED_FEATURE);
 
-    	//TODO: we should find some way to remove the features from the feature list instead
+    	//TODO: we should find some way to remove the features from the biome feature list instead
         if(!miscellaneous.vanillaSprings) {
         	PlacementUtils.register(ctx, MiscOverworldPlacements.SPRING_WATER, features.getOrThrow(MiscOverworldFeatures.SPRING_WATER), NeverPlacementModifier.INSTANCE, BiomeFilter.biome());
         }

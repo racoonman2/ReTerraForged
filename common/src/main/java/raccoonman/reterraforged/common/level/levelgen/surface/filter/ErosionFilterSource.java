@@ -30,9 +30,7 @@ public record ErosionFilterSource(Holder<DensityFunction> height) implements Fil
 	@Override
 	public Filter apply(Context ctx) {
 		if((Object) ctx.randomState instanceof RandomStateExtension extension) {
-			DensityFunction seededHeight = this.height.value().mapAll(extension.visitor());
-			DensityFunction cachedHeight = ctx.noiseChunk.wrap(seededHeight);
-			return new Filter(ctx, cachedHeight);
+			return new Filter(ctx, extension.seedAndCache(this.height.value(), ctx.noiseChunk));
 		} else {
 			throw new IllegalStateException();
 		}
@@ -46,37 +44,36 @@ public record ErosionFilterSource(Holder<DensityFunction> height) implements Fil
 		
 		@Override
 		public void apply(int worldX, int worldZ, int chunkLocalX, int chunkLocalZ, BlockColumn column) {
-//			System.out.println(chunkLocalX + ":" + chunkLocalZ);
 			int y = this.context.chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, chunkLocalX, chunkLocalZ);
 			double height = this.sampleHeight(worldX, worldZ);
 			double steepness = this.sampleGradient(worldX, worldZ) + (this.rand.compute(worldX, worldZ, 4) * (3F / 255F));
-            BlockState material = getMaterial(chunkLocalX, chunkLocalZ, (float) height, (float) steepness, Blocks.GRASS.defaultBlockState(), Blocks.STONE.defaultBlockState());
+            BlockState material = this.getMaterial(chunkLocalX, chunkLocalZ, (float) height, (float) steepness, Blocks.GRASS.defaultBlockState(), Blocks.STONE.defaultBlockState());
             if (material != Blocks.GRASS.defaultBlockState()) {
-                if ((material.is(BlockTags.BASE_STONE_OVERWORLD))) {
-                    erodeRock(column, chunkLocalX, y, chunkLocalZ);
+                if (material.is(BlockTags.BASE_STONE_OVERWORLD)) {
+                	erodeRock(column, chunkLocalX, y, chunkLocalZ);
                     return;
                 } else {
-                    fillDownSolid(column, chunkLocalX, chunkLocalZ, y, y - 4, material);
+                	fillDownSolid(column, chunkLocalX, chunkLocalZ, y, y - 4, material);
                 }
             }
 //            placeScree(this.context.chunk, context, chunkLocalX, y, chunkLocalZ);
 		}
 		
-		private int fillDownSolid(BlockColumn column, int x, int z, int from, int to, BlockState state) {
+		private static int fillDownSolid(BlockColumn column, int x, int z, int from, int to, BlockState state) {
 			for (int dy = from; dy > to; dy--) {
 				replaceSolid(column, dy, state);
 			}
 			return to;
 		}
 		
-		static void replaceSolid(BlockColumn column, int y, BlockState state) {
+		private static void replaceSolid(BlockColumn column, int y, BlockState state) {
             if (column.getBlock(y).isAir()) {
                 return;
             }
             column.setBlock(y, state);
 		}
 		
-		protected void erodeRock(BlockColumn column, int dx, int y, int dz) {
+		private static void erodeRock(BlockColumn column, int dx, int y, int dz) {
 	        int depth = 32;
 	        BlockState material = Blocks.GRAVEL.defaultBlockState();
 	        // find the uppermost layer of rock & record it's depth
@@ -107,14 +104,6 @@ public record ErosionFilterSource(Holder<DensityFunction> height) implements Fil
 //	            fillDownSolid(context, chunk, x, z, y, y - 2, States.GRAVEL.get());
 //	        }
 //	    }
-
-	    public boolean erodeRock(float x, float z, float steepness, float height) {
-	        return steepness > ROCK_STEEPNESS || height > getNoise(x, z, 4, ROCK_VAR, ROCK_MIN);
-	    }
-
-	    public boolean erodeDirt(float x, float z, float steepness, float height) {
-	        return steepness > DIRT_STEEPNESS && height > getNoise(x, z, 7, DIRT_VAR, DIRT_MIN);
-	    }
 
 	    public static final float ROCK_STEEPNESS = 0.65F;
 	    private static final float DIRT_STEEPNESS = 0.475F;

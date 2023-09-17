@@ -8,26 +8,24 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
-import raccoonman.reterraforged.common.ReTerraForged;
 
+//TODO add padding
 public class FlatCache implements DensityFunction.SimpleFunction {
     private DensityFunction filler;
     private int width;
-    private int padding;
     private int offsetX, offsetZ;
     private Supplier<double[]> values;
 
     public FlatCache(DensityFunction filler, int width, int padding, int offsetX, int offsetZ) {
     	this.filler = filler;
-    	this.width = width + padding * 2;
-    	this.padding = padding;
+    	this.width = width;
     	this.offsetX = offsetX;
     	this.offsetZ = offsetZ;
     	this.values = Suppliers.memoize(() -> {
     		double[] values = new double[this.width * this.width];
         	MutableFunctionContext ctx = new MutableFunctionContext();
-    		for(int x = -this.padding; x < this.width - this.padding; x++) {
-    			for(int z = -this.padding; z < this.width - this.padding; z++) {
+    		for(int x = 0; x < this.width; x++) {
+    			for(int z = 0; z < this.width; z++) {
     				ctx.blockX = this.offsetX + x;
     				ctx.blockZ = this.offsetZ + z;
         			values[this.indexOf(ctx.blockX, ctx.blockZ)] = this.filler.compute(ctx);
@@ -38,7 +36,7 @@ public class FlatCache implements DensityFunction.SimpleFunction {
     }
 
     private int indexOf(int x, int z) {
-    	return (x - this.offsetX + this.padding) * this.width + (z - this.offsetZ + this.padding);
+    	return this.width * (z - this.offsetZ) + (x - this.offsetX);
     }
 
     @Override
@@ -48,16 +46,16 @@ public class FlatCache implements DensityFunction.SimpleFunction {
     	
         int index = this.indexOf(blockX, blockZ);
         double[] values = this.values.get();
-        if (index >= 0 && index < values.length) {
+        if (blockX >= this.offsetX && blockZ >= this.offsetZ && blockX < this.offsetX + this.width && blockZ < this.offsetZ + this.width) {
             return values[index];
         }
-        ReTerraForged.LOGGER.warn("cache miss! cache width: {}, padding: {}, blockX: {}, blockZ: {}", this.width, this.padding, blockX - this.offsetX + this.padding, blockZ - this.offsetZ + this.padding);
+//        ReTerraForged.LOGGER.warn("cache miss! cache width: {}, padding: {}, blockX: {}, blockZ: {}", this.width, this.padding, blockX, blockZ);
         return this.filler.compute(functionContext);
     }
 
     @Override
     public void fillArray(double[] ds, DensityFunction.ContextProvider contextProvider) {
-//    	throw new UnsupportedOperationException();
+    	// NOOP
     }
 
 	@Override
