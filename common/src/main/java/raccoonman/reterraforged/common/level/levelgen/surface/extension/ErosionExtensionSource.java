@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.level.levelgen.surface.filter;
+package raccoonman.reterraforged.common.level.levelgen.surface.extension;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

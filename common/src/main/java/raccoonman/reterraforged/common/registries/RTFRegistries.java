@@ -8,7 +8,7 @@ import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.CurveFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.domain.Domain;
-import raccoonman.reterraforged.common.level.levelgen.surface.filter.ExtensionRuleSource;
+import raccoonman.reterraforged.common.level.levelgen.surface.extension.ExtensionRuleSource;
 
 public final class RTFRegistries {
 	public static final ResourceKey<Registry<Codec<? extends Noise>>> NOISE_TYPE = resolve("worldgen/noise_type");

@@ -6,7 +6,7 @@ import net.minecraft.core.Registry;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.CurveFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.domain.Domain;
-import raccoonman.reterraforged.common.level.levelgen.surface.filter.ExtensionRuleSource;
+import raccoonman.reterraforged.common.level.levelgen.surface.extension.ExtensionRuleSource;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 // DeferredRegistry isn't finished so you probably shouldn't use this

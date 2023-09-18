@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.level.levelgen.surface.filter;
+package raccoonman.reterraforged.common.level.levelgen.surface.extension.geology;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -16,11 +16,11 @@ import net.minecraft.world.level.levelgen.SurfaceRules.Context;
 import raccoonman.reterraforged.common.asm.extensions.RandomStateExtension;
 import raccoonman.reterraforged.common.level.levelgen.density.MutableFunctionContext;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
-import raccoonman.reterraforged.common.level.levelgen.surface.filter.geology.StrataDepthBuffer;
-import raccoonman.reterraforged.common.level.levelgen.surface.filter.geology.StrataGenerator;
-import raccoonman.reterraforged.common.level.levelgen.surface.filter.geology.Stratum;
+import raccoonman.reterraforged.common.level.levelgen.surface.extension.ExtensionRuleSource;
+import raccoonman.reterraforged.common.level.levelgen.surface.extension.ExtensionRuleSource.Extension;
+import raccoonman.reterraforged.common.level.levelgen.surface.extension.ExtensionRuleSource.ExtensionSource;
 
-public record StrataExtensionSource(Holder<DensityFunction> selector, StrataGenerator generator, Supplier<List<List<Stratum>>> strata) implements ExtensionRuleSource.ExtensionSource {
+public record StrataExtensionSource(Holder<DensityFunction> selector, StrataGenerator generator, Supplier<List<Strata>> strata) implements ExtensionRuleSource.ExtensionSource {
 	public static final Codec<StrataExtensionSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		DensityFunction.CODEC.fieldOf("selector").forGetter(StrataExtensionSource::selector),
 		StrataGenerator.CODEC.fieldOf("generator").forGetter(StrataExtensionSource::generator)
@@ -33,10 +33,11 @@ public record StrataExtensionSource(Holder<DensityFunction> selector, StrataGene
 	@Override
 	public Extension apply(Context ctx) {
 		if((Object) ctx.randomState instanceof RandomStateExtension extension) {
-			return new Extension(ctx, new StrataDepthBuffer(), extension.seedAndCache(this.selector.value(), ctx.noiseChunk), this.strata.get().stream().map((strata) -> {
-				return strata.stream().map((stratum) -> {
-					return stratum.mapAll((function) -> extension.seedAndCache(function, ctx.noiseChunk));
-				}).toList();
+			DensityFunction.Visitor visitor = (function) -> {
+				return extension.seedAndCache(this.selector.value(), ctx.noiseChunk);
+			};
+			return new Extension(ctx, new StrataDepthBuffer(), this.selector.value().mapAll(visitor), this.strata.get().stream().map((strata) -> {
+				return strata.mapAll(visitor);
 			}).toList(), new MutableFunctionContext());
 		} else {
 			throw new IllegalStateException();
@@ -48,22 +49,20 @@ public record StrataExtensionSource(Holder<DensityFunction> selector, StrataGene
 		return CODEC;
 	}
 	
-	private record Extension(Context context, StrataDepthBuffer buffer, DensityFunction selector, List<List<Stratum>> strata, MutableFunctionContext functionContext) implements ExtensionRuleSource.Extension {
+	private record Extension(Context surfaceContext, StrataDepthBuffer buffer, DensityFunction selector, List<Strata> strata, MutableFunctionContext functionContext) implements ExtensionRuleSource.Extension {
 
 		@Override
 		public void apply(int worldX, int worldZ, int chunkLocalX, int chunkLocalZ, BlockColumn column) {
-			this.functionContext.blockX = worldX;
-			this.functionContext.blockZ = worldZ;
-			
-			List<Stratum> strata = this.getStrata();
-			int y = this.context.chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, chunkLocalX, chunkLocalZ) - 1;
-			this.initBuffer(strata);
+			Strata strata = this.getStrataAt(worldX, worldZ);
+	        List<Stratum> stratum = strata.stratum();
+			int y = this.surfaceContext.chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, chunkLocalX, chunkLocalZ) - 1;
+			this.buffer.init(strata, worldX, worldZ);
 	        int py = y;
 	        BlockState last = null;
-	        for (int i = 0; i < strata.size(); ++i) {
+	        for (int i = 0; i < stratum.size(); ++i) {
 	            float depth = this.buffer.getDepth(i);
 	            int height = NoiseUtil.round(depth * y);
-	            BlockState value = last = strata.get(i).state();
+	            BlockState value = last = stratum.get(i).state();
 	            for (int dy = 0; dy < height; ++dy) {
 	                if (py <= y) {
 	                    column.setBlock(py, value);
@@ -81,19 +80,13 @@ public record StrataExtensionSource(Holder<DensityFunction> selector, StrataGene
 	        }
 		}
 	    
-		private List<Stratum> getStrata() {
+		private Strata getStrataAt(int x, int z) {
+			this.functionContext.blockX = x;
+			this.functionContext.blockZ = z;
 	        double noise = this.selector.compute(this.functionContext);
 	        int index = (int)(noise * this.strata.size());
 	        index = Math.min(this.strata.size() - 1, index);
 	        return this.strata.get(index);
-	    }
-		
-	    private void initBuffer(List<Stratum> strata) {
-	    	this.buffer.init(strata.size());
-	        for (int i = 0; i < strata.size(); ++i) {
-	            double depth = strata.get(i).depth().compute(this.functionContext);
-	            this.buffer.set(i, (float) depth);
-	        }
 	    }
 	}
 }

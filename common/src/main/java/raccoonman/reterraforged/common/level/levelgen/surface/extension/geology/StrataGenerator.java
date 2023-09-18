@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.level.levelgen.surface.filter.geology;
+package raccoonman.reterraforged.common.level.levelgen.surface.extension.geology;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -25,37 +25,37 @@ public record StrataGenerator(List<Layer> layers, int iterationCount) {
 		Codec.INT.fieldOf("iteration_count").forGetter(StrataGenerator::iterationCount)
 	).apply(instance, StrataGenerator::new));
 	
-	public List<List<Stratum>> generate() {
-    	List<List<Stratum>> strata = new ArrayList<>();
+	public List<Strata> generate() {
+    	List<Strata> strata = new ArrayList<>();
         for (int i = 0; i < this.iterationCount; i++) {
-        	List<Stratum> stratum = new LinkedList<>();
         	for(Layer layerGenerator : this.layers) {
-        		stratum.addAll(layerGenerator.generate(i));
+        		strata.add(layerGenerator.generate(i));
         	}
-            strata.add(ImmutableList.copyOf(stratum));
         }
 		return ImmutableList.copyOf(strata);
 	}
 	
-	public record Layer(TagKey<Block> materials, int seed, int attempts, Noise depth, int minLayers, int maxLayers, float minDepth, float maxDepth) {
+	//TODO don't take a seed parameter here
+	//can we use RandomSource for this?
+	public record Layer(TagKey<Block> materials, int seed, int attempts, Noise depth, int minLayerCount, int maxLayerCount, float minDepth, float maxDepth) {
 		public static final Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			TagKey.hashedCodec(Registries.BLOCK).fieldOf("materials").forGetter(Layer::materials),
 			Codec.INT.fieldOf("seed").forGetter(Layer::seed),
 			Codec.INT.fieldOf("attempts").forGetter(Layer::attempts),
 			Noise.HOLDER_HELPER_CODEC.fieldOf("depth").forGetter(Layer::depth),
-			Codec.INT.fieldOf("min_layers").forGetter(Layer::minLayers),
-			Codec.INT.fieldOf("max_layers").forGetter(Layer::maxLayers),
+			Codec.INT.fieldOf("min_layer_count").forGetter(Layer::minLayerCount),
+			Codec.INT.fieldOf("max_layer_count").forGetter(Layer::maxLayerCount),
 			Codec.FLOAT.fieldOf("min_depth").forGetter(Layer::minDepth),
 			Codec.FLOAT.fieldOf("max_depth").forGetter(Layer::maxDepth)
 		).apply(instance, Layer::new));
 		
-		public List<Stratum> generate(int seedOffset) {
+		public Strata generate(int seedOffset) {
 			List<Stratum> stratum = new LinkedList<>();
 			HolderSet<Block> materials = BuiltInRegistries.BLOCK.getTag(this.materials).orElseThrow();
 			int seed = this.seed + seedOffset;
 	        Random random = new Random(seed);
 	        int lastIndex = -1;
-	        int layerCount = lerpLayerCount(random.nextFloat(), this.minLayers, this.maxLayers);
+	        int layerCount = lerpLayerCount(random.nextFloat(), this.minLayerCount, this.maxLayerCount);
 	        int materialCount = materials.size();
 	        for (int i = 0; i < layerCount; i++) {
 	            int attempts = this.attempts;
@@ -71,7 +71,7 @@ public record StrataGenerator(List<Layer> layers, int iterationCount) {
 	                stratum.add(new Stratum(material, new NoiseWrapper.Marker(module)));
 	            }
 	        }
-	        return stratum;
+	        return new Strata(stratum);
 		}
 
 	    private static int lerpLayerCount(float value, int minLayers, int maxLayers) {

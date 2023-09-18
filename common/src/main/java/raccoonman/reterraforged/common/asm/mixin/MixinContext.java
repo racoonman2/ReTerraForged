@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import net.minecraft.world.level.levelgen.SurfaceRules.Context;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.asm.extensions.ContextExtension;
-import raccoonman.reterraforged.common.level.levelgen.surface.filter.ExtensionRuleSource;
+import raccoonman.reterraforged.common.level.levelgen.surface.extension.ExtensionRuleSource;
 
 @Mixin(Context.class)
 @Implements(@Interface(iface = ContextExtension.class, prefix = ReTerraForged.MOD_ID + "$ContextExtension$"))

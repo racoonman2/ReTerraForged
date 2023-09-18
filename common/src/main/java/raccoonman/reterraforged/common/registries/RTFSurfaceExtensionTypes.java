@@ -2,9 +2,9 @@ package raccoonman.reterraforged.common.registries;
 
 import com.mojang.serialization.Codec;
 
-import raccoonman.reterraforged.common.level.levelgen.surface.filter.ErosionExtensionSource;
-import raccoonman.reterraforged.common.level.levelgen.surface.filter.ExtensionRuleSource;
-import raccoonman.reterraforged.common.level.levelgen.surface.filter.StrataExtensionSource;
+import raccoonman.reterraforged.common.level.levelgen.surface.extension.ErosionExtensionSource;
+import raccoonman.reterraforged.common.level.levelgen.surface.extension.ExtensionRuleSource;
+import raccoonman.reterraforged.common.level.levelgen.surface.extension.geology.StrataExtensionSource;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 public final class RTFSurfaceExtensionTypes {

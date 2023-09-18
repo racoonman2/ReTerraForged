@@ -20,7 +20,7 @@ import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.SurfaceSystem;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import raccoonman.reterraforged.common.asm.extensions.ContextExtension;
-import raccoonman.reterraforged.common.level.levelgen.surface.filter.ExtensionRuleSource;
+import raccoonman.reterraforged.common.level.levelgen.surface.extension.ExtensionRuleSource;
 
 @Mixin(SurfaceSystem.class)
 class MixinSurfaceSystem {

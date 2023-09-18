@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.common.level.levelgen.surface.filter;
+package raccoonman.reterraforged.common.level.levelgen.surface.extension;
 
 import java.util.List;
 import java.util.function.Function;
