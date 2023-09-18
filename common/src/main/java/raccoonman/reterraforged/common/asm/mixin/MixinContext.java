@@ -10,14 +10,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import net.minecraft.world.level.levelgen.SurfaceRules.Context;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.asm.extensions.ContextExtension;
-import raccoonman.reterraforged.common.level.levelgen.surface.filter.FilterSurfaceRuleSource;
+import raccoonman.reterraforged.common.level.levelgen.surface.filter.ExtensionRuleSource;
 
 @Mixin(Context.class)
 @Implements(@Interface(iface = ContextExtension.class, prefix = ReTerraForged.MOD_ID + "$ContextExtension$"))
 class MixinContext {
-	private List<FilterSurfaceRuleSource.Filter> filters = new ArrayList<>();
+	private List<ExtensionRuleSource.Extension> extensions = new ArrayList<>();
 	
-	public List<FilterSurfaceRuleSource.Filter> reterraforged$ContextExtension$filters() {
-		return this.filters;
+	public List<ExtensionRuleSource.Extension> reterraforged$ContextExtension$extensions() {
+		return this.extensions;
 	}
 }

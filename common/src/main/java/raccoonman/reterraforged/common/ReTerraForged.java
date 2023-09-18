@@ -40,7 +40,7 @@ import raccoonman.reterraforged.common.registries.RTFNoiseTypes;
 import raccoonman.reterraforged.common.registries.RTFPlacementModifierTypes;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.registries.RTFSurfaceConditions;
-import raccoonman.reterraforged.common.registries.RTFSurfaceFilterTypes;
+import raccoonman.reterraforged.common.registries.RTFSurfaceExtensionTypes;
 import raccoonman.reterraforged.common.registries.RTFSurfaceRules;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
@@ -59,7 +59,7 @@ public final class ReTerraForged {
 		RTFDensityFunctionTypes.bootstrap();
 		RTFSurfaceConditions.bootstrap();
 		RTFSurfaceRules.bootstrap();
-		RTFSurfaceFilterTypes.bootstrap();
+		RTFSurfaceExtensionTypes.bootstrap();
 		
 		RegistryUtil.createDataRegistry(RTFRegistries.NOISE, Noise.DIRECT_CODEC);
 	}

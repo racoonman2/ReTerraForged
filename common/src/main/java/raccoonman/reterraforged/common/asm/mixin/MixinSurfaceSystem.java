@@ -20,7 +20,7 @@ import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.SurfaceSystem;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import raccoonman.reterraforged.common.asm.extensions.ContextExtension;
-import raccoonman.reterraforged.common.level.levelgen.surface.filter.FilterSurfaceRuleSource;
+import raccoonman.reterraforged.common.level.levelgen.surface.filter.ExtensionRuleSource;
 
 @Mixin(SurfaceSystem.class)
 class MixinSurfaceSystem {
@@ -35,12 +35,12 @@ class MixinSurfaceSystem {
 		locals = LocalCapture.CAPTURE_FAILHARD
 	)
     public void buildSurface(RandomState randomState, BiomeManager biomeManager, Registry<Biome> registry, boolean bl, WorldGenerationContext worldGenerationContext, ChunkAccess chunkAccess, NoiseChunk noiseChunk, SurfaceRules.RuleSource ruleSource, CallbackInfo callback, BlockPos.MutableBlockPos mutableBlockPos, ChunkPos chunkPos, int i, int j, BlockColumn column, SurfaceRules.Context context, SurfaceRules.SurfaceRule surfaceRule, BlockPos.MutableBlockPos mutableBlockPos2, int k, int l, int m, int n, int o, Holder<Biome> holder) {
-    	if((Object) context instanceof ContextExtension extension) {
+    	if((Object) context instanceof ContextExtension ctx) {
     		ChunkPos pos = chunkAccess.getPos();
     		int worldX = pos.getBlockX(k);
     		int worldZ = pos.getBlockZ(l);
-    		for(FilterSurfaceRuleSource.Filter filter : extension.filters()) {
-    			filter.apply(worldX, worldZ, k, l, column);
+    		for(ExtensionRuleSource.Extension extension : ctx.extensions()) {
+    			extension.apply(worldX, worldZ, k, l, column);
     		}
     	} else {
     		throw new IllegalStateException();

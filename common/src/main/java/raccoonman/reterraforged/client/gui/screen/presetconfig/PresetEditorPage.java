@@ -102,7 +102,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 
 	    public Preview(long seed) {
 	        super(0, 0, 0, 0, Component.literal(""), (b) -> {}, DEFAULT_NARRATION);
-	        this.seed = seed == -1 ? random.nextInt() : seed;
+	        this.seed = seed;
 	        this.offsetX = 0;
 	        this.offsetZ = 0;
 	    }
@@ -134,7 +134,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 							for(int ly = 0; ly < cellHeight; ly++) {
 								int tx = cx + lx;
 								int ty = cy + ly;
-								int color = (int) (rootNoise.compute(tx * 30, ty * 30, (int) this.seed) * 255);
+								int color = (int) (rootNoise.compute(tx * 30, ty * 30, (int) PresetEditorPage.this.screen.getSettings().options().seed()) * 255);
 								
 					            pixels.setPixelRGBA(tx, ty, rgba(color, color, color));
 							}

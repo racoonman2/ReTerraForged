@@ -17,28 +17,28 @@ import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Source;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Rand;
 
-public record ErosionFilterSource(Holder<DensityFunction> height) implements FilterSurfaceRuleSource.FilterSource {
-	public static final Codec<ErosionFilterSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		DensityFunction.CODEC.fieldOf("height").forGetter(ErosionFilterSource::height)
-	).apply(instance, ErosionFilterSource::new));
+public record ErosionExtensionSource(Holder<DensityFunction> height) implements ExtensionRuleSource.ExtensionSource {
+	public static final Codec<ErosionExtensionSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		DensityFunction.CODEC.fieldOf("height").forGetter(ErosionExtensionSource::height)
+	).apply(instance, ErosionExtensionSource::new));
 	
 	@Override
-	public Codec<ErosionFilterSource> codec() {
+	public Codec<ErosionExtensionSource> codec() {
 		return CODEC;
 	}
 
 	@Override
-	public Filter apply(Context ctx) {
+	public Extension apply(Context ctx) {
 		if((Object) ctx.randomState instanceof RandomStateExtension extension) {
-			return new Filter(ctx, extension.seedAndCache(this.height.value(), ctx.noiseChunk));
+			return new Extension(ctx, extension.seedAndCache(this.height.value(), ctx.noiseChunk));
 		} else {
 			throw new IllegalStateException();
 		}
 	}
 	
-	private record Filter(Context context, DensityFunction height, MutableFunctionContext functionContext, Rand rand) implements FilterSurfaceRuleSource.Filter {
+	private record Extension(Context context, DensityFunction height, MutableFunctionContext functionContext, Rand rand) implements ExtensionRuleSource.Extension {
 
-		public Filter(Context ctx, DensityFunction height) {
+		public Extension(Context ctx, DensityFunction height) {
 			this(ctx, height, new MutableFunctionContext(), new Rand(1.0F));
 		}
 		

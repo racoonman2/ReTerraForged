@@ -190,11 +190,11 @@ public class RTFNoiseRouterData {
         DensityFunction vegetation = DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, noiseParams.getOrThrow(Noises.VEGETATION));
         DensityFunction factor = getFunction(functions, FACTOR);
         DensityFunction depth = getFunction(functions, DEPTH);
-        DensityFunction factorDepthGradient = noiseGradientDensity(DensityFunctions.cache2d(factor), depth);
+        DensityFunction slopedCaveWithNoodle = new YGradient(getFunction(functions, HEIGHT), DensityFunctions.constant(256.0D));
+        DensityFunction factorDepthGradient = DensityFunctions.mul(DensityFunctions.cache2d(getFunction(functions, HEIGHT)), depth);
 //        DensityFunction slopedCheese = getFunction(functions, SLOPED_CHEESE);
 //        DensityFunction slopedCheese = new YGradient(getFunction(functions, HEIGHT), DensityFunctions.constant(256.0D));
 //        DensityFunction slopedCaveSelector = DensityFunctions.rangeChoice(slopedCheese, -1000000.0, 1.5625, slopedCheese, postProcess(underground(functions, noiseParams, slopedCheese)));
-        DensityFunction slopedCaveSelectorWithNoodle = new YGradient(getFunction(functions, HEIGHT), DensityFunctions.constant(256.0D));
         DensityFunction y = getFunction(functions, Y);
         int veinMin = Stream.of(OreVeinifier.VeinType.values()).mapToInt(veinType -> veinType.minY).min().orElse(-DimensionType.MIN_Y * 2);
         int veinMax = Stream.of(OreVeinifier.VeinType.values()).mapToInt(veinType -> veinType.maxY).max().orElse(-DimensionType.MIN_Y * 2);
@@ -203,8 +203,8 @@ public class RTFNoiseRouterData {
         DensityFunction oreVeinB = yLimitedInterpolatable(y, DensityFunctions.noise(noiseParams.getOrThrow(Noises.ORE_VEIN_B), 4.0, 4.0), veinMin, veinMax, 0).abs();
         DensityFunction oreVeinSelector = DensityFunctions.add(DensityFunctions.constant(-0.08f), DensityFunctions.max(oreVeinA, oreVeinB));
         DensityFunction oreGap = DensityFunctions.noise(noiseParams.getOrThrow(Noises.ORE_GAP));
-        DensityFunction initialDensity = new YGradient(DensityFunctions.constant(83.0F / 256.0F), DensityFunctions.constant(256.0D));
-        return new NoiseRouter(aquiferBarrier, aquiferFluidLevelFloodedness, aquiferFluidLevelSpread, aquiferLava, temperature, vegetation, getFunction(functions, CONTINENTS), getFunction(functions, EROSION), depth, getFunction(functions, RIDGES), initialDensity, slopedCaveSelectorWithNoodle, oreVeinness, oreVeinSelector, oreGap);
+        DensityFunction initialDensity = DensityFunctions.add(factorDepthGradient, DensityFunctions.constant(0.39)).clamp(-64.0, 64.0);//DensityFunctions.add(slopedCaveWithNoodle, DensityFunctions.constant(-0.25D));//new YGradient(DensityFunctions.constant(83.0F / 256.0F), DensityFunctions.constant(256.0D));
+        return new NoiseRouter(aquiferBarrier, aquiferFluidLevelFloodedness, aquiferFluidLevelSpread, aquiferLava, temperature, vegetation, getFunction(functions, CONTINENTS), getFunction(functions, EROSION), depth, getFunction(functions, RIDGES), initialDensity, slopedCaveWithNoodle, oreVeinness, oreVeinSelector, oreGap);
     }
 	
 	private static DensityFunction finalDensity(HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, DensityFunction terrain) {

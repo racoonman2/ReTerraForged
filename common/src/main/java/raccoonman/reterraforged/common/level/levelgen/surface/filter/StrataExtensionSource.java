@@ -20,20 +20,20 @@ import raccoonman.reterraforged.common.level.levelgen.surface.filter.geology.Str
 import raccoonman.reterraforged.common.level.levelgen.surface.filter.geology.StrataGenerator;
 import raccoonman.reterraforged.common.level.levelgen.surface.filter.geology.Stratum;
 
-public record StrataFilterSource(Holder<DensityFunction> selector, StrataGenerator generator, Supplier<List<List<Stratum>>> strata) implements FilterSurfaceRuleSource.FilterSource {
-	public static final Codec<StrataFilterSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		DensityFunction.CODEC.fieldOf("selector").forGetter(StrataFilterSource::selector),
-		StrataGenerator.CODEC.fieldOf("generator").forGetter(StrataFilterSource::generator)
-	).apply(instance, StrataFilterSource::new));
+public record StrataExtensionSource(Holder<DensityFunction> selector, StrataGenerator generator, Supplier<List<List<Stratum>>> strata) implements ExtensionRuleSource.ExtensionSource {
+	public static final Codec<StrataExtensionSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		DensityFunction.CODEC.fieldOf("selector").forGetter(StrataExtensionSource::selector),
+		StrataGenerator.CODEC.fieldOf("generator").forGetter(StrataExtensionSource::generator)
+	).apply(instance, StrataExtensionSource::new));
 	
-	public StrataFilterSource(Holder<DensityFunction> selector, StrataGenerator generator) {
+	public StrataExtensionSource(Holder<DensityFunction> selector, StrataGenerator generator) {
 		this(selector, generator, Suppliers.memoize(generator::generate)); // im not at all a fan of this being a supplier but im yet to come up with a better solution
 	}
 	
 	@Override
-	public Filter apply(Context ctx) {
+	public Extension apply(Context ctx) {
 		if((Object) ctx.randomState instanceof RandomStateExtension extension) {
-			return new Filter(ctx, new StrataDepthBuffer(), extension.seedAndCache(this.selector.value(), ctx.noiseChunk), this.strata.get().stream().map((strata) -> {
+			return new Extension(ctx, new StrataDepthBuffer(), extension.seedAndCache(this.selector.value(), ctx.noiseChunk), this.strata.get().stream().map((strata) -> {
 				return strata.stream().map((stratum) -> {
 					return stratum.mapAll((function) -> extension.seedAndCache(function, ctx.noiseChunk));
 				}).toList();
@@ -44,11 +44,11 @@ public record StrataFilterSource(Holder<DensityFunction> selector, StrataGenerat
 	}
 
 	@Override
-	public Codec<StrataFilterSource> codec() {
+	public Codec<StrataExtensionSource> codec() {
 		return CODEC;
 	}
 	
-	private record Filter(Context context, StrataDepthBuffer buffer, DensityFunction selector, List<List<Stratum>> strata, MutableFunctionContext functionContext) implements FilterSurfaceRuleSource.Filter {
+	private record Extension(Context context, StrataDepthBuffer buffer, DensityFunction selector, List<List<Stratum>> strata, MutableFunctionContext functionContext) implements ExtensionRuleSource.Extension {
 
 		@Override
 		public void apply(int worldX, int worldZ, int chunkLocalX, int chunkLocalZ, BlockColumn column) {
