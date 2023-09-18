@@ -41,7 +41,7 @@ public record ExtensionRuleSource(List<ExtensionSource> extensions) implements S
 		return new KeyDispatchDataCodec<>(CODEC);
 	}
 	
-	// vanilla basically does this with erodedBadlandsExtension & frozenOceanExtension so there's precedent for this
+	// vanilla does this with erodedBadlandsExtension & frozenOceanExtension so there's precedent for this
 	public interface ExtensionSource {
 		public static final Codec<ExtensionSource> CODEC = RTFBuiltInRegistries.SURFACE_EXTENSION_TYPE.byNameCodec().dispatch(ExtensionSource::codec, Function.identity());
 		

@@ -18,7 +18,9 @@ class StrataDepthBuffer {
         if (this.buffer == null || this.buffer.length < count) {
             this.buffer = new float[count];
         }
-        
+        if(this.ctx == null) {
+        	this.ctx = new MutableFunctionContext();
+        }
         this.ctx.blockX = x;
         this.ctx.blockZ = z;
         for (int i = 0; i < count; ++i) {

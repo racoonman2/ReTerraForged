@@ -99,8 +99,7 @@ public class FlatCache implements DensityFunction.SimpleFunction {
             return visitor.apply(new Marker(this.function.mapAll(visitor), this.padding));
         }
 
-		@Override
-		public KeyDispatchDataCodec<FlatCache.Marker> codec() {
+		@Override		public KeyDispatchDataCodec<FlatCache.Marker> codec() {
 			return new KeyDispatchDataCodec<>(CODEC);
 		}
 	}

@@ -17,8 +17,6 @@ import raccoonman.reterraforged.common.asm.extensions.RandomStateExtension;
 import raccoonman.reterraforged.common.level.levelgen.density.MutableFunctionContext;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.surface.extension.ExtensionRuleSource;
-import raccoonman.reterraforged.common.level.levelgen.surface.extension.ExtensionRuleSource.Extension;
-import raccoonman.reterraforged.common.level.levelgen.surface.extension.ExtensionRuleSource.ExtensionSource;
 
 public record StrataExtensionSource(Holder<DensityFunction> selector, StrataGenerator generator, Supplier<List<Strata>> strata) implements ExtensionRuleSource.ExtensionSource {
 	public static final Codec<StrataExtensionSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
