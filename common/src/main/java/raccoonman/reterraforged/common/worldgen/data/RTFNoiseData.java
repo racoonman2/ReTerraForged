@@ -17,6 +17,9 @@ import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.noise.Seed;
 import raccoonman.reterraforged.common.level.levelgen.noise.Source;
 import raccoonman.reterraforged.common.level.levelgen.noise.Valley;
+import raccoonman.reterraforged.common.level.levelgen.noise.climate.Climate;
+import raccoonman.reterraforged.common.level.levelgen.noise.climate.Moisture;
+import raccoonman.reterraforged.common.level.levelgen.noise.climate.Temperature;
 import raccoonman.reterraforged.common.level.levelgen.noise.continent.ContinentLerper2;
 import raccoonman.reterraforged.common.level.levelgen.noise.continent.ContinentLerper3;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
@@ -30,6 +33,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.terrain.region.Regio
 import raccoonman.reterraforged.common.level.levelgen.noise.terrain.region.RegionLerper;
 import raccoonman.reterraforged.common.level.levelgen.noise.terrain.region.RegionSelector;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
+import raccoonman.reterraforged.common.worldgen.data.preset.ClimateSettings;
 import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
 import raccoonman.reterraforged.common.worldgen.data.preset.TerrainSettings;
 import raccoonman.reterraforged.common.worldgen.data.preset.TerrainSettings.Terrain;
@@ -37,6 +41,9 @@ import raccoonman.reterraforged.common.worldgen.data.preset.WorldSettings;
 import raccoonman.reterraforged.common.worldgen.data.preset.WorldSettings.ControlPoints;
 
 public final class RTFNoiseData {
+	public static final ResourceKey<Noise> TEMPERATURE = createKey("temperature");
+	public static final ResourceKey<Noise> MOISTURE = createKey("moisture");
+	public static final ResourceKey<Noise> MOUNTAIN_SHAPE = createKey("mountain_shape");
 	public static final ResourceKey<Noise> ROOT = createKey("root");
 	
 	public static void bootstrap(BootstapContext<Noise> ctx, Preset preset) {
@@ -45,6 +52,7 @@ public final class RTFNoiseData {
 		WorldSettings worldSettings = preset.world();
 		ControlPoints controlPoints = worldSettings.controlPoints;
 		TerrainSettings terrainSettings = preset.terrain();
+		int yScale = preset.terrain().general.yScale;
 		
 		Seed regionSeed = seed.offset(789124);
 		Seed regionWarpSeed = seed.offset(8934);
@@ -58,9 +66,9 @@ public final class RTFNoiseData {
         
         Seed mountainSeed = seed.offset(terrainSettings.general.terrainSeedOffset);
         Noise mountainShapeBase = Source.cellEdge(mountainSeed.next(), 1000, EdgeFunction.DISTANCE_2_ADD).warp(mountainSeed.next(), 333, 2, 250.0);
-        Noise mountainShape = mountainShapeBase.curve(Interpolation.CURVE3).clamp(0.0, 0.9).map(0.0, 1.0);
-
-        float waterLevel = (float) worldSettings.properties.seaLevel / 256;
+        Noise mountainShape = register(ctx, MOUNTAIN_SHAPE, mountainShapeBase.curve(Interpolation.CURVE3).clamp(0.0, 0.9).map(0.0, 1.0));
+        //TODO use mountain shape noise as ridge (or maybe erosion??) noise (very good idea) (i swear)
+        float waterLevel = (float) worldSettings.properties.seaLevel / yScale;
 		Noise base = Source.constant(waterLevel);
         Noise regionSelector = createRegionSelector(regionId, base, seed.offset(terrainSettings.general.terrainSeedOffset), regionConfig, worldSettings, terrainSettings);
         Noise regionBorders = makeLandForm(terrainSettings.steppe, base, makePlains(seed, terrainSettings));
@@ -70,15 +78,42 @@ public final class RTFNoiseData {
 		
         Noise continent = worldSettings.continent.continentType.create(worldSettings, seed);
         //TODO create climate here
+        
+        ClimateSettings climateSettings = preset.climate();
+        int biomeSize = climateSettings.biomeShape.biomeSize;
+        float tempScaler = (float)climateSettings.temperature.scale;
+        float moistScaler = climateSettings.moisture.scale * 2.5f;
+        float biomeFreq = 1.0f / biomeSize;
+        float moistureSize = moistScaler * biomeSize;
+        float temperatureSize = tempScaler * biomeSize;
+        int moistScale = NoiseUtil.round(moistureSize * biomeFreq);
+        int tempScale = NoiseUtil.round(temperatureSize * biomeFreq);
+        int warpScale = climateSettings.biomeShape.biomeWarpScale;
+        Noise warpX = Source.simplex(seed.next(), warpScale, 2).bias(-0.5);
+        Noise warpZ = Source.simplex(seed.next(), warpScale, 2).bias(-0.5);
+        Seed moistureSeed = seed.offset(climateSettings.moisture.seedOffset);
+        Noise moisture = climateSettings.moisture.apply(new Moisture(Source.simplex(moistureSeed.next(), moistScale, 1).clamp(0.125, 0.875).map(0.0, 1.0), Source.constant(climateSettings.moisture.falloff)).shift(moistureSeed.next())).warp(moistureSeed.next(), Math.max(1, moistScale / 2), 1, moistScale / 4.0).warp(moistureSeed.next(), Math.max(1, moistScale / 6), 2, moistScale / 12.0);
+        moisture = climate(moisture).freq(biomeFreq, biomeFreq).warp(warpX, warpZ, climateSettings.biomeShape.biomeWarpStrength);
+        moisture = register(ctx, MOISTURE, moisture);
+        
+        Seed tempSeed = seed.offset(climateSettings.temperature.seedOffset);
+        Noise temperature = climateSettings.temperature.apply(new Temperature(Source.constant(1.0f / tempScale), Source.constant(climateSettings.temperature.falloff))).warp(tempSeed.next(), tempScale * 4, 2, tempScale * 4).warp(tempSeed.next(), tempScale, 1, tempScale);
+        temperature = climate(temperature).freq(biomeFreq, biomeFreq).warp(warpX, warpZ, climateSettings.biomeShape.biomeWarpStrength);
+        temperature = register(ctx, TEMPERATURE, temperature);
+        
         Noise land = new Blender(mountainShape, regionLerper, mountains, 0.3F, 0.8F, 0.575F, Interpolation.LINEAR);
         
         Noise deepOcean = makeDeepOcean(seed.next(), worldSettings, terrainSettings);
-        Noise shallowOcean = Source.constant(((float) worldSettings.properties.seaLevel - 7) / 256);
+        Noise shallowOcean = Source.constant(((float) worldSettings.properties.seaLevel - 7) / yScale);
         
         Noise ocean = new ContinentLerper3(continent, deepOcean, shallowOcean, base, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast, Interpolation.CURVE3);
         Noise root = new ContinentLerper2(continent, ocean, land, controlPoints.shallowOcean, controlPoints.inland, Interpolation.LINEAR);
 
         ctx.register(ROOT, land);
+	}
+	
+	private static Noise climate(Noise noise) {
+		return new Climate(noise, DistanceFunction.EUCLIDEAN);
 	}
 	
 	private static Noise makeRegionId(Domain regionWarp, float frequency) {
@@ -90,7 +125,7 @@ public final class RTFNoiseData {
 	}
 	
 	private static Noise makeDeepOcean(int seed, WorldSettings worldSettings, TerrainSettings terrainSettings) {
-        float waterLevel = (float) worldSettings.properties.seaLevel / 256;
+        float waterLevel = (float) worldSettings.properties.seaLevel / terrainSettings.general.yScale;
         Noise hills = Source.perlin(++seed, 150, 3).scale(waterLevel * 0.7).bias(Source.perlin(++seed, 200, 1).scale(waterLevel * 0.2f));
         Noise canyons = Source.perlin(++seed, 150, 4).powCurve(0.2).invert().scale(waterLevel * 0.7).bias(Source.perlin(++seed, 170, 1).scale(waterLevel * 0.15f));
         return Source.perlin(++seed, 500, 1).blend(hills, canyons, 0.6, 0.65).warp(++seed, 50, 2, 50.0).freq(1.0F / terrainSettings.general.globalHorizontalScale, 1.0F / terrainSettings.general.globalHorizontalScale);

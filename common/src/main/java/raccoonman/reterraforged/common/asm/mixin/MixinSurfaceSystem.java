@@ -34,12 +34,13 @@ import raccoonman.reterraforged.common.level.levelgen.geology.Strata;
 @Mixin(SurfaceSystem.class)
 @Implements(@Interface(iface = SurfaceSystemExtension.class, prefix = ReTerraForged.MOD_ID + "$SurfaceSystemExtension$"))
 class MixinSurfaceSystem {
+	private static final ResourceLocation GEOLOGY_RANDOM = ReTerraForged.resolve("geology");
 	private Map<ResourceLocation, Geology> geology = new ConcurrentHashMap<>();
 	
 	public Geology reterraforged$SurfaceSystemExtension$getOrCreateGeology(Strata strata, RandomState randomState) {
 		ResourceLocation strataName = strata.name();
 		return this.geology.computeIfAbsent(strataName, (name) -> {
-			return strata.generateGeology(randomState.getOrCreateRandomFactory(name));
+			return strata.generateGeology(randomState.getOrCreateRandomFactory(GEOLOGY_RANDOM));
 		});
 	}
 	

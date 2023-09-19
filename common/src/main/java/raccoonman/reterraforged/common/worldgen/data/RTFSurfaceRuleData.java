@@ -27,25 +27,29 @@ import raccoonman.reterraforged.common.worldgen.data.preset.MiscellaneousSetting
 import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
 import raccoonman.reterraforged.common.worldgen.data.tags.RTFBlockTags;
 
-public class RTFSurfaceRuleData {
-
+public final class RTFSurfaceRuleData {
+	
     public static SurfaceRules.RuleSource overworld(HolderGetter<DensityFunction> densityFunctions, Preset preset) {
         MiscellaneousSettings miscellaneous = preset.miscellaneous();
     	ImmutableList.Builder<SurfaceExtensionSource> extensions = ImmutableList.builder();
+    	Holder<DensityFunction> height = densityFunctions.getOrThrow(RTFNoiseRouterData.HEIGHT);
+    	int yScale = preset.terrain().general.yScale;
+    	int seaLevel = preset.world().properties.seaLevel;
+    	
         if(miscellaneous.strataDecorator) {
-            extensions.add(createGeoExtension(miscellaneous.strataRegionSize));
+            extensions.add(createGeoExtension(height, miscellaneous.strataRegionSize, yScale));
         }
-        extensions.add(createErosionExtension(densityFunctions.getOrThrow(RTFNoiseRouterData.HEIGHT)));
+        extensions.add(createErosionExtension(height, seaLevel, yScale));
         return SurfaceRules.sequence(
         	SurfaceRuleData.overworld(),
     		new SurfaceExtensionRuleSource(extensions.build())
     	);
     }
 
-    private static GeoSurfaceExtensionSource createGeoExtension(int scale) {
+    private static GeoSurfaceExtensionSource createGeoExtension(Holder<DensityFunction> height, int regionSize, int yScale) {
     	List<Strata> strata = new LinkedList<>();
     	for(int i = 0; i < 100; i++) {
-    		Noise noise = Source.perlin(354215 + i, scale, 3);
+    		Noise noise = Source.perlin(354215 + i, regionSize, 3);
         	strata.add(new Strata(ReTerraForged.resolve("strata-" + i), ImmutableList.of(
         		new Stratum(RTFBlockTags.SOIL, 0, 1, 0.1F, 0.25F, noise),
         		new Stratum(RTFBlockTags.SEDIMENT, 0, 2, 0.05F, 0.15F, noise),
@@ -53,14 +57,14 @@ public class RTFSurfaceRuleData {
         		new Stratum(RTFBlockTags.ROCK, 10, 30, 0.1F, 1.5F, noise)
         	)));
     	}
-    	return new GeoSurfaceExtensionSource(strata, new NoiseWrapper.Marker(Source.cell(21345, scale).warp(213415, scale / 4, 2, scale / 2D).warp(421351, 15, 2, 30)));
+    	return new GeoSurfaceExtensionSource(strata, height, Holder.direct(new NoiseWrapper.Marker(Source.cell(21345, regionSize).warp(213415, regionSize / 4, 2, regionSize / 2D).warp(421351, 15, 2, 30))));
     }
     
-    private static ErosionSurfaceExtensionSource createErosionExtension(Holder<DensityFunction> height) {
+    private static ErosionSurfaceExtensionSource createErosionExtension(Holder<DensityFunction> height, int seaLevel, int yScale) {
     	List<MaterialSource> materials = new ArrayList<>();
     	materials.add(new MaterialSource(0.65F, 30, 140, SurfaceRules.state(Blocks.STONE.defaultBlockState()))); //rock
     	materials.add(new MaterialSource(0.47F, 40, 95,  SurfaceRules.state(Blocks.STONE.defaultBlockState()))); //dirt
-    	return new ErosionSurfaceExtensionSource(materials, height, 6.0F / 255F, 3.0F / 255F);
+    	return new ErosionSurfaceExtensionSource(materials, height, seaLevel, yScale, 6.0F / 255F, 3.0F / 255F);
     }
 }
 

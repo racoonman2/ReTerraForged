@@ -68,7 +68,8 @@ public class TerrainSettings {
     		Codec.INT.fieldOf("terrainRegionSize").forGetter((o) -> o.terrainRegionSize),
     		Codec.FLOAT.fieldOf("globalVerticalScale").forGetter((o) -> o.globalVerticalScale),
     		Codec.FLOAT.fieldOf("globalHorizontalScale").forGetter((o) -> o.globalHorizontalScale),
-    		Codec.BOOL.fieldOf("fancyMountains").forGetter((o) -> o.fancyMountains)
+    		Codec.BOOL.fieldOf("fancyMountains").forGetter((o) -> o.fancyMountains),
+    		Codec.INT.optionalFieldOf("y_scale", 256).forGetter((o) -> o.yScale)
     	).apply(instance, General::new));
     	
         public int terrainSeedOffset;
@@ -76,21 +77,23 @@ public class TerrainSettings {
         public float globalVerticalScale;
         public float globalHorizontalScale;
         public boolean fancyMountains;
+        public int yScale;
         
-        public General(int terrainSeedOffset, int terrainRegionSize, float globalVerticalScale, float globalHorizontalScale, boolean fancyMountains) {
+        public General(int terrainSeedOffset, int terrainRegionSize, float globalVerticalScale, float globalHorizontalScale, boolean fancyMountains, int yScale) {
         	this.terrainSeedOffset = terrainSeedOffset;
         	this.terrainRegionSize = terrainRegionSize;
         	this.globalVerticalScale = globalVerticalScale;
         	this.globalHorizontalScale = globalHorizontalScale;
         	this.fancyMountains = fancyMountains;
+        	this.yScale = yScale;
         }
         
         public General copy() {
-        	return new General(this.terrainSeedOffset, this.terrainRegionSize, this.globalVerticalScale, this.globalHorizontalScale, this.fancyMountains);
+        	return new General(this.terrainSeedOffset, this.terrainRegionSize, this.globalVerticalScale, this.globalHorizontalScale, this.fancyMountains, this.yScale);
         }
         
         public static General makeDefault() {
-        	return new General(0, 1200, 0.98F, 1.0F, true);
+        	return new General(0, 1200, 0.98F, 1.0F, true, 256);
         }
     }
     

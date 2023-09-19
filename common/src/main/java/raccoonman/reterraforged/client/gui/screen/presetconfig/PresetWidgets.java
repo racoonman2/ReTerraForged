@@ -3,6 +3,7 @@ package raccoonman.reterraforged.client.gui.screen.presetconfig;
 import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
 
@@ -51,12 +52,12 @@ public final class PresetWidgets {
 	}
 	
 	public static <T extends Enum<T>> CycleButton<T> createCycle(T[] values, T initial, String text, CycleButton.OnValueChange<T> callback) {
-		return createCycle(ImmutableList.copyOf(values), initial, text, callback);
+		return createCycle(ImmutableList.copyOf(values), initial, text, callback, T::name);
 	}
 	
-	public static <T extends Enum<T>> CycleButton<T> createCycle(Collection<T> values, T initial, String text, CycleButton.OnValueChange<T> callback) {
+	public static <T> CycleButton<T> createCycle(Collection<T> values, T initial, String text, CycleButton.OnValueChange<T> callback, Function<T, String> name) {
 		CycleButton<T> button = CycleButton.<T>builder((e) -> {
-			return Component.literal(e.name());
+			return Component.literal(name.apply(e));
 		}).withInitialValue(initial).withValues(values).create(-1, -1, -1, -1, Component.translatable(text), callback);
 		button.setTooltip(Tooltips.create(Tooltips.translationKey(text)));
 		return button;

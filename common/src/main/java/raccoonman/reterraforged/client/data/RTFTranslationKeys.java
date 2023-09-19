@@ -86,6 +86,7 @@ public final class RTFTranslationKeys {
 	public static final String GUI_SLIDER_TERRAIN_REGION_SIZE = resolve("gui.slider.terrainRegionSize");
 	public static final String GUI_SLIDER_GLOBAL_VERTICAL_SCALE = resolve("gui.slider.globalVerticalScale");
 	public static final String GUI_SLIDER_GLOBAL_HORIZONTAL_SCALE = resolve("gui.slider.globalHorizontalScale");
+	public static final String GUI_SLIDER_Y_SCALE = resolve("gui.slider.yScale");
 	public static final String GUI_SLIDER_TERRAIN_WEIGHT = resolve("gui.slider.terrain.weight");
 	public static final String GUI_SLIDER_TERRAIN_BASE_SCALE = resolve("gui.slider.terrain.baseScale");
 	public static final String GUI_SLIDER_TERRAIN_VERTICAL_SCALE = resolve("gui.slider.terrain.verticalScale");

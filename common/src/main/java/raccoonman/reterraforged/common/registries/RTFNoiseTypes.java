@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 import raccoonman.reterraforged.common.level.levelgen.noise.Blender;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Valley;
-import raccoonman.reterraforged.common.level.levelgen.noise.climate.ClimateCellSampler;
+import raccoonman.reterraforged.common.level.levelgen.noise.climate.Climate;
 import raccoonman.reterraforged.common.level.levelgen.noise.climate.Moisture;
 import raccoonman.reterraforged.common.level.levelgen.noise.climate.Temperature;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Add;
@@ -119,7 +119,7 @@ public final class RTFNoiseTypes {
 		register("floor", Floor.CODEC);
 		register("temperature", Temperature.CODEC);
 		register("moisture", Moisture.CODEC);
-		register("climate_cell_sampler", ClimateCellSampler.CODEC);
+		register("climate", Climate.CODEC);
 		register("region_edge", RegionEdge.CODEC);
 		register("region_id", RegionId.CODEC);
 		register("region_lerper", RegionLerper.CODEC);

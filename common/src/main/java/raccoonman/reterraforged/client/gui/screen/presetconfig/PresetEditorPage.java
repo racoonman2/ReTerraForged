@@ -12,28 +12,22 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.worldselection.WorldCreationContext;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.core.HolderGetter;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
-import net.minecraft.world.level.levelgen.NoiseRouterData;
-import net.minecraft.world.level.levelgen.RandomState;
 import raccoonman.reterraforged.client.gui.screen.page.BisectedPage;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
-import raccoonman.reterraforged.common.asm.extensions.RandomStateExtension;
-import raccoonman.reterraforged.common.level.levelgen.density.MutableFunctionContext;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData;
 
 public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, AbstractWidget, AbstractWidget> {
+	private CycleButton<Holder.Reference<Noise>> noise;
 	private Preview preview;
 	protected PresetEntry preset;
 	
@@ -44,18 +38,35 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	}
 	
 	protected void regenerate() {
+		this.rebuildNoiseButton();
+
 		this.preview.regenerate();
+	}
+	
+	//TODO make this not so janky
+	private void rebuildNoiseButton() {
+		WorldCreationContext settings = PresetEditorPage.this.screen.getSettings();
+        RegistryAccess.Frozen registries = settings.worldgenLoadContext();
+        HolderLookup.Provider provider = PresetEditorPage.this.preset.getPreset().buildPatch(registries);
+        HolderLookup<Noise> noiseLookup = provider.lookupOrThrow(RTFRegistries.NOISE);
+        Holder.Reference<Noise> rootNoise = noiseLookup.getOrThrow(RTFNoiseData.ROOT);
+		this.noise = PresetWidgets.createCycle(noiseLookup.listElements().toList(), this.noise != null ? this.noise.getValue() : rootNoise, "Noise", (value, button) -> {
+			this.preview.regenerate();
+		}, (h) -> h.key().location().toString());
 	}
 	
 	@Override
 	public void init() {
 		super.init();
-		
+
+        this.rebuildNoiseButton();
 		if(this.preview != null) {
 			this.preview.close();
 		}
 		this.preview = new Preview(this.screen.getSettings().options().seed());
 		this.preview.regenerate();
+
+		this.right.addWidget(this.noise);
 		this.right.addWidget(this.preview);
 	}
 	
@@ -113,11 +124,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 
 	    public void regenerate() {
 	        this.seed = random.nextInt();
-	        WorldCreationContext settings = PresetEditorPage.this.screen.getSettings();
-	        RegistryAccess.Frozen registries = settings.worldgenLoadContext();
-	        HolderLookup.Provider provider = PresetEditorPage.this.preset.getPreset().buildPatch(registries);
-	        HolderGetter<Noise> noiseLookup = provider.lookupOrThrow(RTFRegistries.NOISE);
-	        Noise rootNoise = noiseLookup.getOrThrow(RTFNoiseData.ROOT).value();
+	        Holder.Reference<Noise> noise = PresetEditorPage.this.noise.getValue();
 	        
 	        final int cellCount = 16;
 			NativeImage pixels = this.texture.getPixels();
@@ -134,7 +141,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 							for(int ly = 0; ly < cellHeight; ly++) {
 								int tx = cx + lx;
 								int ty = cy + ly;
-								int color = (int) (rootNoise.compute(tx * 30, ty * 30, (int) PresetEditorPage.this.screen.getSettings().options().seed()) * 255);
+								int color = (int) (noise.value().compute(tx * 30, ty * 30, (int) PresetEditorPage.this.screen.getSettings().options().seed()) * 255);
 								
 					            pixels.setPixelRGBA(tx, ty, rgba(color, color, color));
 							}

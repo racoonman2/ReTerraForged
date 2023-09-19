@@ -29,7 +29,7 @@ public final class MCNoiseGeneratorSettings {
 	  		new NoiseSettings(-world.properties.worldDepth, 384, 1, 1),
 	  		Blocks.STONE.defaultBlockState(),
 	  		Blocks.WATER.defaultBlockState(),
-	  		RTFNoiseRouterData.overworld(densityFunctions, noiseParams, noise),
+	  		RTFNoiseRouterData.overworld(densityFunctions, noiseParams, noise, preset),
 	  		RTFSurfaceRuleData.overworld(densityFunctions, preset),
 	  		new OverworldBiomeBuilder().spawnTarget(),
 	  		preset.world().properties.seaLevel,

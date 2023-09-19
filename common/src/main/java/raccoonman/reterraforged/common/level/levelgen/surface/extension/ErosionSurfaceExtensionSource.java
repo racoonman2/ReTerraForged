@@ -26,13 +26,14 @@ import raccoonman.reterraforged.common.level.levelgen.density.MutableFunctionCon
 import raccoonman.reterraforged.common.level.levelgen.density.Steepness;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Source;
-import raccoonman.reterraforged.common.level.levelgen.surface.extension.ErosionSurfaceExtensionSource.MaterialSource;
 import raccoonman.reterraforged.common.worldgen.data.tags.RTFBlockTags;
 
-public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Holder<DensityFunction> height, float heightModifier, float slopeModifier) implements SurfaceExtensionSource {
+public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Holder<DensityFunction> height, int seaLevel, int yScale, float heightModifier, float slopeModifier) implements SurfaceExtensionSource {
 	public static final Codec<ErosionSurfaceExtensionSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		MaterialSource.CODEC.listOf().fieldOf("materials").forGetter(ErosionSurfaceExtensionSource::materials),
 		DensityFunction.CODEC.fieldOf("height").forGetter(ErosionSurfaceExtensionSource::height),
+		Codec.INT.fieldOf("sea_level").forGetter(ErosionSurfaceExtensionSource::seaLevel),
+		Codec.INT.fieldOf("y_scale").forGetter(ErosionSurfaceExtensionSource::yScale),
 		Codec.FLOAT.fieldOf("height_modifier").forGetter(ErosionSurfaceExtensionSource::heightModifier),
 		Codec.FLOAT.fieldOf("slope_modifier").forGetter(ErosionSurfaceExtensionSource::slopeModifier)
 	).apply(instance, ErosionSurfaceExtensionSource::new));
@@ -45,8 +46,8 @@ public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Hold
 	public Extension apply(Context surfaceContext) {
 		if((Object) surfaceContext.randomState instanceof RandomStateExtension randomStateExt) {		
 			DensityFunction cachedHeight = randomStateExt.cache(this.height.value(), surfaceContext.noiseChunk);
-			DensityFunction cachedSteepness = randomStateExt.cache(new FlatCache.Marker(new Steepness(cachedHeight, 63.0F / 256.0F, 10.0F, 1), 0), surfaceContext.noiseChunk);
-			return new Extension(surfaceContext, cachedHeight, cachedSteepness, this.materials.stream().map((material) -> material.apply(surfaceContext)).toList(), this.heightModifier, this.slopeModifier);
+			DensityFunction cachedSteepness = randomStateExt.cache(new FlatCache.Marker(new Steepness(cachedHeight, (float) this.seaLevel / (float) this.yScale, 10.0F, 1), 0), surfaceContext.noiseChunk);
+			return new Extension(surfaceContext, cachedHeight, cachedSteepness, this.materials.stream().map((material) -> material.apply(surfaceContext)).toList(), this.seaLevel, this.heightModifier, this.slopeModifier);
 		} else {
 			throw new IllegalStateException();
 		}
@@ -57,19 +58,25 @@ public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Hold
 		return CODEC;
 	}
 
-	private record Extension(Context surfaceContext, DensityFunction height, DensityFunction steepness, List<Material> materials, float heightModifier, float slopeModifier, MutableFunctionContext functionContext) implements SurfaceExtension {
+	//TODO this should be private
+	public record Extension(Context surfaceContext, DensityFunction height, DensityFunction steepness, List<Material> materials, int minY, float heightModifier, float slopeModifier, MutableFunctionContext functionContext) implements SurfaceExtension {
 
-		public Extension(Context surfaceContext, DensityFunction height, DensityFunction steepness, List<Material> materials, float heightModifier, float slopeModifier) {
-			this(surfaceContext, height, steepness, materials, heightModifier, slopeModifier, new MutableFunctionContext());
+		public Extension(Context surfaceContext, DensityFunction height, DensityFunction steepness, List<Material> materials, int minY, float heightModifier, float slopeModifier) {
+			this(surfaceContext, height, steepness, materials, minY, heightModifier, slopeModifier, new MutableFunctionContext());
 		}
 		
 		@Override
-		public void apply(BlockColumn column) {
+		public void apply(BlockColumn column) {	        
 			ChunkPos chunkPos = this.surfaceContext.chunk.getPos();
 			int chunkLocalX = chunkPos.getBlockX(this.surfaceContext.blockX);
 			int chunkLocalZ = chunkPos.getBlockZ(this.surfaceContext.blockZ);
 			int y = this.surfaceContext.chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, chunkLocalX, chunkLocalZ);
 			BlockState surface = column.getBlock(y);
+
+	        if (y < this.minY) {
+	            return;
+	        }
+
 			if(surface.is(RTFBlockTags.ERODIBLE)) {
 				BlockState top = Blocks.GRASS.defaultBlockState();
 				BlockState middle = Blocks.STONE.defaultBlockState();
@@ -109,9 +116,9 @@ public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Hold
 		
 		private static final Noise RAND = Source.builder().shift(21415).rand();
 
-	    private static final Noise VARIANCE = (Noise) Source.perlin(0, 100, 1);
+	    private static final Noise VARIANCE = Source.perlin(0, 100, 1);
 		private static float getNoise(float x, float z, int seed, float scale, float bias) {
-	        return (VARIANCE.compute(x, z, seed) * scale) + bias;
+	        return VARIANCE.compute(x, z, seed) * scale + bias;
 	    }
 
 		private static final List<Block> GRASS = ImmutableList.of(Blocks.DRIED_KELP_BLOCK, Blocks.GRASS_BLOCK, Blocks.HAY_BLOCK, Blocks.MYCELIUM, Blocks.NETHER_WART_BLOCK, Blocks.SHROOMLIGHT, Blocks.TARGET, Blocks.WARPED_WART_BLOCK);
