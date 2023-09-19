@@ -24,8 +24,8 @@ public record GeoSurfaceExtensionSource(List<Strata> strata, DensityFunction sel
 	
 	@Override
 	public Extension apply(Context surfaceContext) {
-		if((Object) surfaceContext.randomState instanceof RandomStateExtension randExt) {
-			return new Extension(surfaceContext, this.strata, surfaceContext.noiseChunk.wrap(this.selector.mapAll(randExt.visitor())));
+		if((Object) surfaceContext.randomState instanceof RandomStateExtension randomStateExt) {
+			return new Extension(surfaceContext, this.strata, randomStateExt.cache(this.selector, surfaceContext.noiseChunk));
 		} else {
 			throw new IllegalStateException();
 		}
@@ -36,7 +36,7 @@ public record GeoSurfaceExtensionSource(List<Strata> strata, DensityFunction sel
 		return CODEC;
 	}
 	
-	public record Extension(Context surfaceContext, List<Strata> strata, DensityFunction selector, Geology.Buffer depthBuffer, MutableFunctionContext functionContext) implements SurfaceExtension {
+	private record Extension(Context surfaceContext, List<Strata> strata, DensityFunction selector, Geology.Buffer depthBuffer, MutableFunctionContext functionContext) implements SurfaceExtension {
 
 		public Extension(Context surfaceContext, List<Strata> strata, DensityFunction selector) {
 			this(surfaceContext, strata, selector, new Geology.Buffer(), new MutableFunctionContext());

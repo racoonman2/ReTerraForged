@@ -6,13 +6,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
 
-public record XZGradient(DensityFunction height, float minHeight, float scaler, int radius) implements DensityFunction {
-	public static final Codec<XZGradient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		DensityFunction.HOLDER_HELPER_CODEC.fieldOf("height").forGetter(XZGradient::height),
-		Codec.FLOAT.fieldOf("min_height").forGetter(XZGradient::minHeight),
-		Codec.FLOAT.fieldOf("scaler").forGetter(XZGradient::scaler),
-		Codec.INT.fieldOf("radius").forGetter(XZGradient::radius)
-	).apply(instance, XZGradient::new));
+public record Steepness(DensityFunction height, float minHeight, float scaler, int radius) implements DensityFunction {
+	public static final Codec<Steepness> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		DensityFunction.HOLDER_HELPER_CODEC.fieldOf("height").forGetter(Steepness::height),
+		Codec.FLOAT.fieldOf("min_height").forGetter(Steepness::minHeight),
+		Codec.FLOAT.fieldOf("scaler").forGetter(Steepness::scaler),
+		Codec.INT.fieldOf("radius").forGetter(Steepness::radius)
+	).apply(instance, Steepness::new));
 	
 	@Override
 	public double compute(FunctionContext ctx) {
@@ -25,7 +25,7 @@ public record XZGradient(DensityFunction height, float minHeight, float scaler, 
 
 	@Override
 	public DensityFunction mapAll(Visitor v) {
-		return v.apply(new XZGradient(this.height.mapAll(v), this.minHeight, this.scaler, this.radius));
+		return v.apply(new Steepness(this.height.mapAll(v), this.minHeight, this.scaler, this.radius));
 	}
 
 	@Override
@@ -39,11 +39,11 @@ public record XZGradient(DensityFunction height, float minHeight, float scaler, 
 	}
 
 	@Override
-	public KeyDispatchDataCodec<XZGradient> codec() {
+	public KeyDispatchDataCodec<Steepness> codec() {
 		return new KeyDispatchDataCodec<>(CODEC);
 	}
 	
-	public XZGradient.Cached cache() {
+	public Steepness.Cached cache() {
 		return new Cached(this.height);
 	}
 
@@ -79,11 +79,11 @@ public record XZGradient(DensityFunction height, float minHeight, float scaler, 
 		
 		@Override
 		public double compute(FunctionContext ctx) {
-			return XZGradient.this.compute(ctx, this.ctx);
+			return Steepness.this.compute(ctx, this.ctx);
 		}
 		@Override
 		public DensityFunction mapAll(Visitor v) {
-			return v.apply(new XZGradient.Cached(this.height.mapAll(v)));
+			return v.apply(new Steepness.Cached(this.height.mapAll(v)));
 		}
 
 		@Override

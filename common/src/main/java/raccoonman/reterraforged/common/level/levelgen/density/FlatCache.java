@@ -16,7 +16,7 @@ public class FlatCache implements DensityFunction.SimpleFunction {
     private int offsetX, offsetZ;
     private Supplier<double[]> values;
 
-    public FlatCache(DensityFunction filler, int width, int padding, int offsetX, int offsetZ) {
+    public FlatCache(DensityFunction filler, int width, int offsetX, int offsetZ) {
     	this.filler = filler;
     	this.width = width;
     	this.offsetX = offsetX;

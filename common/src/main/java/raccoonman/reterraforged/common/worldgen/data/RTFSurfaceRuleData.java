@@ -1,12 +1,15 @@
 package raccoonman.reterraforged.common.worldgen.data;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.worldgen.SurfaceRuleData;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import raccoonman.reterraforged.common.ReTerraForged;
@@ -15,6 +18,8 @@ import raccoonman.reterraforged.common.level.levelgen.geology.Strata;
 import raccoonman.reterraforged.common.level.levelgen.geology.Stratum;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Source;
+import raccoonman.reterraforged.common.level.levelgen.surface.extension.ErosionSurfaceExtensionSource;
+import raccoonman.reterraforged.common.level.levelgen.surface.extension.ErosionSurfaceExtensionSource.MaterialSource;
 import raccoonman.reterraforged.common.level.levelgen.surface.extension.GeoSurfaceExtensionSource;
 import raccoonman.reterraforged.common.level.levelgen.surface.extension.SurfaceExtensionRuleSource;
 import raccoonman.reterraforged.common.level.levelgen.surface.extension.SurfaceExtensionSource;
@@ -30,7 +35,7 @@ public class RTFSurfaceRuleData {
         if(miscellaneous.strataDecorator) {
             extensions.add(createGeoExtension(miscellaneous.strataRegionSize));
         }
-//        extensions.add(new ErosionExtensionSource(densityFunctions.getOrThrow(RTFNoiseRouterData.HEIGHT)));
+        extensions.add(createErosionExtension(densityFunctions.getOrThrow(RTFNoiseRouterData.HEIGHT)));
         return SurfaceRules.sequence(
         	SurfaceRuleData.overworld(),
     		new SurfaceExtensionRuleSource(extensions.build())
@@ -49,6 +54,13 @@ public class RTFSurfaceRuleData {
         	)));
     	}
     	return new GeoSurfaceExtensionSource(strata, new NoiseWrapper.Marker(Source.cell(21345, scale).warp(213415, scale / 4, 2, scale / 2D).warp(421351, 15, 2, 30)));
+    }
+    
+    private static ErosionSurfaceExtensionSource createErosionExtension(Holder<DensityFunction> height) {
+    	List<MaterialSource> materials = new ArrayList<>();
+    	materials.add(new MaterialSource(0.65F, 30, 140, SurfaceRules.state(Blocks.STONE.defaultBlockState()))); //rock
+    	materials.add(new MaterialSource(0.47F, 40, 95,  SurfaceRules.state(Blocks.STONE.defaultBlockState()))); //dirt
+    	return new ErosionSurfaceExtensionSource(materials, height, 6.0F / 255F, 3.0F / 255F);
     }
 }
 
