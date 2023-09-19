@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.util.KeyDispatchDataCodec;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 
@@ -20,7 +19,7 @@ public record YGradient(DensityFunction y, DensityFunction scale) implements Den
 		double blockY = ctx.blockY();
 		double noiseY = NoiseUtil.floor(this.y.compute(ctx) * this.scale.compute(ctx));
 		double delta = noiseY - blockY;
-		return lerp(delta, noiseY > blockY ? 50 : 50); // TODO: don't hardcode these values
+		return delta / 50; // TODO: don't hardcode this value either
 	}
 
 	@Override
@@ -41,9 +40,5 @@ public record YGradient(DensityFunction y, DensityFunction scale) implements Den
 	@Override
 	public KeyDispatchDataCodec<YGradient> codec() {
 		return new KeyDispatchDataCodec<>(CODEC);
-	}
-	
-	private static double lerp(double value, double gradientSize) {
-		return Mth.clamp(value, -gradientSize, gradientSize) / gradientSize;
 	}
 }
