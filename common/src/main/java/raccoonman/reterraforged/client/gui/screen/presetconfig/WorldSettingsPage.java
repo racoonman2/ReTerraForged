@@ -2,21 +2,25 @@ package raccoonman.reterraforged.client.gui.screen.presetconfig;
 
 import java.util.Optional;
 
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
-import raccoonman.reterraforged.common.worldgen.data.preset.ContinentType;
+import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData2;
 import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
 import raccoonman.reterraforged.common.worldgen.data.preset.SpawnType;
 import raccoonman.reterraforged.common.worldgen.data.preset.WorldSettings;
 
 public class WorldSettingsPage extends PresetEditorPage {
-	private CycleButton<ContinentType> continentType;
+	private CycleButton<ResourceKey<Noise>> continentType;
 	private CycleButton<DistanceFunction> continentShape;
 	private Slider continentScale;
 	private Slider continentJitter;
@@ -54,11 +58,21 @@ public class WorldSettingsPage extends PresetEditorPage {
 		WorldSettings world = preset.world();
 		WorldSettings.Continent continent = world.continent;
 		
-		this.continentType = PresetWidgets.createCycle(ContinentType.values(), continent.continentType, RTFTranslationKeys.GUI_BUTTON_CONTINENT_TYPE, (button, value) -> {
-			continent.continentType = value;
-			this.applyContinentValue(value);
-			this.regenerate();
-		});
+		this.continentType = PresetWidgets.createCycle(
+			ImmutableList.of(
+				RTFNoiseData2.MULTI_CONTINENT,
+				RTFNoiseData2.SINGLE_CONTINENT,
+				RTFNoiseData2.MULTI_IMPROVED_CONTINENT,
+				RTFNoiseData2.EXPERIMENTAL_CONTINENT
+			),
+			continent.continentType, RTFTranslationKeys.GUI_BUTTON_CONTINENT_TYPE, 
+			(button, value) -> {
+				continent.continentType = value;
+				this.applyContinentValue(value);
+				this.regenerate();
+			}, 
+			(key) -> key.location().toString()
+		);
 		this.continentShape = PresetWidgets.createCycle(DistanceFunction.values(), continent.continentShape, RTFTranslationKeys.GUI_BUTTON_CONTINENT_SHAPE, (button, value) -> {
 			continent.continentShape = value;
 			this.regenerate();
@@ -189,10 +203,10 @@ public class WorldSettingsPage extends PresetEditorPage {
 		return Optional.of(new ClimateSettingsPage(this.screen, this.preset));
 	}
 	
-	private void applyContinentValue(ContinentType value) {
-		this.continentShape.active = value == ContinentType.MULTI || value == ContinentType.SINGLE;
+	private void applyContinentValue(ResourceKey<Noise> value) {
+		this.continentShape.active = value == RTFNoiseData2.MULTI_CONTINENT || value == RTFNoiseData2.SINGLE_CONTINENT;
 
-		boolean isMultiImproved = value == ContinentType.MULTI_IMPROVED;
+		boolean isMultiImproved = value == RTFNoiseData2.MULTI_IMPROVED_CONTINENT;
 		this.continentSkipping.active = isMultiImproved;
 		this.continentSizeVariance.active = isMultiImproved;
 		this.continentNoiseOctaves.active = isMultiImproved;

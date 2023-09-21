@@ -1,9 +1,18 @@
 package raccoonman.reterraforged.common.worldgen.data.preset;
 
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
+import raccoonman.reterraforged.common.registries.RTFRegistries;
+import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData2;
 
 public class WorldSettings {
 	public static final Codec<WorldSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -31,8 +40,24 @@ public class WorldSettings {
     }
     
     public static class Continent {
+    	// NOTE: this prevents presets from loading on 1.16.5
+    	private static final Map<String, ResourceKey<Noise>> LEGACY_CONTINENT_TYPES = ImmutableMap.of(
+    		"MULTI", RTFNoiseData2.MULTI_CONTINENT,
+    		"SINGLE", RTFNoiseData2.SINGLE_CONTINENT,
+    		"MULTI_IMPROVED", RTFNoiseData2.MULTI_IMPROVED_CONTINENT
+//    		"EXPERIMENTAL", RTFNoiseData2.EXPERIMENTAL_CONTINENT
+    	);
+    	private static final Codec<ResourceKey<Noise>> LEGACY_CONTINENT_TYPE_CODEC = Codec.STRING.comapFlatMap((s) -> {
+    		ResourceKey<Noise> legacy = LEGACY_CONTINENT_TYPES.get(s);
+    		if(legacy != null) {
+    			return DataResult.success(legacy);
+    		} else {
+    			return ResourceLocation.read(s).map((location) -> ResourceKey.create(RTFRegistries.NOISE, location));
+    		}
+    	}, (s) -> s.location().toString());
+    	
     	public static final Codec<Continent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-    		ContinentType.CODEC.fieldOf("continentType").forGetter((o) -> o.continentType),
+    		LEGACY_CONTINENT_TYPE_CODEC.fieldOf("continentType").forGetter((o) -> o.continentType),
     		DistanceFunction.CODEC.fieldOf("continentShape").forGetter((o) -> o.continentShape),
     		Codec.INT.fieldOf("continentScale").forGetter((o) -> o.continentScale),
     		Codec.FLOAT.fieldOf("continentJitter").forGetter((o) -> o.continentJitter),
@@ -43,7 +68,7 @@ public class WorldSettings {
     		Codec.FLOAT.fieldOf("continentNoiseLacunarity").forGetter((o) -> o.continentNoiseLacunarity)
     	).apply(instance, Continent::new));
     	
-        public ContinentType continentType;
+        public ResourceKey<Noise> continentType;
         public DistanceFunction continentShape;
         public int continentScale;
         public float continentJitter;
@@ -53,7 +78,7 @@ public class WorldSettings {
         public float continentNoiseGain;
         public float continentNoiseLacunarity;
         
-        public Continent(ContinentType continentType, DistanceFunction continentShape, int continentScale, float continentJitter, float continentSkipping, float continentSizeVariance, int continentNoiseOctaves, float continentNoiseGain, float continentNoiseLacunarity) {
+        public Continent(ResourceKey<Noise> continentType, DistanceFunction continentShape, int continentScale, float continentJitter, float continentSkipping, float continentSizeVariance, int continentNoiseOctaves, float continentNoiseGain, float continentNoiseLacunarity) {
             this.continentType = continentType;
             this.continentShape = continentShape;
             this.continentScale = continentScale;
@@ -70,7 +95,7 @@ public class WorldSettings {
         }
         
         public static Continent makeDefault() {
-        	return new Continent(ContinentType.MULTI_IMPROVED, DistanceFunction.EUCLIDEAN, 3000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F);
+        	return new Continent(RTFNoiseData2.MULTI_IMPROVED_CONTINENT, DistanceFunction.EUCLIDEAN, 3000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F);
         }
     }
     
@@ -131,7 +156,7 @@ public class WorldSettings {
         }
         
         public static Properties makeDefault() {
-        	return new Properties(SpawnType.CONTINENT_CENTER, 256, 64, 63);
+        	return new Properties(SpawnType.CONTINENT_CENTER, 512, 64, 63);
         }
     }
 }

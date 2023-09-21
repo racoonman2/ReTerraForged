@@ -58,8 +58,7 @@ public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Hold
 		return CODEC;
 	}
 
-	//TODO this should be private
-	public record Extension(Context surfaceContext, DensityFunction height, DensityFunction steepness, List<Material> materials, int minY, float heightModifier, float slopeModifier, MutableFunctionContext functionContext) implements SurfaceExtension {
+	private record Extension(Context surfaceContext, DensityFunction height, DensityFunction steepness, List<Material> materials, int minY, float heightModifier, float slopeModifier, MutableFunctionContext functionContext) implements SurfaceExtension {
 
 		public Extension(Context surfaceContext, DensityFunction height, DensityFunction steepness, List<Material> materials, int minY, float heightModifier, float slopeModifier) {
 			this(surfaceContext, height, steepness, materials, minY, heightModifier, slopeModifier, new MutableFunctionContext());

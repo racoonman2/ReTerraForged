@@ -8,10 +8,11 @@ import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 
 //TODO don't hardcode min / max values
-public record YGradient(DensityFunction y, DensityFunction scale) implements DensityFunction.SimpleFunction {
+public record YGradient(DensityFunction y, DensityFunction scale, int gradientSize) implements DensityFunction.SimpleFunction {
 	public static final Codec<YGradient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		DensityFunction.HOLDER_HELPER_CODEC.fieldOf("y").forGetter(YGradient::y),
-		DensityFunction.HOLDER_HELPER_CODEC.fieldOf("scale").forGetter(YGradient::scale)
+		DensityFunction.HOLDER_HELPER_CODEC.fieldOf("scale").forGetter(YGradient::scale),
+		Codec.INT.fieldOf("gradient_size").forGetter(YGradient::gradientSize)
 	).apply(instance, YGradient::new));
 	
 	@Override
@@ -19,12 +20,12 @@ public record YGradient(DensityFunction y, DensityFunction scale) implements Den
 		double blockY = ctx.blockY();
 		double noiseY = NoiseUtil.floor(this.y.compute(ctx) * this.scale.compute(ctx));
 		double delta = noiseY - blockY;
-		return delta / 50; // TODO: don't hardcode this value either
+		return delta / this.gradientSize; // TODO: don't hardcode this value either
 	}
 
 	@Override
 	public DensityFunction mapAll(Visitor visitor) {
-		return visitor.apply(new YGradient(this.y.mapAll(visitor), this.scale.mapAll(visitor)));
+		return visitor.apply(new YGradient(this.y.mapAll(visitor), this.scale.mapAll(visitor), this.gradientSize));
 	}
 
 	@Override

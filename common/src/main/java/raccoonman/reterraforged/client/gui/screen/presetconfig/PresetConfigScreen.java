@@ -26,6 +26,7 @@ import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.data.registries.RegistriesDatapackGenerator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.world.level.levelgen.WorldOptions;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
@@ -46,6 +47,12 @@ public class PresetConfigScreen extends LinkedPageScreen {
 		super.onClose();
 
 		this.minecraft.setScreen(this.parent);
+	}
+	
+	public void setSeed(long seed) {
+		this.parent.getUiState().setSettings(this.getSettings().withOptions((options) -> {
+			return new WorldOptions(seed, options.generateStructures(), options.generateBonusChest());
+		}));
 	}
 	
 	public WorldCreationContext getSettings() {

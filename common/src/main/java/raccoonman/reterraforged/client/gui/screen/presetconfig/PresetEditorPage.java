@@ -1,9 +1,10 @@
 package raccoonman.reterraforged.client.gui.screen.presetconfig;
 
 import java.io.IOException;
-import java.util.Random;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -19,15 +20,22 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.resources.ResourceKey;
+import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.BisectedPage;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
+import raccoonman.reterraforged.client.gui.widget.Slider;
+import raccoonman.reterraforged.client.gui.widget.ValueButton;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
-import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData;
+import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData2;
 
 public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, AbstractWidget, AbstractWidget> {
-	private CycleButton<Holder.Reference<Noise>> noise;
+	private Slider zoom;
+	private ValueButton<Integer> seed;
+	private CycleButton<ResourceKey<Noise>> noise;
 	private Preview preview;
 	protected PresetEntry preset;
 	
@@ -38,34 +46,34 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	}
 	
 	protected void regenerate() {
-		this.rebuildNoiseButton();
-
 		this.preview.regenerate();
-	}
-	
-	//TODO make this not so janky
-	private void rebuildNoiseButton() {
-		WorldCreationContext settings = PresetEditorPage.this.screen.getSettings();
-        RegistryAccess.Frozen registries = settings.worldgenLoadContext();
-        HolderLookup.Provider provider = PresetEditorPage.this.preset.getPreset().buildPatch(registries);
-        HolderLookup<Noise> noiseLookup = provider.lookupOrThrow(RTFRegistries.NOISE);
-        Holder.Reference<Noise> rootNoise = noiseLookup.getOrThrow(RTFNoiseData.ROOT);
-		this.noise = PresetWidgets.createCycle(noiseLookup.listElements().toList(), this.noise != null ? this.noise.getValue() : rootNoise, "Noise", (value, button) -> {
-			this.preview.regenerate();
-		}, (h) -> h.key().location().toString());
 	}
 	
 	@Override
 	public void init() {
 		super.init();
 
-        this.rebuildNoiseButton();
 		if(this.preview != null) {
 			this.preview.close();
 		}
-		this.preview = new Preview(this.screen.getSettings().options().seed());
+
+		this.zoom = PresetWidgets.createIntSlider(Optional.ofNullable(this.zoom).map(Slider::getLerpedValue).orElse(68.0D).intValue(), 1, 100, RTFTranslationKeys.GUI_SLIDER_ZOOM, (slider, value) -> {
+			this.regenerate();
+			return value;
+		});
+		this.seed = PresetWidgets.createRandomButton(RTFTranslationKeys.GUI_BUTTON_SEED, (int) this.screen.getSettings().options().seed(), (i) -> {
+			this.screen.setSeed(i);
+			this.regenerate();
+		});
+		this.noise = PresetWidgets.createCycle(ImmutableList.of(RTFNoiseData2.MULTI_IMPROVED_CONTINENT, RTFNoiseData2.MULTI_CONTINENT, RTFNoiseData2.SINGLE_CONTINENT/*, RTFNoiseData2.EXPERIMENTAL_CONTINENT*/), Optional.ofNullable(this.noise).map(CycleButton::getValue).orElse(RTFNoiseData2.MULTI_IMPROVED_CONTINENT), RTFTranslationKeys.GUI_BUTTON_NOISE, (value, button) -> {
+			this.preview.regenerate();
+		}, (h) -> h.location().toString());
+		
+		this.preview = new Preview();
 		this.preview.regenerate();
 
+		this.right.addWidget(this.zoom);
+		this.right.addWidget(this.seed);
 		this.right.addWidget(this.noise);
 		this.right.addWidget(this.preview);
 	}
@@ -99,51 +107,46 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	    private static final int FACTOR = 4;
 	    public static final int SIZE = (1 << 4) << FACTOR;
 	    private static final float[] LEGEND_SCALES = {1, 0.9F, 0.75F, 0.6F};
-
-	    private final int offsetX;
-	    private final int offsetZ;
-	    private final Random random = new Random(System.currentTimeMillis());
 	    private final DynamicTexture texture = new DynamicTexture(new NativeImage(SIZE, SIZE, false));
 
-	    private long seed;
-	    
 	    private String hoveredCoords = "";
 	    private String[] values = {"", "", ""};
 	    private String[] labels = {"preview_area", "preview_terrain", "preview_biome"};
 
-	    public Preview(long seed) {
-	        super(0, 0, 0, 0, Component.literal(""), (b) -> {}, DEFAULT_NARRATION);
-	        this.seed = seed;
-	        this.offsetX = 0;
-	        this.offsetZ = 0;
-	    }
-
-	    public long getSeed() {
-	        return seed;
+	    public Preview() {
+	        super(-1, -1, -1, -1, CommonComponents.EMPTY, (b) -> {}, DEFAULT_NARRATION);
 	    }
 
 	    public void regenerate() {
-	        this.seed = random.nextInt();
-	        Holder.Reference<Noise> noise = PresetEditorPage.this.noise.getValue();
-	        
-	        final int cellCount = 16;
-			NativeImage pixels = this.texture.getPixels();
-			int cellWidth = pixels.getWidth() / cellCount;
-			int cellHeight = pixels.getHeight() / cellCount;
+	        ResourceKey<Noise> noiseKey = PresetEditorPage.this.noise.getValue();
+			WorldCreationContext settings = PresetEditorPage.this.screen.getSettings();
+	        RegistryAccess.Frozen registries = settings.worldgenLoadContext();
+	        HolderLookup.Provider provider = PresetEditorPage.this.preset.getPreset().buildPatch(registries);
+	        HolderLookup<Noise> noiseLookup = provider.lookupOrThrow(RTFRegistries.NOISE);
+	        Holder.Reference<Noise> noise = noiseLookup.getOrThrow(noiseKey);
 
+			NativeImage pixels = this.texture.getPixels();
+	        int width = pixels.getWidth();
+			int height = pixels.getHeight();
+			int cellCount = 16;
+			int cellWidth = width / cellCount;
+			int cellHeight = width / cellCount;
 			CompletableFuture<?>[] futures = new CompletableFuture[cellCount * cellCount];
+    		int halfX = width / 2;
+    		int halfY = height / 2;
+    		float delta = (float) this.getZoom();
 			for(int x = 0; x < cellCount; x++) {
 				for(int y = 0; y < cellCount; y++) {
-					final int cx = x * cellWidth;
-					final int cy = y * cellHeight;
+					int cx = x * cellWidth;
+					int cy = y * cellHeight;
 					futures[x + y * cellCount] = CompletableFuture.runAsync(() -> {
 						for(int lx = 0; lx < cellWidth; lx++) {
 							for(int ly = 0; ly < cellHeight; ly++) {
 								int tx = cx + lx;
 								int ty = cy + ly;
-								int color = (int) (noise.value().compute(tx * 30, ty * 30, (int) PresetEditorPage.this.screen.getSettings().options().seed()) * 255);
+								int color = (int) (noise.value().compute((tx - halfX) * delta, (ty - halfY) * delta, (int) PresetEditorPage.this.screen.getSettings().options().seed()) * 255);
 								
-					            pixels.setPixelRGBA(tx, ty, rgba(color, color, color));
+					            pixels.setPixelRGBA(tx, height - 1 - ty, rgba(color, color, color));
 							}
 						}
 					}, Util.backgroundExecutor());
@@ -258,11 +261,11 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 //	            drawCenteredString(matrixStack, renderer, hoveredCoords, mx, my - 10, 0xFFFFFF);
 //	        }
 	    }
-	//
-//	    private int getZoom() {
-//	        return NoiseUtil.round(1.5F * (101 - previewSettings.zoom));
-//	    }
-	//
+	
+	    private int getZoom() {
+	        return NoiseUtil.round(1.5F * (101 - (float) PresetEditorPage.this.zoom.getLerpedValue()));
+	    }
+	
 //	    private static String getTerrainName(Cell cell) {
 //	        if (cell.terrain.isRiver()) {
 //	            return "river";

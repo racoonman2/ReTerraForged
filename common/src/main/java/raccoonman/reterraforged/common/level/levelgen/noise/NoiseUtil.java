@@ -358,6 +358,18 @@ public class NoiseUtil {
 		float value = (n * n * n * '\uec4d') / 2.14748365E9F;
 		return map(value, -1, 1, 2);
 	}
+	
+	public static long pack(int left, int right) {
+        return ((long) right & 0xFFFFFFFFL) | ((long) left & 0xFFFFFFFFL) << 32;
+    }
+
+    public static int unpackLeft(long packed) {
+        return (int) (packed >>> 32 & 0xFFFFFFFFL);
+    }
+    
+    public static int unpackRight(long packed) {
+        return (int) (packed & 0xFFFFFFFFL);
+    }
 
     static {
         SIN_BITS = 12;

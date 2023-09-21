@@ -11,7 +11,7 @@ import net.minecraft.core.registries.Registries;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.worldgen.data.MCNoiseGeneratorSettings;
 import raccoonman.reterraforged.common.worldgen.data.MCPlacedFeatures;
-import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData;
+import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData2;
 import raccoonman.reterraforged.common.worldgen.data.RTFNoiseRouterData;
 
 public record Preset(WorldSettings world, ClimateSettings climate, TerrainSettings terrain, RiverSettings rivers, FilterSettings filters, StructureSettings structures, MiscellaneousSettings miscellaneous) {
@@ -35,7 +35,7 @@ public record Preset(WorldSettings world, ClimateSettings climate, TerrainSettin
 	
 	public HolderLookup.Provider buildPatch(RegistryAccess.Frozen registries) {
 		RegistrySetBuilder builder = new RegistrySetBuilder();
-		builder.add(RTFRegistries.NOISE, (ctx) -> RTFNoiseData.bootstrap(ctx, this));
+		builder.add(RTFRegistries.NOISE, (ctx) -> RTFNoiseData2.bootstrap(ctx, this));
 		builder.add(Registries.DENSITY_FUNCTION, (ctx) -> RTFNoiseRouterData.bootstrap(ctx));
 		builder.add(Registries.NOISE_SETTINGS, (ctx) -> MCNoiseGeneratorSettings.bootstrap(ctx, this));
 		builder.add(Registries.PLACED_FEATURE, (ctx) -> MCPlacedFeatures.bootstrap(ctx, this));

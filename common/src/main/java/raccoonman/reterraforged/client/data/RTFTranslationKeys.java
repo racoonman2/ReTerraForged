@@ -27,6 +27,8 @@ public final class RTFTranslationKeys {
 	public static final String GUI_BUTTON_EXPORT_SUCCESS = resolve("gui.button.export.success");
 	public static final String GUI_BUTTON_IMPORT_LEGACY = resolve("gui.button.importLegacy");
 	public static final String GUI_BUTTON_OPEN_PRESET_FOLDER = resolve("gui.button.openPresetFolder");
+	public static final String GUI_BUTTON_SEED = resolve("gui.button.seed");
+	public static final String GUI_BUTTON_NOISE = resolve("gui.button.noise");
 	public static final String GUI_BUTTON_CONTINENT_TYPE = resolve("gui.button.continentType");
 	public static final String GUI_BUTTON_CONTINENT_SHAPE = resolve("gui.button.continentShape");
 	public static final String GUI_BUTTON_SPAWN_TYPE = resolve("gui.button.spawnType");
@@ -49,6 +51,7 @@ public final class RTFTranslationKeys {
 	public static final String GUI_BUTTON_VANILLA_LAVA_LAKES = resolve("gui.button.vanillaLavaLakes");
 	public static final String GUI_BUTTON_VANILLA_LAVA_SPRINGS = resolve("gui.button.vanillaLavaSprings");
 	
+	public static final String GUI_SLIDER_ZOOM = resolve("gui.slider.zoom");
 	public static final String GUI_SLIDER_CONTINENT_SCALE = resolve("gui.slider.continentScale");
 	public static final String GUI_SLIDER_CONTINENT_JITTER = resolve("gui.slider.continentJitter");
 	public static final String GUI_SLIDER_CONTINENT_SKIPPING = resolve("gui.slider.continentSkipping");
