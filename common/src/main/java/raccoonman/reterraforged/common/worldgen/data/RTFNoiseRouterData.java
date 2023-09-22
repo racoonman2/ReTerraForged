@@ -23,10 +23,9 @@ import raccoonman.reterraforged.common.level.levelgen.density.NoiseWrapper;
 import raccoonman.reterraforged.common.level.levelgen.density.YGradient;
 import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
-import raccoonman.reterraforged.common.level.levelgen.noise.Source;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.worldgen.data.noise.RTFClimateNoise;
-import raccoonman.reterraforged.common.worldgen.data.noise.RTFTerrainNoise;
+import raccoonman.reterraforged.common.worldgen.data.noise.RTFTerrainNoise2;
 import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
 
 public class RTFNoiseRouterData {
@@ -66,9 +65,9 @@ public class RTFNoiseRouterData {
         int minY = DimensionType.MIN_Y * 2;
         int maxY = DimensionType.MAX_Y * 2;
         ctx.register(Y, DensityFunctions.yClampedGradient(minY, maxY, minY, maxY));
-        Holder.Reference<DensityFunction> continents = ctx.register(CONTINENTS, DensityFunctions.flatCache(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(preset.world().continent.continentType)).map(-1.0D, 1.0D))));
-        Holder.Reference<DensityFunction> erosion = ctx.register(EROSION, DensityFunctions.constant(0.0D));
-        DensityFunction ridges = registerAndWrap(ctx, RIDGES, DensityFunctions.constant(-0.25D));
+        Holder.Reference<DensityFunction> continents = ctx.register(CONTINENTS, DensityFunctions.constant(1.0D));// DensityFunctions.flatCache(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(preset.world().continent.continentType)).map(-1.0D, 1.0D))));
+        Holder.Reference<DensityFunction> erosion = ctx.register(EROSION, DensityFunctions.flatCache(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(RTFTerrainNoise2.EROSION)).map(-1.0D, 1.0D))));
+        DensityFunction ridges = registerAndWrap(ctx, RIDGES, DensityFunctions.flatCache(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(RTFTerrainNoise2.RIDGE)).map(-1.0D, 1.0D).invert())));
         ctx.register(RIDGES_FOLDED, DensityFunctions.constant(0.0D));
         registerTerrainNoises(ctx, functions, DensityFunctions.constant(0.0D), continents, erosion, OFFSET, FACTOR, JAGGEDNESS, DEPTH, SLOPED_CHEESE);
         ctx.register(SPAGHETTI_ROUGHNESS_FUNCTION, spaghettiRoughnessFunction(noiseParams));
@@ -77,7 +76,7 @@ public class RTFNoiseRouterData {
         ctx.register(ENTRANCES, entrances(functions, noiseParams));
         ctx.register(NOODLE, noodle(functions, noiseParams));
         ctx.register(PILLARS, pillars(noiseParams));
-        ctx.register(HEIGHT, new FlatCache.Marker(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(RTFTerrainNoise.ROOT))), 1));
+        ctx.register(HEIGHT, new FlatCache.Marker(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(RTFTerrainNoise2.VARIANCE))), 1));
     }
 
     private static <C, I extends ToFloatFunction<C>> CubicSpline<C, I> overworldOffset(I toFloatFunction) {

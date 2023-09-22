@@ -1,14 +1,14 @@
 package raccoonman.reterraforged.common.level.levelgen.noise;
 
 public class Seed {
-    private final int root;
+    private int root;
     private int value;
     
-    public Seed(final long value) {
+    public Seed(long value) {
         this((int)value);
     }
     
-    public Seed(final int value) {
+    public Seed(int value) {
         this.root = value;
         this.value = value;
     }
@@ -29,7 +29,7 @@ public class Seed {
         return new Seed(this.root);
     }
     
-    public Seed offset(final int offset) {
+    public Seed offset(int offset) {
         return new Seed(this.root + offset);
     }
 }

@@ -1,6 +1,7 @@
 package raccoonman.reterraforged.common.level.levelgen.surface.extension;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +14,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BlockColumn;
 import net.minecraft.world.level.levelgen.DensityFunction;
@@ -75,11 +77,13 @@ public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Hold
 	        if (y < this.minY) {
 	            return;
 	        }
-
+	        
+	        float value = (float) this.sample(this.height, this.surfaceContext.blockX, y, this.surfaceContext.blockZ);
+	        float gradient = (float) this.sample(this.height, this.surfaceContext.blockX, y, this.surfaceContext.blockZ);
 			if(surface.is(RTFBlockTags.ERODIBLE)) {
 				BlockState top = Blocks.GRASS.defaultBlockState();
 				BlockState middle = Blocks.STONE.defaultBlockState();
-				BlockState material = this.getMaterial(this.surfaceContext.blockX, y, this.surfaceContext.blockZ, top, middle);
+				BlockState material = this.getMaterial(this.surfaceContext.blockX, y, this.surfaceContext.blockZ, top, middle, value, gradient);
 				if (material != top) {
 	                if (material.is(BlockTags.BASE_STONE_OVERWORLD)) {
 	                    erodeRock(column, y);
@@ -89,7 +93,57 @@ public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Hold
 	                }
 	            }
 			}
+			
+			if(true) { //erodeSnow) {
+				int heightLevel = (int) (this.sample(this.height, this.surfaceContext.blockX, y, this.surfaceContext.blockZ) * 256.0D);
+				
+				if (heightLevel - y > 0) {
+		            if (heightLevel - y > 4) {
+		                return;
+		            }
+		            heightLevel = y;
+		        }
+
+				this.surfaceContext.pos.set(this.surfaceContext.blockX, heightLevel, this.surfaceContext.blockZ);
+		        if (this.surfaceContext.biomeGetter.apply(this.surfaceContext.pos).value().getTemperature(this.surfaceContext.pos) <= 0.25) {
+		            float var = -getNoise(this.surfaceContext.blockX, this.surfaceContext.blockZ, 123123, 16, 0);
+		            float hNoise = RAND.compute((float) this.surfaceContext.blockX, (float) this.surfaceContext.blockZ, 135453) * this.heightModifier;
+		            float sNoise = RAND.compute((float) this.surfaceContext.blockX, (float) this.surfaceContext.blockZ, 213132) * this.slopeModifier;
+		            float vModifier = 0.0F;//context.cell.terrain == TerrainType.VOLCANO ? 0.15F : 0F;
+		            float height = value + var + hNoise + vModifier;
+		            float steepness = gradient + var + sNoise + vModifier;
+		            if (snowErosion(this.surfaceContext.blockX, this.surfaceContext.blockZ, steepness, height)) {
+		                Predicate<BlockState> predicate = Heightmap.Types.MOTION_BLOCKING.isOpaque();
+		                for (int dy = 2; dy > 0; dy--) {
+		                    BlockState state = column.getBlock(y + dy);
+		                    if (!predicate.test(state) || state.getBlock() == Blocks.SNOW) {
+		                        erodeSnow(column, y + dy);
+		                    }
+		                }
+		            }
+		        }
+			}
 		}
+		
+		 private void erodeSnow(BlockColumn chunk, int y) {
+			 chunk.setBlock(y, Blocks.AIR.defaultBlockState());
+
+			 if (y > 0) {
+				 y = y - 1;
+				 BlockState below = chunk.getBlock(y);
+				 if (below.hasProperty(GrassBlock.SNOWY)) {
+					 chunk.setBlock(y, below.setValue(GrassBlock.SNOWY, false));
+				 }
+			 }
+		 }
+
+	    private static final float SNOW_ROCK_STEEPNESS = 0.45F;
+	    private static final float SNOW_ROCK_HEIGHT = 95F / 255F;
+		private static boolean snowErosion(float x, float z, float steepness, float height) {
+	        return steepness > ROCK_STEEPNESS
+	                || (steepness > SNOW_ROCK_STEEPNESS && height > SNOW_ROCK_HEIGHT)
+	                || (steepness > DIRT_STEEPNESS && height > getNoise(x, z, 8, DIRT_VAR, DIRT_MIN));
+	    }
 		
 		private static void erodeRock(BlockColumn column, int y) {
 	        int depth = 32;
@@ -129,9 +183,9 @@ public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Hold
 	    public static final float ROCK_STEEPNESS = 0.65F;
 	    private static final float DIRT_STEEPNESS = 0.475F;
 		@Nullable
-		private BlockState getMaterial(int x, int y, int z, BlockState top, BlockState middle) {
-			float height = (float) (this.sample(this.height, x, y, z) + RAND.compute(x, z, 4) * this.heightModifier);
-			float steepness = (float) (this.sample(this.steepness, x, y, z) + RAND.compute(x, z, 8) * this.slopeModifier);
+		private BlockState getMaterial(int x, int y, int z, BlockState top, BlockState middle, float value, float gradient) {
+			float height = (float) (value + RAND.compute(x, z, 4) * this.heightModifier);
+			float steepness = (float) (gradient + RAND.compute(x, z, 8) * this.slopeModifier);
 
 			if (steepness > ROCK_STEEPNESS || height > getNoise(x, z, 4, ROCK_VAR, ROCK_MIN)) {
 				return rock(middle);

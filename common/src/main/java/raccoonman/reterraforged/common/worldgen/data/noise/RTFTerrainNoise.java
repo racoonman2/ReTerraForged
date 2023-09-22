@@ -83,7 +83,6 @@ public final class RTFTerrainNoise {
 		Domain regionDomain = Domain.warp(regionWarpX, regionWarpZ, Source.constant(regionWarpStrength));
 		Noise regionBorder = registerAndWrap(ctx, REGION_BORDER, new RegionBorder(regionDomain, regionFrequency, 0.0F, 0.5F).shift(terrainSeed));
 		Noise regionCell = registerAndWrap(ctx, REGION_CELL, new RegionCell(regionDomain, regionFrequency).shift(terrainSeed));
-        Seed mountainSeed = seed.offset(general.terrainSeedOffset);
 
 		Seed featureSeed = seed.offset(general.terrainSeedOffset);
 		Noise ground = registerAndWrap(ctx, GROUND, Source.constant((float) worldSettings.properties.seaLevel / (float) general.yScale));
@@ -101,6 +100,7 @@ public final class RTFTerrainNoise {
 		Noise volcano = registerAndWrap(ctx, VOLCANO, makeVolcano(general, terrainSettings.volcano, regionSeed, featureSeed, regionWarpX, regionWarpZ, regionWarpStrength));
 		Noise borders = registerAndWrap(ctx, BORDER, scaleFeature(ground, terrainSettings.steppe, makePlains(general, terrainSettings.plains, featureSeed)));
 		// TODO allow the mountain chain type to be chosen
+        Seed mountainSeed = seed.offset(general.terrainSeedOffset);
         Noise mountainShapeBase = Source.cellEdge(mountainSeed.next(), 1000, EdgeFunction.DISTANCE_2_ADD).warp(mountainSeed.next(), 333, 2, 250.0);
         Noise mountainShape = registerAndWrap(ctx, MOUNTAIN_SHAPE, mountainShapeBase.curve(Interpolation.CURVE3).clamp(0.0, 0.9).map(0.0, 1.0));
 		Noise mountainChain = registerAndWrap(ctx, MOUNTAIN_CHAIN, scaleFeature(ground, terrainSettings.mountains, makeMountains(general, terrainSettings.mountains, mountainSeed)));
@@ -119,6 +119,11 @@ public final class RTFTerrainNoise {
 		ctx.register(ROOT, new ContinentLerper2(continent, oceans, land, worldSettings.controlPoints.shallowOcean, worldSettings.controlPoints.inland, Interpolation.LINEAR));
 	}
 
+	// TODO all the make/Feature/ functions should return this
+	// we can stitch together an erosion/ridge map from that
+	private record TerrainFeature(Noise variance, Noise erosion, Noise ridge) {
+	}
+	
 	private static Noise makeSteppe(Terrain settings, Seed seed) {
         int scaleH = Math.round(250.0f * settings.horizontalScale);
         double erosionAmount = 0.45;

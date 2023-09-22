@@ -15,7 +15,7 @@ public final class RTFNoiseData {
 	public static void bootstrap(BootstapContext<Noise> ctx, Preset preset) {
 		Seed seed = new Seed(0);
 		RTFContinentNoise.bootstrap(ctx, preset.world(), seed);
-		RTFTerrainNoise.bootstrap(ctx, preset.world(), preset.terrain(), seed);
+		RTFTerrainNoise2.bootstrap(ctx, preset.world(), preset.terrain(), seed);
 		RTFClimateNoise.bootstrap(ctx, preset, seed);
 		
 	}
