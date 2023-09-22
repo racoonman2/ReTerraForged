@@ -7,7 +7,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.domain.Domain;
 
-public record MultiContinent(Domain warp, float frequency, float offsetAlpha, DistanceFunction distanceFunc, float clampMin, float clampMax, float inlandPoint, Noise shape) implements Noise, SimpleContinent {
+public record MultiContinent(Domain warp, float frequency, float offsetAlpha, DistanceFunction distanceFunc, float clampMin, float clampMax, float inlandPoint, Noise shape) implements Noise, BaseContinent {
 	public static final Codec<MultiContinent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Domain.CODEC.fieldOf("warp").forGetter(MultiContinent::warp),
 		Codec.FLOAT.fieldOf("frequency").forGetter(MultiContinent::frequency),
@@ -21,7 +21,7 @@ public record MultiContinent(Domain warp, float frequency, float offsetAlpha, Di
 
 	@Override
     public float compute(float x, float y, int seed) {
-		return SimpleContinent.super.getValue(x, y, seed, false);
+		return BaseContinent.super.getValue(x, y, seed, false);
     }
 	
 	@Override

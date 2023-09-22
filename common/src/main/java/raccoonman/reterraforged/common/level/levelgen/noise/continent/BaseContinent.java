@@ -7,8 +7,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFuncti
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.EdgeFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.domain.Domain;
 
-// not simple
-public interface SimpleContinent {
+interface BaseContinent {
 	Domain warp();
 	
 	float frequency();

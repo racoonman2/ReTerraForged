@@ -12,7 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
-import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData2;
+import raccoonman.reterraforged.common.worldgen.data.noise.RTFContinentNoise;
+import raccoonman.reterraforged.common.worldgen.data.noise.RTFNoiseData;
 
 public class WorldSettings {
 	public static final Codec<WorldSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -42,9 +43,9 @@ public class WorldSettings {
     public static class Continent {
     	// NOTE: this prevents presets from loading on 1.16.5
     	private static final Map<String, ResourceKey<Noise>> LEGACY_CONTINENT_TYPES = ImmutableMap.of(
-    		"MULTI", RTFNoiseData2.MULTI_CONTINENT,
-    		"SINGLE", RTFNoiseData2.SINGLE_CONTINENT,
-    		"MULTI_IMPROVED", RTFNoiseData2.MULTI_IMPROVED_CONTINENT
+    		"MULTI", RTFContinentNoise.MULTI,
+    		"SINGLE", RTFContinentNoise.SINGLE,
+    		"MULTI_IMPROVED", RTFContinentNoise.MULTI_IMPROVED
 //    		"EXPERIMENTAL", RTFNoiseData2.EXPERIMENTAL_CONTINENT
     	);
     	private static final Codec<ResourceKey<Noise>> LEGACY_CONTINENT_TYPE_CODEC = Codec.STRING.comapFlatMap((s) -> {
@@ -95,7 +96,7 @@ public class WorldSettings {
         }
         
         public static Continent makeDefault() {
-        	return new Continent(RTFNoiseData2.MULTI_IMPROVED_CONTINENT, DistanceFunction.EUCLIDEAN, 3000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F);
+        	return new Continent(RTFContinentNoise.MULTI_IMPROVED, DistanceFunction.EUCLIDEAN, 3000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F);
         }
     }
     

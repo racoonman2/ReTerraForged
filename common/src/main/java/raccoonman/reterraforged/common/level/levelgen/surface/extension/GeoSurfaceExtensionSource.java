@@ -53,7 +53,7 @@ public record GeoSurfaceExtensionSource(List<Strata> strata, Holder<DensityFunct
 				ChunkPos chunkPos = this.surfaceContext.chunk.getPos();
 				int chunkLocalX = chunkPos.getBlockX(this.surfaceContext.blockX);
 				int chunkLocalZ = chunkPos.getBlockZ(this.surfaceContext.blockZ);
-				int y = this.surfaceContext.chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, chunkLocalX, chunkLocalZ) - 1;
+				int y = this.surfaceContext.chunk.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, chunkLocalX, chunkLocalZ) - 1;
 				Strata strata = this.getStrata(this.surfaceContext.blockX, y, this.surfaceContext.blockZ);
 				Geology geology = surfaceSystemExt.getOrCreateGeology(strata, this.surfaceContext.randomState);
 				geology.apply(column, this.surfaceContext.blockX, this.surfaceContext.blockZ, y, this.depthBuffer);

@@ -14,7 +14,11 @@ import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Max;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Min;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Mul;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Sub;
+import raccoonman.reterraforged.common.level.levelgen.noise.continent.ContinentLerper2;
+import raccoonman.reterraforged.common.level.levelgen.noise.continent.ContinentLerper3;
+import raccoonman.reterraforged.common.level.levelgen.noise.continent.MultiContinent;
 import raccoonman.reterraforged.common.level.levelgen.noise.continent.MultiImprovedContinent;
+import raccoonman.reterraforged.common.level.levelgen.noise.continent.SingleContinent;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Abs;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.AdvancedTerrace;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Alpha;
@@ -56,6 +60,12 @@ import raccoonman.reterraforged.common.level.levelgen.noise.source.Simplex;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Simplex2;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.SimplexRidge;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Sin;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.RegionBlender;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.RegionBorder;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.RegionCell;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.RegionLerper;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.RegionSelector;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.Volcano;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 public final class RTFNoiseTypes {
@@ -113,7 +123,17 @@ public final class RTFNoiseTypes {
 		register("moisture", Moisture.CODEC);
 		register("climate", Climate.CODEC);
 		register("blender", Blender.CODEC);	
+		register("multi_continent", MultiContinent.CODEC);
+		register("single_continent", SingleContinent.CODEC);
 		register("multi_improved_continent", MultiImprovedContinent.CODEC);
+		register("continent_lerper_2", ContinentLerper2.CODEC);
+		register("continent_lerper_3", ContinentLerper3.CODEC);
+		register("region_border", RegionBorder.CODEC);
+		register("region_cell", RegionCell.CODEC);
+		register("region_selector", RegionSelector.CODEC);
+		register("region_lerper", RegionLerper.CODEC);
+		register("region_blender", RegionBlender.CODEC);
+		register("volcano", Volcano.CODEC);
 	}
 	
 	private static void register(String name, Codec<? extends Noise> value) {

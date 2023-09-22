@@ -1,10 +1,7 @@
-package raccoonman.reterraforged.common.worldgen.data;
+package raccoonman.reterraforged.common.worldgen.data.noise;
 
-import net.minecraft.core.HolderGetter;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.noise.Seed;
@@ -14,37 +11,20 @@ import raccoonman.reterraforged.common.level.levelgen.noise.continent.MultiImpro
 import raccoonman.reterraforged.common.level.levelgen.noise.continent.SingleContinent;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.domain.Domain;
-import raccoonman.reterraforged.common.registries.RTFRegistries;
-import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
-import raccoonman.reterraforged.common.worldgen.data.preset.TerrainSettings;
 import raccoonman.reterraforged.common.worldgen.data.preset.WorldSettings;
 import raccoonman.reterraforged.common.worldgen.data.preset.WorldSettings.Continent;
 import raccoonman.reterraforged.common.worldgen.data.preset.WorldSettings.ControlPoints;
 
-public final class RTFNoiseData2 {
-	public static final ResourceKey<Noise> MULTI_CONTINENT = createKey("continent/multi");
-	public static final ResourceKey<Noise> SINGLE_CONTINENT = createKey("continent/single");
-	public static final ResourceKey<Noise> MULTI_IMPROVED_CONTINENT = createKey("continent/multi_improved");
-	public static final ResourceKey<Noise> EXPERIMENTAL_CONTINENT = createKey("continent/experimental");
+public final class RTFContinentNoise {
+	public static final ResourceKey<Noise> MULTI = createKey("multi");
+	public static final ResourceKey<Noise> SINGLE = createKey("single");
+	public static final ResourceKey<Noise> MULTI_IMPROVED = createKey("multi_improved");
+	public static final ResourceKey<Noise> EXPERIMENTAL = createKey("experimental");
 	
-	public static void bootstrap(BootstapContext<Noise> ctx, Preset preset) {
-		HolderGetter<Noise> noise = ctx.lookup(RTFRegistries.NOISE);
-		
-		Seed seed = new Seed(0);
-		
-		WorldSettings world = preset.world();
-		ControlPoints controlPoints = world.controlPoints;
-		
-		TerrainSettings terrain = preset.terrain();
-		Seed regionSeed = seed.offset(789124);
-		Seed regionWarpSeed = seed.offset(8934);
-		int regionWarpScale = 400;
-		int regionWarpStrength = 200;
-		Noise regionWarpX = Source.simplex(regionWarpSeed.next(), regionWarpScale, 1);
-		Noise regionWarpZ = Source.simplex(regionWarpSeed.next(), regionWarpScale, 1);
-		float terrainFrequency = 1.0F / terrain.general.globalHorizontalScale;
-		
-		registerContinents(ctx, preset, seed);
+	public static void bootstrap(BootstapContext<Noise> ctx, WorldSettings settings, Seed seed) {
+		ctx.register(MULTI, createMulti(settings.continent, settings.controlPoints, seed));
+		ctx.register(MULTI_IMPROVED, createMultiImproved(settings.continent, settings.controlPoints, seed));
+		ctx.register(SINGLE, createSingle(settings.continent, settings.controlPoints, seed));
 	}
 	
 	private static Noise createMulti(Continent continent, ControlPoints controlPoints, Seed seed) {
@@ -98,23 +78,11 @@ public final class RTFNoiseData2 {
 		return new SingleContinent(warp, frequency, offsetAlpha, distanceFunc, clampMin, clampMax, controlPoints.inland, shape);
 	}
 	
-	private static void registerContinents(BootstapContext<Noise> ctx, Preset preset, Seed seed) {
-		WorldSettings worldSettings = preset.world();
-		ctx.register(MULTI_CONTINENT, createMulti(worldSettings.continent, worldSettings.controlPoints, seed));
-		ctx.register(MULTI_IMPROVED_CONTINENT, createMultiImproved(worldSettings.continent, worldSettings.controlPoints, seed));
-		ctx.register(SINGLE_CONTINENT, createSingle(worldSettings.continent, worldSettings.controlPoints, seed));
-	}
-	
-	private static Noise getNoise(HolderGetter<Noise> getter, ResourceKey<Noise> key) {
-		return new HolderNoise(getter.getOrThrow(key));
-	}
-	
-	private static Noise register(BootstapContext<Noise> ctx, ResourceKey<Noise> key, Noise value) {
-		return new HolderNoise(ctx.register(key, value));
+	private static Noise createExperimental() {
+		throw new UnsupportedOperationException(); //TODO
 	}
 	
 	private static ResourceKey<Noise> createKey(String string) {
-        return ResourceKey.create(RTFRegistries.NOISE, ReTerraForged.resolve(string));
-    }
-	    
+		return RTFNoiseData.createKey("continent/" + string);
+	}
 }

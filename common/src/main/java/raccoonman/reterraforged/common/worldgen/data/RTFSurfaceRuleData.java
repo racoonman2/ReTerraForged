@@ -50,7 +50,7 @@ public final class RTFSurfaceRuleData {
     	List<Strata> strata = new LinkedList<>();
     	for(int i = 0; i < 100; i++) {
     		Noise noise = Source.perlin(354215 + i, regionSize, 3);
-        	strata.add(new Strata(ReTerraForged.resolve("strata-" + i), ImmutableList.of(
+        	strata.add(new Strata(ReTerraForged.resolve("strata-" + i), RTFBlockTags.ROCK, ImmutableList.of(
         		new Stratum(RTFBlockTags.SOIL, 0, 1, 0.1F, 0.25F, noise),
         		new Stratum(RTFBlockTags.SEDIMENT, 0, 2, 0.05F, 0.15F, noise),
         		new Stratum(RTFBlockTags.CLAY, 0, 2, 0.05F, 0.1F, noise),

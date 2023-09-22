@@ -2,12 +2,14 @@ package raccoonman.reterraforged.common.level.levelgen.geology;
 
 import java.util.List;
 
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BlockColumn;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 
-public record Geology(List<Layer> layers) {
+public record Geology(List<Layer> layers, TagKey<Block> replaceable) {
 	
 	public void apply(BlockColumn column, int x, int z, int surfaceY, Buffer buffer) {
 		buffer.init(this.layers, x, z);
@@ -18,7 +20,7 @@ public record Geology(List<Layer> layers) {
             int height = NoiseUtil.round(depth * surfaceY);
             BlockState value = last = this.layers.get(i).material();
             for (int dy = 0; dy < height; ++dy) {
-                if (py <= surfaceY) {
+                if (py <= surfaceY && column.getBlock(py).is(this.replaceable)) {
                     column.setBlock(py, value);
                 }
                 if (--py < 0) {
@@ -28,7 +30,9 @@ public record Geology(List<Layer> layers) {
         }
         if (last != null) {
             while (py > 0) {
-            	column.setBlock(py, last);
+            	if(column.getBlock(py).is(this.replaceable)) {
+            		column.setBlock(py, last);
+            	}
                 --py;
             }
         }

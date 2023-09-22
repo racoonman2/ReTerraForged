@@ -266,13 +266,14 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 			return RTF_PRESET_PATH.resolve(this.name.getString() + ".json");
 		}
 		
+		//FIXME delete old pack before save
 		public void save() throws IOException {
 			if(!this.builtin) {
 				try(
 					Writer writer = Files.newBufferedWriter(this.getPath());
 					JsonWriter jsonWriter = new JsonWriter(writer);
 				) {
-					JsonElement element = Preset.CODEC.encodeStart(JsonOps.INSTANCE, preset).result().orElseThrow();
+					JsonElement element = Preset.CODEC.encodeStart(JsonOps.INSTANCE, this.preset).result().orElseThrow();
 					jsonWriter.setSerializeNulls(false);
 					jsonWriter.setIndent("  ");
 					GsonHelper.writeValue(jsonWriter, element, null);

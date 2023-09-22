@@ -14,7 +14,8 @@ import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
-import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData2;
+import raccoonman.reterraforged.common.worldgen.data.noise.RTFContinentNoise;
+import raccoonman.reterraforged.common.worldgen.data.noise.RTFNoiseData;
 import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
 import raccoonman.reterraforged.common.worldgen.data.preset.SpawnType;
 import raccoonman.reterraforged.common.worldgen.data.preset.WorldSettings;
@@ -60,10 +61,10 @@ public class WorldSettingsPage extends PresetEditorPage {
 		
 		this.continentType = PresetWidgets.createCycle(
 			ImmutableList.of(
-				RTFNoiseData2.MULTI_CONTINENT,
-				RTFNoiseData2.SINGLE_CONTINENT,
-				RTFNoiseData2.MULTI_IMPROVED_CONTINENT,
-				RTFNoiseData2.EXPERIMENTAL_CONTINENT
+				RTFContinentNoise.MULTI,
+				RTFContinentNoise.SINGLE,
+				RTFContinentNoise.MULTI_IMPROVED,
+				RTFContinentNoise.EXPERIMENTAL
 			),
 			continent.continentType, RTFTranslationKeys.GUI_BUTTON_CONTINENT_TYPE, 
 			(button, value) -> {
@@ -204,9 +205,9 @@ public class WorldSettingsPage extends PresetEditorPage {
 	}
 	
 	private void applyContinentValue(ResourceKey<Noise> value) {
-		this.continentShape.active = value == RTFNoiseData2.MULTI_CONTINENT || value == RTFNoiseData2.SINGLE_CONTINENT;
+		this.continentShape.active = value == RTFContinentNoise.MULTI || value == RTFContinentNoise.SINGLE;
 
-		boolean isMultiImproved = value == RTFNoiseData2.MULTI_IMPROVED_CONTINENT;
+		boolean isMultiImproved = value == RTFContinentNoise.MULTI_IMPROVED;
 		this.continentSkipping.active = isMultiImproved;
 		this.continentSizeVariance.active = isMultiImproved;
 		this.continentNoiseOctaves.active = isMultiImproved;

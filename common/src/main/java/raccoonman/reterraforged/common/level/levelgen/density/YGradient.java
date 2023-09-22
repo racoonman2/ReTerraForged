@@ -17,10 +17,12 @@ public record YGradient(DensityFunction y, DensityFunction scale, int gradientSi
 	
 	@Override
 	public double compute(FunctionContext ctx) {
+		double scale = this.scale.compute(ctx);
+
 		double blockY = ctx.blockY();
-		double noiseY = NoiseUtil.floor(this.y.compute(ctx) * this.scale.compute(ctx));
+		double noiseY = NoiseUtil.floor(this.y.compute(ctx) * scale);
 		double delta = noiseY - blockY;
-		return delta / this.gradientSize; // TODO: don't hardcode this value either
+		return (delta / this.gradientSize) / scale; // TODO: don't hardcode this value either
 	}
 
 	@Override
