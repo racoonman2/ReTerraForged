@@ -103,7 +103,7 @@ public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Hold
 		            }
 		            heightLevel = y;
 		        }
-				//
+				
 				this.surfaceContext.pos.set(this.surfaceContext.blockX, heightLevel, this.surfaceContext.blockZ);
 		        if (this.surfaceContext.biomeGetter.apply(this.surfaceContext.pos).value().getTemperature(this.surfaceContext.pos) <= 0.25) {
 		            float var = -getNoise(this.surfaceContext.blockX, this.surfaceContext.blockZ, 123123, 16, 0);
