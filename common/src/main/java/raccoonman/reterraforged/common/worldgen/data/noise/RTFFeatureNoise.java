@@ -199,10 +199,10 @@ final class RTFFeatureNoise {
     private static void registerMountains(BootstapContext<Noise> ctx, General general, Terrain terrain, Seed seed, ResourceKey<Noise> variance, ResourceKey<Noise> erosion, ResourceKey<Noise> ridge) {
         int scaleH = Math.round(410.0f * terrain.horizontalScale);
         Noise module = Source.build(seed.next(), scaleH, 4).gain(1.15).lacunarity(2.35).ridge().mul(Source.perlin(seed.next(), 24, 4).alpha(0.075)).warp(seed.next(), 350, 1, 150.0);
-        Noise scaled = makeFancyAndRegisterRidge(general, seed, module, ctx, ridge).scale(0.7 * general.globalVerticalScale);
+        Noise scaled = makeFancyAndRegisterRidge(general, seed, module, ctx, ridge, erosion).scale(0.7 * general.globalVerticalScale);
     	
         ctx.register(variance, scaled);
-		ctx.register(erosion, Source.constant(-0.45D));
+//		ctx.register(erosion, Source.constant(-1.0D));
     }
     
     private static void registerMountains2(BootstapContext<Noise> ctx, General general, Seed seed) {
@@ -210,10 +210,10 @@ final class RTFFeatureNoise {
         Noise blur = Source.perlin(seed.next(), 10, 1).alpha(0.025);
         Noise surface = Source.ridge(seed.next(), 125, 4).alpha(0.37);
         Noise mountains = cell.clamp(0.0, 1.0).mul(blur).mul(surface).pow(1.1);
-        Noise scaled = makeFancyAndRegisterRidge(general, seed, mountains, ctx, MOUNTAINS_2_RIDGE).scale(0.645 * general.globalVerticalScale);
+        Noise scaled = makeFancyAndRegisterRidge(general, seed, mountains, ctx, MOUNTAINS_2_RIDGE, MOUNTAINS_2_EROSION).scale(0.645 * general.globalVerticalScale);
     	
         ctx.register(MOUNTAINS_2_VARIANCE, scaled);
-		ctx.register(MOUNTAINS_2_EROSION, Source.constant(-0.45D));
+//		ctx.register(MOUNTAINS_2_EROSION, Source.constant(-1.0D));
     }
     
     private static void registerMountains3(BootstapContext<Noise> ctx, General general, Seed seed) {
@@ -222,22 +222,24 @@ final class RTFFeatureNoise {
         Noise surface = Source.ridge(seed.next(), 125, 4).alpha(0.37);
         Noise mountains = cell.clamp(0.0, 1.0).mul(blur).mul(surface).pow(1.1);
         Noise terraced = mountains.terrace(Source.perlin(seed.next(), 50, 1).scale(0.5), Source.perlin(seed.next(), 100, 1).clamp(0.5, 0.95).map(0.0, 1.0), Source.constant(0.45), 0.20000000298023224, 0.44999998807907104, 24, 1);
-        Noise scaled = makeFancyAndRegisterRidge(general, seed, terraced, ctx, MOUNTAINS_3_RIDGE).scale(0.645 * general.globalVerticalScale);
+        Noise scaled = makeFancyAndRegisterRidge(general, seed, terraced, ctx, MOUNTAINS_3_RIDGE, MOUNTAINS_3_EROSION).scale(0.645 * general.globalVerticalScale);
 
         ctx.register(MOUNTAINS_3_VARIANCE, scaled);
-		ctx.register(MOUNTAINS_3_EROSION, Source.constant(-0.45D));
+//		ctx.register(MOUNTAINS_3_EROSION, Source.constant(-1.0D));
     }
     
     //lol wtf is this
-    private static Noise makeFancyAndRegisterRidge(General general, Seed seed, Noise noise, BootstapContext<Noise> ctx, ResourceKey<Noise> ridge) {
+    private static Noise makeFancyAndRegisterRidge(General general, Seed seed, Noise noise, BootstapContext<Noise> ctx, ResourceKey<Noise> ridge, ResourceKey<Noise> erosion) {
         if (general.fancyMountains) {
             Domain warp = Domain.direction(Source.perlin(seed.next(), 10, 1), Source.constant(2.0));
             int shift = seed.next();
             Noise valley = new Valley(noise, 2, 0.65F, 128.0F, 0.15F, 3.1F, 0.8F, Valley.Mode.CONSTANT).shift(shift).warp(warp);
             ctx.register(ridge, valley);
+        	ctx.register(erosion, valley.invert());
             return valley;
         } else {
         	ctx.register(ridge, noise);
+        	ctx.register(erosion, noise);
         }
         return noise;
     }
