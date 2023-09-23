@@ -196,6 +196,9 @@ final class RTFFeatureNoise {
 		ctx.register(BADLANDS_RIDGE, Source.constant(-0.2D));
     }
     
+    // TODO base erosion / ridge per mountain type
+    // that way we can have a variation of mountain configurations
+    
     private static void registerMountains(BootstapContext<Noise> ctx, General general, Terrain terrain, Seed seed, ResourceKey<Noise> variance, ResourceKey<Noise> erosion, ResourceKey<Noise> ridge) {
         int scaleH = Math.round(410.0f * terrain.horizontalScale);
         Noise module = Source.build(seed.next(), scaleH, 4).gain(1.15).lacunarity(2.35).ridge().mul(Source.perlin(seed.next(), 24, 4).alpha(0.075)).warp(seed.next(), 350, 1, 150.0);
@@ -234,6 +237,7 @@ final class RTFFeatureNoise {
             Domain warp = Domain.direction(Source.perlin(seed.next(), 10, 1), Source.constant(2.0));
             int shift = seed.next();
             Noise valley = new Valley(noise, 2, 0.65F, 128.0F, 0.15F, 3.1F, 0.8F, Valley.Mode.CONSTANT).shift(shift).warp(warp);
+            //FIXME ridge shouldnt be tied to terrain height
             ctx.register(ridge, valley);
         	ctx.register(erosion, valley.invert());
             return valley;

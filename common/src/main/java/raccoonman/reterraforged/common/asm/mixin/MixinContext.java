@@ -16,14 +16,25 @@ import raccoonman.reterraforged.common.level.levelgen.surface.extension.SurfaceE
 @Mixin(Context.class)
 @Implements(@Interface(iface = ContextExtension.class, prefix = ReTerraForged.MOD_ID + "$ContextExtension$"))
 class MixinContext {
-	private List<SurfaceExtension> surfaceExtensions = new ArrayList<>();
+	private List<SurfaceExtension> extensions = new ArrayList<>();
+	private List<SurfaceExtension> decorators = new ArrayList<>();
 	
 	public void reterraforged$ContextExtension$addSurfaceExtension(SurfaceExtension extension) {
-		this.surfaceExtensions.add(extension);
+		this.extensions.add(extension);
+	}
+
+	public void reterraforged$ContextExtension$addSurfaceDecorator(SurfaceExtension extension) {
+		this.decorators.add(extension);
 	}
 	
 	public void reterraforged$ContextExtension$applySurfaceExtensions(BlockColumn column) {
-		for(SurfaceExtension extension : this.surfaceExtensions) {
+		for(SurfaceExtension extension : this.extensions) {
+			extension.apply(column);
+		}
+	}
+	
+	public void reterraforged$ContextExtension$applySurfaceDecorators(BlockColumn column) {
+		for(SurfaceExtension extension : this.decorators) {
 			extension.apply(column);
 		}
 	}

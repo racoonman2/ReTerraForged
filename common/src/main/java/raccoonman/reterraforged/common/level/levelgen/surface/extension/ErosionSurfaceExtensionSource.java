@@ -105,7 +105,7 @@ public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Hold
                     if (state.isAir()) {
                         state = column.getBlock(y2 - 1);
                     }
-
+                    
                     if (state.is(BlockTags.SNOW)) {
                         erodeSnow(column, y2);
                     }

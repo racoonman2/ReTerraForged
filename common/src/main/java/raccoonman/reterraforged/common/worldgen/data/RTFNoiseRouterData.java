@@ -66,6 +66,8 @@ public class RTFNoiseRouterData {
         int minY = DimensionType.MIN_Y * 2;
         int maxY = DimensionType.MAX_Y * 2;
         ctx.register(Y, DensityFunctions.yClampedGradient(minY, maxY, minY, maxY));
+        //TODO move the erosion and ridge offset to RTFFeatureNoise
+        //TODO also they are somewhat correlated with the Preset.miscellaneous().mountainBiomeUsage setting (that we havent added yet)
         Holder.Reference<DensityFunction> continents = ctx.register(CONTINENTS, DensityFunctions.constant(1.0D));// DensityFunctions.flatCache(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(preset.world().continent.continentType)).map(-1.0D, 1.0D))));
         Holder.Reference<DensityFunction> erosion = ctx.register(EROSION, DensityFunctions.flatCache(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(RTFTerrainNoise2.EROSION)).map(-1.0D, 1.0D).add(Source.constant(-1.15D)))));
         DensityFunction ridges = registerAndWrap(ctx, RIDGES, DensityFunctions.flatCache(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(RTFTerrainNoise2.RIDGE)).map(-1.0D, 1.0D).invert().add(Source.constant(-0.05D)))));

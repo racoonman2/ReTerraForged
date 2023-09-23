@@ -13,7 +13,7 @@ public final class RTFClimateNoise {
 	
 	public static void bootstrap(BootstapContext<Noise> ctx, Preset preset, Seed seed) {
 		ctx.register(TEMPERATURE, Source.constant(0.5D));
-		ctx.register(MOISTURE, Source.constant(0.5D));
+		ctx.register(MOISTURE, Source.constant(0.2D));
 	}
 	
 	private static ResourceKey<Noise> createKey(String string) {

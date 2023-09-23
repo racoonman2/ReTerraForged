@@ -6,5 +6,9 @@ import raccoonman.reterraforged.common.level.levelgen.surface.extension.SurfaceE
 public interface ContextExtension {
 	void addSurfaceExtension(SurfaceExtension extension);
 	
+	void addSurfaceDecorator(SurfaceExtension extension);
+	
 	void applySurfaceExtensions(BlockColumn column);
+	
+	void applySurfaceDecorators(BlockColumn column);
 }

@@ -12,20 +12,24 @@ import net.minecraft.world.level.levelgen.SurfaceRules.RuleSource;
 import net.minecraft.world.level.levelgen.SurfaceRules.SurfaceRule;
 import raccoonman.reterraforged.common.asm.extensions.ContextExtension;
 
-public record SurfaceExtensionRuleSource(List<SurfaceExtensionSource> surfaceExtensions) implements RuleSource {
+public record SurfaceExtensionRuleSource(List<SurfaceExtensionSource> extensions, List<SurfaceExtensionSource> decorators) implements RuleSource {
 	public static final Codec<SurfaceExtensionRuleSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		SurfaceExtensionSource.CODEC.listOf().fieldOf("extensions").forGetter(SurfaceExtensionRuleSource::surfaceExtensions)
+		SurfaceExtensionSource.CODEC.listOf().fieldOf("extensions").forGetter(SurfaceExtensionRuleSource::extensions),
+		SurfaceExtensionSource.CODEC.listOf().fieldOf("decorators").forGetter(SurfaceExtensionRuleSource::decorators)
 	).apply(instance, SurfaceExtensionRuleSource::new));
 	
 	public SurfaceExtensionRuleSource {
-		surfaceExtensions = ImmutableList.copyOf(surfaceExtensions);
+		extensions = ImmutableList.copyOf(extensions);
 	}
 	
 	@Override
 	public SurfaceRule apply(Context ctx) {
 		if((Object) ctx instanceof ContextExtension ext) {
-			for(SurfaceExtensionSource source : this.surfaceExtensions) {
+			for(SurfaceExtensionSource source : this.extensions) {
 				ext.addSurfaceExtension(source.apply(ctx));
+			}
+			for(SurfaceExtensionSource source : this.decorators) {
+				ext.addSurfaceDecorator(source.apply(ctx));
 			}
 			return (x, y, z) -> null;
 		} else {

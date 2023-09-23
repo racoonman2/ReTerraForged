@@ -39,10 +39,9 @@ public final class RTFSurfaceRuleData {
         if(miscellaneous.strataDecorator) {
             extensions.add(createGeoExtension(height, miscellaneous.strataRegionSize, yScale));
         }
-        extensions.add(createErosionExtension(height, seaLevel, yScale));
         return SurfaceRules.sequence(
         	SurfaceRuleData.overworld(),
-    		new SurfaceExtensionRuleSource(extensions.build())
+    		new SurfaceExtensionRuleSource(extensions.build(), ImmutableList.of(createErosionExtension(height, seaLevel, yScale)))
     	);
     }
 
