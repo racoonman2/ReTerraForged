@@ -6,7 +6,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureManager;
@@ -40,7 +39,7 @@ abstract class MixinNoiseBasedChunkGenerator extends ChunkGenerator {
 
     	RandomState randomState = worldGenLevel.getLevel().getChunkSource().randomState();
         WorldGenerationContext worldGenerationContext = new WorldGenerationContext((NoiseBasedChunkGenerator) (Object) this, worldGenLevel);
-        NoiseChunk noiseChunk = chunkAccess.getOrCreateNoiseChunk(chunk -> this.createNoiseChunk(chunk, structureManager, Blender.of((WorldGenRegion) worldGenLevel), randomState));
+        NoiseChunk noiseChunk = chunkAccess.getOrCreateNoiseChunk(chunk -> this.createNoiseChunk(chunk, structureManager, Blender.empty(), randomState));
         SurfaceRules.Context context = new SurfaceRules.Context(randomState.surfaceSystem(), randomState, chunkAccess, noiseChunk, worldGenLevel.getBiomeManager()::getBiome, worldGenLevel.registryAccess().registryOrThrow(Registries.BIOME), worldGenerationContext);
         if((Object) context instanceof ContextExtension extension) {
             NoiseGeneratorSettings noiseGeneratorSettings = this.settings.value();

@@ -23,19 +23,21 @@ import net.minecraft.world.level.levelgen.SurfaceRules.SurfaceRule;
 import raccoonman.reterraforged.common.asm.extensions.RandomStateExtension;
 import raccoonman.reterraforged.common.level.levelgen.density.FlatCache;
 import raccoonman.reterraforged.common.level.levelgen.density.MutableFunctionContext;
-import raccoonman.reterraforged.common.level.levelgen.density.Steepness;
+import raccoonman.reterraforged.common.level.levelgen.density.Slope;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Source;
 import raccoonman.reterraforged.common.worldgen.data.tags.RTFBlockTags;
 
-public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Holder<DensityFunction> height, int seaLevel, int yScale, float heightModifier, float slopeModifier) implements SurfaceExtensionSource {
+//TODO this doesnt respect preset settings
+public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Holder<DensityFunction> height, int seaLevel, int yScale, float heightModifier, float slopeModifier, boolean erodeSnow) implements SurfaceExtensionSource {
 	public static final Codec<ErosionSurfaceExtensionSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		MaterialSource.CODEC.listOf().fieldOf("materials").forGetter(ErosionSurfaceExtensionSource::materials),
 		DensityFunction.CODEC.fieldOf("height").forGetter(ErosionSurfaceExtensionSource::height),
 		Codec.INT.fieldOf("sea_level").forGetter(ErosionSurfaceExtensionSource::seaLevel),
 		Codec.INT.fieldOf("y_scale").forGetter(ErosionSurfaceExtensionSource::yScale),
 		Codec.FLOAT.fieldOf("height_modifier").forGetter(ErosionSurfaceExtensionSource::heightModifier),
-		Codec.FLOAT.fieldOf("slope_modifier").forGetter(ErosionSurfaceExtensionSource::slopeModifier)
+		Codec.FLOAT.fieldOf("slope_modifier").forGetter(ErosionSurfaceExtensionSource::slopeModifier),
+		Codec.BOOL.fieldOf("erode_snow").forGetter(ErosionSurfaceExtensionSource::erodeSnow)
 	).apply(instance, ErosionSurfaceExtensionSource::new));
 	
 	public ErosionSurfaceExtensionSource {
@@ -46,8 +48,8 @@ public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Hold
 	public Extension apply(Context surfaceContext) {
 		if((Object) surfaceContext.randomState instanceof RandomStateExtension randomStateExt) {		
 			DensityFunction cachedHeight = randomStateExt.cache(this.height.value(), surfaceContext.noiseChunk);
-			DensityFunction cachedSteepness = randomStateExt.cache(new FlatCache.Marker(new Steepness(cachedHeight, (float) this.seaLevel / (float) this.yScale, 10.0F, 1), 0), surfaceContext.noiseChunk);
-			return new Extension(surfaceContext, cachedHeight, cachedSteepness, this.materials.stream().map((material) -> material.apply(surfaceContext)).toList(), this.seaLevel, this.heightModifier, this.slopeModifier);
+			DensityFunction cachedSteepness = randomStateExt.cache(new FlatCache.Marker(new Slope(Holder.direct(cachedHeight), (float) this.seaLevel / (float) this.yScale, 10.0F, 1), 0), surfaceContext.noiseChunk);
+			return new Extension(surfaceContext, cachedHeight, cachedSteepness, this.materials.stream().map((material) -> material.apply(surfaceContext)).toList(), this.seaLevel, this.yScale, this.heightModifier, this.slopeModifier, this.erodeSnow);
 		} else {
 			throw new IllegalStateException();
 		}
@@ -58,10 +60,11 @@ public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Hold
 		return CODEC;
 	}
 
-	private record Extension(Context surfaceContext, DensityFunction height, DensityFunction steepness, List<Material> materials, int minY, float heightModifier, float slopeModifier, MutableFunctionContext functionContext) implements SurfaceExtension {
+	//TODO we should use surface rules to determine the material
+	private record Extension(Context surfaceContext, DensityFunction height, DensityFunction steepness, List<Material> materials, int seaLevel, int yScale, float heightModifier, float slopeModifier, boolean erodeSnow, MutableFunctionContext functionContext) implements SurfaceExtension {
 
-		public Extension(Context surfaceContext, DensityFunction height, DensityFunction steepness, List<Material> materials, int minY, float heightModifier, float slopeModifier) {
-			this(surfaceContext, height, steepness, materials, minY, heightModifier, slopeModifier, new MutableFunctionContext());
+		public Extension(Context surfaceContext, DensityFunction height, DensityFunction steepness, List<Material> materials, int seaLevel, int yScale, float heightModifier, float slopeModifier, boolean erodeSnow) {
+			this(surfaceContext, height, steepness, materials, seaLevel, yScale, heightModifier, slopeModifier, erodeSnow, new MutableFunctionContext());
 		}
 		
 		@Override
@@ -72,113 +75,46 @@ public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Hold
 			int y = this.surfaceContext.chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, chunkLocalX, chunkLocalZ);
 			BlockState surface = column.getBlock(y);
 
-	        if (y < this.minY) {
+	        if (y < this.seaLevel) {
 	            return;
 	        }
 	        
-	        float value = (float) this.sample(this.height, this.surfaceContext.blockX, y, this.surfaceContext.blockZ);
-	        float gradient = (float) this.sample(this.steepness, this.surfaceContext.blockX, y, this.surfaceContext.blockZ);
 			if(surface.is(RTFBlockTags.ERODIBLE)) {
 				BlockState top = Blocks.GRASS.defaultBlockState();
 				BlockState middle = Blocks.STONE.defaultBlockState();
-				BlockState material = this.getMaterial(this.surfaceContext.blockX, y, this.surfaceContext.blockZ, top, middle, value, gradient);
+				BlockState material = this.getMaterial(this.surfaceContext.blockX, y, this.surfaceContext.blockZ, top, middle);
 				if (material != top) {
 	                if (material.is(BlockTags.BASE_STONE_OVERWORLD)) {
 	                    erodeRock(column, y);
 	                } else {
 	                    fillDownSolid(column, y, y - 4, material);
-	                }
+	                } 
 	            }
 			}
-			
-			if(true) { //erodeSnow) {
-				float norm = 70 * (256.0F / 255F);
-                int y2 = y + 1;
-
-                var state = column.getBlock(y2);
-
-                if (gradient < 0.625F) {
-//                    if (state.getBlock() instanceof SnowLayerBlock) {
-//                        smoothSnow(pos, state, column);
-//                    }
-                } else {
-                    if (state.isAir()) {
-                        state = column.getBlock(y2 - 1);
-                    }
-                    
-                    if (state.is(BlockTags.SNOW)) {
-                        erodeSnow(column, y2);
-                    }
-                }
-			}
 		}
-//		
-//		private void erodeSnow(BlockColumn chunk, int y) {
-//			chunk.setBlock(y, Blocks.AIR.defaultBlockState());
-//			
-//			if (y > 0) {
-//				BlockState below = chunk.getBlock(y - 1);
-//				if (below.hasProperty(GrassBlock.SNOWY)) {
-//					chunk.setBlock(y, below.setValue(GrassBlock.SNOWY, false));
-//				}
-//			}
-//		}
-
-		protected static void erodeSnow(BlockColumn column, int startY) {
-	        column.setBlock(startY, Blocks.AIR.defaultBlockState());
-
-	        int y0 = startY - 1;
-	        int y1 = Math.max(startY - 15, 0);
-
-	        for (int y = y0; y > y1; y--) {
-	            var state = column.getBlock(y);
-	            if (isErodible(state)) {
-			        BlockState material = Blocks.STONE.defaultBlockState();
-			        // find the uppermost layer of rock & record it's depth
-			        for (int dy = 3; dy < 32; dy++) {
-			            BlockState block = column.getBlock(y - dy);
-			            if (block.is(BlockTags.BASE_STONE_OVERWORLD)) {
-			                material = block;
-			                break;
-			            }
-			        }
-	                column.setBlock(y, material);
-	            } else {
-	                return;
-	            }
-	        }
-	    }
-		
-		private static boolean isErodible(BlockState state) {
-			return state.is(BlockTags.DIRT) ||state.is(BlockTags.SNOW);
-		}
-		
-		private static final float SNOW_ROCK_STEEPNESS = 0.45F;
-	    private static final float SNOW_ROCK_HEIGHT = 95F / 255F;
-		private static boolean snowErosion(float x, float z, float steepness, float height) {
-	        return steepness > ROCK_STEEPNESS
-	                || (steepness > SNOW_ROCK_STEEPNESS && height > SNOW_ROCK_HEIGHT)
-	                || (steepness > DIRT_STEEPNESS && height > getNoise(x, z, 8, DIRT_VAR, DIRT_MIN));
-	    }
 		
 		private static void erodeRock(BlockColumn column, int y) {
 	        int depth = 32;
-	        BlockState material = Blocks.GRAVEL.defaultBlockState();
-	        // find the uppermost layer of rock & record it's depth
-	        for (int dy = 3; dy < 32; dy++) {
-	            BlockState state = column.getBlock(y - dy);
-	            if (state.is(BlockTags.BASE_STONE_OVERWORLD)) {
-	                material = state;
-	                depth = dy + 1;
-	                break;
-	            }
-	        }
+	        BlockState material = findRock(Blocks.GRAVEL.defaultBlockState(), column, y, depth);
 
 	        // fill downwards to the first rock layer
 	        for (int dy = 0; dy < depth; dy++) {
 	            replaceSolid(column, y - dy, material);
 	        }
 	    }
+		
+		private static BlockState findRock(BlockState initial, BlockColumn column, int y, int depth) {
+	        // find the uppermost layer of rock & record it's depth
+			BlockState material = initial;
+	        for (int dy = 3; dy < 32; dy++) {
+	            BlockState state = column.getBlock(y - dy);
+	            if (state.is(BlockTags.BASE_STONE_OVERWORLD)) {
+	                material = state;
+	                break;
+	            }
+	        }
+	        return material;
+		}
 		
 		// obviously we're not hardcoding this in the final version
 		// TOOD: make all this stuff configurable
@@ -196,12 +132,13 @@ public record ErosionSurfaceExtensionSource(List<MaterialSource> materials, Hold
 	    private static final int ROCK_MIN = 140;
 	    private static final int DIRT_VAR = 40;
 	    private static final int DIRT_MIN = 95;
-	    public static final float ROCK_STEEPNESS = 0.65F;
+	    private static final float ROCK_STEEPNESS = 0.65F;
 	    private static final float DIRT_STEEPNESS = 0.475F;
+	    
 		@Nullable
-		private BlockState getMaterial(int x, int y, int z, BlockState top, BlockState middle, float value, float gradient) {
-			float height = (float) (value + RAND.compute(x, z, 4) * this.heightModifier);
-			float steepness = (float) (gradient + RAND.compute(x, z, 8) * this.slopeModifier);
+		private BlockState getMaterial(int x, int y, int z, BlockState top, BlockState middle) {
+			float height = (float) (this.sample(this.height, this.surfaceContext.blockX, y, this.surfaceContext.blockZ) + RAND.compute(x, z, 4) * this.heightModifier);
+			float steepness = (float) (this.sample(this.steepness, this.surfaceContext.blockX, y, this.surfaceContext.blockZ) + RAND.compute(x, z, 8) * this.slopeModifier);
 
 			if (steepness > ROCK_STEEPNESS || height > getNoise(x, z, 4, ROCK_VAR, ROCK_MIN)) {
 				return rock(middle);

@@ -11,7 +11,7 @@ import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseChunk;
 import raccoonman.reterraforged.common.level.levelgen.density.FlatCache;
-import raccoonman.reterraforged.common.level.levelgen.density.Steepness;
+import raccoonman.reterraforged.common.level.levelgen.density.Slope;
 
 @Mixin(NoiseChunk.class)
 class MixinNoiseChunk {
@@ -33,7 +33,7 @@ class MixinNoiseChunk {
 			FlatCache cache = new FlatCache(function.function(), this.cellWidth * this.cellCountXZ + function.padding(), QuartPos.toBlock(this.firstNoiseX), QuartPos.toBlock(this.firstNoiseZ));
 			callback.setReturnValue(cache);
 		}
-		if(densityFunction instanceof Steepness function) {
+		if(densityFunction instanceof Slope function) {
 			callback.setReturnValue(function.cache());
 		}
 	}

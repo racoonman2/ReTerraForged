@@ -23,6 +23,8 @@ import raccoonman.reterraforged.common.worldgen.data.preset.TerrainSettings.Gene
 import raccoonman.reterraforged.common.worldgen.data.preset.TerrainSettings.Terrain;
 import raccoonman.reterraforged.common.worldgen.data.preset.WorldSettings;
 
+//FIXME volcano noise is completely off :(
+//TODO reenable it in createFeatureBlend once we fix it
 public final class RTFTerrainNoise2 {
 	public static final ResourceKey<Noise> REGION_WARP_X = createKey("region_warp_x");
 	public static final ResourceKey<Noise> REGION_WARP_Z = createKey("region_warp_z");
@@ -127,7 +129,7 @@ public final class RTFTerrainNoise2 {
 		regions.add(makeRegion(ground, getNoise(noise, mountainsKey), terrain.mountains, scale));
 		regions.add(makeRegion(ground, getNoise(noise, mountains2Key), terrain.mountains, scale));
 		regions.add(makeRegion(ground, getNoise(noise, mountains3Key), terrain.mountains, scale));
-		regions.add(makeRegion(ground, getNoise(noise, volcanoKey), terrain.volcano, scale));
+//		regions.add(makeRegion(ground, getNoise(noise, volcanoKey), terrain.volcano, scale));
         Collections.shuffle(regions, new Random(seed.next()));
 		return new RegionSelector(regionCell, regions);
 	}

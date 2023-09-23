@@ -15,6 +15,7 @@ accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context system 
 accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context blockX I
 accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context blockY I
 accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context blockZ I
+accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context lastUpdateXZ J
 accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context pos Lnet/minecraft/core/BlockPos$MutableBlockPos;
 accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context biomeGetter Ljava/util/function/Function;
 accessible field net/minecraft/world/level/levelgen/SurfaceSystem seaLevel I
@@ -43,3 +44,5 @@ accessible field net/minecraft/world/level/levelgen/NoiseChunk inCellX I
 accessible field net/minecraft/world/level/levelgen/NoiseChunk inCellY I
 accessible field net/minecraft/world/level/levelgen/NoiseChunk inCellZ I
 accessible method net/minecraft/world/level/biome/Biome getTemperature (Lnet/minecraft/core/BlockPos;)F
+
+accessible field net/minecraft/server/level/WorldGenRegion cache Ljava/util/List;

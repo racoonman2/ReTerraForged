@@ -4,13 +4,13 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.SurfaceRules.RuleSource;
-import raccoonman.reterraforged.common.level.levelgen.surface.extension.SurfaceExtensionRuleSource;
+import raccoonman.reterraforged.common.level.levelgen.rule.GeoRuleSource;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
-public final class RTFSurfaceRules {
+public final class RTFSurfaceRuleTypes {
 
 	public static void bootstrap() {
-		register("surface_extension", SurfaceExtensionRuleSource.CODEC);
+		register("geo", GeoRuleSource.CODEC);
 	}
 	
 	private static void register(String name, Codec<? extends RuleSource> value) {

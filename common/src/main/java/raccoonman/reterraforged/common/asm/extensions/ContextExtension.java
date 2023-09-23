@@ -11,4 +11,7 @@ public interface ContextExtension {
 	void applySurfaceExtensions(BlockColumn column);
 	
 	void applySurfaceDecorators(BlockColumn column);
+	
+	//TODO we prevent surface extensions from running with this
+	// void setDecorating(boolean decorating);
 }

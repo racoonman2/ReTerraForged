@@ -20,6 +20,7 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.level.levelgen.density.FlatCache;
 import raccoonman.reterraforged.common.level.levelgen.density.NoiseWrapper;
+import raccoonman.reterraforged.common.level.levelgen.density.Slope;
 import raccoonman.reterraforged.common.level.levelgen.density.YGradient;
 import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
@@ -28,6 +29,8 @@ import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.worldgen.data.noise.RTFClimateNoise;
 import raccoonman.reterraforged.common.worldgen.data.noise.RTFTerrainNoise2;
 import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
+import raccoonman.reterraforged.common.worldgen.data.preset.TerrainSettings;
+import raccoonman.reterraforged.common.worldgen.data.preset.WorldSettings;
 
 public class RTFNoiseRouterData {
     private static final DensityFunction BLENDING_FACTOR = DensityFunctions.constant(10.0);
@@ -43,6 +46,7 @@ public class RTFNoiseRouterData {
     public static final ResourceKey<DensityFunction> JAGGEDNESS = createKey("overworld/jaggedness");
     public static final ResourceKey<DensityFunction> DEPTH = createKey("overworld/depth");
     public static final ResourceKey<DensityFunction> HEIGHT = createKey("overworld/height");
+    public static final ResourceKey<DensityFunction> SLOPE = createKey("overworld/slope");
     public static final ResourceKey<DensityFunction> GRADIENT = createKey("overworld/gradient");
     private static final ResourceKey<DensityFunction> SLOPED_CHEESE = createKey("overworld/sloped_cheese");
     private static final ResourceKey<DensityFunction> SPAGHETTI_ROUGHNESS_FUNCTION = createKey("overworld/caves/spaghetti_roughness_function");
@@ -62,6 +66,9 @@ public class RTFNoiseRouterData {
         HolderGetter<DensityFunction> functions = ctx.lookup(Registries.DENSITY_FUNCTION);
         HolderGetter<Noise> noise = ctx.lookup(RTFRegistries.NOISE);
         
+        WorldSettings world = preset.world();
+        TerrainSettings terrain = preset.terrain();
+        
         ctx.register(ZERO, DensityFunctions.zero());
         int minY = DimensionType.MIN_Y * 2;
         int maxY = DimensionType.MAX_Y * 2;
@@ -79,7 +86,8 @@ public class RTFNoiseRouterData {
         ctx.register(ENTRANCES, entrances(functions, noiseParams));
         ctx.register(NOODLE, noodle(functions, noiseParams));
         ctx.register(PILLARS, pillars(noiseParams));
-        ctx.register(HEIGHT, new FlatCache.Marker(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(RTFTerrainNoise2.VARIANCE))), 1));
+        Holder<DensityFunction> height = ctx.register(HEIGHT, new FlatCache.Marker(new NoiseWrapper.Marker(new HolderNoise(noise.getOrThrow(RTFTerrainNoise2.VARIANCE))), 1));
+        ctx.register(SLOPE, new FlatCache.Marker(new Slope(height, (float) world.properties.seaLevel / (float) terrain.general.yScale, 10.0F, 1), 1));
     }
 
     private static <C, I extends ToFloatFunction<C>> CubicSpline<C, I> overworldOffset(I toFloatFunction) {
