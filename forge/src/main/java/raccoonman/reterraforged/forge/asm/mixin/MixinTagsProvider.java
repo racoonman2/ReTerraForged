@@ -15,8 +15,10 @@ import net.minecraftforge.common.data.ExistingFileHelper.IResourceType;
 class MixinTagsProvider {
 
 	@Redirect(
+		remap = false,
 		method = "lambda$getOrCreateRawBuilder$9", 
 		at = @At(
+			remap = false,
 			value = "INVOKE",
 			target = "Lnet/minecraftforge/common/data/ExistingFileHelper;trackGenerated(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraftforge/common/data/ExistingFileHelper$IResourceType;)V"
 		)

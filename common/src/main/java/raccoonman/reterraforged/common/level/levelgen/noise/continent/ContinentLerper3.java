@@ -7,16 +7,16 @@ import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
 
-public record ContinentLerper3(Noise continentEdge, Noise lower, Noise middle, Noise upper, Interpolation interpolation, float blendLower, float midpoint, float blendUpper) implements Noise {
+public record ContinentLerper3(Noise continentEdge, Noise lower, Noise middle, Noise upper, float blendLower, float midpoint, float blendUpper, Interpolation interpolation) implements Noise {
 	public static final Codec<ContinentLerper3> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Noise.HOLDER_HELPER_CODEC.fieldOf("continent_edge").forGetter(ContinentLerper3::continentEdge),
 		Noise.HOLDER_HELPER_CODEC.fieldOf("lower").forGetter(ContinentLerper3::lower),
 		Noise.HOLDER_HELPER_CODEC.fieldOf("middle").forGetter(ContinentLerper3::middle),
 		Noise.HOLDER_HELPER_CODEC.fieldOf("upper").forGetter(ContinentLerper3::upper),
-		Interpolation.CODEC.fieldOf("interpolation").forGetter(ContinentLerper3::interpolation),
 		Codec.FLOAT.fieldOf("blend_lower").forGetter(ContinentLerper3::blendLower),
 		Codec.FLOAT.fieldOf("midpoint").forGetter(ContinentLerper3::midpoint),
-		Codec.FLOAT.fieldOf("blend_upper").forGetter(ContinentLerper3::blendUpper)
+		Codec.FLOAT.fieldOf("blend_upper").forGetter(ContinentLerper3::blendUpper),
+		Interpolation.CODEC.fieldOf("interpolation").forGetter(ContinentLerper3::interpolation)
 	).apply(instance, ContinentLerper3::new));
 	
 	@Override
@@ -48,6 +48,6 @@ public record ContinentLerper3(Noise continentEdge, Noise lower, Noise middle, N
 
 	@Override
 	public Noise mapAll(Visitor visitor) {
-		return visitor.apply(new ContinentLerper3(this.continentEdge.mapAll(visitor), this.lower.mapAll(visitor), this.middle.mapAll(visitor), this.upper.mapAll(visitor), this.interpolation, this.blendLower, this.midpoint, this.blendUpper));
+		return visitor.apply(new ContinentLerper3(this.continentEdge.mapAll(visitor), this.lower.mapAll(visitor), this.middle.mapAll(visitor), this.upper.mapAll(visitor), this.blendLower, this.midpoint, this.blendUpper, this.interpolation));
 	}
 }

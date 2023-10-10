@@ -9,7 +9,7 @@ public final class RTFTranslationKeys {
 
 	public static final String GUI_SELECT_PRESET_MISSING_LEGACY_PRESETS = resolve("gui.selectPreset.missingLegacyPresets");
 	public static final String GUI_SELECT_PRESET_TITLE = resolve("gui.selectPreset.title");
-	public static final String GUI_BEAUTIFUL_PRESET_NAME = resolve("gui.preset.defaultName");
+	public static final String GUI_DEFAULT_PRESET_NAME = resolve("gui.preset.defaultName");
 	public static final String GUI_WORLD_SETTINGS_TITLE = resolve("gui.worldSettings.title");
 	public static final String GUI_CLIMATE_SETTINGS_TITLE = resolve("gui.climateSettings.title");
 	public static final String GUI_TERRAIN_SETTINGS_TITLE = resolve("gui.terrainSettings.title");
@@ -46,7 +46,6 @@ public final class RTFTranslationKeys {
 	public static final String GUI_BUTTON_PLAIN_STONE_EROSION = resolve("gui.button.stoneErosion");
 	public static final String GUI_BUTTON_NATURAL_SNOW_DECORATOR = resolve("gui.button.naturalSnowDecorator");
 	public static final String GUI_BUTTON_CUSTOM_BIOME_FEATURES = resolve("gui.button.customBiomeFeatures");
-	public static final String GUI_BUTTON_VANILLA_LAKES = resolve("gui.button.vanillaLakes");
 	public static final String GUI_BUTTON_VANILLA_SPRINGS = resolve("gui.button.vanillaSprings");
 	public static final String GUI_BUTTON_VANILLA_LAVA_LAKES = resolve("gui.button.vanillaLavaLakes");
 	public static final String GUI_BUTTON_VANILLA_LAVA_SPRINGS = resolve("gui.button.vanillaLavaSprings");

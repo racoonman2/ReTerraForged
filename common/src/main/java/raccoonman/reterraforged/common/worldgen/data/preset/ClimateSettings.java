@@ -140,8 +140,8 @@ public class ClimateSettings {
             this.strength = strength;
         }
         
-        public Noise build() {
-            return Source.build(this.scale, this.octaves).gain(this.gain).lacunarity(this.lacunarity).build(this.type).bias(-0.5F);
+        public Noise build(int seed) {
+            return Source.build(seed, this.scale, this.octaves).gain(this.gain).lacunarity(this.lacunarity).build(this.type).bias(-0.5F);
         }
         
         public BiomeNoise copy() {

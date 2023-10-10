@@ -21,7 +21,7 @@ public record MultiContinent(Domain warp, float frequency, float offsetAlpha, Di
 
 	@Override
     public float compute(float x, float y, int seed) {
-		return BaseContinent.super.getValue(x, y, seed, false);
+		return BaseContinent.super.compute(x, y, seed, false);
     }
 	
 	@Override

@@ -168,7 +168,6 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 
 	@Override
 	public Optional<Page> next() {
-		// note: its possible for left to be null when this is called
 		return Optional.ofNullable(this.left).map(WidgetList::getSelected).map((e) -> {
 			PresetEntry entry = e.getWidget();
 			return !entry.isBuiltin() ? new WorldSettingsPage(this.screen, entry) : null;
@@ -189,21 +188,22 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 		}
 	}
 	
-	private void onSelectPreset(@Nullable PresetEntry entry) {
+	private void selectPreset(@Nullable PresetEntry entry) {
 		boolean active = entry != null;
-		boolean builtin = active && entry.isBuiltin();
+		boolean modifiable = active && !entry.isBuiltin();
+		
 		this.screen.doneButton.active = active;
 		this.copyPreset.active = active;
-		this.deletePreset.active = active && !builtin;
+		this.deletePreset.active = modifiable;
 		this.exportPreset.active = active;
-		this.screen.nextButton.active = active && !builtin;
+		this.screen.nextButton.active = modifiable;
 	}
 	
 	private void rebuildPresets() throws IOException {
-		this.onSelectPreset(null);
+		this.selectPreset(null);
 		
 		List<PresetEntry> entries = new ArrayList<>();
-		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_BEAUTIFUL_PRESET_NAME).withStyle(ChatFormatting.GRAY), Preset.makeDefault(), true));
+		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_DEFAULT_PRESET_NAME).withStyle(ChatFormatting.GRAY), Preset.makeDefault(), true));
 		for(Path presetPath : Files.list(RTF_PRESET_PATH)
 			.filter(Files::isRegularFile)
 			.toList()
@@ -241,7 +241,7 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 		public PresetEntry(Component name, Preset preset, boolean builtin) {
 			super(-1, -1, -1, -1, (b) -> {
 				if(b instanceof PresetEntry entry) {
-					SelectPresetPage.this.onSelectPreset(entry);
+					SelectPresetPage.this.selectPreset(entry);
 				}
 			}, name);
 			

@@ -25,7 +25,6 @@
 
 package raccoonman.reterraforged.common.level.levelgen.noise;
 
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
@@ -78,17 +77,9 @@ public enum Source implements StringRepresentable {
     public static Builder builder() {
         return new Builder();
     }
-
-    public static Builder build(final int scale, final int octaves) {
-        return build(ThreadLocalRandom.current().nextInt(), scale, octaves);
-    }
     
     public static Builder build(final int seed, final int scale, final int octaves) {
         return builder().shift(seed).scale(scale).octaves(octaves);
-    }
-    
-    public static Noise perlin(final int scale, final int octaves) {
-        return perlin(ThreadLocalRandom.current().nextInt(), scale, octaves);
     }
     
     public static Noise perlin(final int seed, final double freq, final int octaves) {
@@ -99,52 +90,24 @@ public enum Source implements StringRepresentable {
         return builder().shift(seed).scale(scale).octaves(octaves).perlin();
     }
     
-    public static Noise simplex(final int scale, final int octaves) {
-        return simplex(ThreadLocalRandom.current().nextInt(), scale, octaves);
-    }
-    
     public static Noise simplex(final int seed, final int scale, final int octaves) {
         return builder().shift(seed).scale(scale).octaves(octaves).simplex();
-    }
-    
-    public static Noise billow(final int scale, final int octaves) {
-        return billow(ThreadLocalRandom.current().nextInt(), scale, octaves);
     }
     
     public static Noise billow(final int seed, final int scale, final int octaves) {
         return builder().shift(seed).scale(scale).octaves(octaves).billow();
     }
     
-    public static Noise ridge(final int scale, final int octaves) {
-        return ridge(ThreadLocalRandom.current().nextInt(), scale, octaves);
-    }
-    
     public static Noise ridge(final int seed, final int scale, final int octaves) {
         return builder().shift(seed).scale(scale).octaves(octaves).ridge();
-    }
-    
-    public static Noise simplexRidge(final int scale, final int octaves) {
-        return ridge(ThreadLocalRandom.current().nextInt(), scale, octaves);
     }
     
     public static Noise simplexRidge(final int seed, final int scale, final int octaves) {
         return builder().shift(seed).scale(scale).octaves(octaves).simplexRidge();
     }
     
-    public static Noise cubic(final int scale, final int octaves) {
-        return cubic(ThreadLocalRandom.current().nextInt(), scale, octaves);
-    }
-    
     public static Noise cubic(final int seed, final int scale, final int octaves) {
         return builder().shift(seed).scale(scale).octaves(octaves).cubic();
-    }
-    
-    public static Noise cell(final int scale) {
-        return cell(ThreadLocalRandom.current().nextInt(), scale);
-    }
-    
-    public static Noise cell(final int scale, final CellFunc cellFunc) {
-        return cell(ThreadLocalRandom.current().nextInt(), scale, cellFunc);
     }
     
     public static Noise cell(final int seed, final int scale) {
@@ -163,24 +126,12 @@ public enum Source implements StringRepresentable {
         return builder().shift(seed).scale(scale).distFunc(distFunc).cellFunc(cellFunc).cell();
     }
     
-    public static Noise cellNoise(final int scale, final Noise source) {
-        return cellNoise(ThreadLocalRandom.current().nextInt(), scale, source);
-    }
-    
     public static Noise cellNoise(final int seed, final int scale, final Noise source) {
         return builder().shift(seed).scale(scale).cellFunc(CellFunc.NOISE_LOOKUP).source(source).cell();
     }
     
     public static Noise cellNoise(final int seed, final int scale, final DistanceFunction distFunc, final Noise source) {
         return builder().shift(seed).scale(scale).cellFunc(CellFunc.NOISE_LOOKUP).distFunc(distFunc).source(source).cell();
-    }
-    
-    public static Noise cellEdge(final int scale) {
-        return cellEdge(ThreadLocalRandom.current().nextInt(), scale);
-    }
-    
-    public static Noise cellEdge(final int scale, final EdgeFunction func) {
-        return cellEdge(ThreadLocalRandom.current().nextInt(), scale, func);
     }
     
     public static Noise cellEdge(final int seed, final int scale) {
@@ -193,10 +144,6 @@ public enum Source implements StringRepresentable {
     
     public static Noise cellEdge(final int seed, final int scale, final DistanceFunction distFunc, final EdgeFunction edgeFunc) {
         return builder().shift(seed).scale(scale).distFunc(distFunc).edgeFunc(edgeFunc).cellEdge();
-    }
-    
-    public static Noise rand(final int scale) {
-        return rand(ThreadLocalRandom.current().nextInt(), scale);
     }
     
     public static Noise rand(final int seed, final int scale) {

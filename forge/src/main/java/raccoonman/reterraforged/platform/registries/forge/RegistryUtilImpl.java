@@ -2,9 +2,9 @@ package raccoonman.reterraforged.platform.registries.forge;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
@@ -20,7 +20,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 import raccoonman.reterraforged.common.ReTerraForged;
 
 public final class RegistryUtilImpl {
-	private static final Map<ResourceKey<? extends Registry<?>>, DeferredRegistry.Writable<?>> REGISTERS = Collections.synchronizedMap(new HashMap<>());
+	private static final Map<ResourceKey<? extends Registry<?>>, DeferredRegistry.Writable<?>> REGISTERS = new ConcurrentHashMap<>();
 	private static final List<DataRegistry<?>> DATA_REGISTRIES = Collections.synchronizedList(new ArrayList<>());
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

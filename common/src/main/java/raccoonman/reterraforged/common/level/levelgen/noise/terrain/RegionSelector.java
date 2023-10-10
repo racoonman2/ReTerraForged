@@ -24,7 +24,7 @@ public record RegionSelector(Noise selector, List<Region> regions) implements No
     public float compute(float x, float y, int seed) {
     	float identity = this.selector.compute(x, y, seed);
     	int index = NoiseUtil.round(identity * (this.regions.size() - 1));
-        return this.regions.get(index).compute(x, y, seed);
+        return this.regions.get(index).noise().compute(x, y, seed);
     }
     
     private static List<Region> sortByWeight(List<Region> regions) {
@@ -66,27 +66,14 @@ public record RegionSelector(Noise selector, List<Region> regions) implements No
 		return visitor.apply(new RegionSelector(this.selector.mapAll(visitor), this.regions.stream().map((region) -> region.mapAll(visitor)).toList()));
 	}
     
-    public record Region(float weight, Noise base, Noise variance, float baseScale, float varianceScale) implements Noise {
+    public record Region(float weight, Noise noise) {
     	public static final Codec<Region> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.FLOAT.fieldOf("weight").forGetter(Region::weight),
-    		Noise.HOLDER_HELPER_CODEC.fieldOf("base").forGetter(Region::base),
-    		Noise.HOLDER_HELPER_CODEC.fieldOf("noise").forGetter(Region::variance),
-    		Codec.FLOAT.fieldOf("base_scale").forGetter(Region::baseScale),
-    		Codec.FLOAT.fieldOf("variance_scale").forGetter(Region::varianceScale)
+    		Noise.HOLDER_HELPER_CODEC.fieldOf("noise").forGetter(Region::noise)
     	).apply(instance, Region::new));
-
-    	@Override
-		public Codec<Region> codec() {
-			return CODEC;
-		}
-		
-    	@Override
-		public float compute(float x, float y, int seed) {
-			return (this.base.compute(x, y, seed) * this.baseScale) + (this.variance.compute(x, y, seed) * this.varianceScale);
-		}
     	
     	public Region mapAll(Visitor visitor) {
-			return new Region(this.weight, this.base.mapAll(visitor), this.variance.mapAll(visitor), this.baseScale, this.varianceScale);
+			return new Region(this.weight, this.noise.mapAll(visitor));
     	}
     }
 }

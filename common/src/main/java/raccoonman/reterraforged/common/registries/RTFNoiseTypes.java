@@ -2,10 +2,10 @@ package raccoonman.reterraforged.common.registries;
 
 import com.mojang.serialization.Codec;
 
-import raccoonman.reterraforged.common.level.levelgen.noise.Blender;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
-import raccoonman.reterraforged.common.level.levelgen.noise.Valley;
-import raccoonman.reterraforged.common.level.levelgen.noise.climate.Climate;
+import raccoonman.reterraforged.common.level.levelgen.noise.climate.ClimateRegion;
+import raccoonman.reterraforged.common.level.levelgen.noise.climate.ClimateRegionEdge;
+import raccoonman.reterraforged.common.level.levelgen.noise.climate.ClimateRegionOffset;
 import raccoonman.reterraforged.common.level.levelgen.noise.climate.Moisture;
 import raccoonman.reterraforged.common.level.levelgen.noise.climate.Temperature;
 import raccoonman.reterraforged.common.level.levelgen.noise.combiner.Add;
@@ -26,7 +26,6 @@ import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Bias;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Boost;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Clamp;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Curve;
-import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Floor;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Freq;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Grad;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Invert;
@@ -40,6 +39,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Scale;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Shift;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Steps;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Terrace;
+import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Threshold;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.VariableCurve;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Warp;
 import raccoonman.reterraforged.common.level.levelgen.noise.selector.Base;
@@ -65,6 +65,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.terrain.RegionBorder
 import raccoonman.reterraforged.common.level.levelgen.noise.terrain.RegionCell;
 import raccoonman.reterraforged.common.level.levelgen.noise.terrain.RegionLerper;
 import raccoonman.reterraforged.common.level.levelgen.noise.terrain.RegionSelector;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.Valley;
 import raccoonman.reterraforged.common.level.levelgen.noise.terrain.Volcano;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
@@ -118,11 +119,12 @@ public final class RTFNoiseTypes {
 		register("select", Select.CODEC);
 		register("variable_blend", VariableBlend.CODEC);
 		register("valley", Valley.CODEC);
-		register("floor", Floor.CODEC);
+		register("threshold", Threshold.CODEC);
 		register("temperature", Temperature.CODEC);
 		register("moisture", Moisture.CODEC);
-		register("climate", Climate.CODEC);
-		register("blender", Blender.CODEC);	
+		register("climate_region", ClimateRegion.CODEC);
+		register("climate_region_edge", ClimateRegionEdge.CODEC);
+		register("climate_region_offset", ClimateRegionOffset.CODEC);
 		register("multi_continent", MultiContinent.CODEC);
 		register("single_continent", SingleContinent.CODEC);
 		register("multi_improved_continent", MultiImprovedContinent.CODEC);

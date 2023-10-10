@@ -1,12 +1,10 @@
 package raccoonman.reterraforged.common.level.levelgen.noise;
 
+// RandomSource.nextInt() is better suited for this
+@Deprecated
 public class Seed {
     private int root;
     private int value;
-    
-    public Seed(long value) {
-        this((int)value);
-    }
     
     public Seed(int value) {
         this.root = value;

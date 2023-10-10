@@ -15,14 +15,20 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.asm.extensions.RandomStateExtension;
 import raccoonman.reterraforged.common.level.levelgen.density.NoiseWrapper;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 
 @Mixin(RandomState.class)
 @Implements(@Interface(iface = RandomStateExtension.class, prefix = ReTerraForged.MOD_ID + "$RandomStateExtension$"))
 class MixinRandomState {
 	private DensityFunction.Visitor visitor;
+	private int seed;
 	
-	public DensityFunction.Visitor reterraforged$RandomStateExtension$visitor() {
-		return this.visitor;
+	public Noise shift(Noise noise) {
+		return noise.shift(this.seed);
+	}
+	
+	public DensityFunction reterraforged$RandomStateExtension$wrap(DensityFunction input) {
+		return input.mapAll(this.visitor);
 	}
 	
 	@Redirect(
@@ -34,9 +40,10 @@ class MixinRandomState {
 		require = 1
 	)
 	private NoiseRouter RandomState(NoiseRouter router, DensityFunction.Visitor visitor, NoiseGeneratorSettings settings, HolderGetter<NormalNoise.NoiseParameters> params, final long seed) {
+		this.seed = (int) seed;
 		this.visitor = (function) -> {
 			if(function instanceof NoiseWrapper.Marker marker) {
-				return visitor.apply(new NoiseWrapper(marker.noise(), (int) seed)); // we cast to int here instead of using Long.hashCode() to keep compatibility with 1.16 seeds
+				return new NoiseWrapper(marker.noise(), this.seed);
 			}
 			return function.mapAll(visitor);
 		};

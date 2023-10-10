@@ -35,7 +35,6 @@ import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
 /**
  * @author dags <dags@dags.me>
  */
-
 @Deprecated
 public class Builder {
 	public static final int DEFAULT_SHIFT = 0;

@@ -35,12 +35,10 @@ import raccoonman.reterraforged.common.registries.RTFBuiltInRegistries;
 import raccoonman.reterraforged.common.registries.RTFCurveFunctionTypes;
 import raccoonman.reterraforged.common.registries.RTFDensityFunctionTypes;
 import raccoonman.reterraforged.common.registries.RTFDomainTypes;
-import raccoonman.reterraforged.common.registries.RTFFeatures;
 import raccoonman.reterraforged.common.registries.RTFNoiseTypes;
 import raccoonman.reterraforged.common.registries.RTFPlacementModifierTypes;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
-import raccoonman.reterraforged.common.registries.RTFSurfaceConditions;
-import raccoonman.reterraforged.common.registries.RTFSurfaceExtensionSourceTypes;
+import raccoonman.reterraforged.common.registries.RTFSurfaceConditionTypes;
 import raccoonman.reterraforged.common.registries.RTFSurfaceRuleTypes;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
@@ -54,12 +52,10 @@ public final class ReTerraForged {
 		RTFCurveFunctionTypes.bootstrap();
 		RTFDomainTypes.bootstrap();
 		RTFNoiseTypes.bootstrap();
-		RTFFeatures.bootstrap();
 		RTFPlacementModifierTypes.bootstrap();
 		RTFDensityFunctionTypes.bootstrap();
 		RTFSurfaceRuleTypes.bootstrap();
-		RTFSurfaceConditions.bootstrap();
-		RTFSurfaceExtensionSourceTypes.bootstrap();
+		RTFSurfaceConditionTypes.bootstrap();
 		
 		RegistryUtil.createDataRegistry(RTFRegistries.NOISE, Noise.DIRECT_CODEC);
 	}

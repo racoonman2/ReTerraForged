@@ -3,8 +3,6 @@ package raccoonman.reterraforged.common.worldgen.data.preset;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
-
 public class TerrainSettings {
 	public static final Codec<TerrainSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		General.CODEC.fieldOf("general").forGetter((o) -> o.general),

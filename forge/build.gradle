@@ -31,8 +31,16 @@ configurations {
     developmentForge.extendsFrom common
 }
 
+repositories {
+	maven { url = 'https://maven.minecraftforge.net/' }
+	mavenCentral()
+}
+
 dependencies {
-    forge ("net.minecraftforge:forge:${rootProject.forge_version}")
+    forge("net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}")
+    
+    //modImplementation("com.github.glitchfiend:TerraBlender-forge:${rootProject.minecraft_version}-${rootProject.terrablender_version}")
+	compileOnly "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive false }

@@ -7,6 +7,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
+//TODO this should be cleaned up
 public class Slider extends AbstractSliderButton {
     private double min;
     private double max;

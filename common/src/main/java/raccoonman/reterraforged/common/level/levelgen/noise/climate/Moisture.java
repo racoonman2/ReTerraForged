@@ -12,7 +12,7 @@ public record Moisture(Noise source, Noise power) implements Noise {
 		Noise.HOLDER_HELPER_CODEC.fieldOf("power").forGetter(Moisture::power)
 	).apply(instance, Moisture::new));
 	
-//    public Moisture(final int scale, final int power) {
+//    public Moisture(int scale, int power) {
 //        this(Source.simplex(scale, 1).clamp(0.125, 0.875).map(0.0, 1.0).freq(0.5, 1.0), power);
 //    }
 //    
@@ -23,10 +23,10 @@ public record Moisture(Noise source, Noise power) implements Noise {
         if (power < 2) {
             return noise;
         }
-        noise = (noise - 0.5f) * 2.0f;
+        noise = (noise - 0.5F) * 2.0F;
         float value = NoiseUtil.pow(noise, power);
         value = NoiseUtil.copySign(value, noise);
-        return NoiseUtil.map(value, -1.0f, 1.0f, 2.0f);
+        return NoiseUtil.map(value, -1.0F, 1.0F);
     }
 
 	@Override

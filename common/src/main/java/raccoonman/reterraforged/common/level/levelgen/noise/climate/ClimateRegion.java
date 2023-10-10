@@ -8,24 +8,33 @@ import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.noise.Vec2f;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
 
-public record Climate(Noise source, DistanceFunction distance) implements Noise {
-	public static final Codec<Climate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Noise.HOLDER_HELPER_CODEC.fieldOf("source").forGetter(Climate::source),
-		DistanceFunction.CODEC.fieldOf("distance").forGetter(Climate::distance)
-	).apply(instance, Climate::new));
+public record ClimateRegion(Noise source, float frequency, Noise warpX, Noise warpY, float warpStrength) implements Noise {
+	public static final Codec<ClimateRegion> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Noise.HOLDER_HELPER_CODEC.fieldOf("source").forGetter(ClimateRegion::source),
+		Codec.FLOAT.fieldOf("frequency").forGetter(ClimateRegion::frequency),
+		Noise.HOLDER_HELPER_CODEC.fieldOf("warp_x").forGetter(ClimateRegion::warpX),
+		Noise.HOLDER_HELPER_CODEC.fieldOf("warp_y").forGetter(ClimateRegion::warpY),
+		Codec.FLOAT.fieldOf("warp_strength").forGetter(ClimateRegion::warpStrength)
+	).apply(instance, ClimateRegion::new));
 
 	@Override
 	public Noise mapAll(Visitor visitor) {
-		return visitor.apply(new Climate(this.source.mapAll(visitor), this.distance));
+		return visitor.apply(new ClimateRegion(this.source.mapAll(visitor), this.frequency, this.warpX.mapAll(visitor), this.warpY.mapAll(visitor), this.warpStrength));
 	}
 	
 	@Override
-	public Codec<Climate> codec() {
+	public Codec<ClimateRegion> codec() {
 		return CODEC;
 	}
 
 	@Override
 	public float compute(float x, float y, int seed) {
+        float ox = this.warpX.compute(x, y, seed) * this.warpStrength;
+        float oz = this.warpY.compute(x, y, seed) * this.warpStrength;
+        x += ox;
+        y += oz;
+        x *= this.frequency;
+        y *= this.frequency;
         int xr = NoiseUtil.floor(x);
         int yr = NoiseUtil.floor(y);
         float centerX = x;
@@ -39,7 +48,7 @@ public record Climate(Noise source, DistanceFunction distance) implements Noise 
                 Vec2f cell = NoiseUtil.cell(seed, cx, cy);
                 float cxf = cx + cell.x();
                 float cyf = cy + cell.y();
-                float distance = this.distance.apply(cxf - x, cyf - y);
+                float distance = DistanceFunction.EUCLIDEAN.apply(cxf - x, cyf - y);
                 if (distance < edgeDistance) {
                     edgeDistance2 = edgeDistance;
                     edgeDistance = distance;

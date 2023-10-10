@@ -37,12 +37,4 @@ accessible field net/minecraft/data/DataGenerator vanillaPackOutput Lnet/minecra
 accessible method net/minecraft/data/DataGenerator$PackGenerator <init> (Lnet/minecraft/data/DataGenerator;ZLjava/lang/String;Lnet/minecraft/data/PackOutput;)V
 accessible method net/minecraft/world/level/levelgen/structure/placement/StructurePlacement salt ()I
 accessible method net/minecraft/world/level/levelgen/NoiseChunk wrap (Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;
-accessible field net/minecraft/world/level/levelgen/NoiseChunk cellStartBlockX I
-accessible field net/minecraft/world/level/levelgen/NoiseChunk cellStartBlockY I
-accessible field net/minecraft/world/level/levelgen/NoiseChunk cellStartBlockZ I
-accessible field net/minecraft/world/level/levelgen/NoiseChunk inCellX I
-accessible field net/minecraft/world/level/levelgen/NoiseChunk inCellY I
-accessible field net/minecraft/world/level/levelgen/NoiseChunk inCellZ I
 accessible method net/minecraft/world/level/biome/Biome getTemperature (Lnet/minecraft/core/BlockPos;)F
-
-accessible field net/minecraft/server/level/WorldGenRegion cache Ljava/util/List;

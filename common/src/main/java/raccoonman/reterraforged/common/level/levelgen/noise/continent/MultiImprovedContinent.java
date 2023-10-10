@@ -86,7 +86,7 @@ public record MultiImprovedContinent(Domain warp, float frequency, float varianc
     private float getDistanceValue(float x, float y, int cellX, int cellY, float distance, int seed) {
         distance = this.getVariedDistanceValue(cellX, cellY, distance, seed);
         distance = NoiseUtil.sqrt(distance);
-        distance = NoiseUtil.map(distance, 0.05f, 0.25f, 0.2f);
+        distance = NoiseUtil.map(distance, 0.05F, 0.25F, 0.2F);
         distance = this.getCoastalDistanceValue(x, y, distance, seed);
         if (distance < this.inlandPoint && distance >= this.shallowOceanPoint) {
             distance = this.getCoastalDistanceValue(x, y, distance, seed);
@@ -97,7 +97,7 @@ public record MultiImprovedContinent(Domain warp, float frequency, float varianc
     private float getVariedDistanceValue(int cellX, int cellY, float distance, int seed) {
         if (this.variance > 0.0F && !isDefaultContinent(cellX, cellY)) {
             float sizeValue = sampleCell(cellX, cellY, seed + this.varianceSeed);
-            float sizeModifier = NoiseUtil.map(sizeValue, 0.0f, this.variance, this.variance);
+            float sizeModifier = NoiseUtil.map(sizeValue, 0.0F, this.variance, this.variance);
             distance *= sizeModifier;
         }
         return distance;

@@ -81,15 +81,4 @@ public interface Domain {
     public static Domain direction(Noise direction, Noise distance) {
         return new DirectionWarp(direction, distance);
     }
-
-    public static Domain direction(int shift, int scale, int octaves, double strength) {
-        return direction(Source.PERLIN, shift, scale, octaves, strength);
-    }
-
-    public static Domain direction(Source type, int shift, int scale, int octaves, double strength) {
-        return direction(
-        	Source.build(scale, octaves).build(type).shift(shift),
-        	Source.constant(strength)
-        );
-    }
 }

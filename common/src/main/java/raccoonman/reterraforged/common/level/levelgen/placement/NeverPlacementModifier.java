@@ -11,10 +11,9 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import raccoonman.reterraforged.common.registries.RTFPlacementModifierTypes;
 
-@Deprecated // we should just remove the feature from each biome's feature list instead
 public class NeverPlacementModifier extends PlacementModifier {
 	public static final NeverPlacementModifier INSTANCE = new NeverPlacementModifier();
-	public static final Codec<NeverPlacementModifier> CODEC = Codec.unit(() -> INSTANCE);
+	public static final Codec<NeverPlacementModifier> CODEC = Codec.unit(INSTANCE);
 	
 	@Override
 	public Stream<BlockPos> getPositions(PlacementContext ctx, RandomSource randomSource, BlockPos pos) {

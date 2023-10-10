@@ -30,8 +30,7 @@ import raccoonman.reterraforged.client.gui.widget.ValueButton;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
-import raccoonman.reterraforged.common.worldgen.data.noise.RTFContinentNoise;
-import raccoonman.reterraforged.common.worldgen.data.noise.RTFTerrainNoise2;
+import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData;
 
 public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, AbstractWidget, AbstractWidget> {
 	private Slider zoom;
@@ -66,7 +65,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 			this.screen.setSeed(i);
 			this.regenerate();
 		});
-		this.noise = PresetWidgets.createCycle(ImmutableList.of(RTFTerrainNoise2.VARIANCE, RTFTerrainNoise2.EROSION, RTFTerrainNoise2.RIDGE/*, RTFContinentNoise.MULTI_IMPROVED, RTFContinentNoise.MULTI, RTFContinentNoise.SINGLE, RTFNoiseData2.EXPERIMENTAL_CONTINENT*/), Optional.ofNullable(this.noise).map(CycleButton::getValue).orElse(RTFTerrainNoise2.VARIANCE), RTFTranslationKeys.GUI_BUTTON_NOISE, (value, button) -> {
+		this.noise = PresetWidgets.createCycle(ImmutableList.of(RTFNoiseData.MOISTURE, RTFNoiseData.TEMPERATURE/*, RTFContinentNoise.MULTI_IMPROVED, RTFContinentNoise.MULTI, RTFContinentNoise.SINGLE, RTFNoiseData2.EXPERIMENTAL_CONTINENT*/), Optional.ofNullable(this.noise).map(CycleButton::getValue).orElse(RTFNoiseData.MOISTURE), RTFTranslationKeys.GUI_BUTTON_NOISE, (value, button) -> {
 			this.preview.regenerate();
 		}, (h) -> h.location().toString());
 		
@@ -103,8 +102,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 		}
 	}
 	
-	//FIXME: this should be private
-	public class Preview extends Button {
+	private class Preview extends Button {
 	    private static final int FACTOR = 4;
 	    public static final int SIZE = (1 << 4) << FACTOR;
 	    private static final float[] LEGEND_SCALES = {1, 0.9F, 0.75F, 0.6F};
@@ -176,6 +174,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 
 	    @Override
 	    public void render(PoseStack matrixStack, int mx, int my, float partialTicks) {
+	    	this.height = this.getWidth();
 //	        this.height = getSize();
 	//
 //	        preRender();

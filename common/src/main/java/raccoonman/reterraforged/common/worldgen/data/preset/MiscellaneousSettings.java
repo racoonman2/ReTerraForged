@@ -13,7 +13,6 @@ public class MiscellaneousSettings {
 		Codec.BOOL.fieldOf("plainStoneErosion").forGetter((s) -> s.plainStoneErosion),
 		Codec.BOOL.fieldOf("naturalSnowDecorator").forGetter((s) -> s.naturalSnowDecorator),
 		Codec.BOOL.fieldOf("customBiomeFeatures").forGetter((s) -> s.customBiomeFeatures),
-		Codec.BOOL.fieldOf("vanillaLakes").forGetter((s) -> s.vanillaLakes),
 		Codec.BOOL.fieldOf("vanillaSprings").forGetter((s) -> s.vanillaSprings),
 		Codec.BOOL.fieldOf("vanillaLavaLakes").forGetter((s) -> s.vanillaLavaLakes),
 		Codec.BOOL.fieldOf("vanillaLavaSprings").forGetter((s) -> s.vanillaLavaSprings)
@@ -27,7 +26,6 @@ public class MiscellaneousSettings {
 	public boolean plainStoneErosion;
 	public boolean naturalSnowDecorator;
 	public boolean customBiomeFeatures;
-	public boolean vanillaLakes;
 	public boolean vanillaSprings;
 	public boolean vanillaLavaLakes;
 	public boolean vanillaLavaSprings;
@@ -41,7 +39,6 @@ public class MiscellaneousSettings {
 		boolean plainStoneErosion,
 		boolean naturalSnowDecorator,
 		boolean customBiomeFeatures,
-		boolean vanillaLakes,
 		boolean vanillaSprings,
 		boolean vanillaLavaLakes,
 		boolean vanillaLavaSprings
@@ -54,17 +51,16 @@ public class MiscellaneousSettings {
 		this.plainStoneErosion = plainStoneErosion;
 		this.naturalSnowDecorator = naturalSnowDecorator;
 		this.customBiomeFeatures = customBiomeFeatures;
-		this.vanillaLakes = vanillaLakes;
 		this.vanillaSprings = vanillaSprings;
 		this.vanillaLavaLakes = vanillaLavaLakes;
 		this.vanillaLavaSprings = vanillaLavaSprings;
 	}
 	
 	public MiscellaneousSettings copy() {
-		return new MiscellaneousSettings(this.smoothLayerDecorator, this.strataRegionSize, this.strataDecorator, this.oreCompatibleStoneOnly, this.erosionDecorator, this.plainStoneErosion, this.naturalSnowDecorator, this.customBiomeFeatures, this.vanillaLakes, this.vanillaSprings, this.vanillaLavaLakes, this.vanillaLavaSprings);
+		return new MiscellaneousSettings(this.smoothLayerDecorator, this.strataRegionSize, this.strataDecorator, this.oreCompatibleStoneOnly, this.erosionDecorator, this.plainStoneErosion, this.naturalSnowDecorator, this.customBiomeFeatures, this.vanillaSprings, this.vanillaLavaLakes, this.vanillaLavaSprings);
 	}
 	
 	public static MiscellaneousSettings makeDefault() {
-		return new MiscellaneousSettings(true, 600, true, true, true, false, true, true, false, true, true, true);
+		return new MiscellaneousSettings(true, 600, true, true, true, false, true, true, true, true, true);
 	}
 }

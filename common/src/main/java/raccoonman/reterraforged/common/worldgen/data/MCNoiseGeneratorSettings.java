@@ -26,11 +26,11 @@ public final class MCNoiseGeneratorSettings {
     private static NoiseGeneratorSettings createOverworld(HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, HolderGetter<Noise> noise, Preset preset) {
     	WorldSettings world = preset.world();
     	return new NoiseGeneratorSettings(
-	  		new NoiseSettings(-world.properties.worldDepth, 384, 1, 1),
+	  		new NoiseSettings(-world.properties.worldDepth, world.properties.worldHeight, 1, 2),
 	  		Blocks.STONE.defaultBlockState(),
 	  		Blocks.WATER.defaultBlockState(),
-	  		RTFNoiseRouterData.overworld(densityFunctions, noiseParams, noise, preset),
-	  		RTFSurfaceRuleData2.overworld(densityFunctions, preset),
+	  		RTFNoiseRouterData.overworld(densityFunctions, noiseParams, preset),
+	  		RTFSurfaceRuleData.overworld(densityFunctions, noise, preset),
 	  		new OverworldBiomeBuilder().spawnTarget(),
 	  		preset.world().properties.seaLevel,
 	  		false, 

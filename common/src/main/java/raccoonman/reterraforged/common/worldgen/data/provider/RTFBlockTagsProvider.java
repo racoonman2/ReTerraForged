@@ -19,7 +19,6 @@ public class RTFBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		this.tag(RTFBlockTags.ERODIBLE).add(Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MYCELIUM, Blocks.COARSE_DIRT, Blocks.PODZOL, Blocks.SAND);
 		this.tag(RTFBlockTags.SOIL).add(Blocks.DIRT, Blocks.COARSE_DIRT);
 		this.tag(RTFBlockTags.ROCK).add(Blocks.STONE, Blocks.GRANITE, Blocks.DIORITE, Blocks.ANDESITE);
 		this.tag(RTFBlockTags.CLAY).add(Blocks.CLAY);

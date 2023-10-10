@@ -6,8 +6,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.common.level.levelgen.density.FlatCache;
 import raccoonman.reterraforged.common.level.levelgen.density.NoiseWrapper;
-import raccoonman.reterraforged.common.level.levelgen.density.Slope;
-import raccoonman.reterraforged.common.level.levelgen.density.YGradient;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 public final class RTFDensityFunctionTypes {
@@ -15,8 +13,6 @@ public final class RTFDensityFunctionTypes {
 	public static void bootstrap() {
 		register("noise", NoiseWrapper.Marker.CODEC);
 		register("flat_cache", FlatCache.Marker.CODEC);
-		register("y_gradient", YGradient.CODEC);
-		register("slope", Slope.CODEC);
 	}
 	
 	private static void register(String name, Codec<? extends DensityFunction> type) {

@@ -16,10 +16,10 @@ public record Temperature(Noise frequency, Noise power) implements Noise {
     public float compute(float x, float y, int seed) {
         y *= this.frequency.compute(x, y, seed);
         float sin = NoiseUtil.sin(y);
-        sin = NoiseUtil.clamp(sin, -1.0f, 1.0f);
+        sin = NoiseUtil.clamp(sin, -1.0F, 1.0F);
         float value = NoiseUtil.pow(sin, this.power.compute(x, y, seed));
         value = NoiseUtil.copySign(value, sin);
-        return NoiseUtil.map(value, -1.0f, 1.0f, 2.0f);
+        return NoiseUtil.map(value, -1.0F, 1.0F);
     }
 
 	@Override

@@ -20,7 +20,6 @@ public class MiscellaneousPage extends PresetEditorPage {
 	private CycleButton<Boolean> plainStoneErosion;
 	private CycleButton<Boolean> naturalSnowDecorator;
 	private CycleButton<Boolean> customBiomeFeatures;
-	private CycleButton<Boolean> vanillaLakes;
 	private CycleButton<Boolean> vanillaSprings;
 	private CycleButton<Boolean> vanillaLavaLakes;
 	private CycleButton<Boolean> vanillaLavaSprings;
@@ -66,9 +65,6 @@ public class MiscellaneousPage extends PresetEditorPage {
 		this.customBiomeFeatures = PresetWidgets.createToggle(miscellaneous.customBiomeFeatures, RTFTranslationKeys.GUI_BUTTON_CUSTOM_BIOME_FEATURES, (button, value) -> {
 			miscellaneous.customBiomeFeatures = value;
 		});
-		this.vanillaLakes = PresetWidgets.createToggle(miscellaneous.vanillaLakes, RTFTranslationKeys.GUI_BUTTON_VANILLA_LAKES, (button, value) -> {
-			miscellaneous.vanillaLakes = value;
-		});
 		this.vanillaSprings = PresetWidgets.createToggle(miscellaneous.vanillaSprings, RTFTranslationKeys.GUI_BUTTON_VANILLA_SPRINGS, (button, value) -> {
 			miscellaneous.vanillaSprings = value;
 		});
@@ -87,7 +83,6 @@ public class MiscellaneousPage extends PresetEditorPage {
 		this.left.addWidget(this.plainStoneErosion);
 		this.left.addWidget(this.naturalSnowDecorator);
 		this.left.addWidget(this.customBiomeFeatures);
-		this.left.addWidget(this.vanillaLakes);
 		this.left.addWidget(this.vanillaSprings);
 		this.left.addWidget(this.vanillaLavaLakes);
 		this.left.addWidget(this.vanillaLavaSprings);

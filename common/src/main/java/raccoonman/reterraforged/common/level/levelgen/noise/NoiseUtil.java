@@ -370,6 +370,18 @@ public class NoiseUtil {
     public static int unpackRight(long packed) {
         return (int) (packed & 0xFFFFFFFFL);
     }
+    
+    public static long packf(final float left, final float right) {
+        return ((long)Float.floatToRawIntBits(right) & 0xFFFFFFFFL) | ((long)Float.floatToRawIntBits(left) & 0xFFFFFFFFL) << 32;
+    }
+    
+    public static float unpackLeftf(final long packed) {
+        return Float.intBitsToFloat((int)(packed >>> 32 & 0xFFFFFFFFL));
+    }
+    
+    public static float unpackRightf(final long packed) {
+        return Float.intBitsToFloat((int)(packed & 0xFFFFFFFFL));
+    }
 
     static {
         SIN_BITS = 12;

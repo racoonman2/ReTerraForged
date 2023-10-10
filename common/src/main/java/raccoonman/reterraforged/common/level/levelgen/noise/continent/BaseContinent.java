@@ -24,7 +24,7 @@ interface BaseContinent {
 	
 	Noise shape();
 	
-	default float getValue(float x, float y, int seed, @Deprecated boolean single) {
+	default float compute(float x, float y, int seed, @Deprecated boolean single) {
 		Domain warp = this.warp();
         float ox = warp.getOffsetX(x, y, seed);
         float oz = warp.getOffsetY(x, y, seed);

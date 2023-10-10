@@ -6,7 +6,6 @@ import net.minecraft.world.level.block.Block;
 import raccoonman.reterraforged.common.ReTerraForged;
 
 public final class RTFBlockTags {
-	public static final TagKey<Block> ERODIBLE = resolve("erodible");
 	public static final TagKey<Block> SOIL = resolve("soil");
 	public static final TagKey<Block> ROCK = resolve("rock");
 	public static final TagKey<Block> CLAY = resolve("clay");

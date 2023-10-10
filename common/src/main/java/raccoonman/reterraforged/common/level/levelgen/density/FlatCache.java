@@ -9,7 +9,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
 
-//TODO add padding
+//TODO do padding here
 public class FlatCache implements DensityFunction.SimpleFunction {
     private DensityFunction filler;
     private int width;
@@ -26,9 +26,9 @@ public class FlatCache implements DensityFunction.SimpleFunction {
         	MutableFunctionContext ctx = new MutableFunctionContext();
     		for(int x = 0; x < this.width; x++) {
     			for(int z = 0; z < this.width; z++) {
-    				ctx.blockX = this.offsetX + x;
-    				ctx.blockZ = this.offsetZ + z;
-        			values[this.indexOf(ctx.blockX, ctx.blockZ)] = this.filler.compute(ctx);
+    				int ox = this.offsetX + x;
+    				int oz = this.offsetZ + z;
+        			values[this.indexOf(ox, oz)] = this.filler.compute(ctx.at(ox, 0, oz));
         		}
     		}
     		return values;
@@ -49,7 +49,6 @@ public class FlatCache implements DensityFunction.SimpleFunction {
         if (blockX >= this.offsetX && blockZ >= this.offsetZ && blockX < this.offsetX + this.width && blockZ < this.offsetZ + this.width) {
             return values[index];
         }
-//        ReTerraForged.LOGGER.warn("cache miss! cache width: {}, padding: {}, blockX: {}, blockZ: {}", this.width, this.padding, blockX, blockZ);
         return this.filler.compute(functionContext);
     }
 
@@ -99,7 +98,8 @@ public class FlatCache implements DensityFunction.SimpleFunction {
             return visitor.apply(new Marker(this.function.mapAll(visitor), this.padding));
         }
 
-		@Override		public KeyDispatchDataCodec<FlatCache.Marker> codec() {
+		@Override
+		public KeyDispatchDataCodec<FlatCache.Marker> codec() {
 			return new KeyDispatchDataCodec<>(CODEC);
 		}
 	}

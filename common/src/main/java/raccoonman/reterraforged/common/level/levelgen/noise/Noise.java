@@ -68,6 +68,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Scale;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Shift;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Steps;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Terrace;
+import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Threshold;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.VariableCurve;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Warp;
 import raccoonman.reterraforged.common.level.levelgen.noise.selector.Base;
@@ -485,6 +486,18 @@ public interface Noise {
 
     default Noise round() {
     	return new Round(this);
+    }
+    
+    default Noise threshold(double threshold, double below, double above) {
+    	return threshold(Source.constant(threshold), Source.constant(below), Source.constant(above));
+    }
+
+    default Noise threshold(double threshold, Noise below, Noise above) {
+    	return threshold(Source.constant(threshold), below, above);
+    }
+    
+    default Noise threshold(Noise threshold, Noise below, Noise above) {
+    	return new Threshold(this, threshold, below, above);
     }
     
     default Noise select(Noise lower, Noise upper, double lowerBound, double upperBound, double falloff) {

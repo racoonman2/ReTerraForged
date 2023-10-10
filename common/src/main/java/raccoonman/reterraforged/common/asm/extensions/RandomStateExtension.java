@@ -1,12 +1,10 @@
 package raccoonman.reterraforged.common.asm.extensions;
 
 import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.NoiseChunk;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 
 public interface RandomStateExtension {
-	DensityFunction.Visitor visitor();
+	Noise shift(Noise noise);
 	
-	default DensityFunction cache(DensityFunction function, NoiseChunk noiseChunk) {
-		return noiseChunk.wrap(function.mapAll(this.visitor()));
-	}
+	DensityFunction wrap(DensityFunction input);
 }

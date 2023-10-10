@@ -1,7 +1,7 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package raccoonman.reterraforged.common.level.levelgen.noise;
+package raccoonman.reterraforged.common.level.levelgen.noise.terrain;
 
 import java.util.Arrays;
 
@@ -9,6 +9,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.util.StringRepresentable;
+import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
+import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
+import raccoonman.reterraforged.common.level.levelgen.noise.Vec2f;
 
 public record Valley(Noise source, int octaves, float strength, float gridSize, float amplitude, float lacunarity, float falloff, Valley.Mode blendMode, ThreadLocal<float[]> erosionCache) implements Noise {
 	public static final Codec<Valley> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -23,7 +26,7 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
 	).apply(instance, Valley::new));
 
     public Valley(Noise source, int octaves, float strength, float gridSize, float amplitude, float lacunarity, float falloff, Valley.Mode blendMode) {
-		this(source, octaves, strength, gridSize, amplitude, lacunarity, falloff, blendMode, ThreadLocal.withInitial(() -> new float[25]));
+		this(source, octaves, strength, gridSize, amplitude, lacunarity, falloff, blendMode, ThreadLocal.withInitial(() -> new float[5 * 5]));
     }
     
 	@Override
@@ -75,7 +78,7 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
     }
 
     private float getSingleErosionValue(float x, float y, float gridSize, int seed, float[] cache) {
-        Arrays.fill(cache, -1.0F);
+        Arrays.fill(cache, -1.0F); //TODO remove this line when we improve the cache
         int pix = NoiseUtil.floor(x / gridSize);
         int piy = NoiseUtil.floor(y / gridSize);
         float minHeight2 = Float.MAX_VALUE;
@@ -167,6 +170,15 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
         @Override
     	public String getSerializedName() {
     		return this.name();
+    	}
+    }
+    
+    //TODO
+    private class Cache {
+    	private float[] data;
+    	
+    	public Cache(int width) {
+    		this.data = new float[width * width];
     	}
     }
 }
