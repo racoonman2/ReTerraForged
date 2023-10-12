@@ -19,6 +19,7 @@ import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
 import raccoonman.reterraforged.common.worldgen.data.tags.RTFBlockTags;
 
 // TODO port all the surfaces in SetupFactory
+// TODO rock erosion biome blacklist
 public final class RTFSurfaceRuleData {
 
 	public static SurfaceRules.RuleSource overworld(HolderGetter<DensityFunction> densityFunctions, HolderGetter<Noise> noise, Preset preset) {

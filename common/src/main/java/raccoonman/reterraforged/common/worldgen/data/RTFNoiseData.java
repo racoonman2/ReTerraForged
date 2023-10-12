@@ -13,6 +13,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.climate.ClimateRegio
 import raccoonman.reterraforged.common.level.levelgen.noise.climate.ClimateRegionOffset;
 import raccoonman.reterraforged.common.level.levelgen.noise.climate.Moisture;
 import raccoonman.reterraforged.common.level.levelgen.noise.climate.Temperature;
+import raccoonman.reterraforged.common.level.levelgen.noise.continent.ContinentLerper2;
 import raccoonman.reterraforged.common.level.levelgen.noise.continent.ContinentLerper3;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
@@ -90,9 +91,9 @@ public final class RTFNoiseData {
         Noise shallowOcean = registerAndWrap(ctx, SHALLOW_OCEAN, coast.sub(Source.constant(7.0F / yScale)));
         Noise deepOcean = registerAndWrap(ctx, DEEP_OCEAN, makeDeepOcean(seed.next(), water));
         
-        Noise land = registerAndWrap(ctx, LAND, (makeDales(seed)));
+        Noise land = registerAndWrap(ctx, LAND, Source.constant(63.0D / 256.0D).add(makeDales(seed)));
         Noise oceans = registerAndWrap(ctx, OCEANS, new ContinentLerper3(continent, deepOcean, shallowOcean, coast, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast, Interpolation.CURVE3));
-        ctx.register(HEIGHT, (makeDales(seed)));// new ContinentLerper2(continent, oceans, land, controlPoints.shallowOcean, controlPoints.inland, Interpolation.LINEAR));
+        ctx.register(HEIGHT, Source.constant(80.0D / 256.0D).add(makeDales(seed)));// new ContinentLerper2(continent, oceans, land, controlPoints.shallowOcean, controlPoints.inland, Interpolation.LINEAR));
 	}
 	
 	private static Noise makePlateau(Seed seed) {
