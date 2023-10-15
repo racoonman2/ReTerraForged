@@ -44,7 +44,7 @@ public class MiscellaneousPage extends PresetEditorPage {
 			miscellaneous.smoothLayerDecorator = value;
 		});
 		this.strataRegionSize = PresetWidgets.createIntSlider(miscellaneous.strataRegionSize, 50, 1000, RTFTranslationKeys.GUI_SLIDER_STRATA_REGION_SIZE, (slider, value) -> {
-			miscellaneous.strataRegionSize = (int) slider.scaleValue((float) value);
+			miscellaneous.strataRegionSize = (int) slider.scaleValue(value);
 			return value;
 		});
 		this.strataDecorator = PresetWidgets.createToggle(miscellaneous.strataDecorator, RTFTranslationKeys.GUI_BUTTON_STRATA_DECORATOR, (button, value) -> {

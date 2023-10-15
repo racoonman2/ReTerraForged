@@ -1,5 +1,6 @@
 package raccoonman.reterraforged.common.worldgen.data;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import raccoonman.reterraforged.common.ReTerraForged;
@@ -32,13 +33,43 @@ public final class RTFNoiseData {
 	public static final ResourceKey<Noise> MOISTURE = createClimateKey("moisture");
 	public static final ResourceKey<Noise> CONTINENT = createContinentKey("continent");
 
+	public static final ResourceKey<Noise> EROSION_0 = createErosionKey("level_0");
+	public static final ResourceKey<Noise> EROSION_1 = createErosionKey("level_1");
+	public static final ResourceKey<Noise> EROSION_2 = createErosionKey("level_2");
+	public static final ResourceKey<Noise> EROSION_3 = createErosionKey("level_3");
+	public static final ResourceKey<Noise> EROSION_4 = createErosionKey("level_4");
+	public static final ResourceKey<Noise> EROSION_5 = createErosionKey("level_5");
+	public static final ResourceKey<Noise> EROSION_6 = createErosionKey("level_6");
+
+	public static final ResourceKey<Noise> PEAKS = createRidgeKey("peaks");
+	public static final ResourceKey<Noise> HIGH_SLICE = createRidgeKey("high_slice");
+	public static final ResourceKey<Noise> LOW_SLICE = createRidgeKey("low_slice");
+	public static final ResourceKey<Noise> MID_SLICE = createRidgeKey("mid_slice");
+	public static final ResourceKey<Noise> VALLEYS = createRidgeKey("valleys");
+	public static final ResourceKey<Noise> LOW_SLICE_WEIRD = createRidgeKey("low_slice_weird");
+	public static final ResourceKey<Noise> MID_SLICE_WEIRD = createRidgeKey("mid_slice_weird");
+	public static final ResourceKey<Noise> HIGH_SLICE_WEIRD = createRidgeKey("high_slice_weird");
+	public static final ResourceKey<Noise> PEAKS_WEIRD = createRidgeKey("peaks_weird");
+
+	public static final ResourceKey<Noise> GROUND = createFeatureKey("ground");
+	
+	private static final ResourceKey<Noise> DALES_HILL_SELECTOR = createFeatureKey("dales/hill_selector");
+	private static final ResourceKey<Noise> DALES_HILL_1 = createFeatureKey("dales/hill_1");
+	private static final ResourceKey<Noise> DALES_HILL_2 = createFeatureKey("dales/hill_2");
+	private static final ResourceKey<Noise> DALES_VARIANCE = createFeatureKey("dales/variance");
+	private static final ResourceKey<Noise> DALES_EROSION = createFeatureKey("dales/erosion");
+	private static final ResourceKey<Noise> DALES_RIDGE = createFeatureKey("dales/ridge");
+	
 	public static final ResourceKey<Noise> COAST = createFeatureKey("coast");
 	public static final ResourceKey<Noise> SHALLOW_OCEAN = createFeatureKey("shallow_ocean");
 	public static final ResourceKey<Noise> DEEP_OCEAN = createFeatureKey("deep_ocean");
-	
+
 	public static final ResourceKey<Noise> LAND = createTerrainKey("land");
 	public static final ResourceKey<Noise> OCEANS = createTerrainKey("oceans");
-	public static final ResourceKey<Noise> HEIGHT = createTerrainKey("height");
+
+	public static final ResourceKey<Noise> VARIANCE = createTerrainKey("variance");
+	public static final ResourceKey<Noise> EROSION = createTerrainKey("erosion");	
+	public static final ResourceKey<Noise> RIDGE = createTerrainKey("ridge");
 	
 	public static void bootstrap(BootstapContext<Noise> ctx, Preset preset) {
 		Seed seed = new Seed(0);
@@ -48,15 +79,12 @@ public final class RTFNoiseData {
 		TerrainSettings terrain = preset.terrain();
 		MiscellaneousSettings miscellaneous = preset.miscellaneous();
 		
+		HolderGetter<Noise> noise = ctx.lookup(RTFRegistries.NOISE);
+		
 		if(miscellaneous.strataDecorator) {
-			Seed strataSeed = seed.split();
-			
-	        ctx.register(STRATA_SELECTOR, Source.cell(strataSeed.next(), miscellaneous.strataRegionSize)
-	        	.warp(seed.next(), miscellaneous.strataRegionSize / 4, 2, miscellaneous.strataRegionSize / 2D)
-	        	.warp(seed.next(), 15, 2, 30));
-	        ctx.register(STRATA_DEPTH, Source.perlin(strataSeed.next(), 128, 3));
+			registerStrata(ctx, seed.split(), miscellaneous);
 		}
-        
+        	
 		int biomeSize = climate.biomeShape.biomeSize;
         float tempScaler = climate.temperature.scale;
         float moistScaler = climate.moisture.scale * 2.5F;
@@ -81,39 +109,80 @@ public final class RTFNoiseData {
         ctx.register(TEMPERATURE, applyRegionOffset(biomeFreq, warpX, warpZ, warpStrength, climate.temperature.apply(temperature).warp(tempSeed.next(), tempScale * 4, 2, tempScale * 4).warp(tempSeed.next(), tempScale, 1, tempScale), regionOffsetX, regionOffsetZ, climate.biomeEdgeShape.strength));
         Noise continent = registerAndWrap(ctx, CONTINENT, world.continent.continentType.create(world, seed));
     
+        registerErosionLevels(ctx);
+        registerRidges(ctx);
+        
         ControlPoints controlPoints = world.controlPoints;
         float seaLevel = world.properties.seaLevel;
-        float yScale = terrain.general.yScale;
+        float yScale = 256.0F;
         float waterY = seaLevel - 1.0F;
         float water = waterY / yScale;
         
+        Seed terrainSeed = seed.offset(terrain.general.terrainSeedOffset);
+        
+        registerDales(ctx, noise, terrainSeed);
+        
         Noise coast = registerAndWrap(ctx, COAST, Source.constant(water));
-        Noise shallowOcean = registerAndWrap(ctx, SHALLOW_OCEAN, coast.sub(Source.constant(7.0F / yScale)));
+        Noise shallowOcean = registerAndWrap(ctx, SHALLOW_OCEAN, Source.constant((waterY - 7) / yScale));
         Noise deepOcean = registerAndWrap(ctx, DEEP_OCEAN, makeDeepOcean(seed.next(), water));
         
-        Noise land = registerAndWrap(ctx, LAND, Source.constant(63.0D / 256.0D).add(makeDales(seed)));
         Noise oceans = registerAndWrap(ctx, OCEANS, new ContinentLerper3(continent, deepOcean, shallowOcean, coast, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast, Interpolation.CURVE3));
-        ctx.register(HEIGHT, Source.constant(80.0D / 256.0D).add(makeDales(seed)));// new ContinentLerper2(continent, oceans, land, controlPoints.shallowOcean, controlPoints.inland, Interpolation.LINEAR));
+        Noise ground = registerAndWrap(ctx, GROUND, Source.constant(seaLevel / yScale));
+        Noise land = registerAndWrap(ctx, LAND, ground.add(wrapNoise(noise, DALES_VARIANCE)));
+        ctx.register(VARIANCE, new ContinentLerper2(continent, oceans, land, controlPoints.shallowOcean, controlPoints.inland, Interpolation.LINEAR));
+        ctx.register(EROSION, wrapNoise(noise, DALES_EROSION));// new ContinentLerper2(continent, oceans, land, controlPoints.shallowOcean, controlPoints.inland, Interpolation.LINEAR));
+        ctx.register(RIDGE, wrapNoise(noise, DALES_RIDGE));// new ContinentLerper2(continent, oceans, land, controlPoints.shallowOcean, controlPoints.inland, Interpolation.LINEAR));
 	}
 	
-	private static Noise makePlateau(Seed seed) {
-		Noise valley = Source.ridge(seed.next(), 500, 1).invert().warp(seed.next(), 100, 1, 150.0).warp(seed.next(), 20, 1, 15.0);
-		Noise top = Source.build(seed.next(), 150, 3).lacunarity(2.45).ridge().warp(seed.next(), 300, 1, 150.0).warp(seed.next(), 40, 2, 20.0).scale(0.15).mul(valley.clamp(0.02, 0.1).map(0.0, 1.0));
-		Noise surface = Source.perlin(seed.next(), 20, 3).scale(0.05).warp(seed.next(), 40, 2, 20.0);
-		Noise module = valley.mul(Source.cubic(seed.next(), 500, 1).scale(0.6).bias(0.3)).add(top).terrace(Source.constant(0.9), Source.constant(0.15), Source.constant(0.35), 4, 0.4).add(surface);
-        return module.scale(0.475);
-    }
-	
-	public static Noise makeDales(final Seed seed) {
-		Noise hills1 = Source.build(seed.next(), 300, 4).gain(0.8).lacunarity(4.0).billow().powCurve(0.5).scale(0.75);
-		Noise hills2 = Source.build(seed.next(), 350, 3).gain(0.8).lacunarity(4.0).billow().pow(1.25);
-		Noise combined = Source.perlin(seed.next(), 400, 1).clamp(0.3, 0.6).map(0.0, 1.0).blend(hills1, hills2, 0.4, 0.75);
-		Noise hills3 = combined.pow(1.125).warp(seed.next(), 300, 1, 100.0);
-		return hills3.scale(0.4);
+	private static void registerStrata(BootstapContext<Noise> ctx, Seed seed, MiscellaneousSettings miscellaneous) {
+        ctx.register(STRATA_SELECTOR, Source.cell(seed.next(), miscellaneous.strataRegionSize)
+        	.warp(seed.next(), miscellaneous.strataRegionSize / 4, 2, miscellaneous.strataRegionSize / 2D)
+        	.warp(seed.next(), 15, 2, 30));
+        ctx.register(STRATA_DEPTH, Source.perlin(seed.next(), 128, 3));
 	}
 	
-	private static Noise makeDeepOcean(int seed, float seaLevel) {
-		Noise hills = Source.perlin(++seed, 150, 3).scale(seaLevel * 0.7).bias(Source.perlin(++seed, 200, 1).scale(seaLevel * 0.2f));
+	private static void registerErosionLevels(BootstapContext<Noise> ctx) {
+		ctx.register(EROSION_0, Source.constant(-0.89));
+		ctx.register(EROSION_1, Source.constant(-0.5775));
+		ctx.register(EROSION_2, Source.constant(-0.29874998));
+		ctx.register(EROSION_3, Source.constant(-0.08625));
+		ctx.register(EROSION_4, Source.constant(0.25));
+		ctx.register(EROSION_5, Source.constant(0.5));
+		ctx.register(EROSION_6, Source.constant(0.775));
+	}
+	
+	private static void registerRidges(BootstapContext<Noise> ctx) {
+		Noise peaks = registerAndWrap(ctx, PEAKS, Source.constant(-0.6666667));
+		Noise highSlice = registerAndWrap(ctx, HIGH_SLICE, Source.constant(-0.48333335));
+		Noise midSlice = registerAndWrap(ctx, MID_SLICE, Source.constant(-0.33333334));
+		Noise lowSlice = registerAndWrap(ctx, LOW_SLICE, Source.constant(-0.15833335));
+		ctx.register(VALLEYS, Source.ZERO);
+		ctx.register(LOW_SLICE_WEIRD, lowSlice.negate());
+		ctx.register(MID_SLICE_WEIRD, midSlice.negate());
+		ctx.register(HIGH_SLICE_WEIRD, highSlice.negate());
+		ctx.register(PEAKS_WEIRD, peaks.negate());
+	}
+
+	private static void registerDales(BootstapContext<Noise> ctx, HolderGetter<Noise> noise, Seed seed) {
+		Noise hillSelector = registerAndWrap(ctx, DALES_HILL_SELECTOR, Source.perlin(seed.next(), 400, 1).clamp(0.3, 0.6).map(0.0, 1.0));
+		Noise hills1 = registerAndWrap(ctx, DALES_HILL_1, Source.build(seed.next(), 300, 4).gain(0.8).lacunarity(4.0).billow().powCurve(0.5).scale(0.75));
+		Noise hills2 = registerAndWrap(ctx, DALES_HILL_2, Source.build(seed.next(), 350, 3).gain(0.8).lacunarity(4.0).billow().pow(1.25));
+		Noise combined = hillSelector.blend(hills1, hills2, 0.4, 0.75);
+		int warpSeed = seed.next();
+		
+		Noise hills3 = combined.pow(1.125).warp(warpSeed, 300, 1, 100.0);
+		Noise variance = hills3.scale(0.4);
+	
+		Noise erosion2 = wrapNoise(noise, EROSION_2);
+		Noise erosion4 = wrapNoise(noise, EROSION_4);
+		
+		ctx.register(DALES_VARIANCE, variance);
+		ctx.register(DALES_EROSION, hillSelector.pow(1.125).warp(warpSeed, 300, 1, 100.0).threshold(0.1D, hills1.threshold(0.4, erosion4, erosion2), erosion4));// hillSelector.warp(warpSeed, 300, 1, 100.0).threshold(0.5D, hills1.threshold(0.45D, erosion4, erosion2), erosion4));
+		ctx.register(DALES_RIDGE, wrapNoise(noise, MID_SLICE));
+	}
+
+    private static Noise makeDeepOcean(int seed, float seaLevel) {
+        Noise hills = Source.perlin(++seed, 150, 3).scale(seaLevel * 0.7).bias(Source.perlin(++seed, 200, 1).scale(seaLevel * 0.2f));
         Noise canyons = Source.perlin(++seed, 150, 4).powCurve(0.2).invert().scale(seaLevel * 0.7).bias(Source.perlin(++seed, 170, 1).scale(seaLevel * 0.15f));
         return Source.perlin(++seed, 500, 1).blend(hills, canyons, 0.6, 0.65).warp(++seed, 50, 2, 50.0);
     }
@@ -126,8 +195,16 @@ public final class RTFNoiseData {
 		return new HolderNoise(ctx.register(key, noise));
 	}
 	
+	private static Noise wrapNoise(HolderGetter<Noise> noise, ResourceKey<Noise> key) {
+		return new HolderNoise(noise.getOrThrow(key));
+	}
+	
 	private static ResourceKey<Noise> createKey(String string) {
 		return ReTerraForged.resolve(RTFRegistries.NOISE, string);
+	}
+
+	private static ResourceKey<Noise> createStrataKey(String key) {
+		return createKey("strata/" + key);
 	}
 	
 	private static ResourceKey<Noise> createClimateKey(String key) {
@@ -146,7 +223,11 @@ public final class RTFNoiseData {
 		return createTerrainKey("feature/" + key);
 	}
 	
-	private static ResourceKey<Noise> createStrataKey(String key) {
-		return createKey("strata/" + key);
+	private static ResourceKey<Noise> createErosionKey(String key) {
+		return createTerrainKey("erosion/" + key);
+	}
+	
+	private static ResourceKey<Noise> createRidgeKey(String key) {
+		return createTerrainKey("ridge/" + key);
 	}
 }

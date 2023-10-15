@@ -41,7 +41,7 @@ public class Blend extends Selector {
 		Noise.HOLDER_HELPER_CODEC.fieldOf("source0").forGetter((s) -> s.source0),
 		Noise.HOLDER_HELPER_CODEC.fieldOf("source1").forGetter((s) -> s.source1),
 		Codec.FLOAT.optionalFieldOf("midpoint", 0.5F).forGetter((s) -> s.midpoint),
-		Codec.FLOAT.optionalFieldOf("blendRange", 0.0F).forGetter((s) -> s.blendRange),
+		Codec.FLOAT.optionalFieldOf("blendRange", 0.0F).forGetter((s) -> s.blend),
 		Interpolation.CODEC.optionalFieldOf("interpolation", Interpolation.LINEAR).forGetter((s) -> s.interpolation)
 	).apply(instance, Blend::new));
 	
@@ -49,32 +49,33 @@ public class Blend extends Selector {
     protected final Noise source1;
     protected final float blend;
     protected final float midpoint;
+    protected final float mid;
     protected final float blendLower;
     protected final float blendUpper;
     protected final float blendRange;
 
-    public Blend(Noise control, Noise source0, Noise source1, float midPoint, float blendRange, Interpolation interpolation) {
+    public Blend(Noise control, Noise source0, Noise source1, float midPoint, float blend, Interpolation interpolation) {
         super(control, ImmutableList.of(source0, source1), interpolation);
-        float mid = control.minValue() + ((control.maxValue() - control.minValue()) * midPoint);
-        this.blend = blendRange;
+        this.blend = blend;
         this.source0 = source0;
         this.source1 = source1;
         this.midpoint = midPoint;
-        this.blendLower = Math.max(control.minValue(), mid - (blendRange / 2F));
-        this.blendUpper = Math.min(control.maxValue(), mid + (blendRange / 2F));
-        this.blendRange = blendUpper - blendLower;
+        this.mid = this.control.minValue() + ((this.control.maxValue() - this.control.minValue()) * this.midpoint);
+        this.blendLower = Math.max(this.control.minValue(), this.mid - (this.blend / 2.0F));
+        this.blendUpper = Math.min(this.control.maxValue(), this.mid + (this.blend / 2.0F));
+        this.blendRange = this.blendUpper - this.blendLower;
     }
 
     @Override
     public float selectValue(float x, float y, float select, int seed) {
-        if (select < blendLower) {
-            return source0.compute(x, y, seed);
+        if (select < this.blendLower) {
+            return this.source0.compute(x, y, seed);
         }
-        if (select > blendUpper) {
-            return source1.compute(x, y, seed);
+        if (select > this.blendUpper) {
+            return this.source1.compute(x, y, seed);
         }
-        float alpha = (select - blendLower) / blendRange;
-        return blendValues(source0.compute(x, y, seed), source1.compute(x, y, seed), alpha);
+        float alpha = (select - this.blendLower) / this.blendRange;
+        return this.blendValues(this.source0.compute(x, y, seed), this.source1.compute(x, y, seed), alpha);
     }
     
     @Override
@@ -84,6 +85,6 @@ public class Blend extends Selector {
     
 	@Override
 	public Noise mapAll(Visitor visitor) {
-		return visitor.apply(new Blend(this.control.mapAll(visitor), this.source0.mapAll(visitor), this.source1.mapAll(visitor), this.midpoint, this.blendRange, this.interpolation));
+		return visitor.apply(new Blend(this.control.mapAll(visitor), this.source0.mapAll(visitor), this.source1.mapAll(visitor), this.midpoint, this.blend, this.interpolation));
 	}
 }

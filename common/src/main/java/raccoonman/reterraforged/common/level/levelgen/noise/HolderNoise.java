@@ -6,10 +6,11 @@ import net.minecraft.core.Holder;
 
 //TODO don't hardcode min/max
 public record HolderNoise(Holder<Noise> holder) implements Noise {
+	public static final Codec<HolderNoise> CODEC = Noise.CODEC.xmap(HolderNoise::new, HolderNoise::holder);
 
 	@Override
 	public Codec<HolderNoise> codec() {
-        throw new UnsupportedOperationException("Calling .codec() on HolderNoise");
+		return CODEC;
 	}
 	
 	@Override

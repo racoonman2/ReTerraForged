@@ -76,37 +76,37 @@ public class WorldSettingsPage extends PresetEditorPage {
 			this.regenerate();
 		});
 		this.continentScale = PresetWidgets.createIntSlider(continent.continentScale, 100, 10000, RTFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE, (slider, value) -> {
-			continent.continentScale = (int) slider.scaleValue((float) value);
+			continent.continentScale = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.continentJitter = PresetWidgets.createFloatSlider(continent.continentJitter, 0.5F, 1.0F, RTFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER, (slider, value) -> {
-			continent.continentJitter = (float) slider.scaleValue((float) value);
+			continent.continentJitter = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.continentSkipping = PresetWidgets.createFloatSlider(continent.continentSkipping, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING, (slider, value) -> {
-			continent.continentSkipping = (float) slider.scaleValue((float) value);
+			continent.continentSkipping = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.continentSizeVariance = PresetWidgets.createFloatSlider(continent.continentSizeVariance, 0.0F, 0.75F, RTFTranslationKeys.GUI_SLIDER_CONTINENT_SIZE_VARIANCE, (slider, value) -> {
-			continent.continentSizeVariance = (float) slider.scaleValue((float) value);
+			continent.continentSizeVariance = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.continentNoiseOctaves = PresetWidgets.createIntSlider(continent.continentNoiseOctaves, 1, 5, RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_OCTAVES, (slider, value) -> {
-			continent.continentNoiseOctaves = (int) slider.scaleValue((float) value);
+			continent.continentNoiseOctaves = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.continentNoiseGain = PresetWidgets.createFloatSlider(continent.continentNoiseGain, 0.0F, 0.5F, RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_GAIN, (slider, value) -> {
-			continent.continentNoiseGain = (float) slider.scaleValue((float) value);
+			continent.continentNoiseGain = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.continentNoiseLacunarity = PresetWidgets.createFloatSlider(continent.continentNoiseLacunarity, 1.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_LACUNARITY, (slider, value) -> {
-			continent.continentNoiseLacunarity = (float) slider.scaleValue((float) value);
+			continent.continentNoiseLacunarity = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
@@ -117,31 +117,31 @@ public class WorldSettingsPage extends PresetEditorPage {
 		
 		this.deepOcean = PresetWidgets.createFloatSlider(controlPoints.deepOcean, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_DEEP_OCEAN, (slider, value) -> {
 			value = Math.min(value, this.shallowOcean.getValue());
-			controlPoints.deepOcean = (float) slider.scaleValue((float) value);
+			controlPoints.deepOcean = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.shallowOcean = PresetWidgets.createFloatSlider(controlPoints.shallowOcean, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_SHALLOW_OCEAN, (slider, value) -> {
 			value = Mth.clamp(value, this.deepOcean.getValue(), this.beach.getValue());
-			controlPoints.shallowOcean = (float) slider.scaleValue((float) value);
+			controlPoints.shallowOcean = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.beach = PresetWidgets.createFloatSlider(controlPoints.beach, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_BEACH, (slider, value) -> {
 			value = Mth.clamp(value, this.shallowOcean.getValue(), this.coast.getValue());
-			controlPoints.beach = (float) slider.scaleValue((float) value);
+			controlPoints.beach = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.coast = PresetWidgets.createFloatSlider(controlPoints.coast, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_COAST, (slider, value) -> {
 			value = Mth.clamp(value, this.beach.getValue(), this.inland.getValue());
-			controlPoints.coast = (float) slider.scaleValue((float) value);
+			controlPoints.coast = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.inland = PresetWidgets.createFloatSlider(controlPoints.inland, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_INLAND, (slider, value) -> {
 			value = Math.max(value, this.coast.getValue());
-			controlPoints.inland = (float) slider.scaleValue((float) value);
+			controlPoints.inland = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
@@ -162,7 +162,7 @@ public class WorldSettingsPage extends PresetEditorPage {
 			return slider.getSliderValue(nearestMultiple);
 		});
 		this.seaLevel = PresetWidgets.createIntSlider(properties.seaLevel, 0, 255, RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL, (slider, value) -> {
-			properties.seaLevel = (int) slider.scaleValue((float) value);
+			properties.seaLevel = (int) slider.scaleValue(value);
 			return value;
 		});
 		

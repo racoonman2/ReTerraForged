@@ -11,15 +11,29 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.BlockColumn;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.NoiseChunk;
 import net.minecraft.world.level.levelgen.PositionalRandomFactory;
 import net.minecraft.world.level.levelgen.RandomState;
+import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.SurfaceSystem;
+import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import raccoonman.reterraforged.common.ReTerraForged;
+import raccoonman.reterraforged.common.asm.extensions.ContextExtension;
 import raccoonman.reterraforged.common.asm.extensions.SurfaceSystemExtension;
+import raccoonman.reterraforged.common.level.levelgen.surface.rule.ErosionRule;
 import raccoonman.reterraforged.common.level.levelgen.surface.rule.StrataRule;
 
 @Mixin(SurfaceSystem.class)
@@ -43,5 +57,36 @@ class MixinSurfaceSystem {
 			PositionalRandomFactory factory = this.randomState.getOrCreateRandomFactory(GEOLOGY_RANDOM);
 			return strata.apply(factory.fromHashOf(k));
 		});
+	}
+	
+	@Inject(
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/core/Holder;is(Lnet/minecraft/resources/ResourceKey;)Z",
+			ordinal = 1
+		),
+		method = "buildSurface",
+		locals = LocalCapture.CAPTURE_FAILHARD
+	)
+    public void buildSurface(RandomState randomState, BiomeManager biomeManager, Registry<Biome> registry, boolean bl, WorldGenerationContext worldGenerationContext, final ChunkAccess chunkAccess, NoiseChunk noiseChunk, SurfaceRules.RuleSource ruleSource, CallbackInfo callback, final BlockPos.MutableBlockPos pos, ChunkPos chunkPos, int chunkMinX, int chunkMinZ, BlockColumn column, SurfaceRules.Context context, SurfaceRules.SurfaceRule rule, BlockPos.MutableBlockPos pos2, int chunkX, int chunkZ) {
+		if((Object) context instanceof ContextExtension extension) {
+			ErosionRule erosionRule;
+			if((erosionRule = extension.getErosionRule()) != null) {
+				this.erosionExtension(chunkAccess.getHeight(Heightmap.Types.WORLD_SURFACE_WG, chunkX, chunkZ), column, erosionRule);
+			}
+		} else {
+			throw new IllegalStateException();
+		}
+    }
+
+	private void erosionExtension(int surfaceY, BlockColumn column, ErosionRule rule) {
+		BlockState top = column.getBlock(surfaceY);
+		if(top.is(rule.erodible())) {
+			BlockState material = rule.overrides().getOrDefault(top.getBlock(), rule.material());
+			if(material.is(rule.solid())) {
+				
+				
+			}
+		}
 	}
 }

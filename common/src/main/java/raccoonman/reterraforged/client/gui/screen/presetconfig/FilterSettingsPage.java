@@ -37,41 +37,41 @@ class FilterSettingsPage extends PresetEditorPage {
 		
 		Erosion erosion = filters.erosion;
 		this.erosionDropletsPerChunk = PresetWidgets.createIntSlider(erosion.dropletsPerChunk, 10, 250, RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLETS_PER_CHUNK, (slider, value) -> {
-			erosion.dropletsPerChunk = (int) slider.scaleValue((float) value);
+			erosion.dropletsPerChunk = (int) slider.scaleValue(value);
 			return value;
 		});
 		this.erosionDropletLifetime = PresetWidgets.createIntSlider(erosion.dropletLifetime, 1, 32, RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_LIFETIME, (slider, value) -> {
-			erosion.dropletLifetime = (int) slider.scaleValue((float) value);
+			erosion.dropletLifetime = (int) slider.scaleValue(value);
 			return value;
 		});
 		this.erosionDropletVolume = PresetWidgets.createFloatSlider(erosion.dropletVolume, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_VOLUME, (slider, value) -> {
-			erosion.dropletVolume = slider.scaleValue((float) value);
+			erosion.dropletVolume = (float) slider.scaleValue(value);
 			return value;
 		});
 		this.erosionDropletVelocity = PresetWidgets.createFloatSlider(erosion.dropletVelocity, 0.1F, 1.0F, RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_VELOCITY, (slider, value) -> {
-			erosion.dropletVelocity = slider.scaleValue((float) value);
+			erosion.dropletVelocity = (float) slider.scaleValue(value);
 			return value;
 		});
 		this.erosionRate = PresetWidgets.createFloatSlider(erosion.erosionRate, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_EROSION_RATE, (slider, value) -> {
-			erosion.erosionRate =  slider.scaleValue((float) value);
+			erosion.erosionRate =  (float) slider.scaleValue(value);
 			return value;
 		});
 		this.depositeRate = PresetWidgets.createFloatSlider(erosion.depositeRate, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_DEPOSITE_RATE, (slider, value) -> {
-			erosion.depositeRate = slider.scaleValue((float) value);
+			erosion.depositeRate = (float) slider.scaleValue(value);
 			return value;
 		});
 		
 		Smoothing smoothing = filters.smoothing;
 		this.smoothingIterations = PresetWidgets.createIntSlider(smoothing.iterations, 0, 5, RTFTranslationKeys.GUI_SLIDER_SMOOTHING_ITERATIONS, (slider, value) -> {
-			smoothing.iterations = (int) slider.scaleValue((float) value);
+			smoothing.iterations = (int) slider.scaleValue(value);
 			return value;
 		});
 		this.smoothingRadius = PresetWidgets.createFloatSlider(smoothing.smoothingRadius, 0, 5, RTFTranslationKeys.GUI_SLIDER_SMOOTHING_RADIUS, (slider, value) -> {
-			smoothing.smoothingRadius = slider.scaleValue((float) value);
+			smoothing.smoothingRadius = (float) slider.scaleValue(value);
 			return value;
 		});
 		this.smoothingRate = PresetWidgets.createFloatSlider(smoothing.smoothingRate, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_SMOOTHING_RATE, (slider, value) -> {
-			smoothing.smoothingRate = slider.scaleValue((float) value);
+			smoothing.smoothingRate = (float) slider.scaleValue(value);
 			return value;
 		});
 		

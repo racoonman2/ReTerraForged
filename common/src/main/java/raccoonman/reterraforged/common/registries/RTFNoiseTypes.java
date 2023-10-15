@@ -2,6 +2,7 @@ package raccoonman.reterraforged.common.registries;
 
 import com.mojang.serialization.Codec;
 
+import raccoonman.reterraforged.common.level.levelgen.noise.HolderNoise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.climate.ClimateRegion;
 import raccoonman.reterraforged.common.level.levelgen.noise.climate.ClimateRegionEdge;
@@ -32,6 +33,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Invert;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.LegacyTerrace;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Map;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Modulate;
+import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Negate;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Power;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.PowerCurve;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Round;
@@ -72,6 +74,7 @@ import raccoonman.reterraforged.platform.registries.RegistryUtil;
 public final class RTFNoiseTypes {
 	
 	public static void bootstrap() {
+		register("holder", HolderNoise.CODEC);
 		register("constant", Constant.CODEC);
 		register("billow", Billow.CODEC);
 		register("cell", Cell.CODEC);
@@ -118,8 +121,9 @@ public final class RTFNoiseTypes {
 		register("multi_blend", MultiBlend.CODEC);
 		register("select", Select.CODEC);
 		register("variable_blend", VariableBlend.CODEC);
-		register("valley", Valley.CODEC);
 		register("threshold", Threshold.CODEC);
+		register("negate", Negate.CODEC);
+		register("valley", Valley.CODEC);
 		register("temperature", Temperature.CODEC);
 		register("moisture", Moisture.CODEC);
 		register("climate_region", ClimateRegion.CODEC);

@@ -66,130 +66,130 @@ class RiverSettingsPage extends PresetEditorPage {
 			this.regenerate();
 		});
 		this.riverCount = PresetWidgets.createIntSlider(river.riverCount, 0, 30, RTFTranslationKeys.GUI_SLIDER_RIVER_COUNT, (slider, value) -> {
-			river.riverCount = (int) slider.scaleValue((float) value);
+			river.riverCount = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		
 		River mainRivers = river.mainRivers;
 		this.mainRiverBedDepth = PresetWidgets.createIntSlider(mainRivers.bedDepth, 1, 10, RTFTranslationKeys.GUI_SLIDER_RIVER_BED_DEPTH, (slider, value) -> {
-			mainRivers.bedDepth = (int) slider.scaleValue((float) value);
+			mainRivers.bedDepth = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.mainRiverMinBankHeight = PresetWidgets.createIntSlider(mainRivers.minBankHeight, 0, 10, RTFTranslationKeys.GUI_SLIDER_RIVER_MIN_BANK_HEIGHT, (slider, value) -> {
-			mainRivers.minBankHeight = (int) slider.scaleValue((float) value);
+			mainRivers.minBankHeight = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.mainRiverMaxBankHeight = PresetWidgets.createIntSlider(mainRivers.maxBankHeight, 1, 10, RTFTranslationKeys.GUI_SLIDER_RIVER_MAX_BANK_HEIGHT, (slider, value) -> {
-			mainRivers.maxBankHeight = (int) slider.scaleValue((float) value);
+			mainRivers.maxBankHeight = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.mainRiverBedWidth = PresetWidgets.createIntSlider(mainRivers.bedWidth, 1, 20, RTFTranslationKeys.GUI_SLIDER_RIVER_BED_WIDTH, (slider, value) -> {
-			mainRivers.bedWidth = (int) slider.scaleValue((float) value);
+			mainRivers.bedWidth = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.mainRiverBankWidth = PresetWidgets.createIntSlider(mainRivers.bankWidth, 1, 50, RTFTranslationKeys.GUI_SLIDER_RIVER_BANK_WIDTH, (slider, value) -> {
-			mainRivers.bankWidth = (int) slider.scaleValue((float) value);
+			mainRivers.bankWidth = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.mainRiverFade = PresetWidgets.createFloatSlider(mainRivers.fade, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_RIVER_FADE, (slider, value) -> {
-			mainRivers.fade = slider.scaleValue((float) value);
+			mainRivers.fade = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		
 		River branchRivers = river.branchRivers;
 		this.branchRiverBedDepth = PresetWidgets.createIntSlider(branchRivers.bedDepth, 1, 10, RTFTranslationKeys.GUI_SLIDER_RIVER_BED_DEPTH, (slider, value) -> {
-			branchRivers.bedDepth = (int) slider.scaleValue((float) value);
+			branchRivers.bedDepth = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.branchRiverMinBankHeight = PresetWidgets.createIntSlider(branchRivers.minBankHeight, 0, 10, RTFTranslationKeys.GUI_SLIDER_RIVER_MIN_BANK_HEIGHT, (slider, value) -> {
-			branchRivers.minBankHeight = (int) slider.scaleValue((float) value);
+			branchRivers.minBankHeight = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.branchRiverMaxBankHeight = PresetWidgets.createIntSlider(branchRivers.maxBankHeight, 1, 10, RTFTranslationKeys.GUI_SLIDER_RIVER_MAX_BANK_HEIGHT, (slider, value) -> {
-			branchRivers.maxBankHeight = (int) slider.scaleValue((float) value);
+			branchRivers.maxBankHeight = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.branchRiverBedWidth = PresetWidgets.createIntSlider(branchRivers.bedWidth, 1, 20, RTFTranslationKeys.GUI_SLIDER_RIVER_BED_WIDTH, (slider, value) -> {
-			branchRivers.bedWidth = (int) slider.scaleValue((float) value);
+			branchRivers.bedWidth = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.branchRiverBankWidth = PresetWidgets.createIntSlider(branchRivers.bankWidth, 1, 50, RTFTranslationKeys.GUI_SLIDER_RIVER_BANK_WIDTH, (slider, value) -> {
-			branchRivers.bankWidth = (int) slider.scaleValue((float) value);
+			branchRivers.bankWidth = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.branchRiverFade = PresetWidgets.createFloatSlider(branchRivers.fade, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_RIVER_FADE, (slider, value) -> {
-			branchRivers.fade = slider.scaleValue((float) value);
+			branchRivers.fade = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		
 		Lake lake = river.lakes;
 		this.lakeChance = PresetWidgets.createFloatSlider(lake.chance, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_LAKE_CHANCE, (slider, value) -> {
-			lake.chance = slider.scaleValue((float) value);
+			lake.chance = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.lakeMinStartDistance = PresetWidgets.createFloatSlider(lake.minStartDistance, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_LAKE_MIN_START_DISTANCE, (slider, value) -> {
-			lake.minStartDistance = slider.scaleValue((float) value);
+			lake.minStartDistance = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.lakeMaxStartDistance = PresetWidgets.createFloatSlider(lake.maxStartDistance, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_LAKE_MAX_START_DISTANCE, (slider, value) -> {
-			lake.maxStartDistance = slider.scaleValue((float) value);
+			lake.maxStartDistance = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.lakeDepth = PresetWidgets.createIntSlider(lake.depth, 1, 20, RTFTranslationKeys.GUI_SLIDER_LAKE_DEPTH, (slider, value) -> {
-			lake.depth = (int) slider.scaleValue((float) value);
+			lake.depth = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.lakeSizeMin = PresetWidgets.createIntSlider(lake.sizeMin, 1, 100, RTFTranslationKeys.GUI_SLIDER_LAKE_SIZE_MIN, (slider, value) -> {
-			lake.sizeMin = (int) slider.scaleValue((float) value);
+			lake.sizeMin = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.lakeSizeMax = PresetWidgets.createIntSlider(lake.sizeMax, 1, 500, RTFTranslationKeys.GUI_SLIDER_LAKE_SIZE_MAX, (slider, value) -> {
-			lake.sizeMax = (int) slider.scaleValue((float) value);
+			lake.sizeMax = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.lakeMinBankHeight = PresetWidgets.createIntSlider(lake.minBankHeight, 1, 10, RTFTranslationKeys.GUI_SLIDER_LAKE_MIN_BANK_HEIGHT, (slider, value) -> {
-			lake.minBankHeight = (int) slider.scaleValue((float) value);
+			lake.minBankHeight = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.lakeMaxBankHeight = PresetWidgets.createIntSlider(lake.maxBankHeight, 1, 10, RTFTranslationKeys.GUI_SLIDER_LAKE_MAX_BANK_HEIGHT, (slider, value) -> {
-			lake.maxBankHeight = (int) slider.scaleValue((float) value);
+			lake.maxBankHeight = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		
 		Wetland wetland = river.wetlands;
 		this.wetlandChance = PresetWidgets.createFloatSlider(wetland.chance, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_WETLAND_CHANCE, (slider, value) -> {
-			wetland.chance = slider.scaleValue((float) value);
+			wetland.chance = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.wetlandSizeMin = PresetWidgets.createIntSlider(wetland.sizeMin, 50, 500, RTFTranslationKeys.GUI_SLIDER_WETLAND_SIZE_MIN, (slider, value) -> {
-			wetland.sizeMin = (int) slider.scaleValue((float) value);
+			wetland.sizeMin = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.wetlandSizeMax = PresetWidgets.createIntSlider(wetland.sizeMax, 50, 500, RTFTranslationKeys.GUI_SLIDER_WETLAND_SIZE_MAX, (slider, value) -> {
-			wetland.sizeMax = (int) slider.scaleValue((float) value);
+			wetland.sizeMax = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});

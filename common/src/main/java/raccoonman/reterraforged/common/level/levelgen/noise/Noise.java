@@ -25,7 +25,6 @@
 
 package raccoonman.reterraforged.common.level.levelgen.noise;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import com.google.common.base.Functions;
@@ -61,6 +60,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Invert;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.LegacyTerrace;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Map;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Modulate;
+import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Negate;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Power;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.PowerCurve;
 import raccoonman.reterraforged.common.level.levelgen.noise.modifier.Round;
@@ -110,7 +110,7 @@ public interface Noise {
 		Noise apply(Noise noise);
 	}
 	
-	//TODO these shouldn't be default
+	//TODO these shouldn't be defaulted
     default float minValue() {
     	return 0.0F;
     }
@@ -594,9 +594,8 @@ public interface Noise {
     default Noise shift(int offset) {
     	return new Shift(this, offset);
     }
-
-    static final AtomicInteger NEXT_SHIFT = new AtomicInteger();
-    default Noise unique() {
-    	return this.shift(NEXT_SHIFT.getAndIncrement());
+    
+    default Noise negate() {
+    	return new Negate(this);
     }
 }

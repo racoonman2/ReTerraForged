@@ -51,8 +51,8 @@ public class Slider extends AbstractSliderButton {
     	return Mth.lerp(value, this.min, this.max);
     }
     
-    public float scaleValue(float value) {
-        return this.format.scale((float) this.lerpValue(value));
+    public double scaleValue(double value) {
+        return this.format.scale(this.lerpValue(value));
     }
     
     @Override
@@ -70,30 +70,30 @@ public class Slider extends AbstractSliderButton {
     public static enum Format {
     	INT {
 			@Override
-			public float scale(float input) {
+			public double scale(double input) {
 				return (int) input;
 			}
 
 			@Override
-			public String getMessage(float input) {
+			public String getMessage(double input) {
 				return String.valueOf((int) input);
 			}
 		},
     	FLOAT {
 			@Override
-			public float scale(float input) {
+			public double scale(double input) {
 				return input;
 			}
 
 			@Override
-			public String getMessage(float input) {
+			public String getMessage(double input) {
 				return String.format("%.3f", input);
 			}
 		};
     	
-    	public abstract float scale(float input);
+    	public abstract double scale(double input);
     	
-    	public abstract String getMessage(float input);
+    	public abstract String getMessage(double input);
     }
     
     public interface Callback {

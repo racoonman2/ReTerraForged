@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.SurfaceRules.Context;
-import net.minecraft.world.level.levelgen.SurfaceRules.SurfaceRule;
 import raccoonman.reterraforged.common.asm.extensions.RandomStateExtension;
 import raccoonman.reterraforged.common.asm.extensions.SurfaceSystemExtension;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
@@ -109,7 +108,7 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
 		}
 	}
 	
-	private class Source implements SurfaceRule {
+	private class Source implements SurfaceRules.SurfaceRule {
 		private Context surfaceContext;
 		private Noise selector;
 		private List<List<Layer>> strata;
