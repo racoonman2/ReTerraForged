@@ -51,7 +51,7 @@ public final class RTFDensityFunctions {
         int minY = DimensionType.MIN_Y * 2;
         int maxY = DimensionType.MAX_Y * 2;
         ctx.register(Y, DensityFunctions.yClampedGradient(minY, maxY, minY, maxY));
-        DensityFunction height = registerAndWrap(ctx, HEIGHT, new FlatCache.Marker(new NoiseWrapper.Marker(getNoise(noise, RTFTerrainNoise.VARIANCE)), 1));
+        DensityFunction height = registerAndWrap(ctx, HEIGHT, new FlatCache.Marker(new NoiseWrapper.Marker(getNoise(noise, RTFTerrainNoise.HEIGHT)), 1));
         ctx.register(TEMPERATURE, new NoiseWrapper.Marker(getNoise(noise, RTFClimateNoise.TEMPERATURE).map(-1.0D, 1.0D)));
         ctx.register(MOISTURE, new NoiseWrapper.Marker(getNoise(noise, RTFClimateNoise.MOISTURE).map(-1.0D, 1.0D)));
         ctx.register(CONTINENTS, DensityFunctions.flatCache(new NoiseWrapper.Marker(getNoise(noise, RTFTerrainNoise.CONTINENT).map(-1.0D, 1.0D))));
@@ -163,7 +163,7 @@ public final class RTFDensityFunctions {
         DensityFunction oreVeinBNoise = yLimitedInterpolatable(y, DensityFunctions.noise(noiseParams.getOrThrow(Noises.ORE_VEIN_B), 4.0, 4.0), minOreVeinY, maxOreVeinY, 0).abs();
         DensityFunction oreVein = DensityFunctions.add(DensityFunctions.constant(-0.08F), DensityFunctions.max(oreVeinANoise, oreVeinBNoise));
         DensityFunction oreGap = DensityFunctions.noise(noiseParams.getOrThrow(Noises.ORE_GAP));
-        return new NoiseRouter(aquiferBarrierNoise, aquiferFluidLevelFloodednessNoise, aquiferFluidLevelSpreadNoise, aquiferLavaNoise, temperature, vegetation, DensityFunctions.add(getFunction(densityFunctions, CONTINENTS), DensityFunctions.constant(0.22D)), getFunction(densityFunctions, EROSION), DensityFunctions.add(depth, DensityFunctions.constant(-0.125D)), getFunction(densityFunctions, RIDGES), slideOverworld(initialDensity.clamp(-64.0, 64.0), worldHeight), slopedCheeseWithNoodle, oreVeininessNoise, oreVein, oreGap);
+        return new NoiseRouter(aquiferBarrierNoise, aquiferFluidLevelFloodednessNoise, aquiferFluidLevelSpreadNoise, aquiferLavaNoise, temperature, vegetation, DensityFunctions.add(getFunction(densityFunctions, CONTINENTS), DensityFunctions.constant(0.283D)), getFunction(densityFunctions, EROSION), DensityFunctions.add(depth, DensityFunctions.constant(-0.125D)), getFunction(densityFunctions, RIDGES), slideOverworld(initialDensity.clamp(-64.0, 64.0), worldHeight), slopedCheeseWithNoodle, oreVeininessNoise, oreVein, oreGap);
     }
 
     private static DensityFunction slideOverworld(DensityFunction function, int worldHeight) {

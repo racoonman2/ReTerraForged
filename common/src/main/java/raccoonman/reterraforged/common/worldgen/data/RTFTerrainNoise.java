@@ -12,8 +12,10 @@ import raccoonman.reterraforged.common.worldgen.data.preset.TerrainSettings;
 import raccoonman.reterraforged.common.worldgen.data.preset.WorldSettings;
 
 public final class RTFTerrainNoise {
+	public static final ResourceKey<Noise> UNIT = createKey("unit");
+
 	public static final ResourceKey<Noise> CONTINENT = createKey("continent");
-	public static final ResourceKey<Noise> VARIANCE = createKey("variance");
+	public static final ResourceKey<Noise> HEIGHT = createKey("height");
 	public static final ResourceKey<Noise> EROSION = createKey("erosion");
 	public static final ResourceKey<Noise> RIDGE = createKey("ridge");
 	
@@ -24,14 +26,15 @@ public final class RTFTerrainNoise {
 		
 		WorldSettings.Continent continentSettings = worldSettings.continent;
 		WorldSettings.ControlPoints controlPoints = worldSettings.controlPoints;
+
+		ctx.register(UNIT, Source.constant(1.0F / 256.0F));
 		
 		Noise continent = RTFNoise.registerAndWrap(ctx, CONTINENT, continentSettings.continentType.create(worldSettings, seed.offset(21345)));
+		Noise land = RTFNoise.lookup(noise, TerrainTypes.DALES_HEIGHT);
 		
-		Noise land = Source.constant(80.0D / 256);
-		
-		ctx.register(VARIANCE, new ContinentLerper(continent, RTFNoise.lookup(noise, TerrainTypes.DEEP_OCEAN), RTFNoise.lookup(noise, TerrainTypes.SHALLOW_OCEAN), RTFNoise.lookup(noise, TerrainTypes.COAST), Interpolation.CURVE3, land, Interpolation.LINEAR, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast, controlPoints.inland));
-		ctx.register(EROSION, RTFNoise.lookup(noise, ErosionLevels.LEVEL_4));
-		ctx.register(RIDGE, RTFNoise.lookup(noise, RidgeLevels.LOW_SLICE));
+		ctx.register(HEIGHT, new ContinentLerper(continent, RTFNoise.lookup(noise, TerrainTypes.DEEP_OCEAN_HEIGHT), RTFNoise.lookup(noise, TerrainTypes.SHALLOW_OCEAN_HEIGHT), RTFNoise.lookup(noise, TerrainTypes.COAST_HEIGHT), Interpolation.CURVE3, land, Interpolation.LINEAR, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast, controlPoints.inland));
+		ctx.register(EROSION, RTFNoise.lookup(noise, TerrainTypes.DALES_EROSION));
+		ctx.register(RIDGE, RTFNoise.lookup(noise, TerrainTypes.DALES_RIDGE));
 	}
 
 	protected static ResourceKey<Noise> createKey(String name) {
