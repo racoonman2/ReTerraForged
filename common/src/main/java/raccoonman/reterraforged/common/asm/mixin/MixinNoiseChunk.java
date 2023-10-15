@@ -27,9 +27,9 @@ class MixinNoiseChunk {
 		cancellable = true
 	)
 	private void wrapNew(DensityFunction densityFunction, CallbackInfoReturnable<DensityFunction> callback) {
-		if(densityFunction instanceof FlatCache.Marker function) { 
+		if(densityFunction instanceof FlatCache.Marker marker) { 
 			//TODO do padding in FlatCache instead
-			FlatCache cache = new FlatCache(function.function(), this.cellWidth * this.cellCountXZ + function.padding(), QuartPos.toBlock(this.firstNoiseX), QuartPos.toBlock(this.firstNoiseZ));
+			FlatCache cache = new FlatCache(marker.function(), this.cellWidth * this.cellCountXZ + marker.padding(), QuartPos.toBlock(this.firstNoiseX), QuartPos.toBlock(this.firstNoiseZ));
 			callback.setReturnValue(cache);
 		}
 	}

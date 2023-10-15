@@ -48,7 +48,6 @@ public enum ContinentType implements StringRepresentable {
     }, 
     MULTI_IMPROVED {
 
-    	//TOOD this should be under MULTI
     	@Override
 		public Noise create(WorldSettings settings, Seed seed) {
 	        int tectonicScale = settings.continent.continentScale * 4;
@@ -73,13 +72,6 @@ public enum ContinentType implements StringRepresentable {
 	        Noise cliffNoise = Source.build(seed.next(), settings.continent.continentScale / 2, 2).build(Source.SIMPLEX2).clamp(0.1, 0.25).map(0.0, 1.0).freq(1.0F / frequency, 1.0F / frequency);
 	        Noise bayNoise = Source.simplex(seed.next(), 100, 1).scale(0.1).bias(0.9).freq(1.0F / frequency, 1.0F / frequency);
 	        return new MultiImprovedContinent(warp, frequency, variance, settings.continent.continentJitter, settings.continent.continentSkipping, settings.controlPoints.shallowOcean, settings.controlPoints.inland, cliffNoise, bayNoise, baseSeed, varianceSeed, skippingSeed);
-		}
-    }, 
-    EXPERIMENTAL {
-        
-		@Override
-		public Noise create(WorldSettings settings, Seed seed) {
-			throw new UnsupportedOperationException();
 		}
     };
 	

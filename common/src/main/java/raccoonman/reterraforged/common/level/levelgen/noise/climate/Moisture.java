@@ -12,10 +12,6 @@ public record Moisture(Noise source, Noise power) implements Noise {
 		Noise.HOLDER_HELPER_CODEC.fieldOf("power").forGetter(Moisture::power)
 	).apply(instance, Moisture::new));
 	
-//    public Moisture(int scale, int power) {
-//        this(Source.simplex(scale, 1).clamp(0.125, 0.875).map(0.0, 1.0).freq(0.5, 1.0), power);
-//    }
-//    
     @Override
     public float compute(float x, float y, int seed) {
         float noise = this.source.compute(x, y, seed);

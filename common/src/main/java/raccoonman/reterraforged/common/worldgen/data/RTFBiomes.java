@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import raccoonman.reterraforged.common.ReTerraForged;
 
-public final class RTFBiomeData {
+public final class RTFBiomes {
     public static final ResourceKey<Biome> BRYCE = createKey("bryce");
     public static final ResourceKey<Biome> COLD_STEPPE = createKey("cold_steppe");
     public static final ResourceKey<Biome> COLD_MARSHLAND = createKey("cold_marshland");

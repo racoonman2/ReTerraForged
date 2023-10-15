@@ -28,7 +28,7 @@ import raccoonman.reterraforged.common.worldgen.data.tags.RTFBlockTags;
 // TODO rock erosion biome blacklist / override list
 // TODO plains stone erosion
 // TODO serene tweaks snow compat?
-public final class RTFSurfaceRuleData {
+public final class RTFSurfaceRules {
 	private static final SurfaceRules.RuleSource AIR = makeStateRule(Blocks.AIR);
     private static final SurfaceRules.RuleSource BEDROCK = makeStateRule(Blocks.BEDROCK);
     private static final SurfaceRules.RuleSource WHITE_TERRACOTTA = makeStateRule(Blocks.WHITE_TERRACOTTA);
@@ -108,17 +108,17 @@ public final class RTFSurfaceRuleData {
     }
 	
 	private static SurfaceRules.ConditionSource isSteeperThan(HolderGetter<DensityFunction> noise, double threshold) {
-		return new SlopeCondition(noise.getOrThrow(RTFNoiseRouterData.HEIGHT), threshold, 10.0F, 1);
+		return new SlopeCondition(noise.getOrThrow(RTFDensityFunctions.HEIGHT), threshold, 10.0F, 1);
 	}
 	
 	private static SurfaceRules.RuleSource makeStrataRule(HolderGetter<Noise> noise) {
-		Holder<Noise> depth = noise.getOrThrow(RTFNoiseData.STRATA_DEPTH);
+		Holder<Noise> depth = noise.getOrThrow(RTFStrataNoise.STRATA_DEPTH);
 		
 		List<Strata> strata = new ArrayList<>();
 		strata.add(new Strata(RTFBlockTags.SOIL, depth, 3, 0, 1, 0.1F, 0.25F));
 		strata.add(new Strata(RTFBlockTags.SEDIMENT, depth, 3, 0, 2, 0.05F, 0.15F));
 		strata.add(new Strata(RTFBlockTags.CLAY, depth, 3, 0, 2, 0.05F, 0.1F));
 		strata.add(new Strata(RTFBlockTags.ROCK, depth, 3, 10, 30, 0.1F, 1.5F));
-		return new StrataRule(ReTerraForged.resolve("overworld_strata"), noise.getOrThrow(RTFNoiseData.STRATA_SELECTOR), strata, 100);
+		return new StrataRule(ReTerraForged.resolve("overworld_strata"), noise.getOrThrow(RTFStrataNoise.STRATA_SELECTOR), strata, 100);
 	}
 }

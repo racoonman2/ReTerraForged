@@ -30,7 +30,8 @@ import raccoonman.reterraforged.client.gui.widget.ValueButton;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
-import raccoonman.reterraforged.common.worldgen.data.RTFNoiseData;
+import raccoonman.reterraforged.common.worldgen.data.RTFClimateNoise;
+import raccoonman.reterraforged.common.worldgen.data.RTFTerrainNoise;
 
 public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, AbstractWidget, AbstractWidget> {
 	private Slider zoom;
@@ -65,7 +66,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 			this.screen.setSeed(i);
 			this.regenerate();
 		});
-		this.noise = PresetWidgets.createCycle(ImmutableList.of(RTFNoiseData.MOISTURE, RTFNoiseData.TEMPERATURE/*, RTFContinentNoise.MULTI_IMPROVED, RTFContinentNoise.MULTI, RTFContinentNoise.SINGLE, RTFNoiseData2.EXPERIMENTAL_CONTINENT*/), Optional.ofNullable(this.noise).map(CycleButton::getValue).orElse(RTFNoiseData.MOISTURE), RTFTranslationKeys.GUI_BUTTON_NOISE, (value, button) -> {
+		this.noise = PresetWidgets.createCycle(ImmutableList.of(RTFClimateNoise.MOISTURE, RTFClimateNoise.TEMPERATURE, RTFTerrainNoise.CONTINENT), Optional.ofNullable(this.noise).map(CycleButton::getValue).orElse(RTFClimateNoise.MOISTURE), RTFTranslationKeys.GUI_BUTTON_NOISE, (value, button) -> {
 			this.preview.regenerate();
 		}, (h) -> h.location().toString());
 		

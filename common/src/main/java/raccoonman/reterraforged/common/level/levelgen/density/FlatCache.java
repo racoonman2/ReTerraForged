@@ -1,38 +1,34 @@
 package raccoonman.reterraforged.common.level.levelgen.density;
 
-import java.util.function.Supplier;
-
-import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
 
-//TODO do padding here
+//TODO do padding here 
 public class FlatCache implements DensityFunction.SimpleFunction {
     private DensityFunction filler;
     private int width;
     private int offsetX, offsetZ;
-    private Supplier<double[]> values;
+    //use floats instead of doubles to make this allocation smaller
+    //i havent really tested the difference yet but it seems faster
+    private float[] values;
 
     public FlatCache(DensityFunction filler, int width, int offsetX, int offsetZ) {
     	this.filler = filler;
     	this.width = width;
     	this.offsetX = offsetX;
     	this.offsetZ = offsetZ;
-    	this.values = Suppliers.memoize(() -> {
-    		double[] values = new double[this.width * this.width];
-        	MutableFunctionContext ctx = new MutableFunctionContext();
-    		for(int x = 0; x < this.width; x++) {
-    			for(int z = 0; z < this.width; z++) {
-    				int ox = this.offsetX + x;
-    				int oz = this.offsetZ + z;
-        			values[this.indexOf(ox, oz)] = this.filler.compute(ctx.at(ox, 0, oz));
-        		}
-    		}
-    		return values;
-    	});
+    	this.values = new float[this.width * this.width];
+    	MutableFunctionContext ctx = new MutableFunctionContext();
+    	for(int x = 0; x < this.width; x++) {
+    		for(int z = 0; z < this.width; z++) {
+    			int ox = this.offsetX + x;
+    			int oz = this.offsetZ + z;
+    			this.values[this.indexOf(ox, oz)] = (float) this.filler.compute(ctx.at(ox, 0, oz));
+        	}
+    	}
     }
 
     private int indexOf(int x, int z) {
@@ -43,11 +39,8 @@ public class FlatCache implements DensityFunction.SimpleFunction {
     public double compute(DensityFunction.FunctionContext functionContext) {
     	int blockX = functionContext.blockX();
     	int blockZ = functionContext.blockZ();
-    	
-        int index = this.indexOf(blockX, blockZ);
-        double[] values = this.values.get();
-        if (blockX >= this.offsetX && blockZ >= this.offsetZ && blockX < this.offsetX + this.width && blockZ < this.offsetZ + this.width) {
-            return values[index];
+    	if (blockX >= this.offsetX && blockZ >= this.offsetZ && blockX < this.offsetX + this.width && blockZ < this.offsetZ + this.width) {
+            return this.values[this.indexOf(blockX, blockZ)];
         }
         return this.filler.compute(functionContext);
     }
