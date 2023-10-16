@@ -23,5 +23,6 @@ public class RTFBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
 		this.tag(RTFBlockTags.ROCK).add(Blocks.STONE, Blocks.GRANITE, Blocks.DIORITE, Blocks.ANDESITE);
 		this.tag(RTFBlockTags.CLAY).add(Blocks.CLAY);
 		this.tag(RTFBlockTags.SEDIMENT).add(Blocks.GRAVEL, Blocks.SAND);
+		this.tag(RTFBlockTags.ERODIBLE).add(Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MYCELIUM, Blocks.COARSE_DIRT, Blocks.PODZOL);
 	}
 }

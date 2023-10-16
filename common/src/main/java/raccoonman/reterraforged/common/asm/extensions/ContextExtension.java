@@ -5,8 +5,8 @@ import org.jetbrains.annotations.Nullable;
 import raccoonman.reterraforged.common.level.levelgen.surface.rule.ErosionRule;
 
 public interface ContextExtension {
-	void setErosionRule(@Nullable ErosionRule rule);
+	void setErosionRule(@Nullable ErosionRule.Rule rule);
 	
 	@Nullable
-	ErosionRule getErosionRule();
+	ErosionRule.Rule getErosionRule();
 }

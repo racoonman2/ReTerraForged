@@ -6,6 +6,9 @@ import net.minecraft.resources.ResourceKey;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.Seed;
 import raccoonman.reterraforged.common.level.levelgen.noise.Source;
+import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
+import raccoonman.reterraforged.common.level.levelgen.noise.domain.Domain;
+import raccoonman.reterraforged.common.level.levelgen.noise.terrain.Valley;
 import raccoonman.reterraforged.common.worldgen.data.preset.TerrainSettings;
 import raccoonman.reterraforged.common.worldgen.data.preset.TerrainSettings.General;
 import raccoonman.reterraforged.common.worldgen.data.preset.TerrainSettings.Terrain;
@@ -52,6 +55,25 @@ final class TerrainTypes {
 	public static final ResourceKey<Noise> DALES_HEIGHT = RTFTerrainNoise.createKey("dales/height");
 	public static final ResourceKey<Noise> DALES_EROSION = RTFTerrainNoise.createKey("dales/erosion");
 	public static final ResourceKey<Noise> DALES_RIDGE = RTFTerrainNoise.createKey("dales/ridge");
+
+	private static final ResourceKey<Noise> TORRIDONIAN_PLAINS = RTFTerrainNoise.createKey("torridonian/plains");
+	private static final ResourceKey<Noise> TORRIDONIAN_HILLS = RTFTerrainNoise.createKey("torridonian/hills");
+	private static final ResourceKey<Noise> TORRIDONIAN_SELECTOR = RTFTerrainNoise.createKey("torridonian/selector");
+	private static final ResourceKey<Noise> TORRIDONIAN_VARIANCE = RTFTerrainNoise.createKey("torridonian/variance");
+	public static final ResourceKey<Noise> TORRIDONIAN_HEIGHT = RTFTerrainNoise.createKey("torridonian/height");
+	public static final ResourceKey<Noise> TORRIDONIAN_EROSION = RTFTerrainNoise.createKey("torridonian/erosion");
+	public static final ResourceKey<Noise> TORRIDONIAN_RIDGE = RTFTerrainNoise.createKey("torridonian/ridge");
+
+	private static final ResourceKey<Noise> BADLANDS_HILLS = RTFTerrainNoise.createKey("badlands/hills");
+	private static final ResourceKey<Noise> BADLANDS_VARIANCE = RTFTerrainNoise.createKey("badlands/variance");
+	public static final ResourceKey<Noise> BADLANDS_HEIGHT = RTFTerrainNoise.createKey("badlands/height");
+	public static final ResourceKey<Noise> BADLANDS_EROSION = RTFTerrainNoise.createKey("badlands/erosion");
+	public static final ResourceKey<Noise> BADLANDS_RIDGE = RTFTerrainNoise.createKey("badlands/ridge");
+
+	private static final ResourceKey<Noise> MOUNTAINS_VARIANCE = RTFTerrainNoise.createKey("mountains/variance");
+	public static final ResourceKey<Noise> MOUNTAINS_HEIGHT = RTFTerrainNoise.createKey("mountains/height");
+	public static final ResourceKey<Noise> MOUNTAINS_EROSION = RTFTerrainNoise.createKey("mountains/erosion");
+	public static final ResourceKey<Noise> MOUNTAINS_RIDGE = RTFTerrainNoise.createKey("mountains/ridge");
 	
 	private static final ResourceKey<Noise> DEEP_OCEAN_HILLS = RTFTerrainNoise.createKey("deep_ocean/hills");
 	private static final ResourceKey<Noise> DEEP_OCEAN_CANYONS = RTFTerrainNoise.createKey("deep_ocean/canyons");
@@ -76,6 +98,9 @@ final class TerrainTypes {
 		registerHills1(ctx, noise, terrainSeed, generalSettings, terrainSettings.hills);
 		registerHills2(ctx, noise, terrainSeed, generalSettings, terrainSettings.hills);
 		registerDales(ctx, noise, terrainSeed, terrainSettings.dales);
+		registerTorridonian(ctx, noise, terrainSeed, terrainSettings.torridonian);
+		registerBadlands(ctx, noise, terrainSeed, terrainSettings.badlands);
+		registerMountains(ctx, noise, terrainSeed, generalSettings, terrainSettings.mountains);
 		
 		Noise coast = RTFNoise.registerAndWrap(ctx, COAST_HEIGHT, ground.sub(unit)); // one block below ground level
 		ctx.register(SHALLOW_OCEAN_HEIGHT, coast.sub(unit.mul(Source.constant(7.0F)))); // 7 blocks below coast
@@ -146,7 +171,54 @@ final class TerrainTypes {
         
     	registerLand(ctx, noise, DALES_VARIANCE, DALES_HEIGHT, settings, hills3.scale(0.4));
     	ctx.register(DALES_EROSION, selector.warp(warpX, warpY, warpPower).blend(hills1.warp(warpX, warpY, warpPower), Source.ZERO, 0.4, 0.15).threshold(0.2D, erosion4, erosion2));
-    	ctx.register(DALES_RIDGE, RTFNoise.lookup(noise, RidgeLevels.MID_SLICE));
+    	ctx.register(DALES_RIDGE, RTFNoise.lookup(noise, RidgeLevels.HIGH_SLICE).negate());
+    }
+    
+    private static void registerTorridonian(BootstapContext<Noise> ctx, HolderGetter<Noise> noise, Seed seed, Terrain settings) {
+        Noise plains = RTFNoise.registerAndWrap(ctx, TORRIDONIAN_PLAINS, Source.perlin(seed.next(), 100, 3).warp(seed.next(), 300, 1, 150.0).warp(seed.next(), 20, 1, 40.0).scale(0.15));
+        Noise hills = RTFNoise.registerAndWrap(ctx, TORRIDONIAN_HILLS, Source.perlin(seed.next(), 150, 4).warp(seed.next(), 300, 1, 200.0).warp(seed.next(), 20, 2, 20.0).boost());
+        Noise selector = RTFNoise.registerAndWrap(ctx, TORRIDONIAN_SELECTOR, Source.perlin(seed.next(), 200, 3));
+        Noise terraced = selector.blend(plains, hills, 0.6, 0.6).terrace(Source.perlin(seed.next(), 120, 1).scale(0.25), Source.perlin(seed.next(), 200, 1).scale(0.5).bias(0.5), Source.constant(0.5), 0.0, 0.3, 6, 1);
+        Noise module = terraced.boost();
+        registerLand(ctx, noise, TORRIDONIAN_VARIANCE, TORRIDONIAN_HEIGHT, settings, module.scale(0.5));
+        ctx.register(TORRIDONIAN_EROSION, selector.threshold(0.5, RTFNoise.lookup(noise, ErosionLevels.LEVEL_6), RTFNoise.lookup(noise, ErosionLevels.LEVEL_5)));
+        ctx.register(TORRIDONIAN_RIDGE, RTFNoise.lookup(noise, RidgeLevels.PEAKS));
+    }
+ 
+    private static void registerBadlands(BootstapContext<Noise> ctx, HolderGetter<Noise> noise, Seed seed, Terrain settings) {
+    	Noise mask = Source.build(seed.next(), 270, 3).perlin().clamp(0.35, 0.65).map(0.0, 1.0);
+    	Noise hills = RTFNoise.registerAndWrap(ctx, BADLANDS_HILLS, Source.ridge(seed.next(), 275, 4).warp(seed.next(), 400, 2, 100.0).warp(seed.next(), 18, 1, 20.0).mul(mask));
+        double modulation = 0.4;
+        double alpha = 1.0 - modulation;
+        Noise mod1 = hills.warp(seed.next(), 100, 1, 50.0).scale(modulation);
+        Noise lowFreq = hills.steps(4, 0.6, 0.7).scale(alpha).add(mod1);
+        Noise highFreq = hills.steps(10, 0.6, 0.7).scale(alpha).add(mod1);
+        Noise detail = lowFreq.add(highFreq);
+        Noise mod2 = hills.mul(Source.perlin(seed.next(), 200, 3).scale(modulation));
+        Noise shape = hills.steps(4, 0.65, 0.75, Interpolation.CURVE3).scale(alpha).add(mod2).scale(alpha);
+        Noise badlands = shape.mul(detail.alpha(0.5));
+        registerLand(ctx, noise, BADLANDS_VARIANCE, BADLANDS_HEIGHT, settings, badlands.scale(0.55).bias(0.025));
+        ctx.register(BADLANDS_EROSION, badlands.threshold(0.1D, RTFNoise.lookup(noise, ErosionLevels.LEVEL_4), RTFNoise.lookup(noise, ErosionLevels.LEVEL_2)));
+        ctx.register(BADLANDS_RIDGE, RTFNoise.lookup(noise, RidgeLevels.HIGH_SLICE));
+    }
+
+    private static void registerMountains(BootstapContext<Noise> ctx, HolderGetter<Noise> noise, Seed seed, General generalSettings, Terrain terrainSettings) {
+        int scaleH = Math.round(410.0F * terrainSettings.horizontalScale);
+        Noise module = Source.build(seed.next(), scaleH, 4).gain(1.15).lacunarity(2.35).ridge().mul(Source.perlin(seed.next(), 24, 4).alpha(0.075)).warp(seed.next(), 350, 1, 150.0);
+        Noise variance = makeFancy(seed, module, generalSettings).scale(0.7 * generalSettings.globalVerticalScale);
+        
+        registerLand(ctx, noise, MOUNTAINS_VARIANCE, MOUNTAINS_HEIGHT, terrainSettings, variance);
+        ctx.register(MOUNTAINS_EROSION, RTFNoise.lookup(noise, ErosionLevels.LEVEL_4));
+        ctx.register(MOUNTAINS_RIDGE, RTFNoise.lookup(noise, RidgeLevels.PEAKS));
+    }
+    
+    private static Noise makeFancy(Seed seed, Noise module, General generalSettings) {
+        if (generalSettings.fancyMountains) {
+            Domain warp = Domain.direction(Source.perlin(seed.next(), 10, 1), Source.constant(2.0));
+            Noise erosion = new Valley(module, 2, 0.65f, 128.0f, 0.15f, 3.1f, 0.8f, Valley.Mode.CONSTANT).shift(seed.next());
+            return erosion.warp(warp);
+        }
+        return module;
     }
     
 	private static void registerDeepOcean(BootstapContext<Noise> ctx, Noise seaLevel, int seed) {

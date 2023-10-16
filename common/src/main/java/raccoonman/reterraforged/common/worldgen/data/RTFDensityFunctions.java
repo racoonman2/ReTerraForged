@@ -148,13 +148,13 @@ public final class RTFDensityFunctions {
         DensityFunction aquiferFluidLevelSpreadNoise = DensityFunctions.noise(noiseParams.getOrThrow(Noises.AQUIFER_FLUID_LEVEL_SPREAD), 0.7142857142857143);
         DensityFunction aquiferLavaNoise = DensityFunctions.noise(noiseParams.getOrThrow(Noises.AQUIFER_LAVA));
         //TODO maybe add terraforged's height temperature offset?
-        DensityFunction temperature = getFunction(densityFunctions, TEMPERATURE);
-        DensityFunction vegetation = getFunction(densityFunctions, MOISTURE);
+        DensityFunction temperature = DensityFunctions.constant(-0.25D);
+        DensityFunction vegetation = DensityFunctions.constant(-1.0D);
         DensityFunction depth = getFunction(densityFunctions, DEPTH);
         DensityFunction initialDensity = noiseGradientDensity(DensityFunctions.constant(2.0D), depth);
         DensityFunction slopedCheese = getFunction(densityFunctions, SLOPED_CHEESE);
         DensityFunction slopedCheeseWithCaves = DensityFunctions.rangeChoice(slopedCheese, -1000000.0, 1.5625, slopedCheese, postProcess(underground(densityFunctions, noiseParams, slopedCheese)));
-        DensityFunction slopedCheeseWithNoodle = DensityFunctions.min(slideOverworld(slopedCheeseWithCaves, worldHeight), getFunction(densityFunctions, NOODLE));
+        DensityFunction slideWithNoodle = DensityFunctions.min(slideOverworld(slopedCheeseWithCaves, worldHeight), getFunction(densityFunctions, NOODLE));
         DensityFunction y = getFunction(densityFunctions, Y);
         int minOreVeinY = Stream.of(OreVeinifier.VeinType.values()).mapToInt(veinType -> veinType.minY).min().orElse(-DimensionType.MIN_Y * 2);
         int maxOreVeinY = Stream.of(OreVeinifier.VeinType.values()).mapToInt(veinType -> veinType.maxY).max().orElse(-DimensionType.MIN_Y * 2);
@@ -163,7 +163,7 @@ public final class RTFDensityFunctions {
         DensityFunction oreVeinBNoise = yLimitedInterpolatable(y, DensityFunctions.noise(noiseParams.getOrThrow(Noises.ORE_VEIN_B), 4.0, 4.0), minOreVeinY, maxOreVeinY, 0).abs();
         DensityFunction oreVein = DensityFunctions.add(DensityFunctions.constant(-0.08F), DensityFunctions.max(oreVeinANoise, oreVeinBNoise));
         DensityFunction oreGap = DensityFunctions.noise(noiseParams.getOrThrow(Noises.ORE_GAP));
-        return new NoiseRouter(aquiferBarrierNoise, aquiferFluidLevelFloodednessNoise, aquiferFluidLevelSpreadNoise, aquiferLavaNoise, temperature, vegetation, DensityFunctions.add(getFunction(densityFunctions, CONTINENTS), DensityFunctions.constant(0.283D)), getFunction(densityFunctions, EROSION), DensityFunctions.add(depth, DensityFunctions.constant(-0.125D)), getFunction(densityFunctions, RIDGES), slideOverworld(initialDensity.clamp(-64.0, 64.0), worldHeight), slopedCheeseWithNoodle, oreVeininessNoise, oreVein, oreGap);
+        return new NoiseRouter(aquiferBarrierNoise, aquiferFluidLevelFloodednessNoise, aquiferFluidLevelSpreadNoise, aquiferLavaNoise, temperature, vegetation, DensityFunctions.add(getFunction(densityFunctions, CONTINENTS), DensityFunctions.constant(0.283D)), getFunction(densityFunctions, EROSION), DensityFunctions.add(depth, DensityFunctions.constant(-0.125D)), getFunction(densityFunctions, RIDGES), slideOverworld(initialDensity.clamp(-64.0, 64.0), worldHeight), slideWithNoodle, oreVeininessNoise, oreVein, oreGap);
     }
 
     private static DensityFunction slideOverworld(DensityFunction function, int worldHeight) {

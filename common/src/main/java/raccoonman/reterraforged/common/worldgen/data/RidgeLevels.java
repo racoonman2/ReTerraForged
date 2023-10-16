@@ -4,7 +4,7 @@ import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 
-// note: you can get the weird variant of these by calling .invert()
+// note: you can get the weird variant of these by calling .negate()
 final class RidgeLevels {
 	public static final ResourceKey<Noise> VALLEYS = createKey("valleys");
 	public static final ResourceKey<Noise> LOW_SLICE = createKey("low_slice");

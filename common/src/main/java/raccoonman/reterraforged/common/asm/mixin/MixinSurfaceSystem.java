@@ -70,23 +70,12 @@ class MixinSurfaceSystem {
 	)
     public void buildSurface(RandomState randomState, BiomeManager biomeManager, Registry<Biome> registry, boolean bl, WorldGenerationContext worldGenerationContext, final ChunkAccess chunkAccess, NoiseChunk noiseChunk, SurfaceRules.RuleSource ruleSource, CallbackInfo callback, final BlockPos.MutableBlockPos pos, ChunkPos chunkPos, int chunkMinX, int chunkMinZ, BlockColumn column, SurfaceRules.Context context, SurfaceRules.SurfaceRule rule, BlockPos.MutableBlockPos pos2, int chunkX, int chunkZ) {
 		if((Object) context instanceof ContextExtension extension) {
-			ErosionRule erosionRule;
+			ErosionRule.Rule erosionRule;
 			if((erosionRule = extension.getErosionRule()) != null) {
-				this.erosionExtension(chunkAccess.getHeight(Heightmap.Types.WORLD_SURFACE_WG, chunkX, chunkZ), column, erosionRule);
+				erosionRule.applyExtension(context.blockX, context.blockZ, chunkAccess.getHeight(Heightmap.Types.WORLD_SURFACE_WG, chunkX, chunkZ), column);
 			}
 		} else {
 			throw new IllegalStateException();
 		}
     }
-
-	private void erosionExtension(int surfaceY, BlockColumn column, ErosionRule rule) {
-		BlockState top = column.getBlock(surfaceY);
-		if(top.is(rule.erodible())) {
-			BlockState material = rule.overrides().getOrDefault(top.getBlock(), rule.material());
-			if(material.is(rule.solid())) {
-				
-				
-			}
-		}
-	}
 }

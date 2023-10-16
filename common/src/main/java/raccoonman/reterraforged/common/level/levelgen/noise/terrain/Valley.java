@@ -1,6 +1,3 @@
-/*
- * Decompiled with CFR 0.150.
- */
 package raccoonman.reterraforged.common.level.levelgen.noise.terrain;
 
 import java.util.Arrays;
@@ -13,7 +10,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.noise.Vec2f;
 
-public record Valley(Noise source, int octaves, float strength, float gridSize, float amplitude, float lacunarity, float falloff, Valley.Mode blendMode, ThreadLocal<float[]> erosionCache) implements Noise {
+public record Valley(Noise source, int octaves, float strength, float gridSize, float amplitude, float lacunarity, float falloff, Valley.Mode blendMode, ThreadLocal<Valley.Cache> erosionCache) implements Noise {
 	public static final Codec<Valley> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Noise.HOLDER_HELPER_CODEC.fieldOf("source").forGetter((v) -> v.source),
 		Codec.INT.fieldOf("octaves").forGetter((v) -> v.octaves),
@@ -26,7 +23,7 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
 	).apply(instance, Valley::new));
 
     public Valley(Noise source, int octaves, float strength, float gridSize, float amplitude, float lacunarity, float falloff, Valley.Mode blendMode) {
-		this(source, octaves, strength, gridSize, amplitude, lacunarity, falloff, blendMode, ThreadLocal.withInitial(() -> new float[5 * 5]));
+		this(source, octaves, strength, gridSize, amplitude, lacunarity, falloff, blendMode, ThreadLocal.withInitial(() -> new Valley.Cache(5)));
     }
     
 	@Override
@@ -60,7 +57,7 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
 	    ;
     }
     
-    private float getErosionValue(float x, float y, int seed, float[] cache) {
+    private float getErosionValue(float x, float y, int seed, Cache cache) {
         float sum = 0.0F;
         float max = 0.0F;
         float gain = 1.0F;
@@ -77,8 +74,8 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
         return sum / max;
     }
 
-    private float getSingleErosionValue(float x, float y, float gridSize, int seed, float[] cache) {
-        Arrays.fill(cache, -1.0F); //TODO remove this line when we improve the cache
+    private float getSingleErosionValue(float x, float y, float gridSize, int seed, Cache cache) {
+        Arrays.fill(cache.data, -1.0F); //TODO remove this line when we improve the cache
         int pix = NoiseUtil.floor(x / gridSize);
         int piy = NoiseUtil.floor(y / gridSize);
         float minHeight2 = Float.MAX_VALUE;
@@ -99,7 +96,7 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
                         Vec2f vec2 = pbx == pax && pby == pay ? vec1 : NoiseUtil.cell(seed, pbx, pby);
                         float candidateX = ((float) pbx + vec2.x()) * gridSize;
                         float candidateY = ((float) pby + vec2.y()) * gridSize;
-                        float height = getNoiseValue(dx1 + dx2, dy1 + dy2, candidateX, candidateY, this.source, seed, cache);
+                        float height = getNoiseValue(dx1 + dx2, dy1 + dy2, candidateX, candidateY, this.source, seed, cache.data);
                         if (!(height < lowestNeighbour)) continue;
                         lowestNeighbour = height;
                         bx = candidateX;
@@ -174,7 +171,7 @@ public record Valley(Noise source, int octaves, float strength, float gridSize, 
     }
     
     //TODO
-    private class Cache {
+    private static class Cache {
     	private float[] data;
     	
     	public Cache(int width) {
