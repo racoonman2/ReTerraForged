@@ -77,17 +77,25 @@ public record ErosionRule(Holder<DensityFunction> steepness, TagKey<Block> erodi
 			double steepness = this.calculateSteepness(blockX, surfaceY, blockZ);
 	        BlockState surface = column.getBlock(surfaceY);
 	        if(surface.is(ErosionRule.this.erodible)) {
-	        	if(steepness > 0.65F) {
-	    	        BlockState filler;
+	        	BlockState filler = surface;
 	    	        
-	        		if(surface.getMaterial() == Material.STONE) {
-	        			filler = surface;
-	        		} else {
-	        			filler = Blocks.STONE.defaultBlockState();
-	        		}
+	        	if(steepness > 0.65F) {
+		        	if(surface.getMaterial() == Material.STONE) {
+		        		filler = surface;
+		        	} else {
+		        		filler = Blocks.STONE.defaultBlockState();
+		        	}
+	        	} else if(steepness > 0.475) {
+	        		filler = Blocks.COARSE_DIRT.defaultBlockState();
+	        	}
 	        		
-	        		if(filler != surface) {
+	        	if(filler != surface) {
+	        		if(filler.getMaterial() == Material.STONE) {
 	        			erodeRock(column, surfaceY);
+	        		} else {
+	        			for (int dy = surfaceY; dy > surfaceY - 4; dy--) {;
+	        				replaceSolid(column, dy, filler);
+	        			}
 	        		}
 	        	}
 	        }

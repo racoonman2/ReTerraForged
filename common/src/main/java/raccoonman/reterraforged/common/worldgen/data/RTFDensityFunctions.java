@@ -55,8 +55,8 @@ public final class RTFDensityFunctions {
         ctx.register(TEMPERATURE, new NoiseWrapper.Marker(getNoise(noise, RTFClimateNoise.TEMPERATURE).map(-1.0D, 1.0D)));
         ctx.register(MOISTURE, new NoiseWrapper.Marker(getNoise(noise, RTFClimateNoise.MOISTURE).map(-1.0D, 1.0D)));
         ctx.register(CONTINENTS, DensityFunctions.flatCache(new NoiseWrapper.Marker(getNoise(noise, RTFTerrainNoise.CONTINENT).map(-1.0D, 1.0D))));
-        ctx.register(EROSION, DensityFunctions.cache2d(new NoiseWrapper.Marker(getNoise(noise, RTFTerrainNoise.EROSION))));
-        ctx.register(RIDGES, DensityFunctions.cache2d(new NoiseWrapper.Marker(getNoise(noise, RTFTerrainNoise.RIDGE))));
+        ctx.register(EROSION, DensityFunctions.flatCache(new NoiseWrapper.Marker(getNoise(noise, RTFTerrainNoise.EROSION))));
+        ctx.register(RIDGES, DensityFunctions.flatCache(new NoiseWrapper.Marker(getNoise(noise, RTFTerrainNoise.RIDGE))));
         DensityFunction depth = registerAndWrap(ctx, DEPTH, DensityFunctions.add(scale(height), DensityFunctions.add(DensityFunctions.constant(-0.50375F), DensityFunctions.yClampedGradient(-64, 320, 1.5, -1.5))));
         ctx.register(SLOPED_CHEESE, noiseGradientDensity(DensityFunctions.constant(1.0D), depth));
         ctx.register(SPAGHETTI_ROUGHNESS_FUNCTION, spaghettiRoughnessFunction(holderGetter));
