@@ -15,7 +15,6 @@ import net.minecraft.world.level.chunk.BlockColumn;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.SurfaceRules.Context;
-import net.minecraft.world.level.material.Material;
 import raccoonman.reterraforged.common.asm.extensions.ContextExtension;
 import raccoonman.reterraforged.common.asm.extensions.RandomStateExtension;
 import raccoonman.reterraforged.common.level.levelgen.density.MutableFunctionContext;
@@ -27,7 +26,7 @@ public record ErosionRule(Holder<DensityFunction> steepness, TagKey<Block> erodi
 		Codec.INT.fieldOf("radius").forGetter(ErosionRule::radius),
 		Codec.FLOAT.fieldOf("scaler").forGetter(ErosionRule::scaler)
 	).apply(instance, ErosionRule::new));
-	
+
 	@Override
 	public SurfaceRules.SurfaceRule apply(Context ctx) {
 		if((Object) ctx instanceof ContextExtension contextExt && (Object) ctx.randomState instanceof RandomStateExtension randomStateExt) {
@@ -43,11 +42,11 @@ public record ErosionRule(Holder<DensityFunction> steepness, TagKey<Block> erodi
 	public KeyDispatchDataCodec<ErosionRule> codec() {
 		return new KeyDispatchDataCodec<>(CODEC);
 	}
-	
+
 	public class Rule implements SurfaceRules.SurfaceRule {
 		private DensityFunction steepness;
 		private MutableFunctionContext functionContext;
-		
+
 		public Rule(DensityFunction steepness) {
 			this.steepness = steepness;
 			this.functionContext = new MutableFunctionContext();
@@ -57,7 +56,7 @@ public record ErosionRule(Holder<DensityFunction> steepness, TagKey<Block> erodi
 		public BlockState tryApply(int x, int y, int z) {
 			return null;
 		}
-		
+
 		private double calculateSteepness(int blockX, int blockY, int blockZ) {
 			double heightDelta = 0.0D;
 	        double height = this.steepness.compute(this.functionContext.at(blockX, blockY, blockZ));
@@ -72,28 +71,26 @@ public record ErosionRule(Holder<DensityFunction> steepness, TagKey<Block> erodi
 	        }
 	        return Math.min(1.0D, heightDelta * ErosionRule.this.scaler);
 		}
-		
+
 		public void applyExtension(int blockX, int blockZ, int surfaceY, BlockColumn column) {
 			double steepness = this.calculateSteepness(blockX, surfaceY, blockZ);
 	        BlockState surface = column.getBlock(surfaceY);
 	        if(surface.is(ErosionRule.this.erodible)) {
 	        	BlockState filler = surface;
-	    	        
+
 	        	if(steepness > 0.65F) {
-		        	if(surface.getMaterial() == Material.STONE) {
-		        		filler = surface;
-		        	} else {
+		        	if(!surface.is(BlockTags.BASE_STONE_OVERWORLD)) {
 		        		filler = Blocks.STONE.defaultBlockState();
 		        	}
 	        	} else if(steepness > 0.475) {
 	        		filler = Blocks.COARSE_DIRT.defaultBlockState();
 	        	}
-	        		
+
 	        	if(filler != surface) {
-	        		if(filler.getMaterial() == Material.STONE) {
+	        		if(filler.is(BlockTags.BASE_STONE_OVERWORLD)) {
 	        			erodeRock(column, surfaceY);
 	        		} else {
-	        			for (int dy = surfaceY; dy > surfaceY - 4; dy--) {;
+	        			for (int dy = surfaceY; dy > surfaceY - 4; dy--) {
 	        				replaceSolid(column, dy, filler);
 	        			}
 	        		}

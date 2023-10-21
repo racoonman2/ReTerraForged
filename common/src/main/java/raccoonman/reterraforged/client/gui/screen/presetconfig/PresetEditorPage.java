@@ -11,6 +11,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
@@ -22,6 +23,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.BisectedPage;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
@@ -173,15 +175,16 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	        return false;
 	    }
 
-	    @Override
-	    public void render(PoseStack matrixStack, int mx, int my, float partialTicks) {
+		@Override
+	    public void render(GuiGraphics guiGraphics, int mx, int my, float partialTicks) {
 	    	this.height = this.getWidth();
 //	        this.height = getSize();
 	//
 //	        preRender();
 	//
 	    	RenderSystem.setShaderTexture(0, this.texture.getId());
-	        Screen.blit(matrixStack, this.getX(), this.getY(), 0, 0, this.width, this.height, this.width, this.height);
+			// TODO (1.20.1): Fix GUI blit
+//	        guiGraphics.blit(this.getX(), this.getY(), 0, 0, this.width, this.height, this.width, this.height);
 	        
 //	        updateLegend(mx, my);
 	//
