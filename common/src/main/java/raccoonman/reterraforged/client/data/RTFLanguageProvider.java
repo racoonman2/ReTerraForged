@@ -272,4 +272,265 @@ public final class RTFLanguageProvider {
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_STRATA_REGION_SIZE), "Controls the size of strata regions");
 		}
 	}
+	public static final class ZHCN extends LanguageProvider {
+
+		public ZHCN(PackOutput output) {
+			super(output, ReTerraForged.MOD_ID, "zh_cn");
+		}
+        @Override
+		protected void addTranslations() {
+			this.add(RTFTranslationKeys.NO_ERROR_MESSAGE, "{No error message}");
+			this.add(RTFTranslationKeys.GUI_BUTTON_BIOME_EDGE_TYPE, "类型");
+			this.add(RTFTranslationKeys.GUI_BUTTON_CLIMATE_SEED_OFFSET, "种子偏移量");
+			this.add(RTFTranslationKeys.GUI_BUTTON_CONTINENT_SHAPE, "大陆形状");
+			this.add(RTFTranslationKeys.GUI_BUTTON_CONTINENT_TYPE, "大陆类型");
+			this.add(RTFTranslationKeys.GUI_BUTTON_COPY, "复制");
+			this.add(RTFTranslationKeys.GUI_BUTTON_CREATE, "创建");
+			this.add(RTFTranslationKeys.GUI_BUTTON_CUSTOM_BIOME_FEATURES, "自定义生物群系特征");
+			this.add(RTFTranslationKeys.GUI_BUTTON_DELETE, "删除");
+			this.add(RTFTranslationKeys.GUI_BUTTON_DISABLED, "禁用");
+			this.add(RTFTranslationKeys.GUI_BUTTON_EROSION_DECORATOR, "侵蚀装饰");
+			this.add(RTFTranslationKeys.GUI_BUTTON_EXPORT, "导出");
+			this.add(RTFTranslationKeys.GUI_BUTTON_EXPORT_SUCCESS, "成功导出预设");
+			this.add(RTFTranslationKeys.GUI_BUTTON_FALSE, "否");
+			this.add(RTFTranslationKeys.GUI_BUTTON_FANCY_MOUNTAINS, "华丽的山脉");
+			this.add(RTFTranslationKeys.GUI_BUTTON_IMPORT_LEGACY, "导入旧版预设");
+			this.add(RTFTranslationKeys.GUI_BUTTON_NATURAL_SNOW_DECORATOR, "自然雪层装饰");
+			this.add(RTFTranslationKeys.GUI_BUTTON_NOISE, "噪声");
+			this.add(RTFTranslationKeys.GUI_BUTTON_OPEN_PRESET_FOLDER, "打开预设文件夹");
+			this.add(RTFTranslationKeys.GUI_BUTTON_ORE_COMPATIBLE_STONE_ONLY, "仅生成可产生矿石的石头");
+			this.add(RTFTranslationKeys.GUI_BUTTON_RIVER_SEED_OFFSET, "种子偏移量");
+			this.add(RTFTranslationKeys.GUI_BUTTON_SALT, "随机化");
+			this.add(RTFTranslationKeys.GUI_BUTTON_SEED, "种子");
+			this.add(RTFTranslationKeys.GUI_BUTTON_SMOOTH_LAYER_DECORATOR, "平滑的覆盖层装饰");
+			this.add(RTFTranslationKeys.GUI_BUTTON_SPAWN_TYPE, "出生点决定方式");
+			this.add(RTFTranslationKeys.GUI_BUTTON_PLAIN_STONE_EROSION, "普通石头侵蚀");
+			this.add(RTFTranslationKeys.GUI_BUTTON_STRATA_DECORATOR, "岩层装饰");
+			this.add(RTFTranslationKeys.GUI_BUTTON_TERRAIN_SEED_OFFSET, "种子偏移量");
+			this.add(RTFTranslationKeys.GUI_BUTTON_TRUE, "是");
+			this.add(RTFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKES, "原版岩浆湖");
+			this.add(RTFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS, "原版岩浆泉");
+			this.add(RTFTranslationKeys.GUI_BUTTON_VANILLA_SPRINGS, "原版泉水");
+			this.add(RTFTranslationKeys.GUI_CLIMATE_SETTINGS_TITLE, "气候设置");
+			this.add(RTFTranslationKeys.GUI_FILTER_SETTINGS_TITLE, "侵蚀与平滑化");
+			this.add(RTFTranslationKeys.GUI_LABEL_BADLANDS, "恶地");
+			this.add(RTFTranslationKeys.GUI_LABEL_BIOME_EDGE_SHAPE, "生物群系边缘");
+			this.add(RTFTranslationKeys.GUI_LABEL_BIOME_SHAPE, "生物群系形状");
+			this.add(RTFTranslationKeys.GUI_LABEL_CONTINENT, "大陆");
+			this.add(RTFTranslationKeys.GUI_LABEL_CONTROL_POINTS, "调整 基准点");
+			this.add(RTFTranslationKeys.GUI_LABEL_DALES, "山谷");
+			this.add(RTFTranslationKeys.GUI_LABEL_GENERAL, "全局");
+			this.add(RTFTranslationKeys.GUI_LABEL_HILLS, "山丘");
+			this.add(RTFTranslationKeys.GUI_LABEL_MOISTURE, "湿度");
+			this.add(RTFTranslationKeys.GUI_LABEL_MOUNTAINS, "山脉");
+			this.add(RTFTranslationKeys.GUI_LABEL_PLAINS, "平原");
+			this.add(RTFTranslationKeys.GUI_LABEL_PLATEAU, "高原");
+			this.add(RTFTranslationKeys.GUI_LABEL_PROPERTIES, "世界性质");
+			this.add(RTFTranslationKeys.GUI_LABEL_STEPPE, "草原");
+			this.add(RTFTranslationKeys.GUI_LABEL_TEMPERATURE, "温度");
+			this.add(RTFTranslationKeys.GUI_LABEL_TORRIDONIAN, "Torridonian");
+			this.add(RTFTranslationKeys.GUI_LABEL_VOLCANO, "火山");
+			this.add(RTFTranslationKeys.GUI_LABEL_BRANCH_RIVERS, "支流");
+			this.add(RTFTranslationKeys.GUI_LABEL_EROSION, "侵蚀");
+			this.add(RTFTranslationKeys.GUI_LABEL_LAKES, "湖泊");
+			this.add(RTFTranslationKeys.GUI_LABEL_MAIN_RIVERS, "干流");
+			this.add(RTFTranslationKeys.GUI_LABEL_SMOOTHING, "平滑化");
+			this.add(RTFTranslationKeys.GUI_LABEL_WETLANDS, "湿地");
+			this.add(RTFTranslationKeys.GUI_MISCELLANEOUS_SETTINGS_TITLE, "杂项");
+			this.add(RTFTranslationKeys.GUI_DEFAULT_PRESET_NAME, "ReTerraForged - 默认");
+			this.add(RTFTranslationKeys.GUI_RIVER_SETTINGS_TITLE, "河流");
+			this.add(RTFTranslationKeys.GUI_SELECT_PRESET_MISSING_LEGACY_PRESETS, "未找到旧版预设");
+			this.add(RTFTranslationKeys.GUI_SELECT_PRESET_TITLE, "预设");
+			this.add(RTFTranslationKeys.GUI_SLIDER_BEACH, "海滩");
+			this.add(RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_GAIN, "增益gain");
+			this.add(RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_LACUNARITY, "隙度lacunarity");
+			this.add(RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_OCTAVES, "倍频octave");
+			this.add(RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_SCALE, "规模");
+			this.add(RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_STRENGTH, "强度");
+			this.add(RTFTranslationKeys.GUI_SLIDER_BIOME_SIZE, "尺寸");
+			this.add(RTFTranslationKeys.GUI_SLIDER_BIOME_WARP_SCALE, "扭曲规模");
+			this.add(RTFTranslationKeys.GUI_SLIDER_BIOME_WARP_STRENGTH, "扭曲强度");
+			this.add(RTFTranslationKeys.GUI_SLIDER_COAST, "海岸");
+			this.add(RTFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER, "大陆偏移");
+			this.add(RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_LACUNARITY, "大陆噪声隙度lacunarity");
+			this.add(RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_GAIN, "大陆噪声增益gain");
+			this.add(RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_OCTAVES, "大陆噪声倍频数octave");
+			this.add(RTFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE, "大陆尺寸");
+			this.add(RTFTranslationKeys.GUI_SLIDER_CONTINENT_SIZE_VARIANCE, "大陆尺寸多样性");
+			this.add(RTFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING, "大陆生成跳过");
+			this.add(RTFTranslationKeys.GUI_SLIDER_DEEP_OCEAN, "深海");
+			this.add(RTFTranslationKeys.GUI_SLIDER_DEPOSITE_RATE, "沉积强度");
+			this.add(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_LIFETIME, "水滴存在时间");
+			this.add(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_VELOCITY, "水滴流速");
+			this.add(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_VOLUME, "水滴体积");
+			this.add(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLETS_PER_CHUNK, "每区块水滴数量");
+			this.add(RTFTranslationKeys.GUI_SLIDER_EROSION_RATE, "侵蚀强度");
+			this.add(RTFTranslationKeys.GUI_SLIDER_GLOBAL_HORIZONTAL_SCALE, "全局水平缩放");
+			this.add(RTFTranslationKeys.GUI_SLIDER_GLOBAL_VERTICAL_SCALE, "全局垂直缩放");
+			this.add(RTFTranslationKeys.GUI_SLIDER_INLAND, "陆地");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_CHANCE, "概率");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_DEPTH, "深度");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_MAX_BANK_HEIGHT, "最大岸高");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_MAX_START_DISTANCE, "最大起始距离");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_MIN_BANK_HEIGHT, "最小岸高");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_MIN_START_DISTANCE, "最小起始距离");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_SIZE_MAX, "最大尺寸");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAKE_SIZE_MIN, "最小尺寸");
+			this.add(RTFTranslationKeys.GUI_SLIDER_MACRO_NOISE_SIZE, "宏观噪声大小");
+			this.add(RTFTranslationKeys.GUI_SLIDER_MOISTURE_BIAS, "倾向");
+			this.add(RTFTranslationKeys.GUI_SLIDER_MOISTURE_FALLOFF, "过渡");
+			this.add(RTFTranslationKeys.GUI_SLIDER_MOISTURE_MAX, "最大");
+			this.add(RTFTranslationKeys.GUI_SLIDER_MOISTURE_MIN, "最小");
+			this.add(RTFTranslationKeys.GUI_SLIDER_MOISTURE_SCALE, "水平缩放");
+			this.add(RTFTranslationKeys.GUI_SLIDER_RIVER_BANK_WIDTH, "两岸间距");
+			this.add(RTFTranslationKeys.GUI_SLIDER_RIVER_BED_DEPTH, "河床深度");
+			this.add(RTFTranslationKeys.GUI_SLIDER_RIVER_BED_WIDTH, "河床宽度");
+			this.add(RTFTranslationKeys.GUI_SLIDER_RIVER_FADE, "源头渐隐速度");
+			this.add(RTFTranslationKeys.GUI_SLIDER_RIVER_MAX_BANK_HEIGHT, "最大岸高");
+			this.add(RTFTranslationKeys.GUI_SLIDER_RIVER_MIN_BANK_HEIGHT, "最小岸高");
+			this.add(RTFTranslationKeys.GUI_SLIDER_RIVER_COUNT, "河流数量");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL, "海平面高度");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SEPARATION, "分割");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SHALLOW_OCEAN, "浅海");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_ITERATIONS, "迭代次数");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_RADIUS, "平滑化计算半径");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_RATE, "平滑化强度");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SPACING, "间隔");
+			this.add(RTFTranslationKeys.GUI_SLIDER_STRATA_REGION_SIZE, "岩层区域大小");
+			this.add(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_BIAS, "倾向");
+			this.add(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_FALLOFF, "过渡");
+			this.add(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_MAX, "最大");
+			this.add(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_MIN, "最小");
+			this.add(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_SCALE, "水平缩放");
+			this.add(RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE, "基础缩放");
+			this.add(RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE, "水平缩放");
+			this.add(RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE, "垂直缩放");
+			this.add(RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, "权重");
+			this.add(RTFTranslationKeys.GUI_SLIDER_TERRAIN_REGION_SIZE, "区域大小");
+			this.add(RTFTranslationKeys.GUI_SLIDER_WETLAND_SIZE_MAX, "最大尺寸");
+			this.add(RTFTranslationKeys.GUI_SLIDER_WETLAND_SIZE_MIN, "最小尺寸");
+			this.add(RTFTranslationKeys.GUI_SLIDER_WETLAND_CHANCE, "概率");
+			this.add(RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH, "世界深度");
+			this.add(RTFTranslationKeys.GUI_SLIDER_WORLD_HEIGHT, "世界高度");
+			this.add(RTFTranslationKeys.GUI_SLIDER_ZOOM, "放大倍数");
+			this.add(RTFTranslationKeys.GUI_STRUCTURE_SETTINGS_TITLE, "特殊结构设置");
+			this.add(RTFTranslationKeys.GUI_TERRAIN_SETTINGS_TITLE, "地形设置");
+			this.add(RTFTranslationKeys.GUI_WORLD_SETTINGS_TITLE, "世界设置");
+			this.add(RTFTranslationKeys.METADATA_DESCRIPTION, "ReTerraForged游戏资源");
+			this.add(RTFTranslationKeys.PRESET_METADATA_DESCRIPTION, "ReTerraForged预设");
+
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_BIOME_EDGE_TYPE), "用来生成边缘的噪声类型");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_CLIMATE_SEED_OFFSET), "使气候分布随机化");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_CONTINENT_SHAPE), "控制大陆形状，你可能也需要调整过渡基准点来保证沙滩等地形仍能够生成");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_CONTINENT_TYPE), "控制大陆生成器的类型");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_CUSTOM_BIOME_FEATURES), "使用自定义生物群系特征来替换原版特征（比如树）");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_DISABLED), "不生成这个特殊结构");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_EROSION_DECORATOR), "替换被侵蚀的地表的材料");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_FANCY_MOUNTAINS), "对山脉进行特殊处理，使其看起来更好看。可以禁用此设置来轻微提升性能。");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_NATURAL_SNOW_DECORATOR), "移除非自然沉积的雪");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_NOISE), "控制预览地图的输出");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_ORE_COMPATIBLE_STONE_ONLY), "只使用可以生成矿物的石头种类");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_PLAIN_STONE_EROSION), "把大部分裸露于地表的石头替换为普通的石头");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_RIVER_SEED_OFFSET), "使河流分布随机化");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_SALT), "使特殊结构分布随机化");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_SEED), "预览图使用的世界种子");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_SMOOTH_LAYER_DECORATOR), "使得雪层更加适应地形变化");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_SPAWN_TYPE), "出生点应该靠近x=0,z=0还是位于最近大陆的中央");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_STRATA_DECORATOR), "生成岩层（有层次的岩石），而非单纯的石头");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_TERRAIN_SEED_OFFSET), "使地貌分布随机化");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKES), "允许原版岩浆湖生成");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS), "允许原版岩浆泉（岩浆源方块）生成");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_VANILLA_SPRINGS), "允许原版泉水（水源方块）生成");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_BEACH), "控制海岸地貌被转化为沙滩生物群系的比例");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_GAIN), "控制不同组噪声倍频octave之间的增益gain");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_LACUNARITY), "控制噪声倍频octave的隙度（不同倍频octave之间频率的差距）");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_OCTAVES), "控制噪声倍频octave组数（影响噪声精细度）");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_SCALE), "控制噪声水平缩放倍数");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_BIOME_EDGE_STRENGTH), "控制噪声强度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_BIOME_SIZE), "生物群系的大小");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_BIOME_WARP_SCALE), "生物群系形状的扭曲规模");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_BIOME_WARP_STRENGTH), "生物群系形状的扭曲强度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_COAST),
+					  "控制海岸区域的尺寸，同时也是基准点，"
+					+ "低于此基准点的内陆地貌会转变为海洋"
+					+ "某些生物群系（如蘑菇岛）仅生成于海岸。");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER), "控制大陆中心相对底层噪声网格偏移的程度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_GAIN), "每个噪声的影响程度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_LACUNARITY), "控制噪声倍频octave的隙度（不同倍频octave之间频率的差距）");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_OCTAVES), "控制用来扭曲大陆形状的噪声倍频octave组数（影响噪声精细度）");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE), "控制大陆的大小。你可能也需要调整过渡基准点来保证沙滩等仍然生成。");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_SIZE_VARIANCE), "提高大陆尺寸的多样性");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING), "减少大陆数量，生成更广阔的海洋");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_DEEP_OCEAN), "控制深海转变为浅海的基准点，高于此基准点的深海将转变为浅海，与浅海基准点差值越大，过渡越缓慢。");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_DEPOSITE_RATE), "控制物质沉积的速度（在侵蚀过程中）");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLETS_PER_CHUNK), "每区块模拟侵蚀的水滴平均数量");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_LIFETIME), "控制一滴水模拟侵蚀的迭代次数");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_VELOCITY), "控制水滴的初始速度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_EROSION_DROPLET_VOLUME), "控制水滴的初始体积");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_EROSION_RATE), "控制物质剥离的速度（在侵蚀过程中）");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_GLOBAL_HORIZONTAL_SCALE), "全局地形水平缩放");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_GLOBAL_VERTICAL_SCALE), "全局地形垂直缩放");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_INLAND), "控制海洋转化为内陆地貌的基准点");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_CHANCE), "控制生成湖泊的几率");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_DEPTH), "湖床最大深度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_MAX_BANK_HEIGHT), "最大岸高");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_MAX_START_DISTANCE), "沿河流生成湖泊的最大间隔");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_MIN_BANK_HEIGHT), "最小岸高");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_MIN_START_DISTANCE), "沿河流生成湖泊的最小间隔");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_SIZE_MAX), "最大尺寸");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAKE_SIZE_MIN), "最小尺寸");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_MACRO_NOISE_SIZE), "宏观噪声用来组合同种类型的生物群系（比如各种沙漠）。值越大，同类型群系越不容易成群出现。");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_MOISTURE_BIAS), "对某一个极端（干/湿）的倾向");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_MOISTURE_FALLOFF), "从一个极端到另一个极端的过渡速度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_MOISTURE_MAX), "最大值");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_MOISTURE_MIN), "最小值");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_MOISTURE_SCALE), "水平缩放");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RIVER_BANK_WIDTH), "控制两岸之间的最大距离");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RIVER_BED_DEPTH), "控制河流的最大深度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RIVER_BED_WIDTH), "控制河床的最大宽度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RIVER_COUNT), "控制每个大陆上河流干流的数量");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RIVER_FADE), "控制河流源头变细的程度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RIVER_MAX_BANK_HEIGHT), "控制河岸的最大高度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RIVER_MIN_BANK_HEIGHT), "控制河岸的最小高度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL), "控制海平面高度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SEPARATION),
+					  "控制同一种特殊结构的最小距离。"
+					+ "值越大，它们间隔越远，但是会导致它们的分布更趋向于对齐网格。"
+					+ "较小的值会使得它们的分布更加随机，但是间隔会更近。");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SHALLOW_OCEAN),
+					  "控制浅海过渡到海岸的基准点，高于此基准点的浅海将转变为海岸。"
+					+ "与海岸基准点的差值越大，过渡越平滑");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_ITERATIONS), "控制平滑化的迭代次数");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_RADIUS), "控制平滑化计算过程中所考虑的半径");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SMOOTHING_RATE), "控制平滑化对地形的影响程度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SPACING),
+					  "控制生成特殊结构的网格的大小"
+					+ "在每个格子里都会尝试生成一次特殊结构。"
+					+ "较大的间隔会导致特殊结构更为稀有。");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_STRATA_REGION_SIZE), "控制岩层的尺寸");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_BIAS), "对某一个极端（冷/暖）的倾向");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_FALLOFF), "从一个极端到另一个极端的过渡速度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_MAX), "最大值");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_MIN), "最小值");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_SCALE), "水平缩放倍数");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TERRAIN_BASE_SCALE), "控制该地貌的基础高度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TERRAIN_HORIZONTAL_SCALE), "在水平方向上，伸展或者压缩这种地貌");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TERRAIN_REGION_SIZE), "控制该地貌的区域尺寸");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TERRAIN_VERTICAL_SCALE), "在竖直方向上，伸展或者压缩这种地貌");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT), "控制这种地貌的常见程度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WETLAND_CHANCE), "控制湿地的常见程度");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WETLAND_SIZE_MAX), "最大尺寸");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WETLAND_SIZE_MIN), "最小尺寸");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH), "控制世界方块y轴下限");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WORLD_HEIGHT), "控制世界方块y轴上限");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_ZOOM), "控制预览地图的放大倍数");
+
+			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_COPY), "预设复制失败");
+			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_CREATE), "预设创建失败");
+			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_DELETE), "预设删除失败");
+			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_EXPORT), "预设导出失败");
+			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_IMPORT_LEGACY), "旧版预设导入失败");
+
+        }
+	}
 }

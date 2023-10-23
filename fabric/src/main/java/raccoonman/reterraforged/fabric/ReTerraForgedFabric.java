@@ -23,6 +23,7 @@ public final class ReTerraForgedFabric implements ModInitializer, DataGeneratorE
 	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
 		Pack pack = fabricDataGenerator.createPack();
 		pack.addProvider((FabricDataOutput output) -> new RTFLanguageProvider.EnglishUS(output));
+		pack.addProvider((FabricDataOutput output) -> new RTFLanguageProvider.ZHCN(output));
 		pack.addProvider((FabricDataOutput output) -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(RTFTranslationKeys.METADATA_DESCRIPTION)));
 	}
 }
