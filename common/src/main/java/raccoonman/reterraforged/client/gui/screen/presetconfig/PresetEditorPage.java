@@ -15,7 +15,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.worldselection.WorldCreationContext;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.Holder;
@@ -25,6 +24,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.RandomState;
@@ -34,6 +34,7 @@ import raccoonman.reterraforged.client.gui.screen.page.BisectedPage;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.client.gui.widget.ValueButton;
+import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.asm.extensions.RandomStateExtension;
 import raccoonman.reterraforged.common.level.levelgen.density.MutableFunctionContext;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
@@ -117,6 +118,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	    public static final int SIZE = (1 << 4) << FACTOR;
 	    private static final float[] LEGEND_SCALES = {1, 0.9F, 0.75F, 0.6F};
 	    private final DynamicTexture texture = new DynamicTexture(new NativeImage(SIZE, SIZE, false));
+	    private ResourceLocation textureId = Minecraft.getInstance().getTextureManager().register(ReTerraForged.MOD_ID + "-preview-framebuffer", this.texture); 
 
 	    private String hoveredCoords = "";
 	    private String[] values = {"", "", ""};
@@ -195,16 +197,14 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	//
 //	        preRender();
 	//
-	    	RenderSystem.setShaderTexture(0, this.texture.getId());
-	        
-	    	guiGraphics.blit(this.getX(), this.getY(), 0, 0, this.width, null, this.height, this.width, this.height, partialTicks);
+	    	guiGraphics.blit(this.textureId, this.getX(), this.getY(), 0, 0, this.width, this.height, this.width, this.height);
 	        
 //	        updateLegend(mx, my);
 	//
 //	        renderLegend(matrixStack, mx, my, labels, values, x, y + width, 10, 0xFFFFFF);
 	    }
 
-	    private boolean updateLegend(int mx ,int my) {
+	    private boolean updateLegend(int mx, int my) {
 //	        if (tile != null) {
 //	            int left = this.x;
 //	            int top = this.y;

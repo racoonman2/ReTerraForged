@@ -155,8 +155,8 @@ public final class RTFNoiseRouterData {
         DensityFunction densityFunction2 = DensityFunctions.noise(holderGetter2.getOrThrow(Noises.AQUIFER_FLUID_LEVEL_FLOODEDNESS), 0.67);
         DensityFunction densityFunction3 = DensityFunctions.noise(holderGetter2.getOrThrow(Noises.AQUIFER_FLUID_LEVEL_SPREAD), 0.7142857142857143);
         DensityFunction densityFunction4 = DensityFunctions.noise(holderGetter2.getOrThrow(Noises.AQUIFER_LAVA));
-        DensityFunction temperature = wrapCell(presets, CellSampler.Channel.TEMPERATURE);
-        DensityFunction moisture = wrapCell(presets, CellSampler.Channel.MOISTURE);
+        DensityFunction temperature = DensityFunctions.shiftedNoise2d(DensityFunctions.constant(0.0D), DensityFunctions.constant(0.0D), 0.25, holderGetter2.getOrThrow(Noises.TEMPERATURE));
+        DensityFunction moisture = DensityFunctions.shiftedNoise2d(DensityFunctions.constant(0.0D), DensityFunctions.constant(0.0D), 0.25, holderGetter2.getOrThrow(Noises.VEGETATION));
         DensityFunction factor = getFunction(holderGetter, FACTOR);
         DensityFunction depth = getFunction(holderGetter, DEPTH);
         DensityFunction initialDensity = noiseGradientDensity(DensityFunctions.cache2d(factor), depth);

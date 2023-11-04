@@ -4,21 +4,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.NarratableEntry;
 
 public class WidgetList<T extends AbstractWidget> extends ContainerObjectSelectionList<WidgetList.Entry<T>> {
 
     public WidgetList(Minecraft minecraft, int i, int j, int k, int l, int slotHeight) {
         super(minecraft, i, j, k, l, slotHeight);
-        
-        this.setRenderSelection(false);
     }
     
     public void select(T widget) {
@@ -36,6 +31,11 @@ public class WidgetList<T extends AbstractWidget> extends ContainerObjectSelecti
     }
 
     @Override
+    protected boolean isSelectedItem(int i) {
+        return Objects.equals(this.getSelected(), this.children().get(i));
+    }
+
+    @Override
     public int getRowWidth() {
         return this.width - 20;
     }
@@ -43,11 +43,6 @@ public class WidgetList<T extends AbstractWidget> extends ContainerObjectSelecti
     @Override
     protected int getScrollbarPosition() {
         return this.getRowRight();
-    }
-
-    @Override
-    protected boolean isSelectedItem(int i) {
-        return Objects.equals(this.getSelected(), this.children().get(i));
     }
 
     public static class Entry<T extends AbstractWidget> extends ContainerObjectSelectionList.Entry<Entry<T>> {
@@ -79,7 +74,7 @@ public class WidgetList<T extends AbstractWidget> extends ContainerObjectSelecti
         }
 
 		@Override
-		public List<? extends NarratableEntry> narratables() {
+		public List<T> narratables() {
 			return Collections.singletonList(this.widget);
 		}
     }

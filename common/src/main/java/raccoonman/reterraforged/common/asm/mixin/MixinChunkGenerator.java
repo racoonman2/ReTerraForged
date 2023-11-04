@@ -98,7 +98,7 @@ class MixinChunkGenerator {
                 for (int dy = 2; dy > 0; dy--) {
                     pos.setY(surfaceY + dy);
                     BlockState state = chunk.getBlockState(pos);
-                    if (!predicate.test(state) || state.is(Blocks.SNOW)) {
+                    if (!predicate.test(state)) {
                         this.erodeSnow(chunk, pos);
                     }
                 }

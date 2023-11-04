@@ -26,6 +26,7 @@ import com.mojang.serialization.JsonOps;
 import io.netty.util.internal.StringUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -149,8 +150,6 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 			//TODO: toast here
 			e.printStackTrace();
 		}
-		
-		this.left.setRenderSelection(true);
 		
 		this.right.addWidget(this.input);
 		this.right.addWidget(this.createPreset);
