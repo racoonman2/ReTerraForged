@@ -210,7 +210,7 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 		) {
 			try(Reader reader = Files.newBufferedReader(presetPath)) {
 				String base = FileNameUtils.getBaseName(presetPath.toString());
-				DataResult<Preset> result = Preset.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader));
+				DataResult<Preset> result = Preset.DIRECT_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader));
 				Optional<PartialResult<Preset>> error = result.error();
 				if(error.isPresent()) {
 					ReTerraForged.LOGGER.error(error.get().message());
@@ -273,7 +273,7 @@ class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abs
 					Writer writer = Files.newBufferedWriter(this.getPath());
 					JsonWriter jsonWriter = new JsonWriter(writer);
 				) {
-					JsonElement element = Preset.CODEC.encodeStart(JsonOps.INSTANCE, this.preset).result().orElseThrow();
+					JsonElement element = Preset.DIRECT_CODEC.encodeStart(JsonOps.INSTANCE, this.preset).result().orElseThrow();
 					jsonWriter.setSerializeNulls(false);
 					jsonWriter.setIndent("  ");
 					GsonHelper.writeValue(jsonWriter, element, null);

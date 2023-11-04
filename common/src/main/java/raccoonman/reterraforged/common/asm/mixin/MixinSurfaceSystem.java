@@ -8,6 +8,7 @@ import java.util.function.Function;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -35,11 +36,12 @@ import raccoonman.reterraforged.common.asm.extensions.ContextExtension;
 import raccoonman.reterraforged.common.asm.extensions.SurfaceSystemExtension;
 import raccoonman.reterraforged.common.level.levelgen.surface.rule.ErosionRule;
 import raccoonman.reterraforged.common.level.levelgen.surface.rule.StrataRule;
+import raccoonman.reterraforged.common.registries.RTFRegistries;
 
 @Mixin(SurfaceSystem.class)
 @Implements(@Interface(iface = SurfaceSystemExtension.class, prefix = ReTerraForged.MOD_ID + "$SurfaceSystemExtension$"))
 class MixinSurfaceSystem {
-	private static final ResourceLocation GEOLOGY_RANDOM = ReTerraForged.resolve("geology");
+	private static final ResourceLocation GEOLOGY_RANDOM = RTFRegistries.resolve("geology");
 	private RandomState randomState;
 	private Map<ResourceLocation, List<List<StrataRule.Layer>>> strata;
 	

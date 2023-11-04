@@ -18,20 +18,28 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.worldselection.WorldCreationContext;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
+import net.minecraft.world.level.levelgen.RandomState;
+import net.minecraft.world.level.levelgen.synth.NormalNoise.NoiseParameters;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.BisectedPage;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.client.gui.widget.ValueButton;
+import raccoonman.reterraforged.common.asm.extensions.RandomStateExtension;
+import raccoonman.reterraforged.common.level.levelgen.density.MutableFunctionContext;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
-import raccoonman.reterraforged.common.worldgen.data.RTFClimateNoise;
-import raccoonman.reterraforged.common.worldgen.data.RTFTerrainNoise;
+import raccoonman.reterraforged.common.worldgen.data.RTFNoiseRouterData;
+import raccoonman.reterraforged.common.worldgen.data.StrataNoise;
 
 public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, AbstractWidget, AbstractWidget> {
 	private Slider zoom;
@@ -66,7 +74,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 			this.screen.setSeed(i);
 			this.regenerate();
 		});
-		this.noise = PresetWidgets.createCycle(ImmutableList.of(RTFClimateNoise.MOISTURE, RTFClimateNoise.TEMPERATURE, RTFTerrainNoise.CONTINENT), Optional.ofNullable(this.noise).map(CycleButton::getValue).orElse(RTFClimateNoise.MOISTURE), RTFTranslationKeys.GUI_BUTTON_NOISE, (value, button) -> {
+		this.noise = PresetWidgets.createCycle(ImmutableList.of(StrataNoise.STRATA_DEPTH), Optional.ofNullable(this.noise).map(CycleButton::getValue).orElse(StrataNoise.STRATA_DEPTH), RTFTranslationKeys.GUI_BUTTON_NOISE, (value, button) -> {
 			this.preview.regenerate();
 		}, (h) -> h.location().toString());
 		
@@ -121,10 +129,15 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	        ResourceKey<Noise> noiseKey = PresetEditorPage.this.noise.getValue();
 			WorldCreationContext settings = PresetEditorPage.this.screen.getSettings();
 	        RegistryAccess.Frozen registries = settings.worldgenLoadContext();
+	        HolderGetter<NoiseParameters> noiseParamsLookup = registries.asGetterLookup().lookupOrThrow(Registries.NOISE);
 	        HolderLookup.Provider provider = PresetEditorPage.this.preset.getPreset().buildPatch(registries);
 	        HolderLookup<Noise> noiseLookup = provider.lookupOrThrow(RTFRegistries.NOISE);
-	        Holder.Reference<Noise> noise = noiseLookup.getOrThrow(noiseKey);
-
+	        HolderLookup<DensityFunction> densityFunctionLookup = provider.lookupOrThrow(Registries.DENSITY_FUNCTION);
+	        Holder.Reference<DensityFunction> densityFunction = densityFunctionLookup.getOrThrow(RTFNoiseRouterData.HEIGHT);
+//	        Holder.Reference<Noise> noise = noiseLookup.getOrThrow(noiseKey);
+	        RandomState state = RandomState.create(((NoiseBasedChunkGenerator) settings.selectedDimensions().overworld()).generatorSettings().value(), noiseParamsLookup, settings.options().seed());
+	        DensityFunction heightFunction = (Object) state instanceof RandomStateExtension e ? e.wrap(densityFunction.value()) : null;
+	        
 			NativeImage pixels = this.texture.getPixels();
 	        int width = pixels.getWidth();
 			int height = pixels.getHeight();
@@ -140,11 +153,12 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 					int cx = x * cellWidth;
 					int cy = y * cellHeight;
 					futures[x + y * cellCount] = CompletableFuture.runAsync(() -> {
+						MutableFunctionContext ctx = new MutableFunctionContext();
 						for(int lx = 0; lx < cellWidth; lx++) {
 							for(int ly = 0; ly < cellHeight; ly++) {
 								int tx = cx + lx;
 								int ty = cy + ly;
-								int color = (int) (noise.value().compute((tx - halfX) * delta, (ty - halfY) * delta, (int) PresetEditorPage.this.screen.getSettings().options().seed()) * 255);
+								int color = (int) Math.min(255, heightFunction.compute(ctx.at((int) ((tx - halfX) * delta), 0, (int) ((ty - halfY) * delta))) * 255);
 								
 					            pixels.setPixelRGBA(tx, height - 1 - ty, rgba(color, color, color));
 							}

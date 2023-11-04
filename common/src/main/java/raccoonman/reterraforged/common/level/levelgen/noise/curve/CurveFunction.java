@@ -34,7 +34,7 @@ import raccoonman.reterraforged.common.registries.RTFBuiltInRegistries;
 public interface CurveFunction {
 	Codec<CurveFunction> CODEC = RTFBuiltInRegistries.CURVE_FUNCTION_TYPE.byNameCodec().dispatchStable(CurveFunction::codec, Function.identity());
 	
-    float apply(float value);
+	float apply(float value);
     
     Codec<? extends CurveFunction> codec();
 }

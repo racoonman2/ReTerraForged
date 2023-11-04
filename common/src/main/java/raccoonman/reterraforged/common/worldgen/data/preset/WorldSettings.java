@@ -131,7 +131,7 @@ public class WorldSettings {
         }
         
         public static Properties makeDefault() {
-        	return new Properties(SpawnType.CONTINENT_CENTER, 384, 64, 63);
+        	return new Properties(SpawnType.CONTINENT_CENTER, 256, 64, 63);
         }
     }
 }

@@ -25,6 +25,7 @@ accessible class net/minecraft/world/level/levelgen/OreVeinifier$VeinType
 accessible field net/minecraft/world/level/levelgen/OreVeinifier$VeinType minY I
 accessible field net/minecraft/world/level/levelgen/OreVeinifier$VeinType maxY I
 accessible class net/minecraft/world/level/levelgen/DensityFunctions$WeirdScaledSampler
+accessible class net/minecraft/world/level/levelgen/DensityFunctions$BeardifierMarker
 accessible class net/minecraft/world/level/levelgen/DensityFunctions$WeirdScaledSampler$RarityValueMapper
 accessible field net/minecraft/client/gui/components/AbstractWidget height I
 accessible method net/minecraft/client/gui/components/AbstractSelectionList replaceEntries (Ljava/util/Collection;)V
@@ -38,3 +39,7 @@ accessible method net/minecraft/data/DataGenerator$PackGenerator <init> (Lnet/mi
 accessible method net/minecraft/world/level/levelgen/structure/placement/StructurePlacement salt ()I
 accessible method net/minecraft/world/level/levelgen/NoiseChunk wrap (Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;
 accessible method net/minecraft/world/level/biome/Biome getTemperature (Lnet/minecraft/core/BlockPos;)F
+accessible field net/minecraft/world/level/StructureManager level Lnet/minecraft/world/level/LevelAccessor;
+accessible field net/minecraft/server/level/WorldGenRegion firstPos Lnet/minecraft/world/level/ChunkPos;
+accessible field net/minecraft/server/level/WorldGenRegion lastPos Lnet/minecraft/world/level/ChunkPos;
+accessible field net/minecraft/server/level/WorldGenRegion cache Ljava/util/List;
