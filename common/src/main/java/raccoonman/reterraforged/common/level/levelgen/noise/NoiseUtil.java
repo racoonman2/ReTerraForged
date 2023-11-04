@@ -358,7 +358,11 @@ public class NoiseUtil {
 		float value = (n * n * n * '\uec4d') / 2.14748365E9F;
 		return map(value, -1, 1, 2);
 	}
-	
+
+    public static long pack(float left, float right) {
+        return pack((int) left, (int) right);
+    }
+    
 	public static long pack(int left, int right) {
         return ((long) right & 0xFFFFFFFFL) | ((long) left & 0xFFFFFFFFL) << 32;
     }
@@ -371,16 +375,32 @@ public class NoiseUtil {
         return (int) (packed & 0xFFFFFFFFL);
     }
     
-    public static long packf(final float left, final float right) {
+    public static long packf(float left, float right) {
         return ((long)Float.floatToRawIntBits(right) & 0xFFFFFFFFL) | ((long)Float.floatToRawIntBits(left) & 0xFFFFFFFFL) << 32;
     }
     
-    public static float unpackLeftf(final long packed) {
+    public static long packMix(int left, float right) {
+        return ((long)Float.floatToRawIntBits(right) & 0xFFFFFFFFL) | ((long)left & 0xFFFFFFFFL) << 32;
+    }
+    
+    public static float unpackLeftf(long packed) {
         return Float.intBitsToFloat((int)(packed >>> 32 & 0xFFFFFFFFL));
     }
     
-    public static float unpackRightf(final long packed) {
+    public static float unpackRightf(long packed) {
         return Float.intBitsToFloat((int)(packed & 0xFFFFFFFFL));
+    }
+    
+    public static double lerp(double a, double b, double alpha) {
+        return a + alpha * (b - a);
+    }
+    
+    public static double interpHermite(double t) {
+        return t * t * (3.0f - 2.0f * t);
+    }
+
+    public static int round(double d) {
+        return (d >= 0) ? (int) (d + 0.5) : (int) (d - 0.5);
     }
 
     static {

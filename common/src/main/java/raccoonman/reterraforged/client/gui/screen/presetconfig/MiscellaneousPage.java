@@ -23,6 +23,8 @@ public class MiscellaneousPage extends PresetEditorPage {
 	private CycleButton<Boolean> vanillaSprings;
 	private CycleButton<Boolean> vanillaLavaLakes;
 	private CycleButton<Boolean> vanillaLavaSprings;
+	private Slider mountainBiomeUsage;
+	private Slider volcanoBiomeUsage;
 	
 	public MiscellaneousPage(PresetConfigScreen screen, PresetEntry preset) {
 		super(screen, preset);
@@ -74,6 +76,14 @@ public class MiscellaneousPage extends PresetEditorPage {
 		this.vanillaLavaSprings = PresetWidgets.createToggle(miscellaneous.vanillaLavaSprings, RTFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS, (button, value) -> {
 			miscellaneous.vanillaLavaSprings = value;
 		});
+		this.mountainBiomeUsage = PresetWidgets.createFloatSlider(miscellaneous.mountainBiomeUsage, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_MOUNTAIN_BIOME_USAGE, (slider, value) -> {
+			miscellaneous.mountainBiomeUsage = (float) slider.scaleValue(value);
+			return value;
+		});
+		this.volcanoBiomeUsage = PresetWidgets.createFloatSlider(miscellaneous.volcanoBiomeUsage, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_VOLCANO_BIOME_USAGE, (slider, value) -> {
+			miscellaneous.volcanoBiomeUsage = (float) slider.scaleValue(value);
+			return value;
+		});
 		
 		this.left.addWidget(this.smoothLayerDecorator);
 		this.left.addWidget(this.strataRegionSize);
@@ -86,6 +96,8 @@ public class MiscellaneousPage extends PresetEditorPage {
 		this.left.addWidget(this.vanillaSprings);
 		this.left.addWidget(this.vanillaLavaLakes);
 		this.left.addWidget(this.vanillaLavaSprings);
+		this.left.addWidget(this.mountainBiomeUsage);
+		this.left.addWidget(this.volcanoBiomeUsage);
 	}
 	
 	@Override

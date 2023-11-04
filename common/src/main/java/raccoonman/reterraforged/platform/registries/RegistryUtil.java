@@ -7,12 +7,12 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
-import raccoonman.reterraforged.common.ReTerraForged;
+import raccoonman.reterraforged.common.registries.RTFRegistries;
 
 public final class RegistryUtil {
 	
 	public static <T> void register(Registry<T> registry, String name, T value) {
-		getWritable(registry).register(ReTerraForged.resolve(registry.key(), name), value, Lifecycle.stable());
+		getWritable(registry).register(RTFRegistries.createKey(registry.key(), name), value, Lifecycle.stable());
 	}
 	
 	@ExpectPlatform

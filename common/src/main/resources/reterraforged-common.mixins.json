@@ -8,7 +8,9 @@
   	"MixinNoiseChunk",
   	"MixinRandomState",
   	"MixinContext",
-  	"MixinSurfaceSystem"
+  	"MixinSurfaceSystem",
+  	"MixinMinecraftServer",
+  	"MixinChunkGenerator"
   ],
   "client": [
   	"ScreenInvoker"

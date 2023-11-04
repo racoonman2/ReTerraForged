@@ -36,6 +36,25 @@ import raccoonman.reterraforged.common.registries.RTFBuiltInRegistries;
 public interface Domain {
 	public static final Codec<Domain> CODEC = RTFBuiltInRegistries.DOMAIN_TYPE.byNameCodec().dispatchStable(Domain::codec, Function.identity());
 
+	@Deprecated
+    public static final Domain DIRECT = new Domain() {
+    	
+        @Override
+        public float getOffsetX(float x, float y, int seed) {
+            return 0.0F;
+        }
+        
+        @Override
+        public float getOffsetY(float x, float y, int seed) {
+            return 0.0F;
+        }
+
+		@Override
+		public Codec<Domain> codec() {
+			return Codec.unit(this);
+		}
+    };
+	
     float getOffsetX(float x, float y, int seed);
 
     float getOffsetY(float x, float y, int seed);

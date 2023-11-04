@@ -213,11 +213,6 @@ public class DeferredRegistry<T> implements Registry<T> {
 		}
 
 		@Override
-		public Holder<T> registerMapping(int id, ResourceKey<T> key, T value, Lifecycle lifecycle) {
-			return this.register(key, value, lifecycle);
-		}
-
-		@Override
 		public Reference<T> register(ResourceKey<T> key, T value, Lifecycle lifecycle) {
 			Holder.Reference<T> holder = Holder.Reference.createStandAlone(new HolderOwner<>() {
 			    

@@ -1,7 +1,5 @@
 package raccoonman.reterraforged.common.level.levelgen.noise;
 
-// RandomSource.nextInt() is better suited for this
-@Deprecated
 public class Seed {
     private int root;
     private int value;
@@ -29,5 +27,10 @@ public class Seed {
     
     public Seed offset(int offset) {
         return new Seed(this.root + offset);
+    }
+    
+    public Seed skip(int amount) {
+    	this.value += amount;
+    	return this;
     }
 }

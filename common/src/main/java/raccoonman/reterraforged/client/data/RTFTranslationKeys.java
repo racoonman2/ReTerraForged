@@ -122,6 +122,8 @@ public final class RTFTranslationKeys {
 	public static final String GUI_SLIDER_SPACING = resolve("gui.slider.spacing");
 	public static final String GUI_SLIDER_SEPARATION = resolve("gui.slider.separation");
 	public static final String GUI_SLIDER_STRATA_REGION_SIZE = resolve("gui.slider.strataRegionSize");
+	public static final String GUI_SLIDER_MOUNTAIN_BIOME_USAGE = resolve("gui.slider.mountainBiomeUsage");
+	public static final String GUI_SLIDER_VOLCANO_BIOME_USAGE = resolve("gui.slider.volcanoBiomeUsage");
 	
 	public static final String GUI_LABEL_CONTINENT = resolve("gui.label.continent");
 	public static final String GUI_LABEL_CONTROL_POINTS = resolve("gui.label.controlPoints");

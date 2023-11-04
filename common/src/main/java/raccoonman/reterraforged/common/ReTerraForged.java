@@ -27,9 +27,6 @@ package raccoonman.reterraforged.common;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.registries.RTFBuiltInRegistries;
 import raccoonman.reterraforged.common.registries.RTFCurveFunctionTypes;
@@ -40,6 +37,7 @@ import raccoonman.reterraforged.common.registries.RTFPlacementModifierTypes;
 import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.registries.RTFSurfaceConditionTypes;
 import raccoonman.reterraforged.common.registries.RTFSurfaceRuleTypes;
+import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
 import raccoonman.reterraforged.platform.registries.RegistryUtil;
 
 public final class ReTerraForged {
@@ -58,16 +56,6 @@ public final class ReTerraForged {
 		RTFSurfaceConditionTypes.bootstrap();
 		
 		RegistryUtil.createDataRegistry(RTFRegistries.NOISE, Noise.DIRECT_CODEC);
-	}
-	
-	// does this belong here?
-	public static ResourceLocation resolve(String name) {
-		if (name.contains(":")) return new ResourceLocation(name);
-		return new ResourceLocation(MOD_ID, name);
-	}
-
-	// ^^^^^^^^
-	public static <T> ResourceKey<T> resolve(ResourceKey<? extends Registry<T>> registryKey, String valueKey) {
-		return ResourceKey.create(registryKey, resolve(valueKey));
+		RegistryUtil.createDataRegistry(RTFRegistries.PRESET, Preset.DIRECT_CODEC);
 	}
 }
