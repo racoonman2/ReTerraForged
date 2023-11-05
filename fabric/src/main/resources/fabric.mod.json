@@ -3,7 +3,7 @@
   "id": "reterraforged",
   "version": "${version}",
   "name": "ReTerraForged",
-  "description": "A 1.19.+ fork of https://github.com/TerraForged/TerraForged",
+  "description": "A continuation of https://github.com/TerraForged/TerraForged",
   "authors": [
 	"dags",
 	"Won-Ton",

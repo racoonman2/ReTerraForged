@@ -1,2 +1,2 @@
 # ReTerraForged
-a 1.19+  of https://github.com/TerraForged/TerraForged
+a 1.19+ continuation of https://github.com/TerraForged/TerraForged

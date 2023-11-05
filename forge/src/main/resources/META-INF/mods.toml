@@ -11,7 +11,7 @@ credits="dags,Won-Ton,raccoonman"
 logoFile="logo.png"
 displayURL="https://github.com/racoonman2/reterraforged/"
 issueTrackerURL="https://github.com/racoonman2/reterraforged/issues"
-description="A 1.19.+ fork of https://github.com/TerraForged/TerraForged"
+description="A continuation of https://github.com/TerraForged/TerraForged"
 
 [[dependencies.reterraforged]]
     modId="forge"
