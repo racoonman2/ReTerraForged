@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.platform.registries.fabric;
+package raccoonman.reterraforged.platform.fabric;
 
 import com.mojang.serialization.Codec;
 

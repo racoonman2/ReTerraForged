@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.SurfaceRules.ConditionSource;
 import raccoonman.reterraforged.common.level.levelgen.surface.condition.NoiseThresholdCondition;
-import raccoonman.reterraforged.platform.registries.RegistryUtil;
+import raccoonman.reterraforged.platform.RegistryUtil;
 
 public final class RTFSurfaceConditionTypes {
 

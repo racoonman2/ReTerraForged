@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.platform.registries.forge;
+package raccoonman.reterraforged.platform.forge;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +19,8 @@ import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.RegistryBuilder;
 import raccoonman.reterraforged.common.ReTerraForged;
 
+//this is only public so the initializer class can call register
+//TODO make this non public
 public final class RegistryUtilImpl {
 	private static final Map<ResourceKey<? extends Registry<?>>, DeferredRegistry.Writable<?>> REGISTERS = new ConcurrentHashMap<>();
 	private static final List<DataRegistry<?>> DATA_REGISTRIES = Collections.synchronizedList(new ArrayList<>());

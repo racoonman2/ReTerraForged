@@ -6,7 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import raccoonman.reterraforged.common.level.levelgen.placement.NeverPlacementModifier;
-import raccoonman.reterraforged.platform.registries.RegistryUtil;
+import raccoonman.reterraforged.platform.RegistryUtil;
 
 public final class RTFPlacementModifierTypes {
 	public static final PlacementModifierType<NeverPlacementModifier> NEVER = register("never", NeverPlacementModifier.CODEC);

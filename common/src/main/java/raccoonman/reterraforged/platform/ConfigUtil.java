@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.platform.config;
+package raccoonman.reterraforged.platform;
 
 import java.nio.file.Path;
 

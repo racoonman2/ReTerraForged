@@ -13,7 +13,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import raccoonman.reterraforged.client.data.RTFLanguageProvider;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.platform.registries.forge.RegistryUtilImpl;
+import raccoonman.reterraforged.platform.forge.RegistryUtilImpl;
 
 @Mod(ReTerraForged.MOD_ID)
 public final class ReTerraForgedForge {

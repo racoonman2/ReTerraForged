@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.platform.registries.forge;
+package raccoonman.reterraforged.platform.forge;
 
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +31,7 @@ import net.minecraftforge.registries.GameData;
 
 // this class sucks and i hate it
 //TODO we should probably override default methods here too
-public class DeferredRegistry<T> implements Registry<T> {
+class DeferredRegistry<T> implements Registry<T> {
 	private ResourceKey<? extends Registry<T>> key;
 	protected Supplier<Registry<T>> registry;
 	
