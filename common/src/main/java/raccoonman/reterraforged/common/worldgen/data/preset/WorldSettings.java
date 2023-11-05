@@ -131,6 +131,7 @@ public class WorldSettings {
         }
         
         public static Properties makeDefault() {
+        	//change 256 to 320
         	return new Properties(SpawnType.CONTINENT_CENTER, 256, 64, 63);
         }
     }

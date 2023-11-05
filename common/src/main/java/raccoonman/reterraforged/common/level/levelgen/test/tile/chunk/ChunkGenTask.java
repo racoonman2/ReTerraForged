@@ -2,7 +2,6 @@ package raccoonman.reterraforged.common.level.levelgen.test.tile.chunk;
 
 import raccoonman.reterraforged.common.level.levelgen.test.cell.Cell;
 import raccoonman.reterraforged.common.level.levelgen.test.concurrent.batch.BatchTask;
-import raccoonman.reterraforged.common.level.levelgen.test.concurrent.batch.BatchTask.Notifier;
 import raccoonman.reterraforged.common.level.levelgen.test.world.heightmap.Heightmap;
 import raccoonman.reterraforged.common.level.levelgen.test.world.rivermap.Rivermap;
 

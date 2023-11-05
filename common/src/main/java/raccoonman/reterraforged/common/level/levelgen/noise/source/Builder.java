@@ -185,10 +185,16 @@ public class Builder {
     }
 
     public Noise ridge() {
+        if (this.gain == Float.MAX_VALUE) {
+            this.gain = 0.975F;
+        }
         return new Ridge(this.frequency, this.interpolation, this.lacunarity, this.octaves, this.getGain()).shift(this.shift);
     }
 
     public Noise simplexRidge() {
+        if (this.gain == Float.MAX_VALUE) {
+            this.gain = 0.975F;
+        }
         return new SimplexRidge(this.frequency, this.lacunarity, this.octaves, this.getGain()).shift(this.shift);
     }
 

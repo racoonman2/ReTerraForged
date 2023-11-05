@@ -62,7 +62,7 @@ public class WidgetList<T extends AbstractWidget> extends ContainerObjectSelecti
         }
 
         @Override
-        public void render(GuiGraphics matrixStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+        public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             int optionWidth = Math.min(396, width);
             int padding = (width - optionWidth) / 2;
             widget.setX(left + padding);
@@ -70,7 +70,7 @@ public class WidgetList<T extends AbstractWidget> extends ContainerObjectSelecti
             widget.visible = true;
             widget.setWidth(optionWidth);
             widget.height = height - 1;	
-            widget.render(matrixStack, mouseX, mouseY, partialTicks);
+            widget.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
 
 		@Override

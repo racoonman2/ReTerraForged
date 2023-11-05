@@ -65,8 +65,8 @@ public class Climate {
 		this.modifyTemp(cell, x, z);
 
         cell.continentLevel = this.getContinentLevel(cell, x, z).mid();
-        cell.temperatureLevel = TemperatureLevel.LEVEL_2.mid();
-        cell.moistureLevel = MoistureLevel.LEVEL_2.mid();
+        cell.temperatureLevel = cell.biome.getTemperatureLevel(cell.biomeRegionId);
+        cell.moistureLevel = cell.biome.getMoistureLevel(cell.biomeRegionId);
 	}
 
 	private void modifyTemp(Cell cell, float x, float z) {

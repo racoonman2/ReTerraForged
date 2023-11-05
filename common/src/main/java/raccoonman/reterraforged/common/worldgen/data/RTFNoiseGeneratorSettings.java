@@ -27,7 +27,7 @@ public final class RTFNoiseGeneratorSettings {
     private static NoiseGeneratorSettings createOverworld(HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, HolderGetter<Noise> noise, HolderGetter<Preset> presets, Preset preset) {
     	WorldSettings world = preset.world();
     	return new NoiseGeneratorSettings(
-	  		new NoiseSettings(-world.properties.worldDepth, world.properties.worldHeight, 1, 2),
+	  		new NoiseSettings(-world.properties.worldDepth, 320, 1, 2),
 	  		Blocks.STONE.defaultBlockState(),
 	  		Blocks.WATER.defaultBlockState(),
 	  		RTFNoiseRouterData.overworld(densityFunctions, noiseParams, presets, preset),

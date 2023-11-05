@@ -68,7 +68,7 @@ public abstract class LinkedPageScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.renderBackground(guiGraphics, mouseY, mouseY, partialTicks);
+		super.renderBackground(guiGraphics);
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 	

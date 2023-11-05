@@ -73,6 +73,8 @@ public class StandardTerrainProvider implements TerrainProvider {
         this.registerMixable(TerrainType.HILLS, this.landForms.getLandBase(), this.landForms.hills1(this.seed), midSlice, erosion4, this.settings.hills);
         this.registerMixable(TerrainType.HILLS, this.landForms.getLandBase(), this.landForms.hills2(this.seed), highSlice, erosion3, this.settings.hills);
         this.registerMixable(TerrainType.HILLS, this.landForms.getLandBase(), this.landForms.torridonian(this.seed), highSlice, erosion2, this.settings.torridonian);
+        
+        //FIXME!!!! plateaus are broken? the variance noise is just 0 for some reason
         this.registerMixable(TerrainType.PLATEAU, this.landForms.getLandBase(), this.landForms.plateau(this.seed), midSlice, erosion2, this.settings.plateau);
         this.registerMixable(TerrainType.BADLANDS, this.landForms.getLandBase(), this.landForms.badlands(this.seed), midSlice, erosion3, this.settings.badlands);
         this.registerUnMixable(TerrainType.BADLANDS, this.landForms.getLandBase(), this.landForms.badlands(this.seed), midSlice, erosion2, this.settings.badlands);
@@ -142,7 +144,7 @@ public class StandardTerrainProvider implements TerrainProvider {
     @Override
     public List<Populator> getPopulators() {
         List<TerrainPopulator> mixed = combine(getMixable(this.mixable), this::combine);
-        List<Populator> result = new ArrayList<Populator>(mixed.size() + this.unmixable.size());
+        List<Populator> result = new ArrayList<>(mixed.size() + this.unmixable.size());
         result.addAll(mixed);
         result.addAll(this.unmixable);
         Collections.shuffle(result, new Random(this.seed.next()));
@@ -162,8 +164,8 @@ public class StandardTerrainProvider implements TerrainProvider {
     
     private TerrainPopulator combine(TerrainPopulator tp1, TerrainPopulator tp2, Seed seed, int scale) {
         Terrain type = TerrainType.registerComposite(tp1.getType(), tp2.getType());
-        Noise selector = Source.perlin(seed.next(), scale, 1);
-        Noise variance = selector.warp(seed.next(), scale / 2, 2, scale / 2.0).blend(tp1.getVariance(), tp2.getVariance(), 0.5, 0.25).min(Source.constant(0.0));
+        Noise selector = Source.perlin(seed.next(), scale, 1).warp(seed.next(), scale / 2, 2, scale / 2.0);
+        Noise variance = selector.blend(tp1.getVariance(), tp2.getVariance(), 0.5, 0.25).max(Source.constant(0.0));
         Noise ridge = selector.threshold(0.5D, tp1.getRidge(), tp2.getRidge());
         Noise erosion = selector.threshold(0.5D, tp1.getErosion(), tp2.getErosion());
         float weight = (tp1.getWeight() + tp2.getWeight()) / 2.0F;
