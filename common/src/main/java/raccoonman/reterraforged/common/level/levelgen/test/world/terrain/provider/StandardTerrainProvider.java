@@ -73,8 +73,6 @@ public class StandardTerrainProvider implements TerrainProvider {
         this.registerMixable(TerrainType.HILLS, this.landForms.getLandBase(), this.landForms.hills1(this.seed), midSlice, erosion4, this.settings.hills);
         this.registerMixable(TerrainType.HILLS, this.landForms.getLandBase(), this.landForms.hills2(this.seed), highSlice, erosion3, this.settings.hills);
         this.registerMixable(TerrainType.HILLS, this.landForms.getLandBase(), this.landForms.torridonian(this.seed), highSlice, erosion2, this.settings.torridonian);
-        
-        //FIXME!!!! plateaus are broken? the variance noise is just 0 for some reason
         this.registerMixable(TerrainType.PLATEAU, this.landForms.getLandBase(), this.landForms.plateau(this.seed), midSlice, erosion2, this.settings.plateau);
         this.registerMixable(TerrainType.BADLANDS, this.landForms.getLandBase(), this.landForms.badlands(this.seed), midSlice, erosion3, this.settings.badlands);
         this.registerUnMixable(TerrainType.BADLANDS, this.landForms.getLandBase(), this.landForms.badlands(this.seed), midSlice, erosion2, this.settings.badlands);
