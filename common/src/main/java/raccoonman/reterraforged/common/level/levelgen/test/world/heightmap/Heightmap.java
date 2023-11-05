@@ -36,6 +36,9 @@ public class Heightmap implements Populator {
     private Populator root;
     private TerrainProvider terrainProvider;
     private float terrainFrequency;
+
+    private Noise mountainNoise;
+    private float mountainChance;
     
     public Heightmap(GeneratorContext context) {
         Preset settings = context.settings;
@@ -65,6 +68,9 @@ public class Heightmap implements Populator {
         Noise oceanErosion = Source.ZERO;
         ContinentLerper3 oceans = new ContinentLerper3(this.register(TerrainType.DEEP_OCEAN, this.terrainProvider.getLandforms().deepOcean(context.seed.next()), oceanRidge, oceanErosion), this.register(TerrainType.SHALLOW_OCEAN, Source.constant(context.levels.water(-7)), oceanRidge, oceanErosion), this.register(TerrainType.COAST, Source.constant(context.levels.water), oceanRidge, oceanErosion), controlPoints.deepOcean(), controlPoints.shallowOcean(), controlPoints.coast());
         this.root = new ContinentLerper2(oceans, land, controlPoints.shallowOcean(), controlPoints.inland());
+
+        this.mountainNoise = Source.perlin(context.seed.next(), 80, 2).scale(this.levels.scale(10));
+        this.mountainChance = settings.miscellaneous().mountainBiomeUsage;
     }
     
     public TerrainProvider getTerrainProvider() {
@@ -106,6 +112,21 @@ public class Heightmap implements Populator {
     public void applyClimate(Cell cell, float x, float z) {
         this.climate.apply(cell, x, z, 0);
         
+        if(cell.terrain.isMountain() && cell.macroBiomeId < this.mountainChance) {
+        	float mountainNoise = this.mountainNoise.compute(x, z, 0);
+    		cell.ridgeLevel = RidgeLevel.PEAKS.mid();
+        	if(this.isAbove(cell, this.levels.ground(86), mountainNoise)) {
+        		if(this.isAbove(cell, this.levels.ground(111), mountainNoise)) {
+            		cell.erosionLevel = ErosionLevel.LEVEL_0.mid();
+            	} else {
+            		cell.ridgeLevel = RidgeLevel.HIGH_SLICE.mid();
+            		cell.erosionLevel = ErosionLevel.LEVEL_1.mid();
+            	}
+        	} else {
+        		cell.erosionLevel = ErosionLevel.LEVEL_2.mid();
+        	}
+        }
+        
         if(cell.biomeRegionId > 0.5F) {
         	//this doubles as weirdness noise,
         	//so inverting it means thats
@@ -114,7 +135,11 @@ public class Heightmap implements Populator {
         	cell.ridgeLevel = -cell.ridgeLevel;
         }
     }
-    
+
+    private boolean isAbove(Cell cell, float height, float noise) {
+    	return cell.value > height || (cell.value + this.levels.scale(10) >= height && cell.value + noise > height);
+    }
+
     public Climate getClimate() {
         return this.climate;
     }

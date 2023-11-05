@@ -2,7 +2,6 @@ package raccoonman.reterraforged.common.level.levelgen.test.tile;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 import raccoonman.reterraforged.common.level.levelgen.noise.NoiseUtil;
 import raccoonman.reterraforged.common.level.levelgen.test.cell.Cell;
@@ -12,13 +11,11 @@ import raccoonman.reterraforged.common.level.levelgen.test.concurrent.batch.Batc
 import raccoonman.reterraforged.common.level.levelgen.test.concurrent.cache.SafeCloseable;
 import raccoonman.reterraforged.common.level.levelgen.test.filter.Filterable;
 import raccoonman.reterraforged.common.level.levelgen.test.tile.chunk.ChunkBatchTask;
-import raccoonman.reterraforged.common.level.levelgen.test.tile.chunk.ChunkGenTask;
 import raccoonman.reterraforged.common.level.levelgen.test.tile.chunk.ChunkReader;
 import raccoonman.reterraforged.common.level.levelgen.test.tile.chunk.ChunkStripeBatchTask;
 import raccoonman.reterraforged.common.level.levelgen.test.tile.chunk.ChunkWriter;
 import raccoonman.reterraforged.common.level.levelgen.test.tile.gen.TileResources;
 import raccoonman.reterraforged.common.level.levelgen.test.world.heightmap.Heightmap;
-import raccoonman.reterraforged.common.level.levelgen.test.world.heightmap.HeightmapCache;
 import raccoonman.reterraforged.common.level.levelgen.test.world.rivermap.Rivermap;
 
 public class Tile implements Disposable, SafeCloseable {

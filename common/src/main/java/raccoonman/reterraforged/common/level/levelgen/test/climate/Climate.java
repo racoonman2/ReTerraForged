@@ -7,8 +7,6 @@ import raccoonman.reterraforged.common.level.levelgen.test.cell.Cell;
 import raccoonman.reterraforged.common.level.levelgen.test.world.GeneratorContext;
 import raccoonman.reterraforged.common.level.levelgen.test.world.biome.type.BiomeType;
 import raccoonman.reterraforged.common.level.levelgen.test.world.biome.type.ContinentLevel;
-import raccoonman.reterraforged.common.level.levelgen.test.world.biome.type.MoistureLevel;
-import raccoonman.reterraforged.common.level.levelgen.test.world.biome.type.TemperatureLevel;
 import raccoonman.reterraforged.common.level.levelgen.test.world.continent.Continent;
 import raccoonman.reterraforged.common.level.levelgen.test.world.heightmap.Levels;
 import raccoonman.reterraforged.common.level.levelgen.test.world.terrain.TerrainType;
@@ -65,8 +63,8 @@ public class Climate {
 		this.modifyTemp(cell, x, z);
 
         cell.continentLevel = this.getContinentLevel(cell, x, z).mid();
-        cell.temperatureLevel = TemperatureLevel.LEVEL_2.mid();
-        cell.moistureLevel = MoistureLevel.LEVEL_2.mid();
+        cell.temperatureLevel = cell.biome.getTemperatureLevel(cell.biomeRegionId);
+        cell.moistureLevel = cell.biome.getMoistureLevel(cell.biomeRegionId);
 	}
 
 	private void modifyTemp(Cell cell, float x, float z) {

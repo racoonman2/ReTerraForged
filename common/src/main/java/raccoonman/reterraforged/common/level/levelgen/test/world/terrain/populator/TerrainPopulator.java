@@ -18,10 +18,10 @@ public class TerrainPopulator implements Populator {
     public TerrainPopulator(Terrain type, Noise base, Noise variance, Noise ridge, Noise erosion, float weight) {
         this.type = type;
         this.base = base;
-        this.weight = weight;
         this.variance = variance;
         this.ridge = ridge;
         this.erosion = erosion;
+        this.weight = weight;
     }
     
     public float getWeight() {
@@ -55,13 +55,6 @@ public class TerrainPopulator implements Populator {
             cell.value = 0.0F;
         }
         cell.terrain = this.type;
-    }
-    
-    public static Noise clamp(Noise module) {
-        if (module.minValue() < 0.0F || module.maxValue() > 1.0F) {
-            return module.clamp(0.0, 1.0);
-        }
-        return module;
     }
     
     public static TerrainPopulator of(Terrain type, Noise variance, Noise ridge, Noise erosion) {

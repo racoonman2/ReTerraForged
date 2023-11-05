@@ -20,14 +20,6 @@ repositories {
 
 }
 
-publishing {
-    publications {
-        mavenCommon(MavenPublication) {
-            artifactId = rootProject.archives_base_name
-            from components.java
-        }
-    }
-
-    repositories {
-    }
+remapJar {
+    archiveClassifier.set("${rootProject.minecraft_version}")
 }

@@ -68,12 +68,15 @@ class MixinChunkGenerator {
 				for(int dx = 0; dx < 16; dx++) {
 					for(int dz = 0; dz < 16; dz++) {
 						Cell cell = reader.getCell(dx, dz);
+						
+						int x = chunkPos.getBlockX(dx);
+						int z = chunkPos.getBlockZ(dz);
 
 						//maybe make this a feature or something?
 						//this is difficult without biome modifiers
 						//pretty sure fabric has them though so maybe use a platform method or something
-						this.erodeSnow(chunkAccess, worldGenLevel.getBiomeManager(), cell, chunkPos.getBlockX(dx), chunkPos.getBlockZ(dz), pos);
-						this.smoothLayers(chunkAccess, cell, pos, dx, dz);
+						this.erodeSnow(chunkAccess, worldGenLevel.getBiomeManager(), cell, x, z, pos);
+						this.smoothLayers(chunkAccess, cell, pos, x, z);
 					}
 				}
 				
@@ -138,7 +141,7 @@ class MixinChunkGenerator {
     		}
     	}
     	
-    	if(state.getBlock() == Blocks.SNOW) {
+    	if(state.is(Blocks.SNOW)) {
     		LayerMaterial material = SNOW_MATERIAL;
         	this.setLayer(chunk, pos, material, cell, 0F);
     	}
