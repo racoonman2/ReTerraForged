@@ -54,7 +54,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.source.Simplex;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Simplex2;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.SimplexRidge;
 import raccoonman.reterraforged.common.level.levelgen.noise.source.Sin;
-import raccoonman.reterraforged.platform.registries.RegistryUtil;
+import raccoonman.reterraforged.platform.RegistryUtil;
 
 public final class RTFNoiseTypes {
 	

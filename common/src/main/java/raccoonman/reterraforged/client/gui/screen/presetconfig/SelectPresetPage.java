@@ -44,7 +44,7 @@ import raccoonman.reterraforged.client.gui.widget.WidgetList;
 import raccoonman.reterraforged.client.gui.widget.WidgetList.Entry;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
-import raccoonman.reterraforged.platform.config.ConfigUtil;
+import raccoonman.reterraforged.platform.ConfigUtil;
 
 class SelectPresetPage extends BisectedPage<PresetConfigScreen, PresetEntry, AbstractWidget> {
 	private static final Path CONFIG_PATH = ConfigUtil.getConfigPath();

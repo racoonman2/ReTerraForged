@@ -6,7 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.common.level.levelgen.density.CellSampler;
 import raccoonman.reterraforged.common.level.levelgen.density.NoiseSampler;
-import raccoonman.reterraforged.platform.registries.RegistryUtil;
+import raccoonman.reterraforged.platform.RegistryUtil;
 
 public final class RTFDensityFunctionTypes {
 

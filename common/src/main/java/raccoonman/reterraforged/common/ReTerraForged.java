@@ -38,7 +38,7 @@ import raccoonman.reterraforged.common.registries.RTFRegistries;
 import raccoonman.reterraforged.common.registries.RTFSurfaceConditionTypes;
 import raccoonman.reterraforged.common.registries.RTFSurfaceRuleTypes;
 import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
-import raccoonman.reterraforged.platform.registries.RegistryUtil;
+import raccoonman.reterraforged.platform.RegistryUtil;
 
 public final class ReTerraForged {
 	public static final String MOD_ID = "reterraforged";

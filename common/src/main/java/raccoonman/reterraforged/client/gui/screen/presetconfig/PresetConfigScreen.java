@@ -23,7 +23,6 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataGenerator.PackGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.metadata.PackMetadataGenerator;
-import net.minecraft.data.registries.RegistriesDatapackGenerator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.world.level.levelgen.WorldOptions;
@@ -32,6 +31,7 @@ import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
 import raccoonman.reterraforged.common.ReTerraForged;
 import raccoonman.reterraforged.common.worldgen.data.provider.RTFBlockTagsProvider;
+import raccoonman.reterraforged.platform.DataGenUtil;
 
 //FIXME pressing the create world screen before the pack is copied will fuck the game up
 public class PresetConfigScreen extends LinkedPageScreen {
@@ -79,14 +79,14 @@ public class PresetConfigScreen extends LinkedPageScreen {
 		PackGenerator packGenerator = dataGenerator.new PackGenerator(true, preset.getName().getString(), new PackOutput(datagenOutputPath));
 		CompletableFuture<HolderLookup.Provider> lookup = CompletableFuture.supplyAsync(() -> preset.getPreset().buildPatch(this.getSettings().worldgenLoadContext()));
 		packGenerator.addProvider((output) -> {
-			return new RegistriesDatapackGenerator(output, lookup);
+			return DataGenUtil.createRegistryProvider(output, lookup);
 		});
 		packGenerator.addProvider((output) -> {
 			return new RTFBlockTagsProvider(output, lookup);
 		});
 		packGenerator.addProvider((output) -> {
 			return PackMetadataGenerator.forFeaturePack(output, Component.translatable(RTFTranslationKeys.PRESET_METADATA_DESCRIPTION));
-		});		
+		});	
 		dataGenerator.run();
 		copyToZip(datagenOutputPath, outputPath);
 		PathUtils.deleteDirectory(datagenPath);

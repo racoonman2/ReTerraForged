@@ -9,7 +9,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.domain.DirectionWarp
 import raccoonman.reterraforged.common.level.levelgen.noise.domain.Domain;
 import raccoonman.reterraforged.common.level.levelgen.noise.domain.DomainWarp;
 import raccoonman.reterraforged.common.level.levelgen.noise.domain.ShiftWarp;
-import raccoonman.reterraforged.platform.registries.RegistryUtil;
+import raccoonman.reterraforged.platform.RegistryUtil;
 
 public final class RTFDomainTypes {
 	

@@ -6,7 +6,7 @@ import net.minecraft.core.Registry;
 import raccoonman.reterraforged.common.level.levelgen.noise.Noise;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.CurveFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.domain.Domain;
-import raccoonman.reterraforged.platform.registries.RegistryUtil;
+import raccoonman.reterraforged.platform.RegistryUtil;
 
 public final class RTFBuiltInRegistries {
 	public static final Registry<Codec<? extends Noise>> NOISE_TYPE = RegistryUtil.createRegistry(RTFRegistries.NOISE_TYPE);

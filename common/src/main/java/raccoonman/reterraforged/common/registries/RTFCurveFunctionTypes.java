@@ -6,7 +6,7 @@ import raccoonman.reterraforged.common.level.levelgen.noise.curve.CurveFunction;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.Interpolation;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.MidPointCurve;
 import raccoonman.reterraforged.common.level.levelgen.noise.curve.SCurve;
-import raccoonman.reterraforged.platform.registries.RegistryUtil;
+import raccoonman.reterraforged.platform.RegistryUtil;
 
 public final class RTFCurveFunctionTypes {
 	

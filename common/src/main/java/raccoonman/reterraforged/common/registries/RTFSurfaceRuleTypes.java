@@ -6,7 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.SurfaceRules.RuleSource;
 import raccoonman.reterraforged.common.level.levelgen.surface.rule.ErosionRule;
 import raccoonman.reterraforged.common.level.levelgen.surface.rule.StrataRule;
-import raccoonman.reterraforged.platform.registries.RegistryUtil;
+import raccoonman.reterraforged.platform.RegistryUtil;
 
 public final class RTFSurfaceRuleTypes {
 

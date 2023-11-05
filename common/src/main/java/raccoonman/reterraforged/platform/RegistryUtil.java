@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.platform.registries;
+package raccoonman.reterraforged.platform;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
