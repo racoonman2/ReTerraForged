@@ -11,6 +11,6 @@ public final class DataGenUtil {
 
 	@ExpectPlatform
 	public static DataProvider createRegistryProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> providerLookup) {
-		throw new UnsupportedOperationException("Missing platform implementation");
+		throw new IllegalStateException();
 	}
 }

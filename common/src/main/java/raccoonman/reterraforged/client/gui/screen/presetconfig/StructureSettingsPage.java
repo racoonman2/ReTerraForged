@@ -17,12 +17,12 @@ import net.minecraft.world.level.levelgen.structure.StructureSet.StructureSelect
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
-import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
+import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.client.gui.widget.ValueButton;
-import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
-import raccoonman.reterraforged.common.worldgen.data.preset.StructureSettings;
-import raccoonman.reterraforged.common.worldgen.data.preset.StructureSettings.StructureSetEntry;
+import raccoonman.reterraforged.data.worldgen.preset.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.StructureSettings;
+import raccoonman.reterraforged.data.worldgen.preset.StructureSettings.StructureSetEntry;
 
 public class StructureSettingsPage extends PresetEditorPage {
 

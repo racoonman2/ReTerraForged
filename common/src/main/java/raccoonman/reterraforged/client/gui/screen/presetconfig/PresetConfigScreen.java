@@ -19,6 +19,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import net.minecraft.client.gui.screens.worldselection.WorldCreationContext;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataGenerator.PackGenerator;
 import net.minecraft.data.PackOutput;
@@ -26,20 +27,22 @@ import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.world.level.levelgen.WorldOptions;
+import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen;
-import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
-import raccoonman.reterraforged.common.ReTerraForged;
-import raccoonman.reterraforged.common.worldgen.data.provider.RTFBlockTagsProvider;
+import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
+import raccoonman.reterraforged.data.worldgen.preset.Preset;
+import raccoonman.reterraforged.data.worldgen.tags.RTFBlockTagsProvider;
+import raccoonman.reterraforged.data.worldgen.tags.RTFDensityFunctionTagsProvider;
 import raccoonman.reterraforged.platform.DataGenUtil;
 
-//FIXME pressing the create world screen before the pack is copied will fuck the game up
+//FIXME pressing the create world screen before the pack is copied will fuck the game up (surprisingly noone seems to have run into this?)
 public class PresetConfigScreen extends LinkedPageScreen {
 	private CreateWorldScreen parent;
 	
 	public PresetConfigScreen(CreateWorldScreen parent) {
 		this.parent = parent;
-		this.currentPage = new SelectPresetPage(this);
+		this.currentPage = new PresetListPage(this);
 	}
 	
 	@Override
@@ -50,6 +53,7 @@ public class PresetConfigScreen extends LinkedPageScreen {
 	}
 	
 	public void setSeed(long seed) {
+		//TODO update the seed edit box
 		this.parent.getUiState().setSettings(this.getSettings().withOptions((options) -> {
 			return new WorldOptions(seed, options.generateStructures(), options.generateBonusChest());
 		}));
@@ -71,27 +75,37 @@ public class PresetConfigScreen extends LinkedPageScreen {
 		}
 	}
 	
-	public void exportAsDatapack(Path outputPath, PresetEntry preset) throws IOException {
+	public void exportAsDatapack(Path outputPath, PresetEntry presetEntry) throws IOException {
 		Path datagenPath = Files.createTempDirectory("datagen-target-");
 		Path datagenOutputPath = datagenPath.resolve("output");
 		
+		RegistryAccess registryAccess = this.getSettings().worldgenLoadContext();
+
+		Preset preset = presetEntry.getPreset();
+		Component presetName = presetEntry.getName();
+
 		DataGenerator dataGenerator = new DataGenerator(datagenPath, SharedConstants.getCurrentVersion(), true);
-		PackGenerator packGenerator = dataGenerator.new PackGenerator(true, preset.getName().getString(), new PackOutput(datagenOutputPath));
-		CompletableFuture<HolderLookup.Provider> lookup = CompletableFuture.supplyAsync(() -> preset.getPreset().buildPatch(this.getSettings().worldgenLoadContext()));
+		PackGenerator packGenerator = dataGenerator.new PackGenerator(true, presetName.getString(), new PackOutput(datagenOutputPath));
+		CompletableFuture<HolderLookup.Provider> lookup = CompletableFuture.supplyAsync(() -> preset.buildPatch(registryAccess));
+		
 		packGenerator.addProvider((output) -> {
 			return DataGenUtil.createRegistryProvider(output, lookup);
 		});
 		packGenerator.addProvider((output) -> {
-			return new RTFBlockTagsProvider(output, lookup);
+			return new RTFDensityFunctionTagsProvider(output, lookup);
+		});
+		packGenerator.addProvider((output) -> {
+			return new RTFBlockTagsProvider(preset, output, lookup);
 		});
 		packGenerator.addProvider((output) -> {
 			return PackMetadataGenerator.forFeaturePack(output, Component.translatable(RTFTranslationKeys.PRESET_METADATA_DESCRIPTION));
-		});	
+		});
+		
 		dataGenerator.run();
 		copyToZip(datagenOutputPath, outputPath);
 		PathUtils.deleteDirectory(datagenPath);
 		
-		ReTerraForged.LOGGER.info("Exported datapack to {}", outputPath);
+		RTFCommon.LOGGER.info("Exported datapack to {}", outputPath);
 	}
 	
 	private static void copyToZip(Path input, Path output) {
