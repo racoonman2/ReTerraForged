@@ -12,13 +12,14 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import raccoonman.reterraforged.data.worldgen.RTFBiomeData;
+import raccoonman.reterraforged.data.worldgen.BiomeModifierData;
 import raccoonman.reterraforged.data.worldgen.RTFConfiguredCarvers;
 import raccoonman.reterraforged.data.worldgen.RTFConfiguredFeatures;
 import raccoonman.reterraforged.data.worldgen.RTFDimensionTypes;
-import raccoonman.reterraforged.data.worldgen.RTFNoiseData;
+import raccoonman.reterraforged.data.worldgen.NoiseData;
 import raccoonman.reterraforged.data.worldgen.RTFNoiseGeneratorSettings;
 import raccoonman.reterraforged.data.worldgen.RTFNoiseRouterData;
-import raccoonman.reterraforged.data.worldgen.RTFPlacements;
+import raccoonman.reterraforged.data.worldgen.RTFPlacedFeatures;
 import raccoonman.reterraforged.registries.RTFRegistries;
 
 public record Preset(WorldSettings world, CaveSettings caves, ClimateSettings climate, TerrainSettings terrain, RiverSettings rivers, FilterSettings filters, StructureSettings structures, MiscellaneousSettings miscellaneous) {
@@ -43,14 +44,15 @@ public record Preset(WorldSettings world, CaveSettings caves, ClimateSettings cl
 	public HolderLookup.Provider buildPatch(RegistryAccess registries) {
 		RegistrySetBuilder builder = new RegistrySetBuilder();
 		this.addPatch(builder, RTFRegistries.PRESET, (preset, ctx) -> ctx.register(KEY, preset));
-		this.addPatch(builder, RTFRegistries.NOISE, RTFNoiseData::bootstrap);
+		this.addPatch(builder, RTFRegistries.NOISE, NoiseData::bootstrap);
+		this.addPatch(builder, RTFRegistries.BIOME_MODIFIER, BiomeModifierData::bootstrap);
 		this.addPatch(builder, Registries.CONFIGURED_FEATURE, (preset, ctx) -> {
 			RTFConfiguredFeatures.bootstrap(preset, ctx);
 		});
 		this.addPatch(builder, Registries.CONFIGURED_CARVER, (preset, ctx) -> {
 			RTFConfiguredCarvers.bootstrap(preset, ctx);	
 		});
-		this.addPatch(builder, Registries.PLACED_FEATURE, RTFPlacements::bootstrap);
+		this.addPatch(builder, Registries.PLACED_FEATURE, RTFPlacedFeatures::bootstrap);
 		this.addPatch(builder, Registries.BIOME, RTFBiomeData::bootstrap);
 		this.addPatch(builder, Registries.DIMENSION_TYPE, RTFDimensionTypes::bootstrap);
 		this.addPatch(builder, Registries.DENSITY_FUNCTION, RTFNoiseRouterData::bootstrap);

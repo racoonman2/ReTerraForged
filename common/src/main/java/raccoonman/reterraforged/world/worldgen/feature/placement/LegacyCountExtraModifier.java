@@ -13,7 +13,7 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 @Deprecated
-public class LegacyCountExtraModifier extends PlacementModifier {
+class LegacyCountExtraModifier extends PlacementModifier {
 	public static final Codec<LegacyCountExtraModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.INT.fieldOf("count").forGetter((p) -> p.count),
 		Codec.FLOAT.fieldOf("extra_chance").forGetter((p) -> p.extraChance),

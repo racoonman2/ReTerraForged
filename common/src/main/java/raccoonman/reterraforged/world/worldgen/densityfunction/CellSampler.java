@@ -63,9 +63,9 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 		private Cache2d cache2d;
 		private int chunkX, chunkZ;
 		
-		public CacheChunk(@Nullable Tile.Chunk chunk, Cache2d cache2d, int chunkX, int chunkZ) {
+		public CacheChunk(@Nullable Tile.Chunk chunk, @Nullable Cache2d cache2d, int chunkX, int chunkZ) {
 			this.chunk = chunk;
-			this.cache2d = cache2d;
+			this.cache2d = cache2d != null ? cache2d : new Cache2d();
 			this.chunkX = chunkX;
 			this.chunkZ = chunkZ;
 		}
@@ -111,14 +111,14 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 	}
 	
 	public enum Field implements StringRepresentable {
-		HEIGHT("HEIGHT") {
+		HEIGHT("height") {
 			
 			@Override
 			public float read(Cell cell, Heightmap heightmap) {
 				return cell.height;
 			}
 		},
-		CONTINENT("CONTINENT") {
+		CONTINENT("continent") {
 			
 			@Override
 			public float read(Cell cell, Heightmap heightmap) {
@@ -154,39 +154,60 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 				return NoiseUtil.lerp(Continentalness.NEAR_INLAND.mid(), Continentalness.FAR_INLAND.max(), alpha);
 			}
 		},
-		EROSION("EROSION") {
+		EROSION("erosion") {
 			
 			@Override
 			public float read(Cell cell, Heightmap heightmap) {
 				return cell.erosion;
 			}
 		},
-		WEIRDNESS("WEIRDNESS") {
+		WEIRDNESS("weirdness") {
 			
 			@Override
 			public float read(Cell cell, Heightmap heightmap) {
 				return cell.weirdness;
 			}
 		},
-		BIOME_REGION("BIOME_REGION") {
+		BIOME_REGION("biome_region") {
 			
 			@Override
 			public float read(Cell cell, Heightmap heightmap) {
 				return cell.biomeRegionId;
 			}
 		},
-		TEMPERATURE("TEMPERATURE") {
+		TEMPERATURE("temperature") {
 			
 			@Override
 			public float read(Cell cell, Heightmap heightmap) {
 				return cell.temperature;
 			}
 		},
-		MOISTURE("MOISTURE") {
+		MOISTURE("moisture") {
 			
 			@Override
 			public float read(Cell cell, Heightmap heightmap) {
 				return cell.moisture;
+			}
+		},
+		GRADIENT("gradient") {
+			
+			@Override
+			public float read(Cell cell, Heightmap heightmap) {
+				return cell.gradient;
+			}
+		},
+		HEIGHT_EROSION("height_erosion") {
+			
+			@Override
+			public float read(Cell cell, Heightmap heightmap) {
+				return cell.heightErosion;
+			}
+		},
+		SEDIMENT("sediment") {
+			
+			@Override
+			public float read(Cell cell, Heightmap heightmap) {
+				return cell.sediment;
 			}
 		};
 

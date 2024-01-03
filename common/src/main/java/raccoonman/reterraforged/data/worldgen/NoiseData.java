@@ -9,7 +9,7 @@ import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 
-public class RTFNoiseData {
+public class NoiseData {
 
 	public static void bootstrap(Preset preset, BootstapContext<Noise> ctx) {
 		TerrainNoise.bootstrap(preset, ctx);

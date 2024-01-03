@@ -1,12 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.feature.template;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,8 +8,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Mirror;
@@ -24,6 +16,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import raccoonman.reterraforged.RTFCommon;
+import raccoonman.reterraforged.server.RTFMinecraftServer;
 import raccoonman.reterraforged.world.worldgen.feature.template.TemplateFeature.Config;
 import raccoonman.reterraforged.world.worldgen.feature.template.decorator.DecoratorConfig;
 import raccoonman.reterraforged.world.worldgen.feature.template.decorator.TemplateDecorator;
@@ -60,29 +53,33 @@ public class TemplateFeature extends Feature<Config<?>> {
             RTFCommon.LOGGER.warn("Empty template list for config");
             return false;
         }
-
-        DecoratorConfig<T> decoratorConfig = config.decorator();
         
-        ResourceLocation templateName = nextTemplate(config.templates, rand);
-        FeatureTemplate template = getOrReadTemplate(world.getServer().getResourceManager(), templateName);
-        
-        Dimensions dimensions = template.getDimensions(mirror, rotation);
-        TemplatePlacement<T> placement = config.placement();
-        if (!placement.canPlaceAt(world, pos, dimensions)) {
-            return false;
+        if(world.getServer() instanceof RTFMinecraftServer rtfMinecraftServer) {
+	        DecoratorConfig<T> decoratorConfig = config.decorator();
+	        
+	        ResourceLocation templateName = nextTemplate(config.templates, rand);
+	        FeatureTemplate template = rtfMinecraftServer.getFeatureTemplateManager().load(templateName);
+	        
+	        Dimensions dimensions = template.getDimensions(mirror, rotation);
+	        TemplatePlacement<T> placement = config.placement();
+	        if (!placement.canPlaceAt(world, pos, dimensions)) {
+	            return false;
+	        }
+	
+	        Paste paste = pasteType.get(template);
+	        T buffer = placement.createContext();
+	        if (paste.apply(world, buffer, pos, mirror, rotation, placement, config.paste())) {
+	            ResourceLocation biome = world.getBiome(pos).unwrapKey().map(ResourceKey::registry).orElse(null);
+	            for (TemplateDecorator<T> decorator : decoratorConfig.getDecorators(biome)) {
+	                decorator.apply(world, buffer, rand, modified);
+	            }
+	            return true;
+	        }
+	
+	        return false;
+        } else {
+        	throw new IllegalStateException();
         }
-
-        Paste paste = pasteType.get(template);
-        T buffer = placement.createContext();
-        if (paste.apply(world, buffer, pos, mirror, rotation, placement, config.paste())) {
-            ResourceLocation biome = world.getBiome(pos).unwrapKey().map(ResourceKey::registry).orElse(null);
-            for (TemplateDecorator<T> decorator : decoratorConfig.getDecorators(biome)) {
-                decorator.apply(world, buffer, rand, modified);
-            }
-            return true;
-        }
-
-        return false;
     }
 
 	private static ResourceLocation nextTemplate(List<ResourceLocation> templates, RandomSource random) {
@@ -95,23 +92,6 @@ public class TemplateFeature extends Feature<Config<?>> {
 
     private static Rotation nextRotation(RandomSource random) {
         return Rotation.values()[random.nextInt(Rotation.values().length)];
-    }
-    
-    private static final Map<ResourceLocation, FeatureTemplate> CACHE = new ConcurrentHashMap<>();
-    private static FeatureTemplate getOrReadTemplate(ResourceManager resourceManager, ResourceLocation templateName) {
-    	return CACHE.computeIfAbsent(templateName, (key) -> {
-    		Optional<Resource> resource = resourceManager.getResource(key);
-    		if(resource.isPresent()) {
-    			try(InputStream stream = resource.get().open()) {
-    				return FeatureTemplate.load(stream).get();
-    			} catch (IOException e) {
-					e.printStackTrace();
-				}
-    		} else {
-    			new FileNotFoundException(key.toString()).printStackTrace();
-    		}
-			return null;
-    	});
     }
     
 	public record Config<T extends TemplateContext>(List<ResourceLocation> templates, TemplatePlacement<T> placement, PasteConfig paste, DecoratorConfig<T> decorator) implements FeatureConfiguration {

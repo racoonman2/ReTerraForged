@@ -38,6 +38,7 @@ public class WorldSettingsPage extends PresetEditorPage {
 	private Slider worldHeight;
 	private Slider worldDepth;
 	private Slider seaLevel;
+	private Slider lavaLevel;
 	
 	public WorldSettingsPage(PresetConfigScreen screen, PresetEntry preset) {
 		super(screen, preset);
@@ -152,13 +153,17 @@ public class WorldSettingsPage extends PresetEditorPage {
 			properties.worldHeight = nearestMultiple;
 			return slider.getSliderValue(nearestMultiple);
 		});
-		this.worldDepth = PresetWidgets.createIntSlider(properties.worldDepth, 0, 256, RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH, (slider, value) -> {
+		this.worldDepth = PresetWidgets.createIntSlider(properties.worldDepth, 0, 1024, RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH, (slider, value) -> {
 			int nearestMultiple = getNearestMultiple(slider, (float) value, 16);
 			properties.worldDepth = nearestMultiple;
 			return slider.getSliderValue(nearestMultiple);
 		});
 		this.seaLevel = PresetWidgets.createIntSlider(properties.seaLevel, 0, 255, RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL, (slider, value) -> {
 			properties.seaLevel = (int) slider.scaleValue(value);
+			return value;
+		});
+		this.lavaLevel = PresetWidgets.createIntSlider(properties.lavaLevel, -1024, 128, RTFTranslationKeys.GUI_SLIDER_LAVA_LEVEL, (slider, value) -> {
+			properties.lavaLevel = (int) slider.scaleValue(value);
 			return value;
 		});
 		
@@ -185,6 +190,7 @@ public class WorldSettingsPage extends PresetEditorPage {
 		this.left.addWidget(this.worldHeight);
 		this.left.addWidget(this.worldDepth);
 		this.left.addWidget(this.seaLevel);
+		this.left.addWidget(this.lavaLevel);
 	}
 
 	@Override

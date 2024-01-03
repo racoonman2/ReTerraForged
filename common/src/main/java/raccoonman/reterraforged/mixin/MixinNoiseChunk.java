@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.RandomState;
+import raccoonman.reterraforged.data.worldgen.preset.Preset;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
 import raccoonman.reterraforged.world.worldgen.biome.RTFClimateSampler;
@@ -79,20 +81,20 @@ class MixinNoiseChunk {
 	)
 	private static Aquifer.FluidPicker modifyFluidPicker(Aquifer.FluidPicker fluidPicker, int i, RandomState randomState, int j, int k, NoiseSettings noiseSettings, DensityFunctions.BeardifierOrMarker beardifierOrMarker, NoiseGeneratorSettings noiseGeneratorSettings) {
 		if((Object) randomState instanceof RTFRandomState rtfRandomState) {
-//			@Nullable
-//			TileProvider tileCache = rtfRandomState.getTileCache();
-//			if(tileCache != null) {
-//				int lavaDepth = noiseSettings.minY() + 10;
-//		        Aquifer.FluidStatus lava = new Aquifer.FluidStatus(lavaDepth, Blocks.LAVA.defaultBlockState());
-//		        int seaLevel = noiseGeneratorSettings.seaLevel();
-//		        Aquifer.FluidStatus defaultFluid = new Aquifer.FluidStatus(seaLevel, noiseGeneratorSettings.defaultFluid());
-//		        return (x, y, z) -> {
-//		            if (y < Math.min(lavaDepth, seaLevel)) {
-//		                return lava;
-//		            }
-//		            return defaultFluid;
-//		        };
-//			}
+			@Nullable
+			Preset preset = rtfRandomState.preset();
+			if(preset != null && rtfRandomState.generatorContext() != null) {
+				int lavaLevel = preset.world().properties.lavaLevel;
+		        Aquifer.FluidStatus lava = new Aquifer.FluidStatus(lavaLevel, Blocks.LAVA.defaultBlockState());
+		        int seaLevel = noiseGeneratorSettings.seaLevel();
+		        Aquifer.FluidStatus defaultFluid = new Aquifer.FluidStatus(seaLevel, noiseGeneratorSettings.defaultFluid());
+		        return (x, y, z) -> {
+		            if (y < Math.min(lavaLevel, seaLevel)) {
+		                return lava;
+		            }
+		            return defaultFluid;
+		        };
+			}
 		}
 		return fluidPicker;
 	}

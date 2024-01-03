@@ -33,18 +33,15 @@ import raccoonman.reterraforged.tags.RTFDensityFunctionTags;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
 import raccoonman.reterraforged.world.worldgen.biome.RTFClimateSampler;
-import raccoonman.reterraforged.world.worldgen.cell.heightmap.Heightmap;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
 import raccoonman.reterraforged.world.worldgen.densityfunction.NoiseFunction;
-import raccoonman.reterraforged.world.worldgen.densityfunction.tile.TileCache;
-import raccoonman.reterraforged.world.worldgen.densityfunction.tile.generation.TileGenerator;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.terrablender.TBCompat;
 
 @Mixin(RandomState.class)
-@Implements(@Interface(iface = RTFRandomState.class, prefix = RTFCommon.MOD_ID + "$RTFRandomState$"))
+@Implements(@Interface(iface = RTFRandomState.class, prefix = "reterraforged$RTFRandomState$"))
 class MixinRandomState {
-	private DensityFunction.Visitor visitor;
+	private DensityFunction.Visitor densityFunctionWrapper;
 	@Shadow
 	@Final
 	private Climate.Sampler sampler;
@@ -56,6 +53,8 @@ class MixinRandomState {
 	private boolean hasContext;
 	@Nullable
 	private GeneratorContext generatorContext;
+	@Nullable
+	private Preset preset;
 	
 	private long seed;
 	
@@ -69,7 +68,7 @@ class MixinRandomState {
 	)
 	private NoiseRouter RandomState(NoiseRouter router, DensityFunction.Visitor visitor, NoiseGeneratorSettings noiseGeneratorSettings, HolderGetter<NormalNoise.NoiseParameters> params, final long seed) {
 		this.seed = seed;
-		this.visitor = new DensityFunction.Visitor() {
+		this.densityFunctionWrapper = new DensityFunction.Visitor() {
 			
 			@Override
 			public DensityFunction apply(DensityFunction function) {
@@ -88,7 +87,7 @@ class MixinRandomState {
 	            return visitor.visitNoise(noiseHolder);
 	        }
 		};
-		return router.mapAll(this.visitor);
+		return router.mapAll(this.densityFunctionWrapper);
 	}
 
 	public void reterraforged$RTFRandomState$initialize(RegistryAccess registries) {
@@ -97,28 +96,43 @@ class MixinRandomState {
 		RegistryLookup<DensityFunction> functions = registries.lookupOrThrow(Registries.DENSITY_FUNCTION);
 
 		functions.get(RTFDensityFunctionTags.ADDITIONAL_NOISE_ROUTER_FUNCTIONS).ifPresent((set) -> {
-			set.forEach((function) -> function.value().mapAll(this.visitor));
+			set.forEach((function) -> function.value().mapAll(this.densityFunctionWrapper));
 		});
 		
 		if((Object) this.sampler instanceof RTFClimateSampler rtfClimateSampler && ModLoaderUtil.isLoaded("terrablender")) {
 			functions.get(TBCompat.UNIQUENESS).ifPresent((uniqueness) -> {
-				rtfClimateSampler.setUniqueness(uniqueness.value().mapAll(this.visitor));
+				rtfClimateSampler.setUniqueness(uniqueness.value().mapAll(this.densityFunctionWrapper));
 			});
 		}
 		
-		if(this.hasContext) {
-			presets.get(Preset.KEY).ifPresent((presetHolder) -> {
+		presets.get(Preset.KEY).ifPresentOrElse((presetHolder) -> {
+			this.preset = presetHolder.value();
+
+			if(this.hasContext) {
 				PerformanceConfig config = PerformanceConfig.read(PerformanceConfig.DEFAULT_FILE_PATH)
 					.resultOrPartial(RTFCommon.LOGGER::error)
 					.orElseGet(PerformanceConfig::makeDefault);
-				Preset preset = presetHolder.value();
-				this.generatorContext = GeneratorContext.makeCached(preset, noises, (int) this.seed, config.tileSize(), config.batchCount(), ThreadPools.availableProcessors() > 4);
-			});
-		}
+				this.generatorContext = GeneratorContext.makeCached(this.preset, noises, (int) this.seed, config.tileSize(), config.batchCount(), ThreadPools.availableProcessors() > 4);
+			}
+		}, () -> {
+			if(this.hasContext) {
+				throw new IllegalStateException("Missing preset!");
+			}
+		});
+	}
+	
+	@Nullable
+	public Preset reterraforged$RTFRandomState$preset() {
+		return this.preset;
 	}
 	
 	@Nullable
 	public GeneratorContext reterraforged$RTFRandomState$generatorContext() {
 		return this.generatorContext;
+	}
+
+	@Nullable
+	public DensityFunction reterraforged$RTFRandomState$wrap(DensityFunction function) {
+		return function.mapAll(this.densityFunctionWrapper);
 	}
 }

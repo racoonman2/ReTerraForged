@@ -13,8 +13,10 @@
   	"MixinTargetPoint",
   	"MixinChunkMap",
   	"MixinMinecraftServer",
+  	"MixinMinecraftServer$MixinFeatureTemplateManager",
   	"MixinUtil",
-  	"MixinChunkStatus"
+  	"MixinChunkStatus",
+  	"MixinBiomeGenerationSettings"
   ],
   "client": [
   	"ScreenInvoker"
