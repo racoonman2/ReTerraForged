@@ -5,12 +5,12 @@ import java.util.Optional;
 import net.minecraft.network.chat.Component;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
-import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
+import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
-import raccoonman.reterraforged.common.worldgen.data.preset.FilterSettings;
-import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
-import raccoonman.reterraforged.common.worldgen.data.preset.FilterSettings.Erosion;
-import raccoonman.reterraforged.common.worldgen.data.preset.FilterSettings.Smoothing;
+import raccoonman.reterraforged.data.worldgen.preset.FilterSettings;
+import raccoonman.reterraforged.data.worldgen.preset.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.FilterSettings.Erosion;
+import raccoonman.reterraforged.data.worldgen.preset.FilterSettings.Smoothing;
 
 class FilterSettingsPage extends PresetEditorPage {
 	private Slider erosionDropletsPerChunk;

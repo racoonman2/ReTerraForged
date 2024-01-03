@@ -5,7 +5,7 @@ license="MIT"
 [[mods]]
 modId="reterraforged"
 displayName="ReTerraForged"
-version="0.0.4"
+version="0.0.5"
 authors="dags,Won-Ton,raccoonman"
 credits="dags,Won-Ton,raccoonman"
 logoFile="logo.png"

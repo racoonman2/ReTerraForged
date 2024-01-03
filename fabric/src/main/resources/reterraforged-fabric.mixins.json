@@ -1,7 +1,7 @@
 {
   
   "required": true,
-  "package": "raccoonman.reterraforged.fabric.asm.mixin",
+  "package": "raccoonman.reterraforged.fabric.mixin",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_17",
   "client": [

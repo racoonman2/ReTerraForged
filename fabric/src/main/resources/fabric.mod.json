@@ -17,10 +17,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "raccoonman.reterraforged.fabric.ReTerraForgedFabric"
+      "raccoonman.reterraforged.fabric.RTFFabric"
     ],
     "fabric-datagen": [
-      "raccoonman.reterraforged.fabric.ReTerraForgedFabric"
+      "raccoonman.reterraforged.fabric.RTFFabric"
     ]
   },
   "depends": {
