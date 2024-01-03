@@ -10,12 +10,17 @@ import net.minecraft.network.chat.Component;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.client.data.RTFLanguageProvider;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
+import raccoonman.reterraforged.platform.RegistryUtil;
+import raccoonman.reterraforged.registries.RTFRegistries;
+import raccoonman.reterraforged.world.worldgen.biome.modifier.BiomeModifier;
 
-public final class RTFFabric implements ModInitializer, DataGeneratorEntrypoint {
+public class RTFFabric implements ModInitializer, DataGeneratorEntrypoint {
 
 	@Override
 	public void onInitialize() {
 		RTFCommon.bootstrap();
+
+		RegistryUtil.createDataRegistry(RTFRegistries.BIOME_MODIFIER, BiomeModifier.CODEC);
 	}
 
 	//TODO merge this with forge's datagen since they're the same now

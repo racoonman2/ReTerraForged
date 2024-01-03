@@ -6,11 +6,10 @@ import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.world.level.biome.Climate;
-import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.world.worldgen.biome.RTFTargetPoint;
 
 @Mixin(Climate.TargetPoint.class)
-@Implements(@Interface(iface = RTFTargetPoint.class, prefix = RTFCommon.MOD_ID + "$RTFTargetPoint$"))
+@Implements(@Interface(iface = RTFTargetPoint.class, prefix = "reterraforged$RTFTargetPoint$"))
 class MixinTargetPoint {
 	private double uniqueness = Double.NaN;
 	

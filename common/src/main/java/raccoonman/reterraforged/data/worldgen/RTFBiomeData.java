@@ -39,14 +39,6 @@ public final class RTFBiomeData {
 			HolderGetter<PlacedFeature> placedFeatures = ctx.lookup(Registries.PLACED_FEATURE);
 			HolderGetter<ConfiguredWorldCarver<?>> configuredWorldCarvers = ctx.lookup(Registries.CONFIGURED_CARVER);
 
-	        ctx.register(Biomes.SAVANNA, RTFBiomes.savanna(placedFeatures, configuredWorldCarvers, false, false));
-	        ctx.register(Biomes.SAVANNA_PLATEAU, RTFBiomes.savanna(placedFeatures, configuredWorldCarvers, false, true));
-	        ctx.register(Biomes.WINDSWEPT_SAVANNA, RTFBiomes.savanna(placedFeatures, configuredWorldCarvers, true, false));
-			ctx.register(Biomes.FOREST, RTFBiomes.forest(placedFeatures, configuredWorldCarvers, false, false, false, true));
-			ctx.register(Biomes.DARK_FOREST, RTFBiomes.darkForest(placedFeatures, configuredWorldCarvers));
-	        ctx.register(Biomes.FLOWER_FOREST, RTFBiomes.forest(placedFeatures, configuredWorldCarvers, false, false, true, false));
-			ctx.register(Biomes.BIRCH_FOREST, RTFBiomes.forest(placedFeatures, configuredWorldCarvers, true, false, false, true));
-			ctx.register(Biomes.OLD_GROWTH_BIRCH_FOREST, RTFBiomes.forest(placedFeatures, configuredWorldCarvers, true, true, false, false));
 		}
 	}
 	

@@ -16,11 +16,11 @@ import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.platform.forge.RegistryUtilImpl;
 
 @Mod(RTFCommon.MOD_ID)
-public final class RTFForge {
+public class RTFForge {
 
     public RTFForge() {
     	RTFCommon.bootstrap();
-    	
+
     	IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 
     	if (FMLEnvironment.dist == Dist.CLIENT) {

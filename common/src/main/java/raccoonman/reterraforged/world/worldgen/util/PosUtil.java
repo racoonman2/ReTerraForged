@@ -17,15 +17,15 @@ public class PosUtil {
 	}
 
 	public static long pack(float left, float right) {
-		return pack((int) left, (int) right);
+        return ((long)right & 0xFFFFFFFFL) | ((long)left & 0xFFFFFFFFL) << 32;
 	}
 
 	public static int unpackLeft(long packed) {
-		return ChunkPos.getX(packed);
+        return (int)(packed >>> 32 & 0xFFFFFFFFL);
 	}
 
 	public static int unpackRight(long packed) {
-		return ChunkPos.getZ(packed);
+        return (int)(packed & 0xFFFFFFFFL);
 	}
 
 	public static long packf(float left, float right) {

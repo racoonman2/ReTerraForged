@@ -84,6 +84,7 @@ public final class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_SLIDER_WORLD_HEIGHT, "World Height");
 			this.add(RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH, "World Depth");
 			this.add(RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL, "Sea Level");
+			this.add(RTFTranslationKeys.GUI_SLIDER_LAVA_LEVEL, "Lava Level");
 			this.add(RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY, "Entrance Cave Chance");
 			this.add(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_DEPTH_OFFSET, "Cheese Cave Depth Offset");
 			this.add(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_PROBABILITY, "Cheese Cave Chance");
@@ -224,6 +225,7 @@ public final class RTFLanguageProvider {
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WORLD_HEIGHT), "Controls the world height");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH), "Controls the minimum y level");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL), "Controls the sea level");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAVA_LEVEL), "Controls the lava level.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY), "Controls the probability that an entrance cave will generate");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_DEPTH_OFFSET), "Controls the depth at which cheese caves start to generate");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_PROBABILITY), "Controls probability that a cheese cave will generate");

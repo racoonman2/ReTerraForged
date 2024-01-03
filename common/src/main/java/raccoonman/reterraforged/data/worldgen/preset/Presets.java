@@ -22,7 +22,7 @@ public class Presets {
 			new WorldSettings(
 				new Continent(ContinentType.MULTI_IMPROVED, DistanceFunction.EUCLIDEAN, 3000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(0.1F, 0.25F, 0.327F, 0.448F, 0.502F), 
-				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63)
+				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			), 
 			new CaveSettings(0.0F, 1.5625F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false),
 			new ClimateSettings(
@@ -64,7 +64,7 @@ public class Presets {
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 2000, 0.763F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(0.1F, 0.25F, 0.326F, 0.448F, 0.5F), 
-				new Properties(SpawnType.WORLD_ORIGIN, 320, 64, 63)
+				new Properties(SpawnType.WORLD_ORIGIN, 320, 64, 63, -54)
 			), 
 			new CaveSettings(1.0F, 1.5625F, 1.0F, 1.0F, 1.0F, 0.15F, 0.07F, 0.021F, true, false),
 			new ClimateSettings(
@@ -106,7 +106,7 @@ public class Presets {
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 3000, 0.8F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(0.1F, 0.25F, 0.326F, 0.448F, 0.5F), 
-				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63)
+				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			), 
 			new CaveSettings(0.0F, 1.5625F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false),
 			new ClimateSettings(
@@ -148,7 +148,7 @@ public class Presets {
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 2000, 0.765F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(0.1F, 0.25F, 0.326F, 0.448F, 0.5F), 
-				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63)
+				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			),
 			new CaveSettings(0.0F, 1.5625F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, false, false),
 			new ClimateSettings(
@@ -190,7 +190,7 @@ public class Presets {
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 4029, 0.8F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(0.1F, 0.25F, 0.326F, 0.448F, 0.5F), 
-				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63)
+				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			), 
 			new CaveSettings(0.0F, 1.5625F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false),
 			new ClimateSettings(

@@ -50,20 +50,20 @@ public class TileGenerator {
 	public CompletableFuture<Tile> generate(int tileX, int tileZ) {
 		Tile tile = this.makeTile(tileX, tileZ);
 		CompletableFuture<?>[] futures = new CompletableFuture<?>[this.batchCount * this.batchCount];
-		for (int batchX = 0; batchX < this.batchCount; batchX++) {
-			for (int batchZ = 0; batchZ < this.batchCount; batchZ++) {
+		for (int batchZ = 0; batchZ < this.batchCount; batchZ++) {
+			for (int batchX = 0; batchX < this.batchCount; batchX++) {
 				int chunkX = batchX * this.batchSize;
 				int chunkZ = batchZ * this.batchSize;
 				futures[batchX * this.batchCount + batchZ] = CompletableFuture.runAsync(() -> {
 			        int maxX = Math.min(this.tileSizeChunks.total(), chunkX + this.batchSize);
 			        int maxZ = Math.min(this.tileSizeChunks.total(), chunkZ + this.batchSize);
-			        for (int cX = chunkX; cX < maxX; cX++) {
-			            for (int cZ = chunkZ; cZ < maxZ; cZ++) {
+		            for (int cZ = chunkZ; cZ < maxZ; cZ++) {
+		            	for (int cX = chunkX; cX < maxX; cX++) {
 			            	Chunk chunk = tile.getChunkWriter(cX, cZ);
 			            	
 			                Rivermap rivers = null;
-		                    for (int dx = 0; dx < 16; dx++) {
-		                    	for (int dz = 0; dz < 16; dz++) {
+	                    	for (int dz = 0; dz < 16; dz++) {
+	                    		for (int dx = 0; dx < 16; dx++) {
 		                    		int worldX = chunk.getBlockX() + dx;
 		                    		int worldZ = chunk.getBlockZ() + dz;
 		                    		Cell cell = chunk.getCell(dx, dz);
@@ -90,20 +90,20 @@ public class TileGenerator {
 		CompletableFuture<?>[] futures = new CompletableFuture<?>[this.batchCount * this.batchCount];
         float translateX = centerX - this.tileSizeBlocks.size() * zoom / 2.0F;
         float translateZ = centerZ - this.tileSizeBlocks.size() * zoom / 2.0F;
-		for (int batchX = 0; batchX < this.batchCount; batchX++) {
-			for (int batchZ = 0; batchZ < this.batchCount; batchZ++) {
+		for (int batchZ = 0; batchZ < this.batchCount; batchZ++) {
+			for (int batchX = 0; batchX < this.batchCount; batchX++) {
 				int chunkX = batchX * this.batchSize;
 				int chunkZ = batchZ * this.batchSize;
 				futures[batchX * this.batchCount + batchZ] = CompletableFuture.runAsync(() -> {
 			        int maxX = Math.min(this.tileSizeChunks.total(), chunkX + this.batchSize);
 			        int maxZ = Math.min(this.tileSizeChunks.total(), chunkZ + this.batchSize);
-			        for (int cX = chunkX; cX < maxX; cX++) {
-			            for (int cZ = chunkZ; cZ < maxZ; cZ++) {
+			        for (int cZ = chunkZ; cZ < maxZ; cZ++) {
+			            for (int cX = chunkX; cX < maxX; cX++) {
 			            	Chunk chunk = tile.getChunkWriter(cX, cZ);
 			            	
 			                Rivermap rivers = null;
-		                    for (int dx = 0; dx < 16; dx++) {
-		                    	for (int dz = 0; dz < 16; dz++) {
+	                    	for (int dz = 0; dz < 16; dz++) {
+	                    		for (int dx = 0; dx < 16; dx++) {
 		                    		float worldX = (chunk.getBlockX() + dx) * zoom + translateX;
 		                    		float worldZ = (chunk.getBlockZ() + dz) * zoom + translateZ;
 		                    		Cell cell = chunk.getCell(dx, dz);

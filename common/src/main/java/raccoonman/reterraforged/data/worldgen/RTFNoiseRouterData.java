@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
@@ -13,18 +14,22 @@ import net.minecraft.world.level.levelgen.NoiseRouterData;
 import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.OreVeinifier;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
+import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.data.worldgen.preset.CaveSettings;
-import raccoonman.reterraforged.data.worldgen.preset.FilterSettings;
 import raccoonman.reterraforged.data.worldgen.preset.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.WorldSettings;
 import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
-import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler.Field;
 import raccoonman.reterraforged.world.worldgen.densityfunction.RTFDensityFunctions;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.terrablender.TBCompat;
 
 public class RTFNoiseRouterData {
+	public static final ResourceKey<DensityFunction> HEIGHT = createKey("height");
+	public static final ResourceKey<DensityFunction> GRADIENT = createKey("gradient");
+	public static final ResourceKey<DensityFunction> EROSION = createKey("erosion");
+	public static final ResourceKey<DensityFunction> SEDIMENT = createKey("sediment");
+	
 	private static final float SCALER = 128.0F;
 	private static final float UNIT = 1.0F / SCALER;
 	
@@ -45,7 +50,8 @@ public class RTFNoiseRouterData {
         ctx.register(NoiseRouterData.EROSION, RTFDensityFunctions.cell(CellSampler.Field.EROSION));
         ctx.register(NoiseRouterData.RIDGES, RTFDensityFunctions.cell(CellSampler.Field.WEIRDNESS));
 
-        DensityFunction offset = NoiseRouterData.registerAndWrap(ctx, NoiseRouterData.OFFSET, DensityFunctions.add(DensityFunctions.constant(NoiseRouterData.GLOBAL_OFFSET), DensityFunctions.mul(DensityFunctions.add(DensityFunctions.mul(DensityFunctions.constant(-1.0D), RTFDensityFunctions.noise(noises.getOrThrow(TerrainTypeNoise.GROUND))), RTFDensityFunctions.clampToNearestUnit(RTFDensityFunctions.cell(CellSampler.Field.HEIGHT), properties.terrainScaler())), DensityFunctions.constant(2.0D))));
+        DensityFunction height = NoiseRouterData.registerAndWrap(ctx, HEIGHT, RTFDensityFunctions.cell(CellSampler.Field.HEIGHT));
+        DensityFunction offset = NoiseRouterData.registerAndWrap(ctx, NoiseRouterData.OFFSET, DensityFunctions.add(DensityFunctions.constant(NoiseRouterData.GLOBAL_OFFSET), DensityFunctions.mul(DensityFunctions.add(DensityFunctions.mul(DensityFunctions.constant(-1.0D), RTFDensityFunctions.noise(noises.getOrThrow(TerrainTypeNoise.GROUND))), RTFDensityFunctions.clampToNearestUnit(height, properties.terrainScaler())), DensityFunctions.constant(2.0D))));
         ctx.register(NoiseRouterData.DEPTH, DensityFunctions.add(DensityFunctions.yClampedGradient(-worldDepth, worldHeight, yGradientRange(-worldDepth), yGradientRange(worldHeight)), offset));
         ctx.register(NoiseRouterData.BASE_3D_NOISE_OVERWORLD, DensityFunctions.zero());
         ctx.register(NoiseRouterData.JAGGEDNESS, jaggednessPerformanceHack());
@@ -54,6 +60,9 @@ public class RTFNoiseRouterData {
         ctx.register(NoiseRouterData.ENTRANCES, probabilityDensity(caveSettings.entranceCaveProbability, NoiseRouterData.entrances(densityFunctions, noiseParams)));
         ctx.register(NoiseRouterData.SPAGHETTI_2D, probabilityDensity(caveSettings.spaghettiCaveProbability, spaghetti2D(-worldDepth, worldHeight, densityFunctions, noiseParams)));
         
+        ctx.register(GRADIENT, RTFDensityFunctions.cell(CellSampler.Field.GRADIENT));
+        ctx.register(EROSION, RTFDensityFunctions.cell(CellSampler.Field.HEIGHT_EROSION));
+        ctx.register(SEDIMENT, RTFDensityFunctions.cell(CellSampler.Field.SEDIMENT));
         ctx.register(TBCompat.UNIQUENESS, RTFDensityFunctions.cell(CellSampler.Field.BIOME_REGION));
     }
     
@@ -158,5 +167,9 @@ public class RTFNoiseRouterData {
     
     private static float yGradientRange(float range) {
     	return 1.0F + (-range / SCALER);
+    }
+    
+    private static ResourceKey<DensityFunction> createKey(String string) {
+        return ResourceKey.create(Registries.DENSITY_FUNCTION, RTFCommon.location(string));
     }
 }
