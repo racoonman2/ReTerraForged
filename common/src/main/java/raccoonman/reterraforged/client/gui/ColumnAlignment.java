@@ -3,7 +3,7 @@ package raccoonman.reterraforged.client.gui;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import raccoonman.reterraforged.common.asm.mixin.ScreenInvoker;
+import raccoonman.reterraforged.mixin.ScreenInvoker;
 
 public class ColumnAlignment {
 	private Screen parent;

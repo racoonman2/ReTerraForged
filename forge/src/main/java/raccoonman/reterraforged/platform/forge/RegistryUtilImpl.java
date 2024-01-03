@@ -17,7 +17,7 @@ import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.RegistryBuilder;
-import raccoonman.reterraforged.common.ReTerraForged;
+import raccoonman.reterraforged.RTFCommon;
 
 //this is only public so the initializer class can call register
 //TODO make this non public
@@ -41,13 +41,13 @@ public final class RegistryUtilImpl {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <T> WritableRegistry<T> getWritable(Registry<T> registry) {
 		return (WritableRegistry<T>) REGISTERS.computeIfAbsent(registry.key(), (k) -> {
-			return new DeferredRegistry.Writable<>(DeferredRegister.create((ResourceKey) k, ReTerraForged.MOD_ID));
+			return new DeferredRegistry.Writable<>(DeferredRegister.create((ResourceKey) k, RTFCommon.MOD_ID));
 		});
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static <T> Registry<T> createRegistry(ResourceKey<? extends Registry<T>> key) {
-		DeferredRegister<T> register = DeferredRegister.create((ResourceKey) key, ReTerraForged.MOD_ID);
+		DeferredRegister<T> register = DeferredRegister.create((ResourceKey) key, RTFCommon.MOD_ID);
 		register.makeRegistry(() -> {
 			return new RegistryBuilder().hasTags();
 		});

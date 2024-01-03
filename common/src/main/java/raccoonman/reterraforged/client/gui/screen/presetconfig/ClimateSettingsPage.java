@@ -6,12 +6,11 @@ import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.network.chat.Component;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
-import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
+import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.client.gui.widget.ValueButton;
-import raccoonman.reterraforged.common.level.levelgen.noise.Source;
-import raccoonman.reterraforged.common.worldgen.data.preset.ClimateSettings;
-import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.ClimateSettings;
+import raccoonman.reterraforged.data.worldgen.preset.Preset;
 
 class ClimateSettingsPage extends PresetEditorPage {
 	private ValueButton<Integer> temperatureSeedOffset;
@@ -33,7 +32,7 @@ class ClimateSettingsPage extends PresetEditorPage {
 	private Slider biomeWarpScale;
 	private Slider biomeWarpStrength;
 	
-	private CycleButton<Source> biomeEdgeType;
+	private CycleButton<ClimateSettings.BiomeNoise.EdgeType> biomeEdgeType;
 	private Slider biomeEdgeScale;
 	private Slider biomeEdgeOcaves;
 	private Slider biomeEdgeGain;
@@ -141,7 +140,7 @@ class ClimateSettingsPage extends PresetEditorPage {
 		});
 		
 		ClimateSettings.BiomeNoise biomeEdgeShape = climate.biomeEdgeShape;
-		this.biomeEdgeType = PresetWidgets.createCycle(Source.values(), biomeEdgeShape.type, RTFTranslationKeys.GUI_BUTTON_BIOME_EDGE_TYPE, (button, value) -> {
+		this.biomeEdgeType = PresetWidgets.createCycle(ClimateSettings.BiomeNoise.EdgeType.values(), biomeEdgeShape.type, RTFTranslationKeys.GUI_BUTTON_BIOME_EDGE_TYPE, (button, value) -> {
 			biomeEdgeShape.type = value;
 			this.regenerate();
 		});
@@ -204,7 +203,7 @@ class ClimateSettingsPage extends PresetEditorPage {
 
 	@Override
 	public Optional<Page> previous() {
-		return Optional.of(new WorldSettingsPage(this.screen, this.preset));
+		return Optional.of(new CaveSettingsPage(this.screen, this.preset));
 	}
 
 	@Override

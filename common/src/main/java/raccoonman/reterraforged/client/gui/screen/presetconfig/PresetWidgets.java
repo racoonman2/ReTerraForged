@@ -1,6 +1,7 @@
 package raccoonman.reterraforged.client.gui.screen.presetconfig;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -21,6 +22,7 @@ import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.client.gui.widget.Slider.Format;
 import raccoonman.reterraforged.client.gui.widget.ValueButton;
 
+@Deprecated
 final class PresetWidgets {
 	
 	public static EditBox createEditBox(Font font, Consumer<String> responder) {
@@ -54,12 +56,22 @@ final class PresetWidgets {
 	public static <T extends Enum<T>> CycleButton<T> createCycle(T[] values, T initial, String text, CycleButton.OnValueChange<T> callback) {
 		return createCycle(ImmutableList.copyOf(values), initial, text, callback, T::name);
 	}
-	
+
 	public static <T> CycleButton<T> createCycle(Collection<T> values, T initial, String text, CycleButton.OnValueChange<T> callback, Function<T, String> name) {
-		CycleButton<T> button = CycleButton.<T>builder((e) -> {
+		return createCycle(values, initial, Optional.of(text), callback, name);
+	}
+	
+	public static <T> CycleButton<T> createCycle(Collection<T> values, T initial, Optional<String> text, CycleButton.OnValueChange<T> callback, Function<T, String> name) {
+		CycleButton.Builder<T> builder = CycleButton.<T>builder((e) -> {
 			return Component.literal(name.apply(e));
-		}).withInitialValue(initial).withValues(values).create(-1, -1, -1, -1, Component.translatable(text), callback);
-		button.setTooltip(Tooltips.create(Tooltips.translationKey(text)));
+		}).withInitialValue(initial).withValues(values);
+		if(text.isEmpty()) {
+			builder = builder.displayOnlyValue();
+		}
+		CycleButton<T> button = builder.create(-1, -1, -1, -1, text.map(Component::translatable).orElse(null), callback);
+		text.ifPresent((key) -> {
+			button.setTooltip(Tooltips.create(Tooltips.translationKey(key)));
+		});
 		return button;
 	}
 	

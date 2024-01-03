@@ -11,7 +11,8 @@ import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 
 public class WidgetList<T extends AbstractWidget> extends ContainerObjectSelectionList<WidgetList.Entry<T>> {
-
+	private boolean renderSelected;
+	
     public WidgetList(Minecraft minecraft, int i, int j, int k, int l, int slotHeight) {
         super(minecraft, i, j, k, l, slotHeight);
     }
@@ -30,9 +31,13 @@ public class WidgetList<T extends AbstractWidget> extends ContainerObjectSelecti
         return widget;
     }
 
+    public void setRenderSelected(boolean renderSelected) {
+    	this.renderSelected = renderSelected;
+    }
+    
     @Override
     protected boolean isSelectedItem(int i) {
-        return Objects.equals(this.getSelected(), this.children().get(i));
+        return this.renderSelected && Objects.equals(this.getSelected(), this.children().get(i));
     }
 
     @Override

@@ -7,13 +7,9 @@ loom {
 }
 
 dependencies {
-	modImplementation "dev.architectury:mixin-patched:0.8.5.10"
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-  //  compileOnly("com.github.glitchfiend:TerraBlender-forge:${rootProject.minecraft_version}-${rootProject.terrablender_version}")
-}
-
-configurations.implementation {
-	exclude group: "net.fabricmc", module: "sponge-mixin"
+	compileOnly "com.github.glitchfiend:TerraBlender-forge:${rootProject.minecraft_version}-${rootProject.terrablender_version}"
+	compileOnly "com.electronwill.night-config:toml:3.6.7"
 }
 
 repositories {

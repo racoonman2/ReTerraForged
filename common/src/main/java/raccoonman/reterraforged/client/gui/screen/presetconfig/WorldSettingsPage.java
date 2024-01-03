@@ -9,13 +9,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
-import raccoonman.reterraforged.client.gui.screen.presetconfig.SelectPresetPage.PresetEntry;
+import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
-import raccoonman.reterraforged.common.level.levelgen.noise.curve.DistanceFunction;
-import raccoonman.reterraforged.common.worldgen.data.preset.ContinentType;
-import raccoonman.reterraforged.common.worldgen.data.preset.Preset;
-import raccoonman.reterraforged.common.worldgen.data.preset.SpawnType;
-import raccoonman.reterraforged.common.worldgen.data.preset.WorldSettings;
+import raccoonman.reterraforged.data.worldgen.preset.ContinentType;
+import raccoonman.reterraforged.data.worldgen.preset.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.SpawnType;
+import raccoonman.reterraforged.data.worldgen.preset.WorldSettings;
+import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 
 public class WorldSettingsPage extends PresetEditorPage {
 	private CycleButton<ContinentType> continentType;
@@ -55,6 +55,8 @@ public class WorldSettingsPage extends PresetEditorPage {
 		Preset preset = this.preset.getPreset();
 		WorldSettings world = preset.world();
 		WorldSettings.Continent continent = world.continent;
+		WorldSettings.ControlPoints controlPoints = world.controlPoints;
+		WorldSettings.Properties properties = world.properties;
 		
 		this.continentType = PresetWidgets.createCycle(
 			ImmutableList.of(
@@ -112,8 +114,6 @@ public class WorldSettingsPage extends PresetEditorPage {
 		
 		this.applyContinentType(this.continentType.getValue());
 
-		WorldSettings.ControlPoints controlPoints = world.controlPoints;
-		
 		this.deepOcean = PresetWidgets.createFloatSlider(controlPoints.deepOcean, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_DEEP_OCEAN, (slider, value) -> {
 			value = Math.min(value, this.shallowOcean.getValue());
 			controlPoints.deepOcean = (float) slider.scaleValue(value);
@@ -144,9 +144,6 @@ public class WorldSettingsPage extends PresetEditorPage {
 			this.regenerate();
 			return value;
 		});
-		
-		WorldSettings.Properties properties = world.properties;
-		
 		this.spawnType = PresetWidgets.createCycle(SpawnType.values(), properties.spawnType, RTFTranslationKeys.GUI_BUTTON_SPAWN_TYPE, (button, value) -> {
 			properties.spawnType = value;
 		});
@@ -192,12 +189,12 @@ public class WorldSettingsPage extends PresetEditorPage {
 
 	@Override
 	public Optional<Page> previous() {
-		return Optional.of(new SelectPresetPage(this.screen));
+		return Optional.of(new PresetListPage(this.screen));
 	}
 
 	@Override
 	public Optional<Page> next() {
-		return Optional.of(new ClimateSettingsPage(this.screen, this.preset));
+		return Optional.of(new CaveSettingsPage(this.screen, this.preset));
 	}
 	
 	private void applyContinentType(ContinentType type) {
