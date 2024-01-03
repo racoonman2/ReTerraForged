@@ -7,6 +7,9 @@
   "client": [
   	"MixinPresetEditor"
   ],
+  "mixins": [
+  	"MixinBiomeModificationImpl"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

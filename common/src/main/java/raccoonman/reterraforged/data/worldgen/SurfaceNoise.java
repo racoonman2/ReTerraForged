@@ -83,15 +83,15 @@ public class SurfaceNoise {
 		
 		Noise shape = Noises.perlin(seed++, 65, 3);
 		shape = Noises.warpPerlin(shape, seed++, 15, 1, 10);
-		shape = RTFNoiseData.registerAndWrap(ctx, shapeKey, Noises.cache2d(shape));
+		shape = NoiseData.registerAndWrap(ctx, shapeKey, Noises.cache2d(shape));
 		
-		Noise mask = RTFNoiseData.registerAndWrap(ctx, maskKey, Noises.threshold(shape, 0.0F, 1.0F, 0.6F));
+		Noise mask = NoiseData.registerAndWrap(ctx, maskKey, Noises.threshold(shape, 0.0F, 1.0F, 0.6F));
 		
 		Noise fadeDown = Noises.clamp(shape, 0.6F, 0.725F);
-		fadeDown = RTFNoiseData.registerAndWrap(ctx, fadeDownKey, Noises.map(fadeDown, 0.0F, 1.0F));
+		fadeDown = NoiseData.registerAndWrap(ctx, fadeDownKey, Noises.map(fadeDown, 0.0F, 1.0F));
 		
 		Noise fadeUp = Noises.clamp(shape, 0.6F, 0.65F);
-		fadeUp = RTFNoiseData.registerAndWrap(ctx, fadeUpKey, Noises.map(fadeUp, 0.0F, 1.0F));
+		fadeUp = NoiseData.registerAndWrap(ctx, fadeUpKey, Noises.map(fadeUp, 0.0F, 1.0F));
 
 		Noise up = Noises.perlinRidge(seed++, 50, 3);
 		up  = Noises.mul(up, mask);
@@ -124,6 +124,6 @@ public class SurfaceNoise {
 	}
 	
 	public static ResourceKey<Noise> createKey(String name) {
-        return RTFNoiseData.createKey("surface/" + name);
+        return NoiseData.createKey("surface/" + name);
 	}
 }

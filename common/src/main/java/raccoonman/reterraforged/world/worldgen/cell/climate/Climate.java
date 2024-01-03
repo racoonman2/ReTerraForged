@@ -2,7 +2,7 @@ package raccoonman.reterraforged.world.worldgen.cell.climate;
 
 import net.minecraft.core.HolderGetter;
 import raccoonman.reterraforged.data.worldgen.ClimateNoise;
-import raccoonman.reterraforged.data.worldgen.RTFNoiseData;
+import raccoonman.reterraforged.data.worldgen.NoiseData;
 import raccoonman.reterraforged.data.worldgen.preset.ClimateSettings;
 import raccoonman.reterraforged.data.worldgen.preset.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.WorldSettings;
@@ -51,7 +51,7 @@ public record Climate(int randomSeed, Noise offsetX, Noise offsetZ, int offsetDi
 		Levels levels = context.levels;
 		int randSeed = context.seed.next();
 		
-		Noise biomeEdgeShape = RTFNoiseData.getNoise(noiseLookup, ClimateNoise.BIOME_EDGE_SHAPE);
+		Noise biomeEdgeShape = NoiseData.getNoise(noiseLookup, ClimateNoise.BIOME_EDGE_SHAPE);
 		Noise offsetX = Noises.shiftSeed(biomeEdgeShape, context.seed.next());
 		Noise offsetZ = Noises.shiftSeed(biomeEdgeShape, context.seed.next());
 		int offsetDistance = climateSettings.biomeEdgeShape.strength;

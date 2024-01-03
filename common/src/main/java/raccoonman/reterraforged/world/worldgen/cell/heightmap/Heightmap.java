@@ -2,7 +2,8 @@ package raccoonman.reterraforged.world.worldgen.cell.heightmap;
 
 import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling.Tile;
 import net.minecraft.core.HolderGetter;
-import raccoonman.reterraforged.data.worldgen.RTFNoiseData;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import raccoonman.reterraforged.data.worldgen.NoiseData;
 import raccoonman.reterraforged.data.worldgen.TerrainTypeNoise;
 import raccoonman.reterraforged.data.worldgen.preset.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.TerrainSettings;
@@ -93,7 +94,7 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         mountainShape = Noises.clamp(mountainShape, 0.0F, 0.9F);
         mountainShape = Noises.map(mountainShape, 0.0F, 1.0F);
 
-        Noise ground = RTFNoiseData.getNoise(noiseLookup, TerrainTypeNoise.GROUND);
+        Noise ground = NoiseData.getNoise(noiseLookup, TerrainTypeNoise.GROUND);
         
         CellPopulator terrainRegions = new RegionSelector(TerrainProvider.generateTerrain(context.seed, terrainSettings, regionConfig, levels, noiseLookup));
         CellPopulator terrainRegionBorders = Populators.makeBorder(context.seed, ground, terrainSettings.plains, terrainSettings.steppe, globalVerticalScale);

@@ -21,6 +21,6 @@ public class ClimateNoise {
 	}
 
 	private static ResourceKey<Noise> createKey(String name) {
-		return RTFNoiseData.createKey("climate/" + name);
+		return NoiseData.createKey("climate/" + name);
 	}
 }

@@ -24,9 +24,9 @@ public class TerrainNoise {
 	public static void bootstrap(Preset preset, BootstapContext<Noise> ctx) {
 		TerrainTypeNoise.bootstrap(preset, ctx);
 		
-		Noise mountainChainAlpha = RTFNoiseData.registerAndWrap(ctx, MOUNTAIN_CHAIN_ALPHA, makeMountainChainAlpha(0));
-		Noise erosion = RTFNoiseData.registerAndWrap(ctx, EROSION, makeErosion(mountainChainAlpha));
-		Noise ridges = RTFNoiseData.registerAndWrap(ctx, RIDGES, makeRidges(mountainChainAlpha));
+		Noise mountainChainAlpha = NoiseData.registerAndWrap(ctx, MOUNTAIN_CHAIN_ALPHA, makeMountainChainAlpha(0));
+		Noise erosion = NoiseData.registerAndWrap(ctx, EROSION, makeErosion(mountainChainAlpha));
+		Noise ridges = NoiseData.registerAndWrap(ctx, RIDGES, makeRidges(mountainChainAlpha));
 	}
 	
 	private static Noise makeMountainChainAlpha(int mountainSeed) {
@@ -51,6 +51,6 @@ public class TerrainNoise {
 	}
 	
 	protected static ResourceKey<Noise> createKey(String name) {
-		return RTFNoiseData.createKey("terrain/" + name);
+		return NoiseData.createKey("terrain/" + name);
 	}
 }
