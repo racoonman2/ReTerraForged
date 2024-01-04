@@ -32,6 +32,10 @@ record AddModifier(Order order, GenerationStep.Decoration step, Optional<HolderS
 
 	@Override
 	public void apply(BiomeSelectionContext selectionContext, BiomeModificationContext modificationContext) {
+		if(this.biomes.isPresent() && !this.biomes.get().contains(selectionContext.getBiomeRegistryEntry())) {
+			return;
+		}
+		
 		BiomeGenerationSettings generationSettings = selectionContext.getBiome().getGenerationSettings();
 		List<HolderSet<PlacedFeature>> featureSteps = generationSettings.features();
 		int index = this.step.ordinal();

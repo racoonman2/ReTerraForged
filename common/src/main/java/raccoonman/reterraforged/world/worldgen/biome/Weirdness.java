@@ -32,15 +32,4 @@ public enum Weirdness implements BiomeParameter {
     public float max() {
     	return this.max;
     }
-
-    public static float peaksAndValleys(float f) {
-        return -(Math.abs(Math.abs(f) - 0.6666667f) - 0.33333334f) * 3.0f;
-    }
-
-    public static void main(String[] args) {
-    	for(Weirdness w : Weirdness.values()) {
-    		System.out.println(w.name() + ":  mid=" + w.mid() + ", min=" + peaksAndValleys(w.min) + ", max=" + peaksAndValleys(w.max));
-    	}
-    	System.out.println(peaksAndValleys(0.34F));
-    }
 }
