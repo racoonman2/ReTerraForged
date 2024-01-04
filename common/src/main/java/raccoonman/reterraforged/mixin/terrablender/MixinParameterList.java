@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.mixin;
+package raccoonman.reterraforged.mixin.terrablender;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

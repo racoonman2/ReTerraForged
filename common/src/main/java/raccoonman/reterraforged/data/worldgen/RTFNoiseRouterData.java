@@ -63,7 +63,7 @@ public class RTFNoiseRouterData {
         ctx.register(GRADIENT, RTFDensityFunctions.cell(CellSampler.Field.GRADIENT));
         ctx.register(EROSION, RTFDensityFunctions.cell(CellSampler.Field.HEIGHT_EROSION));
         ctx.register(SEDIMENT, RTFDensityFunctions.cell(CellSampler.Field.SEDIMENT));
-        ctx.register(TBCompat.UNIQUENESS, RTFDensityFunctions.cell(CellSampler.Field.BIOME_REGION));
+        ctx.register(TBCompat.uniquenessKey(), RTFDensityFunctions.cell(CellSampler.Field.BIOME_REGION));
     }
     
     protected static NoiseRouter overworld(Preset preset, HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, HolderGetter<Noise> noises) {

@@ -99,8 +99,8 @@ class MixinRandomState {
 			set.forEach((function) -> function.value().mapAll(this.densityFunctionWrapper));
 		});
 		
-		if((Object) this.sampler instanceof RTFClimateSampler rtfClimateSampler && ModLoaderUtil.isLoaded("terrablender")) {
-			functions.get(TBCompat.UNIQUENESS).ifPresent((uniqueness) -> {
+		if((Object) this.sampler instanceof RTFClimateSampler rtfClimateSampler && TBCompat.isEnabled()) {
+			functions.get(TBCompat.uniquenessKey()).ifPresent((uniqueness) -> {
 				rtfClimateSampler.setUniqueness(uniqueness.value().mapAll(this.densityFunctionWrapper));
 			});
 		}
