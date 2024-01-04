@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 import raccoonman.reterraforged.concurrent.cache.Cache;
 import raccoonman.reterraforged.concurrent.cache.map.StampedLongMap;
-import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;
 
 public class RiverCache {
@@ -16,11 +15,9 @@ public class RiverCache {
         this.generator = generator;
     }
     
-    public Rivermap getRivers(Cell cell) {
-        return this.getRivers(cell.continentX, cell.continentZ);
-    }
-    
     public Rivermap getRivers(int x, int z) {
-        return this.cache.computeIfAbsent(PosUtil.pack(x, z), id -> this.generator.generateRivers(PosUtil.unpackLeft(id), PosUtil.unpackRight(id), id));
+        return this.cache.computeIfAbsent(PosUtil.pack(x, z), id -> {
+        	return this.generator.generateRivers(PosUtil.unpackLeft(id), PosUtil.unpackRight(id), id);
+        });
     }
 }

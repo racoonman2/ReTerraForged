@@ -10,11 +10,11 @@ import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil.Vec2f;
 
 public enum BiomeType {
-    TROPICAL_RAINFOREST(7, 83, 48, new Color(7, 83, 48), constant(Temperature.LEVEL_3), constant(Humidity.LEVEL_4)), 
+    TROPICAL_RAINFOREST(7, 83, 48, new Color(7, 83, 48), constant(Temperature.LEVEL_3), range(Humidity.LEVEL_3, Humidity.LEVEL_4)), 
     SAVANNA(151, 165, 39, new Color(151, 165, 39), constant(Temperature.LEVEL_3), range(Humidity.LEVEL_0, Humidity.LEVEL_1)),
     DESERT(200, 113, 55, new Color(200, 113, 55), constant(Temperature.LEVEL_4), range(Humidity.LEVEL_0, Humidity.LEVEL_4)), 
-    TEMPERATE_RAINFOREST(10, 84, 109, new Color(10, 160, 65), constant(Temperature.LEVEL_3), constant(Humidity.LEVEL_3)), 
-    TEMPERATE_FOREST(44, 137, 160, new Color(50, 200, 80), constant(Temperature.LEVEL_2), range(Humidity.LEVEL_2, Humidity.LEVEL_4)), 
+    TEMPERATE_RAINFOREST(10, 84, 109, new Color(10, 160, 65), constant(Temperature.LEVEL_2), constant(Humidity.LEVEL_4)), 
+    TEMPERATE_FOREST(44, 137, 160, new Color(50, 200, 80), constant(Temperature.LEVEL_2), range(Humidity.LEVEL_2, Humidity.LEVEL_3)), 
     GRASSLAND(179, 124, 6, new Color(100, 220, 60), range(Temperature.LEVEL_1, Temperature.LEVEL_2), range(Humidity.LEVEL_0, Humidity.LEVEL_1)), 
     COLD_STEPPE(131, 112, 71, new Color(175, 180, 150), constant(Temperature.LEVEL_0), constant(Humidity.LEVEL_4)), 
     STEPPE(199, 155, 60, new Color(200, 200, 120), range(Temperature.LEVEL_1, Temperature.LEVEL_2), range(Humidity.LEVEL_1, Humidity.LEVEL_2)), 
