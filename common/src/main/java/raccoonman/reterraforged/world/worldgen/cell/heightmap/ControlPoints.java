@@ -8,7 +8,7 @@ public record ControlPoints(float deepOcean, float shallowOcean, float beach, fl
     
     public static ControlPoints make(WorldSettings.ControlPoints points) {
         if (!validate(points)) {
-            points = Presets.makeDefault().world().controlPoints;
+            points = Presets.makeLegacyDefault().world().controlPoints;
         }
         return new ControlPoints(points.deepOcean, points.shallowOcean, points.beach, points.coast, points.coast + (points.inland - points.coast) / 2.0F, points.inland);
     }

@@ -28,7 +28,6 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-		System.out.println(mixinClassName);
 		return TBCompat.isTBMixin(mixinClassName) ? TBCompat.isEnabled() : true;
 	}
 

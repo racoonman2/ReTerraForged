@@ -17,10 +17,10 @@ public enum BiomeType {
     TEMPERATE_FOREST(44, 137, 160, new Color(50, 200, 80), constant(Temperature.LEVEL_2), range(Humidity.LEVEL_2, Humidity.LEVEL_4)), 
     GRASSLAND(179, 124, 6, new Color(100, 220, 60), range(Temperature.LEVEL_1, Temperature.LEVEL_2), range(Humidity.LEVEL_0, Humidity.LEVEL_1)), 
     COLD_STEPPE(131, 112, 71, new Color(175, 180, 150), constant(Temperature.LEVEL_0), constant(Humidity.LEVEL_4)), 
-    STEPPE(199, 155, 60, new Color(200, 200, 120), constant(Temperature.LEVEL_3), constant(Humidity.LEVEL_1)), 
-    TAIGA(91, 143, 82, new Color(91, 143, 82), constant(Temperature.LEVEL_0), range(Humidity.LEVEL_2, Humidity.LEVEL_3)), 
-    TUNDRA(147, 167, 172, new Color(147, 167, 172), constant(Temperature.LEVEL_0), range(Humidity.LEVEL_0, Humidity.LEVEL_1)), 
-    ALPINE(0, 0, 0, new Color(160, 120, 170), constant(Temperature.LEVEL_1), range(Humidity.LEVEL_3, Humidity.LEVEL_4));
+    STEPPE(199, 155, 60, new Color(200, 200, 120), range(Temperature.LEVEL_1, Temperature.LEVEL_2), range(Humidity.LEVEL_1, Humidity.LEVEL_2)), 
+    TAIGA(91, 143, 82, new Color(91, 143, 82), range(Temperature.LEVEL_0, Temperature.LEVEL_1), constant(Humidity.LEVEL_4)), 
+    TUNDRA(147, 167, 172, new Color(147, 167, 172), constant(Temperature.LEVEL_0), range(Humidity.LEVEL_0, Humidity.LEVEL_3)), 
+    ALPINE(0, 0, 0, new Color(160, 120, 170), constant(Temperature.LEVEL_0), constant(Humidity.LEVEL_4));
 
     public static final int RESOLUTION = 256;
     public static final int MAX = 255;
