@@ -1,6 +1,5 @@
 package raccoonman.reterraforged.world.worldgen.biome.modifier.fabric;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +37,7 @@ record AddModifier(Order order, GenerationStep.Decoration step, Optional<HolderS
 		int index = this.step.ordinal();
 
 		while (index >= featureSteps.size()) {
-			featureSteps.add(HolderSet.direct(Collections.emptyList()));
+			featureSteps.add(HolderSet.direct());
 		}
 
 		featureSteps.set(index, this.add(featureSteps.get(index)));

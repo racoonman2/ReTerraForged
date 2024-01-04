@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
 
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.core.HolderGetter;
 import raccoonman.reterraforged.data.worldgen.NoiseData;
 import raccoonman.reterraforged.data.worldgen.TerrainTypeNoise;
@@ -71,7 +73,7 @@ public class TerrainProvider {
         Noise height = Noises.blend(selector, tp1.height(), tp2.height(), 0.5F, 0.25F);
         height = Noises.max(height, Noises.zero());
         
-        Noise erosion = Noises.threshold(selector, tp1.erosion(), tp2.erosion(), 0.5F);
+        Noise erosion = Noises.blend(selector, tp1.erosion(), tp2.erosion(), 0.5F, 0.25F);
         Noise weirdness = Noises.threshold(selector, tp1.weirdness(), tp2.weirdness(), 0.5F);
 
         float weight = (tp1.weight() + tp2.weight()) / 2.0F;

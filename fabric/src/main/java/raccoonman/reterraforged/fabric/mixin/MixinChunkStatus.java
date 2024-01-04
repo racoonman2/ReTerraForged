@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.mixin;
+package raccoonman.reterraforged.fabric.mixin;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

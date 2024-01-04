@@ -11,12 +11,14 @@ public class WorldLookup {
 	private float beachLevel;
 	private TileCache cache;
 	private Heightmap heightmap;
-
+	private Levels levels;
+	
 	public WorldLookup(GeneratorContext context) {
 		this.cache = context.cache;
 		this.heightmap = context.generator.getHeightmap();
 		this.waterLevel = context.levels.water;
 		this.beachLevel = context.levels.water(5);
+		this.levels = context.levels;
 	}
 	
 	public Heightmap getHeightmap() {
@@ -63,7 +65,7 @@ public class WorldLookup {
 	}
 
 	private void compute(Cell cell, int x, int z) {
-		this.heightmap.apply(cell, x, z, this.heightmap.continent().getRivermap(cell));
+		this.heightmap.apply(cell, x, z);
 		if (cell.terrain == TerrainType.COAST && cell.height > this.waterLevel && cell.height <= this.beachLevel) {
 			cell.terrain = TerrainType.BEACH;
 		}
