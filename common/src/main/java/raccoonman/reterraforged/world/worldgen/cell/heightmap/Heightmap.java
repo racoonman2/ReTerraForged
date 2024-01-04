@@ -63,7 +63,7 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 
         float riverValleyThreshold = 0.575F;
         
-        if(cell.riverMask >= riverValleyThreshold && cell.biomeRegionId > 0.5F) { 
+        if(cell.riverMask >= riverValleyThreshold && cell.terrainRegionId > 0.5F) { 
         	cell.weirdness = -cell.weirdness;
         }
         

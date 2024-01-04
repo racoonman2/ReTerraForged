@@ -1,7 +1,5 @@
 package raccoonman.reterraforged.world.worldgen.util;
 
-import net.minecraft.world.level.ChunkPos;
-
 public class PosUtil {
 
 	public static long packMix(int left, float right) {
@@ -13,7 +11,7 @@ public class PosUtil {
 	}
 
 	public static long pack(int left, int right) {
-		return ChunkPos.asLong(left, right);
+		return ((long) right & 0xFFFFFFFFL) | ((long) left & 0xFFFFFFFFL) << 32;
 	}
 
 	public static long pack(float left, float right) {
