@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
 
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.core.HolderGetter;
 import raccoonman.reterraforged.data.worldgen.NoiseData;
 import raccoonman.reterraforged.data.worldgen.TerrainTypeNoise;

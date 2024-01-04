@@ -2,13 +2,14 @@ package raccoonman.reterraforged.world.worldgen.cell.heightmap;
 
 import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling.Tile;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.world.level.levelgen.GenerationStep;
 import raccoonman.reterraforged.data.worldgen.NoiseData;
 import raccoonman.reterraforged.data.worldgen.TerrainTypeNoise;
 import raccoonman.reterraforged.data.worldgen.preset.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.TerrainSettings;
 import raccoonman.reterraforged.data.worldgen.preset.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
+import raccoonman.reterraforged.world.worldgen.biome.Erosion;
+import raccoonman.reterraforged.world.worldgen.biome.Weirdness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.cell.climate.Climate;
@@ -62,6 +63,26 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         
         if(cell.biomeRegionId > 0.5F) { 
         	cell.weirdness = -cell.weirdness;
+        }
+        
+        if(cell.riverMask < 0.575F) {
+        	cell.erosion = -0.3F;
+        	cell.weirdness = -0.19F;
+        }
+        
+        if(cell.terrain.isRiver()) {
+            cell.erosion = -0.05F;
+            cell.weirdness = -0.03F;
+        }
+        
+        if(cell.terrain.isLake()) {
+            cell.erosion = Erosion.LEVEL_4.mid();
+            cell.weirdness = -0.03F;
+        }
+        
+        if(cell.terrain.isWetland()) {
+        	cell.erosion = Erosion.LEVEL_6.mid();
+        	cell.weirdness = Weirdness.VALLEY.mid();
         }
 	}
 	
