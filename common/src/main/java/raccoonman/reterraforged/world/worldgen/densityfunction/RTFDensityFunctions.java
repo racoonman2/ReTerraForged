@@ -15,6 +15,7 @@ public class RTFDensityFunctions {
 		register("cell", CellSampler.Marker.CODEC);
 		register("clamp_to_nearest_unit", ClampToNearestUnit.CODEC);
 		register("linear_spline", LinearSplineFunction.CODEC);
+		register("conditional_array_cache", ConditionalArrayCache.CODEC);
 	}
 	
 	public static NoiseFunction.Marker noise(Holder<Noise> noise) {
@@ -27,6 +28,10 @@ public class RTFDensityFunctions {
 	
 	public static ClampToNearestUnit clampToNearestUnit(DensityFunction function, int resolution) {
 		return new ClampToNearestUnit(function, resolution);
+	}
+	
+	public static ConditionalArrayCache conditionalArrayCache(DensityFunction function) {
+		return new ConditionalArrayCache(function);
 	}
 	
 	private static void register(String name, Codec<? extends DensityFunction> type) {

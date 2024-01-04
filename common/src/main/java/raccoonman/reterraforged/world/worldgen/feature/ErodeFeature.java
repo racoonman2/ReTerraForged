@@ -74,8 +74,9 @@ public class ErodeFeature extends Feature<Config> {
 			for(int x = 0; x < 16; x++) {
 				for(int z = 0; z < 16; z++) {
 					Cell cell = tileChunk.getCell(x, z);
-			        if(levels.scale(cell.height) >= generator.getSeaLevel()) {
-						int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
+					int scaledY = levels.scale(cell.height);
+					int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
+			        if(scaledY == surfaceY && scaledY >= generator.getSeaLevel()) {
 						pos.set(chunkPos.getBlockX(x), surfaceY, chunkPos.getBlockZ(z));
 						
 						erodeColumn(rand, generator, chunk, cell, pos, surfaceY);

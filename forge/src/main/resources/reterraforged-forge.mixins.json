@@ -5,7 +5,10 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_17",
   "client": [
-  	"MixinTagsProvider"
+  	"MixinTagsProvider",
+  	"MixinBiomeGenerationSettingsPlainsBuilder",
+  	"MixinChunkStatus",
+  	"MixinMinecraftServer"
   ],
   "injectors": {
     "defaultRequire": 1

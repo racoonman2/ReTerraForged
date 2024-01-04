@@ -37,9 +37,9 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 		return new Heightmap(this.terrain, this.region, this.continent, this.climate, this.levels, this.controlPoints, this.terrainFrequency, this.beachNoise);
 	}
 	
-	public void apply(Cell cell, float x, float z, Rivermap rivermap) {
+	public void apply(Cell cell, float x, float z) {
 		this.applyTerrain(cell, x, z);
-		this.applyRivers(cell, x, z, rivermap);
+		this.applyRivers(cell, x, z, this.continent.getRivermap(cell));
 		this.applyClimate(cell, x, z);
 	}
 	
@@ -59,6 +59,10 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 	
 	public void applyClimate(Cell cell, float x, float z) {
         this.climate.apply(cell, x, z);
+        
+        if(cell.biomeRegionId > 0.5F) { 
+        	cell.weirdness = -cell.weirdness;
+        }
 	}
 	
 	public static Heightmap make(GeneratorContext context) {

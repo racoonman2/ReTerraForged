@@ -21,6 +21,7 @@ import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainCategory;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler.Field;
 import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
+import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;
 
 public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) implements MarkerFunction.Mapped {
@@ -80,7 +81,7 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 			Cell cell = (this.chunk != null && this.chunkX == chunkX && this.chunkZ == chunkZ) ? 
 				this.chunk.getCell(blockX, blockZ) :
 				this.cache2d.getAndUpdate(worldLookup, blockX, blockZ);
-			return CellSampler.this.field.read(cell, worldLookup.getHeightmap());
+			return this.structureRiverFix(cell, CellSampler.this.field.read(cell, worldLookup.getHeightmap()));
 		}
 
 		@Override
@@ -91,6 +92,16 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 		@Override
 		public double maxValue() {
 			return CellSampler.this.maxValue();
+		}
+		
+		//evil hack
+		private float structureRiverFix(Cell cell, float value) {
+			if(CellSampler.this.field == Field.HEIGHT && this.chunk == null) {
+				if(cell.riverMask < 0.02F) {
+					return Float.NaN;
+				}
+			}
+			return value;
 		}
 	}
 	

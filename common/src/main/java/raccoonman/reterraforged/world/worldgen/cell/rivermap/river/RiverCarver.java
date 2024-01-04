@@ -2,6 +2,8 @@ package raccoonman.reterraforged.world.worldgen.cell.rivermap.river;
 
 import java.util.Random;
 
+import raccoonman.reterraforged.world.worldgen.biome.Erosion;
+import raccoonman.reterraforged.world.worldgen.biome.Weirdness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
@@ -129,8 +131,8 @@ public class RiverCarver implements Comparable<RiverCarver> {
         cell.erosionMask = true;
         if (cell.height <= this.waterLine) {
             cell.terrain = TerrainType.RIVER;
-//            cell.erosionLevel = ErosionLevel.LEVEL_5.mid();
-//            cell.ridgeLevel = RidgeLevel.VALLEYS.mid();
+            cell.erosion = Erosion.LEVEL_2.mid();
+            cell.weirdness = Weirdness.VALLEY.mid();
         }
     }
     

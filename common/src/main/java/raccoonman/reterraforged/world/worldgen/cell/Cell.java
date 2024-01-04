@@ -7,11 +7,8 @@ import raccoonman.reterraforged.world.worldgen.cell.biome.type.BiomeType;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.Terrain;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
 
-@Deprecated(forRemoval = true)
 public class Cell {
-    @Deprecated(forRemoval = true)
     private static final Cell DEFAULTS = new Cell();
-    @Deprecated(forRemoval = true)
     private static final Cell EMPTY = new Cell() {
 
     	@Override
@@ -19,9 +16,7 @@ public class Cell {
             return true;
         }
     };
-    @Deprecated(forRemoval = true)
     private static final ThreadLocalPool<Cell> POOL = new ThreadLocalPool<>(32, Cell::new, Cell::reset);
-    @Deprecated(forRemoval = true)
     public static final ThreadLocal<Resource<Cell>> LOCAL = ThreadLocal.withInitial(() -> {
         return new SimpleResource<>(new Cell(), Cell::reset);
     });
@@ -89,7 +84,6 @@ public class Cell {
         this.beachNoise = other.beachNoise;
     }
 
-    @Deprecated(forRemoval = true)
     public Cell reset() {
         this.copyFrom(Cell.DEFAULTS);
         return this;
@@ -105,7 +99,6 @@ public class Cell {
         return Cell.EMPTY;
     }
 
-    @Deprecated(forRemoval = true)
     public static Resource<Cell> getResource() {
         Resource<Cell> resource = Cell.LOCAL.get();
         if (resource.isOpen()) {

@@ -63,3 +63,5 @@ accessible method net/minecraft/world/level/levelgen/NoiseRouterData registerAnd
 accessible field net/minecraft/client/gui/screens/worldselection/CreateWorldScreen tabNavigationBar Lnet/minecraft/client/gui/components/tabs/TabNavigationBar;
 accessible class net/minecraft/world/level/levelgen/DensityFunctions$Marker
 accessible class net/minecraft/world/level/levelgen/DensityFunctions$Marker$Type
+accessible class net/minecraft/world/level/levelgen/NoiseChunk$FlatCache
+accessible method net/minecraft/world/level/levelgen/NoiseChunk$FlatCache <init> (Lnet/minecraft/world/level/levelgen/NoiseChunk;Lnet/minecraft/world/level/levelgen/DensityFunction;Z)V

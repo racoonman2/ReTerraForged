@@ -38,11 +38,17 @@ public class Blender implements CellPopulator {
 		}
 		float alpha = Interpolation.LINEAR.apply((select - this.blendLower) / this.blendRange);
 		this.lower.apply(cell, x, y);
-		float lowerVal = cell.height;
+		float lowerHeight = cell.height;
+		float lowerErosion = cell.erosion;
+		float lowerWeirdness = cell.weirdness;
 		Terrain lowerType = cell.terrain;
 		this.upper.apply(cell, x, y);
-		float upperVal = cell.height;
-		cell.height = NoiseUtil.lerp(lowerVal, upperVal, alpha);
+		float upperHeight = cell.height;
+		float upperErosion = cell.erosion;
+		float upperWeirdness = cell.weirdness;
+		cell.height = NoiseUtil.lerp(lowerHeight, upperHeight, alpha);
+		cell.erosion = NoiseUtil.lerp(lowerErosion, upperErosion, alpha);
+		cell.weirdness = NoiseUtil.lerp(lowerWeirdness, upperWeirdness, alpha);
 		if (select < this.midpoint) {
 			cell.terrain = lowerType;
 		}
