@@ -560,7 +560,7 @@ public final class RTFSurfaceRuleData {
 		}
         
         SurfaceRules.RuleSource root = SurfaceRules.sequence(builder.build().toArray(SurfaceRules.RuleSource[]::new));
-        SurfaceRuleManager.setDefaultSurfaceRules(RuleCategory.OVERWORLD, root);
+//        SurfaceRuleManager.setDefaultSurfaceRules(RuleCategory.OVERWORLD, root);
 		return root;
     }
     

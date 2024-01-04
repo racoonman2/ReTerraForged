@@ -19,6 +19,6 @@ public class RTFDensityFunctionTagsProvider extends TagsProvider<DensityFunction
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		this.tag(RTFDensityFunctionTags.ADDITIONAL_NOISE_ROUTER_FUNCTIONS).add(RTFNoiseRouterData.GRADIENT, RTFNoiseRouterData.EROSION, RTFNoiseRouterData.SEDIMENT, TBCompat.UNIQUENESS);
+		this.tag(RTFDensityFunctionTags.ADDITIONAL_NOISE_ROUTER_FUNCTIONS).add(RTFNoiseRouterData.GRADIENT, RTFNoiseRouterData.EROSION, RTFNoiseRouterData.SEDIMENT, TBCompat.uniquenessKey());
 	}
 }

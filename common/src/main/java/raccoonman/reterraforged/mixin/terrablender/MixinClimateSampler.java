@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.mixin;
+package raccoonman.reterraforged.mixin.terrablender;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Implements;
