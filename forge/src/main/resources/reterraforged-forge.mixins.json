@@ -1,5 +1,4 @@
 {
-  
   "required": true,
   "package": "raccoonman.reterraforged.forge.mixin",
   "minVersion": "0.8",

@@ -1,7 +1,5 @@
 package raccoonman.reterraforged.mixin;
 
-import java.util.List;
-
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.DensityFunction;
@@ -27,7 +24,6 @@ import net.minecraft.world.level.levelgen.RandomState;
 import raccoonman.reterraforged.data.worldgen.preset.Preset;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
-import raccoonman.reterraforged.world.worldgen.biome.RTFClimateSampler;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
 import raccoonman.reterraforged.world.worldgen.densityfunction.ConditionalArrayCache;
 import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
@@ -56,8 +52,8 @@ class MixinNoiseChunk {
 		),
 		method = "<init>"
 	)
-	public NoiseRouter NoiseChunk(RandomState randomState, int cellCountXZ, RandomState rs, int minBlockX, int minBlockZ) {
-		this.randomState = randomState;
+	private NoiseRouter NoiseChunk(RandomState randomState1, int cellCountXZ, RandomState randomState2, int minBlockX, int minBlockZ) {
+		this.randomState = randomState1;
 		this.chunkX = SectionPos.blockToSectionCoord(minBlockX);
 		this.chunkZ = SectionPos.blockToSectionCoord(minBlockZ);
 		GeneratorContext generatorContext;
@@ -67,20 +63,6 @@ class MixinNoiseChunk {
 		this.cache2d = new CellSampler.Cache2d();
 		return randomState.router();
 	}
-	
-	@Inject(
-		at = @At("RETURN"),
-		method = "cachedClimateSampler"
-	)
-    protected void cachedClimateSampler(NoiseRouter noiseRouter, List<Climate.ParameterPoint> list, CallbackInfoReturnable<Climate.Sampler> callback) {
-    	if((Object) callback.getReturnValue() instanceof RTFClimateSampler cachedSampler && (Object) this.randomState.sampler() instanceof RTFClimateSampler globalSampler) {
-    		DensityFunction uniqueness = globalSampler.getUniqueness();
-
-    		if(uniqueness != null) {
-    			cachedSampler.setUniqueness(this.wrap(uniqueness));
-    		}
-    	}
-    }
 
 	@ModifyVariable(
 		method = "<init>",
@@ -124,9 +106,4 @@ class MixinNoiseChunk {
         	callback.setReturnValue(cache.new Cache(QuartPos.toBlock(this.firstNoiseX), QuartPos.toBlock(this.firstNoiseZ), QuartPos.toBlock(this.cellCountXZ)));
         }
 	}
-
-	@Shadow
-    public DensityFunction wrap(DensityFunction densityFunction) {
-		throw new IllegalStateException();
-    }
 }
