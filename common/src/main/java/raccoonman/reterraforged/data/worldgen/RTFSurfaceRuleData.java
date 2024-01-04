@@ -13,8 +13,7 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import raccoonman.reterraforged.data.worldgen.preset.MiscellaneousSettings;
 import raccoonman.reterraforged.data.worldgen.preset.Preset;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
-import terrablender.api.SurfaceRuleManager;
-import terrablender.api.SurfaceRuleManager.RuleCategory;
+import raccoonman.reterraforged.world.worldgen.terrablender.TBCompat;
 
 public final class RTFSurfaceRuleData {
     private static final SurfaceRules.RuleSource AIR = makeStateRule(Blocks.AIR);
@@ -560,7 +559,9 @@ public final class RTFSurfaceRuleData {
 		}
         
         SurfaceRules.RuleSource root = SurfaceRules.sequence(builder.build().toArray(SurfaceRules.RuleSource[]::new));
-//        SurfaceRuleManager.setDefaultSurfaceRules(RuleCategory.OVERWORLD, root);
+        if(TBCompat.isEnabled()	) {
+//          SurfaceRuleManager.setDefaultSurfaceRules(RuleCategory.OVERWORLD, root);
+        }
 		return root;
     }
     

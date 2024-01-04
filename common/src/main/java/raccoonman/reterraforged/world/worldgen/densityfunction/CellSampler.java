@@ -11,6 +11,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 import raccoonman.reterraforged.world.worldgen.biome.Continentalness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.ControlPoints;
@@ -94,11 +95,10 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 			return CellSampler.this.maxValue();
 		}
 		
-		//evil hack
 		private float structureRiverFix(Cell cell, float value) {
-			if(CellSampler.this.field == Field.HEIGHT && this.chunk == null) {
-				if(cell.riverMask < 0.02F) {
-					return Float.NaN;
+			if(CellSampler.this.field == Field.HEIGHT) {
+				if(cell.riverMask < 0.1F) {
+					return value;
 				}
 			}
 			return value;
