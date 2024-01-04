@@ -8,12 +8,18 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
 import raccoonman.reterraforged.registries.RTFRegistries;
+import raccoonman.reterraforged.world.worldgen.biome.modifier.BiomeModifier;
 
 @Deprecated
 public final class RegistryUtil {
 	
 	public static <T> void register(Registry<T> registry, String name, T value) {
 		getWritable(registry).register(RTFRegistries.createKey(registry.key(), name), value, Lifecycle.stable());
+	}
+	
+	@ExpectPlatform
+	public static Registry<BiomeModifier> getBiomeModifierRegistry() {
+		throw new IllegalStateException();
 	}
 	
 	@ExpectPlatform

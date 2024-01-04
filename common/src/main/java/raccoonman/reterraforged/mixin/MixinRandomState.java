@@ -116,7 +116,7 @@ class MixinRandomState {
 			}
 		}, () -> {
 			if(this.hasContext) {
-				throw new IllegalStateException("Missing preset!");
+//				throw new IllegalStateException("Missing preset!");
 			}
 		});
 	}

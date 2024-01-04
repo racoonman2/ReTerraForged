@@ -45,7 +45,7 @@ repositories {
 dependencies {
     forge("net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}")
     
-    modImplementation("com.github.glitchfiend:TerraBlender-forge:${rootProject.minecraft_version}-${rootProject.terrablender_version}")
+//    modImplementation("com.github.glitchfiend:TerraBlender-forge:${rootProject.minecraft_version}-${rootProject.terrablender_version}")
 	compileOnly "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     
     common(project(path: ":common", configuration: "namedElements")) { transitive false }

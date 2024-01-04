@@ -8,8 +8,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
 
-public final class RegistryUtilImpl {
-
+public class RegistryUtilImpl {
+	
 	public static <T> WritableRegistry<T> getWritable(Registry<T> registry) {
 		return (WritableRegistry<T>) registry;
 	}

@@ -28,17 +28,23 @@ record AddModifier(Order order, GenerationStep.Decoration step, Optional<HolderS
 	
 	@Override
 	public void modify(Holder<Biome> biome, Phase phase, BiomeInfo.Builder builder) {
-		if(builder.getGenerationSettings() instanceof MixinBiomeGenerationSettingsPlainsBuilder builderAccessor) {
-			List<List<Holder<PlacedFeature>>> featureSteps = builderAccessor.getFeatures();
-			int index = this.step.ordinal();
-
-			while (index >= featureSteps.size()) {
-				featureSteps.add(Collections.emptyList());
+		if(phase == Phase.AFTER_EVERYTHING) {
+			if(builder.getGenerationSettings() instanceof MixinBiomeGenerationSettingsPlainsBuilder builderAccessor) {
+				if(this.biomes.isPresent() && !this.biomes.get().contains(biome)) {
+					return;
+				}
+				
+				List<List<Holder<PlacedFeature>>> featureSteps = builderAccessor.getFeatures();
+				int index = this.step.ordinal();
+	
+				while (index >= featureSteps.size()) {
+					featureSteps.add(Collections.emptyList());
+				}
+	
+				featureSteps.set(index, this.add(featureSteps.get(index)));
+			} else {
+				throw new IllegalStateException();
 			}
-
-			featureSteps.set(index, this.add(featureSteps.get(index)));
-		} else {
-			throw new IllegalStateException();
 		}
 	}
 
