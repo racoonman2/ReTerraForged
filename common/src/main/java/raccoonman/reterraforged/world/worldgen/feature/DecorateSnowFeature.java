@@ -67,8 +67,9 @@ public class DecorateSnowFeature extends Feature<Config> {
 			for(int x = 0; x < 16; x++) {
 				for(int z = 0; z < 16; z++) {
 		        	Cell cell = tileChunk.getCell(x, z);
-			        if(levels.scale(cell.height) >= generator.getSeaLevel()) {
-				        int surfaceY = chunk.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+					int scaledY = levels.scale(cell.height);
+			        int surfaceY = chunk.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+			        if(scaledY == surfaceY && scaledY >= generator.getSeaLevel()) {
 		        		int worldX = chunkPos.getBlockX(x);
 		        		int worldZ = chunkPos.getBlockZ(z);
 				        pos.set(worldX, surfaceY, worldZ);

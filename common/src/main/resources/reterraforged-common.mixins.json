@@ -5,17 +5,13 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-  	"MixinMinecraftServer",
   	"MixinNoiseChunk",
   	"MixinRandomState",
   	"MixinParameterList",
   	"MixinClimateSampler",
   	"MixinTargetPoint",
   	"MixinChunkMap",
-  	"MixinMinecraftServer",
-  	"MixinMinecraftServer$MixinFeatureTemplateManager",
   	"MixinUtil",
-  	"MixinChunkStatus",
   	"MixinBiomeGenerationSettings"
   ],
   "client": [

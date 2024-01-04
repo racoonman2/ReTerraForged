@@ -51,7 +51,7 @@ public class RTFNoiseRouterData {
         ctx.register(NoiseRouterData.RIDGES, RTFDensityFunctions.cell(CellSampler.Field.WEIRDNESS));
 
         DensityFunction height = NoiseRouterData.registerAndWrap(ctx, HEIGHT, RTFDensityFunctions.cell(CellSampler.Field.HEIGHT));
-        DensityFunction offset = NoiseRouterData.registerAndWrap(ctx, NoiseRouterData.OFFSET, DensityFunctions.add(DensityFunctions.constant(NoiseRouterData.GLOBAL_OFFSET), DensityFunctions.mul(DensityFunctions.add(DensityFunctions.mul(DensityFunctions.constant(-1.0D), RTFDensityFunctions.noise(noises.getOrThrow(TerrainTypeNoise.GROUND))), RTFDensityFunctions.clampToNearestUnit(height, properties.terrainScaler())), DensityFunctions.constant(2.0D))));
+        DensityFunction offset = NoiseRouterData.registerAndWrap(ctx, NoiseRouterData.OFFSET, DensityFunctions.add(DensityFunctions.constant(NoiseRouterData.GLOBAL_OFFSET), DensityFunctions.mul(DensityFunctions.add(DensityFunctions.mul(DensityFunctions.constant(-1.0D), RTFDensityFunctions.noise(noises.getOrThrow(TerrainTypeNoise.GROUND))), RTFDensityFunctions.clampToNearestUnit(RTFDensityFunctions.conditionalArrayCache(height), properties.terrainScaler())), DensityFunctions.constant(2.0D))));
         ctx.register(NoiseRouterData.DEPTH, DensityFunctions.add(DensityFunctions.yClampedGradient(-worldDepth, worldHeight, yGradientRange(-worldDepth), yGradientRange(worldHeight)), offset));
         ctx.register(NoiseRouterData.BASE_3D_NOISE_OVERWORLD, DensityFunctions.zero());
         ctx.register(NoiseRouterData.JAGGEDNESS, jaggednessPerformanceHack());

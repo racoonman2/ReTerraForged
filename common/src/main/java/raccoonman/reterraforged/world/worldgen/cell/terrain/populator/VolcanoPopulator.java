@@ -1,11 +1,14 @@
 package raccoonman.reterraforged.world.worldgen.cell.terrain.populator;
 
+import raccoonman.reterraforged.world.worldgen.biome.Erosion;
+import raccoonman.reterraforged.world.worldgen.biome.Weirdness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.RegionConfig;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.Terrain;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
+import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.function.CellFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.EdgeFunction;
@@ -74,6 +77,8 @@ public class VolcanoPopulator implements CellPopulator, WeightedPopulator {
         float value = this.cone.compute(x, z, 0);
         float limit = this.height.compute(x, z, 0);
         float maxHeight = limit * this.inversionPoint;
+        cell.weirdness = Weirdness.LOW_SLICE_NORMAL_DESCENDING.mid();
+        cell.erosion = Erosion.LEVEL_4.mid();
         if (value > maxHeight) {
             float steepnessModifier = 1.0F;
             float delta = (value - maxHeight) * steepnessModifier;

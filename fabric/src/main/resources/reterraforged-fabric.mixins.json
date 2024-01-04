@@ -5,9 +5,11 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_17",
   "client": [
-  	"MixinPresetEditor"
+  	"MixinPresetEditor",
   ],
-  "mixins": [
+  "mixins": [,
+  	"MixinChunkStatus",
+  	"MixinMinecraftServer",
   	"MixinBiomeModificationImpl"
   ],
   "injectors": {

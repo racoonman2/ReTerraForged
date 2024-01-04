@@ -21,7 +21,9 @@ public class TerrainType {
     public static final Terrain BADLANDS = registerBadlands("badlands", TerrainCategory.FLATLAND);
     public static final Terrain PLATEAU = register("plateau", TerrainCategory.LOWLAND);
     public static final Terrain HILLS = register("hills", TerrainCategory.LOWLAND);
-    public static final Terrain MOUNTAINS = registerMountain("mountains", TerrainCategory.HIGHLAND);
+    public static final Terrain MOUNTAINS_1 = registerMountain("mountains_1", TerrainCategory.HIGHLAND);
+    public static final Terrain MOUNTAINS_2 = registerMountain("mountains_2", TerrainCategory.HIGHLAND);
+    public static final Terrain MOUNTAINS_3 = registerMountain("mountains_3", TerrainCategory.HIGHLAND);
     public static final Terrain MOUNTAIN_CHAIN = registerMountain("mountain_chain", TerrainCategory.HIGHLAND);
     public static final Terrain VOLCANO = registerVolcano("volcano", TerrainCategory.HIGHLAND);
     public static final Terrain VOLCANO_PIPE = registerVolcano("volcano_pipe", TerrainCategory.HIGHLAND);
