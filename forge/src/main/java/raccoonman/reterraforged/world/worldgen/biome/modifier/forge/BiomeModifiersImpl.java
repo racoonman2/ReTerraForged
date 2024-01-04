@@ -19,8 +19,8 @@ public class BiomeModifiersImpl {
 		register("add", AddModifier.CODEC);
 	}
 	
-	public static BiomeModifier add(Order order, GenerationStep.Decoration step, HolderSet<Biome> biomes, HolderSet<PlacedFeature> features) {
-		return new AddModifier(order, step, Optional.of(biomes), features);
+	public static BiomeModifier add(Order order, GenerationStep.Decoration step, Optional<HolderSet<Biome>> biomes, HolderSet<PlacedFeature> features) {
+		return new AddModifier(order, step, biomes, features);
 	}
 	
 	public static void register(String name, Codec<? extends BiomeModifier> value) {

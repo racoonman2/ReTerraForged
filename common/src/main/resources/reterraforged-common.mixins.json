@@ -10,7 +10,6 @@
   	"terrablender.MixinClimateSampler",
   	"terrablender.MixinTargetPoint",
   	"terrablender.MixinNoiseChunk",
-  	
   	"MixinNoiseChunk",
   	"MixinRandomState",
   	"MixinChunkMap",

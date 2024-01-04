@@ -29,15 +29,14 @@ public class RTFCommon {
 
 	public static void bootstrap() {
 		RTFBuiltInRegistries.bootstrap();
-		
-		Noises.bootstrap();
-		Domains.bootstrap();
-		CurveFunctions.bootstrap();
 		TemplatePlacements.bootstrap();
 		TemplateDecorators.bootstrap();
 		RTFChanceModifiers.bootstrap();
 		RTFPlacementModifiers.bootstrap();
 		RTFDensityFunctions.bootstrap();
+		Noises.bootstrap();
+		Domains.bootstrap();
+		CurveFunctions.bootstrap();
 		RTFFeatures.bootstrap();
 		RTFHeightProviderTypes.bootstrap();
 		RTFFloatProviderTypes.bootstrap();
