@@ -14,7 +14,8 @@
   	"MixinRandomState",
   	"MixinChunkMap",
   	"MixinUtil",
-  	"MixinBiomeGenerationSettings"
+  	"MixinBiomeGenerationSettings",
+  	"MixinSurfaceSystem"
   ],
   "client": [
   	"ScreenInvoker"

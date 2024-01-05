@@ -23,6 +23,7 @@ import raccoonman.reterraforged.world.worldgen.feature.placement.RTFPlacementMod
 public class RTFPlacedFeatures {
 	public static final ResourceKey<PlacedFeature> ERODE = createKey("processing/erode");
 	public static final ResourceKey<PlacedFeature> DECORATE_SNOW = createKey("processing/decorate_snow");
+	public static final ResourceKey<PlacedFeature> SWAMP_SURFACE = createKey("processing/swamp_surface");
 	
 	public static final ResourceKey<PlacedFeature> FOREST_GRASS = createKey("forest/grass");
 //	public static final ResourceKey<PlacedFeature> FOREST_BUSH = createKey("forest/bush");
@@ -53,6 +54,8 @@ public class RTFPlacedFeatures {
 		if(miscellaneous.naturalSnowDecorator || miscellaneous.smoothLayerDecorator) {
 			PlacementUtils.register(ctx, DECORATE_SNOW, features.getOrThrow(RTFConfiguredFeatures.DECORATE_SNOW));
 		}
+		
+		PlacementUtils.register(ctx, SWAMP_SURFACE, features.getOrThrow(RTFConfiguredFeatures.SWAMP_SURFACE));
 		
         if(!miscellaneous.vanillaSprings) {
         	PlacementUtils.register(ctx, MiscOverworldPlacements.SPRING_WATER, features.getOrThrow(MiscOverworldFeatures.SPRING_WATER), disableOnOverworld);
