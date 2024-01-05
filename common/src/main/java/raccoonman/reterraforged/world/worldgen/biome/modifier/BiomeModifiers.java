@@ -1,5 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.biome.modifier;
 
+import java.util.Map;
 import java.util.Optional;
 
 import com.mojang.serialization.Codec;
@@ -7,6 +8,7 @@ import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -40,6 +42,19 @@ public class BiomeModifiers {
 	
 	@ExpectPlatform
 	public static BiomeModifier add(Order order, GenerationStep.Decoration step, Optional<HolderSet<Biome>> biomes, HolderSet<PlacedFeature> features) {
+		throw new UnsupportedOperationException();
+	}
+
+	public static BiomeModifier replace(GenerationStep.Decoration step, Map<ResourceKey<PlacedFeature>, Holder<PlacedFeature>> replacements) {
+		return replace(step, Optional.empty(), replacements);
+	}
+
+	public static BiomeModifier replace(GenerationStep.Decoration step, HolderSet<Biome> biomes, Map<ResourceKey<PlacedFeature>, Holder<PlacedFeature>> replacements) {
+		return replace(step, Optional.of(biomes), replacements);
+	}
+	
+	@ExpectPlatform
+	public static BiomeModifier replace(GenerationStep.Decoration step, Optional<HolderSet<Biome>> biomes, Map<ResourceKey<PlacedFeature>, Holder<PlacedFeature>> replacements) {
 		throw new UnsupportedOperationException();
 	}
 	
