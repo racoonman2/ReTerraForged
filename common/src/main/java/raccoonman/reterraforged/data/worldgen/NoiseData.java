@@ -15,6 +15,7 @@ public class NoiseData {
 		TerrainNoise.bootstrap(preset, ctx);
 		ClimateNoise.bootstrap(preset, ctx);
 		SurfaceNoise.bootstrap(preset, ctx);
+		StrataNoise.bootstrap(preset, ctx);
 	}
 	
 	public static Noise getNoise(HolderGetter<Noise> noiseLookup, ResourceKey<Noise> key) {

@@ -8,9 +8,14 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.biome.Climate;
+import raccoonman.reterraforged.data.worldgen.RTFSurfaceRuleData;
+import raccoonman.reterraforged.data.worldgen.preset.Preset;
+import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.world.worldgen.biome.RTFTargetPoint;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
+import raccoonman.reterraforged.world.worldgen.terrablender.TBCompat;
 import terrablender.api.RegionType;
 import terrablender.api.Regions;
 
@@ -28,6 +33,15 @@ class MixinParameterList<T> {
 	)
     public void initializeForTerraBlender(RegistryAccess registryAccess, RegionType regionType, long seed, CallbackInfo callback) {
     	this.maxIndex = Regions.getCount(regionType) - 1;
+//
+//    	registryAccess.lookup(RTFRegistries.PRESET).flatMap((registry) -> {
+//    		return registry.get(Preset.KEY);
+//    	}).ifPresent((holder) -> {
+//    		Preset preset = holder.value();
+//        	TBCompat.setSurfaceRules(preset, (defaultRules) -> {
+//        		return RTFSurfaceRuleData.overworld(preset, registryAccess.lookupOrThrow(Registries.DENSITY_FUNCTION), registryAccess.lookupOrThrow(RTFRegistries.NOISE), defaultRules);
+//            });
+//    	});
     }
 
 	@Redirect(

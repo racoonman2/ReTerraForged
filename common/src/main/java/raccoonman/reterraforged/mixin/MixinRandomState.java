@@ -27,7 +27,6 @@ import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.concurrent.ThreadPools;
 import raccoonman.reterraforged.config.PerformanceConfig;
 import raccoonman.reterraforged.data.worldgen.preset.Preset;
-import raccoonman.reterraforged.platform.ModLoaderUtil;
 import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.tags.RTFDensityFunctionTags;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
@@ -36,6 +35,7 @@ import raccoonman.reterraforged.world.worldgen.biome.RTFClimateSampler;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
 import raccoonman.reterraforged.world.worldgen.densityfunction.NoiseFunction;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
+import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.terrablender.TBCompat;
 
 @Mixin(RandomState.class)
@@ -134,5 +134,9 @@ class MixinRandomState {
 	@Nullable
 	public DensityFunction reterraforged$RTFRandomState$wrap(DensityFunction function) {
 		return function.mapAll(this.densityFunctionWrapper);
+	}
+
+	public Noise reterraforged$RTFRandomState$seed(Noise noise) {
+		return Noises.shiftSeed(noise, (int) this.seed);
 	}
 }
