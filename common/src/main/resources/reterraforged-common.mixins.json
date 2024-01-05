@@ -16,7 +16,7 @@
   	"MixinUtil",
   	"MixinBiomeGenerationSettings",
   	"MixinSurfaceSystem",
-  	"MixinSinglePoolElement"
+  	"MixinStructure"
   ],
   "client": [
   	"ScreenInvoker"
