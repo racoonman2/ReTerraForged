@@ -1,8 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.cell.heightmap;
 
-import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling.Tile;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.world.level.levelgen.GenerationStep;
 import raccoonman.reterraforged.data.worldgen.NoiseData;
 import raccoonman.reterraforged.data.worldgen.TerrainTypeNoise;
 import raccoonman.reterraforged.data.worldgen.preset.Preset;
@@ -24,6 +22,7 @@ import raccoonman.reterraforged.world.worldgen.cell.terrain.provider.TerrainProv
 import raccoonman.reterraforged.world.worldgen.cell.terrain.region.RegionLerper;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.region.RegionModule;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.region.RegionSelector;
+import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.EdgeFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.Interpolation;
