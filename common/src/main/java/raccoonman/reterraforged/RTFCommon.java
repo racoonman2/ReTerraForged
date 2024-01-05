@@ -21,6 +21,7 @@ import raccoonman.reterraforged.world.worldgen.noise.domain.Domains;
 import raccoonman.reterraforged.world.worldgen.noise.function.CurveFunctions;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
+import raccoonman.reterraforged.world.worldgen.surface.rule.RTFSurfaceRules;
 
 public class RTFCommon {
 	public static final String MOD_ID = "reterraforged";
@@ -41,7 +42,8 @@ public class RTFCommon {
 		RTFHeightProviderTypes.bootstrap();
 		RTFFloatProviderTypes.bootstrap();
 		BiomeModifiers.bootstrap();
-			
+		RTFSurfaceRules.bootstrap();
+		
 		RegistryUtil.createDataRegistry(RTFRegistries.NOISE, Noise.DIRECT_CODEC);
 		RegistryUtil.createDataRegistry(RTFRegistries.PRESET, Preset.DIRECT_CODEC);
 	}

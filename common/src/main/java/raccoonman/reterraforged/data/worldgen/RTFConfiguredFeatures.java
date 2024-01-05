@@ -25,6 +25,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.WeightedPlacedFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.DiskConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
@@ -42,6 +43,7 @@ import raccoonman.reterraforged.world.worldgen.feature.BushFeature;
 import raccoonman.reterraforged.world.worldgen.feature.DecorateSnowFeature;
 import raccoonman.reterraforged.world.worldgen.feature.ErodeFeature;
 import raccoonman.reterraforged.world.worldgen.feature.RTFFeatures;
+import raccoonman.reterraforged.world.worldgen.feature.SwampSurfaceFeature;
 import raccoonman.reterraforged.world.worldgen.feature.chance.ChanceFeature;
 import raccoonman.reterraforged.world.worldgen.feature.chance.ChanceModifier;
 import raccoonman.reterraforged.world.worldgen.feature.template.TemplateFeature;
@@ -54,6 +56,7 @@ import raccoonman.reterraforged.world.worldgen.feature.template.placement.Templa
 public class RTFConfiguredFeatures {
 	public static final ResourceKey<ConfiguredFeature<?, ?>> ERODE = createKey("processing/erode");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> DECORATE_SNOW = createKey("processing/decorate_snow");
+	public static final ResourceKey<ConfiguredFeature<?, ?>> SWAMP_SURFACE = createKey("processing/swamp_surface");
 	
 	public static final ResourceKey<ConfiguredFeature<?, ?>> FOREST_GRASS = createKey("forest/grass");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> FOREST_BUSH = createKey("forest/bush");
@@ -83,6 +86,8 @@ public class RTFConfiguredFeatures {
 		if(miscellaneous.naturalSnowDecorator || miscellaneous.smoothLayerDecorator) {
 			FeatureUtils.register(ctx, DECORATE_SNOW, RTFFeatures.DECORATE_SNOW, new DecorateSnowFeature.Config(miscellaneous.naturalSnowDecorator, miscellaneous.smoothLayerDecorator));
 		}
+		
+		FeatureUtils.register(ctx, SWAMP_SURFACE, RTFFeatures.SWAMP_SURFACE, new SwampSurfaceFeature.Config(Blocks.CLAY.defaultBlockState(), Blocks.GRAVEL.defaultBlockState(), Blocks.DIRT.defaultBlockState()));
 		
 		if(miscellaneous.customBiomeFeatures) {
 			HolderGetter<PlacedFeature> placedFeatures = ctx.lookup(Registries.PLACED_FEATURE);
