@@ -21,6 +21,8 @@ import raccoonman.reterraforged.world.worldgen.noise.domain.Domains;
 import raccoonman.reterraforged.world.worldgen.noise.function.CurveFunctions;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
+import raccoonman.reterraforged.world.worldgen.structure.rule.StructureRule;
+import raccoonman.reterraforged.world.worldgen.structure.rule.StructureRules;
 import raccoonman.reterraforged.world.worldgen.surface.rule.RTFSurfaceRules;
 
 public class RTFCommon {
@@ -43,9 +45,11 @@ public class RTFCommon {
 		RTFFloatProviderTypes.bootstrap();
 		BiomeModifiers.bootstrap();
 		RTFSurfaceRules.bootstrap();
+		StructureRules.bootstrap();
 		
 		RegistryUtil.createDataRegistry(RTFRegistries.NOISE, Noise.DIRECT_CODEC);
 		RegistryUtil.createDataRegistry(RTFRegistries.PRESET, Preset.DIRECT_CODEC);
+		RegistryUtil.createDataRegistry(RTFRegistries.STRUCTURE_RULE, StructureRule.DIRECT_CODEC);
 	}
 	
 	public static ResourceLocation location(String name) {

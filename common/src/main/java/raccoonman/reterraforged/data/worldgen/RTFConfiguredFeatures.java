@@ -36,6 +36,7 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvi
 import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedBlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.data.worldgen.preset.MiscellaneousSettings;
 import raccoonman.reterraforged.data.worldgen.preset.Preset;
@@ -86,7 +87,7 @@ public class RTFConfiguredFeatures {
 		if(miscellaneous.naturalSnowDecorator || miscellaneous.smoothLayerDecorator) {
 			FeatureUtils.register(ctx, DECORATE_SNOW, RTFFeatures.DECORATE_SNOW, new DecorateSnowFeature.Config(miscellaneous.naturalSnowDecorator, miscellaneous.smoothLayerDecorator));
 		}
-		
+
 		FeatureUtils.register(ctx, SWAMP_SURFACE, RTFFeatures.SWAMP_SURFACE, new SwampSurfaceFeature.Config(Blocks.CLAY.defaultBlockState(), Blocks.GRAVEL.defaultBlockState(), Blocks.DIRT.defaultBlockState()));
 		
 		if(miscellaneous.customBiomeFeatures) {
