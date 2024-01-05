@@ -10,9 +10,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.RandomState;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
@@ -31,24 +29,16 @@ record CellTest(float cutoff, Set<Terrain> terrainTypeBlacklist) implements Stru
 	}
 	
 	@Override
-	public boolean test(WorldGenLevel level, BlockPos pos, BoundingBox boundingBox) {
-		int startX = pos.getX();
-		int startZ = pos.getZ();
-		RandomState randomState = level.getLevel().getChunkSource().randomState();
+	public boolean test(RandomState randomState, BlockPos pos) {
 		if((Object) randomState instanceof RTFRandomState rtfRandomState) {
 			@Nullable
 			GeneratorContext generatorContext = rtfRandomState.generatorContext();
 			if(generatorContext != null) {
 				WorldLookup worldLookup = generatorContext.lookup;
 				Cell cell = new Cell();
-				for(int x = startX; x < startX + boundingBox.getXSpan(); x++) {
-					for(int z = startZ; z < startZ + boundingBox.getZSpan(); z++) {
-						worldLookup.applyCell(cell.reset(), x, z);
-						
-						if(cell.riverMask < this.cutoff || this.terrainTypeBlacklist.contains(cell.terrain)) {
-							return false;
-						}
-					}	
+				worldLookup.applyCell(cell.reset(), pos.getX(), pos.getZ());
+				if(cell.riverMask < this.cutoff || this.terrainTypeBlacklist.contains(cell.terrain)) {
+					return false;
 				}
 			}
 			return true;

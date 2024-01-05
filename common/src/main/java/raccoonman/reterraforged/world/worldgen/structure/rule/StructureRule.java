@@ -5,14 +5,13 @@ import java.util.function.Function;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.RandomState;
 import raccoonman.reterraforged.registries.RTFBuiltInRegistries;
 
 public interface StructureRule {
     public static final Codec<StructureRule> DIRECT_CODEC = RTFBuiltInRegistries.STRUCTURE_RULE_TYPE.byNameCodec().dispatch(StructureRule::codec, Function.identity());
 
-	boolean test(WorldGenLevel level, BlockPos pos, BoundingBox boundingBox);
+	boolean test(RandomState randomState, BlockPos pos);
 	
 	Codec<? extends StructureRule> codec();
 }
