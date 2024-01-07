@@ -6,28 +6,27 @@ import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 
 public class DensityNoise implements Noise {
-//    private BiomeVariance biome;
-//    private Noise variance;
-//
-//    public DensityNoise(BiomeVariance biome, Noise variance) {
-//        this.biome = biome;
-//        this.variance = variance;
-//    }
+    private BiomeVariance biome;
+    private Noise variance;
+
+    public DensityNoise(BiomeVariance biome, Noise variance) {
+        this.biome = biome;
+        this.variance = variance;
+    }
 
     @Override
     public float compute(float x, float y, int seed) {
-//        float value1 = this.biome.compute(x, y, 0);
-//        if (value1 > 2F) {
-//            return value1;
-//        }
-//
-//        float value2 = this.variance.compute(x, y, 0);
-//        if (value1 > 1F) {
-//            return NoiseUtil.lerp(value2, value1, (value1 - 0.25F) / 0.25F);
-//        }
-//
-//        return value2;
-    	return 0.5F;
+        float value1 = this.biome.compute(x, y, 0);
+        if (value1 > 2F) {
+            return value1;
+        }
+
+        float value2 = this.variance.compute(x, y, 0);
+        if (value1 > 1F) {
+            return NoiseUtil.lerp(value2, value1, (value1 - 0.25F) / 0.25F);
+        }
+
+        return value2;
     }
 
 	@Override

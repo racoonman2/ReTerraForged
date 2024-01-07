@@ -27,7 +27,7 @@ public class RTFForge {
     		modBus.addListener(RTFForgeClient::registerPresetEditors);
     	}
     	modBus.addListener(RTFForge::gatherData);
-    	
+
     	RegistryUtilImpl.register(modBus);
     }
     

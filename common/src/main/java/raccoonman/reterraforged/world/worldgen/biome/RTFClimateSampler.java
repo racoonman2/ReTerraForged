@@ -1,12 +1,9 @@
 package raccoonman.reterraforged.world.worldgen.biome;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.core.BlockPos;
 
 public interface RTFClimateSampler {
-	void setUniqueness(DensityFunction function);
+	void setSpawnSearchCenter(BlockPos center);
 	
-	@Nullable
-	DensityFunction getUniqueness();
+	BlockPos getSpawnSearchCenter();
 }

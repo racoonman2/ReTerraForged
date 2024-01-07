@@ -19,7 +19,7 @@ import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
-import raccoonman.reterraforged.world.worldgen.biome.RTFClimateSampler;
+import raccoonman.reterraforged.world.worldgen.terrablender.TBClimateSampler;
 
 @Mixin(NoiseChunk.class)
 public class MixinNoiseChunk {
@@ -38,7 +38,7 @@ public class MixinNoiseChunk {
 		method = "cachedClimateSampler"
 	)
 	private void cachedClimateSampler(NoiseRouter noiseRouter, List<Climate.ParameterPoint> list, CallbackInfoReturnable<Climate.Sampler> callback) {
-    	if((Object) callback.getReturnValue() instanceof RTFClimateSampler cachedSampler && (Object) this.randomState.sampler() instanceof RTFClimateSampler globalSampler) {
+    	if((Object) callback.getReturnValue() instanceof TBClimateSampler cachedSampler && (Object) this.randomState.sampler() instanceof TBClimateSampler globalSampler) {
     		DensityFunction uniqueness = globalSampler.getUniqueness();
 
     		if(uniqueness != null) {

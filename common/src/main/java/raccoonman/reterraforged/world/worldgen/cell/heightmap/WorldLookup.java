@@ -25,25 +25,25 @@ public class WorldLookup {
 		return this.heightmap;
 	}
 
-	public void applyCell(Cell cell, int x, int z) {
-		this.applyCell(cell, x, z, false);
+	public boolean applyCell(Cell cell, int x, int z) {
+		return this.applyCell(cell, x, z, false);
 	}
 
-	public void applyCell(Cell cell, int x, int z, boolean load) {
+	public boolean applyCell(Cell cell, int x, int z, boolean load) {
 		if (load && this.computeAccurate(cell, x, z)) {
-			return;
+			return true;
 		}
 		if (this.computeCached(cell, x, z)) {
-			return;
+			return true;
 		}
-		this.compute(cell, x, z);
+		return this.compute(cell, x, z);
 	}
 
 	private boolean computeAccurate(Cell cell, int x, int z) {
 		int rx = this.cache.chunkToTile(x >> 4);
 		int rz = this.cache.chunkToTile(z >> 4);
 		Tile tile = this.cache.provide(rx, rz);
-		Cell c = tile.getCell(x, z);
+		Cell c = tile.lookup(x, z);
 		if (c != null) {
 			cell.copyFrom(c);
 		}
@@ -55,7 +55,7 @@ public class WorldLookup {
 		int rz = this.cache.chunkToTile(z >> 4);
 		Tile tile = this.cache.provideIfPresent(rx, rz);
 		if (tile != null) {
-			Cell c = tile.getCell(x, z);
+			Cell c = tile.lookup(x, z);
 			if (c != null) {
 				cell.copyFrom(c);
 			}
@@ -64,10 +64,11 @@ public class WorldLookup {
 		return false;
 	}
 
-	private void compute(Cell cell, int x, int z) {
+	private boolean compute(Cell cell, int x, int z) {
 		this.heightmap.apply(cell, x, z);
 		if (cell.terrain == TerrainType.COAST && cell.height > this.waterLevel && cell.height <= this.beachLevel) {
 			cell.terrain = TerrainType.BEACH;
 		}
+		return false;
 	}
 }

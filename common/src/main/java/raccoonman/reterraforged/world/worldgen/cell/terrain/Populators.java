@@ -1,6 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.cell.terrain;
 
-import raccoonman.reterraforged.data.worldgen.preset.TerrainSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.world.worldgen.biome.Erosion;
 import raccoonman.reterraforged.world.worldgen.biome.Weirdness;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;

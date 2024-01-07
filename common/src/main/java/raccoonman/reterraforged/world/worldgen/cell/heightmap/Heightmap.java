@@ -1,13 +1,13 @@
 package raccoonman.reterraforged.world.worldgen.cell.heightmap;
 
-import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling.Tile;
 import net.minecraft.core.HolderGetter;
-import raccoonman.reterraforged.data.worldgen.NoiseData;
-import raccoonman.reterraforged.data.worldgen.TerrainTypeNoise;
-import raccoonman.reterraforged.data.worldgen.preset.Preset;
-import raccoonman.reterraforged.data.worldgen.preset.TerrainSettings;
-import raccoonman.reterraforged.data.worldgen.preset.WorldSettings;
+import raccoonman.reterraforged.data.worldgen.preset.PresetNoiseData;
+import raccoonman.reterraforged.data.worldgen.preset.PresetTerrainTypeNoise;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
+import raccoonman.reterraforged.world.worldgen.RTFRandomState;
 import raccoonman.reterraforged.world.worldgen.biome.Erosion;
 import raccoonman.reterraforged.world.worldgen.biome.Weirdness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
@@ -34,10 +34,6 @@ import raccoonman.reterraforged.world.worldgen.util.Seed;
 
 public record Heightmap(CellPopulator terrain, CellPopulator region, Continent continent, Climate climate, Levels levels, ControlPoints controlPoints, float terrainFrequency, Noise beachNoise) {
 	
-	public Heightmap cache(Tile tile) {
-		return new Heightmap(this.terrain, this.region, this.continent, this.climate, this.levels, this.controlPoints, this.terrainFrequency, this.beachNoise);
-	}
-	
 	public void apply(Cell cell, float x, float z) {
 		this.applyTerrain(cell, x, z);
 		this.applyRivers(cell, x, z, this.continent.getRivermap(cell));
@@ -61,9 +57,9 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 	public void applyClimate(Cell cell, float x, float z) {
         this.climate.apply(cell, x, z);
 
-        float riverValleyThreshold = 0.575F;
+        float riverValleyThreshold = 0.675F;
         
-        if(cell.riverMask >= riverValleyThreshold && cell.terrainRegionId > 0.5F) { 
+        if(cell.riverMask >= riverValleyThreshold && cell.macroBiomeId > 0.5F) { 
         	cell.weirdness = -cell.weirdness;
         }
         
@@ -81,7 +77,6 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
             cell.erosion = Erosion.LEVEL_4.mid();
             cell.weirdness = -0.03F;
         }
-        
         if(cell.terrain.isWetland()) {
         	cell.erosion = Erosion.LEVEL_6.mid();
         	cell.weirdness = Weirdness.VALLEY.mid();
@@ -121,7 +116,7 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         mountainShape = Noises.clamp(mountainShape, 0.0F, 0.9F);
         mountainShape = Noises.map(mountainShape, 0.0F, 1.0F);
 
-        Noise ground = NoiseData.getNoise(noiseLookup, TerrainTypeNoise.GROUND);
+        Noise ground = PresetNoiseData.getNoise(noiseLookup, PresetTerrainTypeNoise.GROUND);
         
         CellPopulator terrainRegions = new RegionSelector(TerrainProvider.generateTerrain(context.seed, terrainSettings, regionConfig, levels, noiseLookup));
         CellPopulator terrainRegionBorders = Populators.makeBorder(context.seed, ground, terrainSettings.plains, terrainSettings.steppe, globalVerticalScale);

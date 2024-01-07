@@ -1,11 +1,11 @@
 package raccoonman.reterraforged.world.worldgen.cell.climate;
 
 import net.minecraft.core.HolderGetter;
-import raccoonman.reterraforged.data.worldgen.ClimateNoise;
-import raccoonman.reterraforged.data.worldgen.NoiseData;
-import raccoonman.reterraforged.data.worldgen.preset.ClimateSettings;
-import raccoonman.reterraforged.data.worldgen.preset.Preset;
-import raccoonman.reterraforged.data.worldgen.preset.WorldSettings;
+import raccoonman.reterraforged.data.worldgen.preset.PresetClimateNoise;
+import raccoonman.reterraforged.data.worldgen.preset.PresetNoiseData;
+import raccoonman.reterraforged.data.worldgen.preset.settings.ClimateSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
@@ -51,7 +51,7 @@ public record Climate(int randomSeed, Noise offsetX, Noise offsetZ, int offsetDi
 		Levels levels = context.levels;
 		int randSeed = context.seed.next();
 		
-		Noise biomeEdgeShape = NoiseData.getNoise(noiseLookup, ClimateNoise.BIOME_EDGE_SHAPE);
+		Noise biomeEdgeShape = PresetNoiseData.getNoise(noiseLookup, PresetClimateNoise.BIOME_EDGE_SHAPE);
 		Noise offsetX = Noises.shiftSeed(biomeEdgeShape, context.seed.next());
 		Noise offsetZ = Noises.shiftSeed(biomeEdgeShape, context.seed.next());
 		int offsetDistance = climateSettings.biomeEdgeShape.strength;

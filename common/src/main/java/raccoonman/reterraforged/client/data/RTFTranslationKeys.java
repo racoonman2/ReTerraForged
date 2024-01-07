@@ -5,8 +5,11 @@ import raccoonman.reterraforged.RTFCommon;
 public final class RTFTranslationKeys {
 	public static final String METADATA_DESCRIPTION = resolve("metadata.description");
 	public static final String PRESET_METADATA_DESCRIPTION = resolve("preset.metadata.description");
+	public static final String MUD_SWAMPS_METADATA_DESCRIPTION = resolve("mudSwamps.metadata.description");
 	public static final String NO_ERROR_MESSAGE = resolve("error.noMessage");
 
+	public static final String GUI_INPUT_PROMPT = resolve("gui.selectPreset.inputPrompt");
+	
 	public static final String GUI_SELECT_PRESET_MISSING_LEGACY_PRESETS = resolve("gui.selectPreset.missingLegacyPresets");
 	public static final String GUI_SELECT_PRESET_TITLE = resolve("gui.selectPreset.title");
 	public static final String GUI_DEFAULT_PRESET_NAME = resolve("gui.preset.default.name");
@@ -29,7 +32,7 @@ public final class RTFTranslationKeys {
 	public static final String GUI_BUTTON_COPY = resolve("gui.button.copy");
 	public static final String GUI_BUTTON_DELETE = resolve("gui.button.delete");
 	public static final String GUI_BUTTON_OPEN_PRESET_FOLDER = resolve("gui.button.openPresetFolder");
-	public static final String GUI_BUTTON_OPEN_DATAPACK_FOLDER = resolve("gui.button.openDatapackFolder");
+	public static final String GUI_BUTTON_OPEN_EXPORT_FOLDER = resolve("gui.button.openDatapackFolder");
 	public static final String GUI_BUTTON_EXPORT_AS_DATAPACK = resolve("gui.button.export");
 	public static final String GUI_BUTTON_EXPORT_SUCCESS = resolve("gui.button.export.success");
 	public static final String GUI_BUTTON_SEED = resolve("gui.button.seed");
@@ -64,6 +67,8 @@ public final class RTFTranslationKeys {
 	public static final String GUI_SLIDER_CONTINENT_NOISE_OCTAVES = resolve("gui.slider.continentNoiseOctaves");
 	public static final String GUI_SLIDER_CONTINENT_NOISE_GAIN = resolve("gui.slider.continentNoiseGain");
 	public static final String GUI_SLIDER_CONTINENT_NOISE_LACUNARITY = resolve("gui.slider.continentNoisLacunarity");
+	public static final String GUI_SLIDER_MUSHROOM_FIELDS_INLAND = resolve("gui.slider.mushroomFieldsInland");
+	public static final String GUI_SLIDER_MUSHROOM_FIELDS_COAST = resolve("gui.slider.mushroomFieldsCoast");
 	public static final String GUI_SLIDER_DEEP_OCEAN = resolve("gui.slider.deepOcean");
 	public static final String GUI_SLIDER_SHALLOW_OCEAN = resolve("gui.slider.shallowOcean");
 	public static final String GUI_SLIDER_BEACH = resolve("gui.slider.beach");

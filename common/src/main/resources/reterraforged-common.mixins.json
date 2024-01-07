@@ -16,7 +16,10 @@
   	"MixinUtil",
   	"MixinBiomeGenerationSettings",
   	"MixinSurfaceSystem",
-  	"MixinStructure"
+  	"MixinStructure",
+  	"MixinMinecraftServer",
+  	"MixinClimateSampler",
+  	"MixinSpawnFinder"
   ],
   "client": [
   	"ScreenInvoker"

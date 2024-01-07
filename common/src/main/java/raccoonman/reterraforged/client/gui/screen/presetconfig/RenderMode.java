@@ -104,11 +104,10 @@ public enum RenderMode {
             float brightness = 0.8F;
             return rgba(cell.terrain.getRenderHue(), saturation, brightness);
         }
-    },
-    ;
+    };
 
     public int getColor(Cell cell, Levels levels) {
-        if (!handlesWater() && cell.height < levels.water) {
+        if (!this.handlesWater() && cell.height < levels.water) {
             return getWaterColor();
         }
         float bands = 10.0F;

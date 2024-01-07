@@ -11,7 +11,6 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 import raccoonman.reterraforged.world.worldgen.biome.Continentalness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.ControlPoints;
@@ -19,10 +18,8 @@ import raccoonman.reterraforged.world.worldgen.cell.heightmap.Heightmap;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.WorldLookup;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainCategory;
-import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler.Field;
 import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
-import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;
 
 public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) implements MarkerFunction.Mapped {

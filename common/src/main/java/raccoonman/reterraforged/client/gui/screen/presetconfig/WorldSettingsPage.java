@@ -11,10 +11,10 @@ import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
-import raccoonman.reterraforged.data.worldgen.preset.ContinentType;
-import raccoonman.reterraforged.data.worldgen.preset.Preset;
-import raccoonman.reterraforged.data.worldgen.preset.SpawnType;
-import raccoonman.reterraforged.data.worldgen.preset.WorldSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.ContinentType;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.SpawnType;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 
 public class WorldSettingsPage extends PresetEditorPage {
@@ -27,7 +27,9 @@ public class WorldSettingsPage extends PresetEditorPage {
 	private Slider continentNoiseOctaves;
 	private Slider continentNoiseGain;
 	private Slider continentNoiseLacunarity;
-	
+
+	private Slider mushroomFieldsInland;
+	private Slider mushroomFieldsCoast;
 	private Slider deepOcean;
 	private Slider shallowOcean;
 	private Slider beach;
@@ -115,8 +117,20 @@ public class WorldSettingsPage extends PresetEditorPage {
 		
 		this.applyContinentType(this.continentType.getValue());
 
+		this.mushroomFieldsInland = PresetWidgets.createFloatSlider(controlPoints.mushroomFieldsInland, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_MUSHROOM_FIELDS_INLAND, (slider, value) -> {
+			value = Math.min(value, this.mushroomFieldsCoast.getValue());
+			controlPoints.mushroomFieldsInland = (float) slider.scaleValue(value);
+			this.regenerate();
+			return value;
+		});
+		this.mushroomFieldsCoast = PresetWidgets.createFloatSlider(controlPoints.mushroomFieldsCoast, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_MUSHROOM_FIELDS_COAST, (slider, value) -> {
+			value = Math.min(value, this.deepOcean.getValue());
+			controlPoints.mushroomFieldsCoast = (float) slider.scaleValue(value);
+			this.regenerate();
+			return value;
+		});
 		this.deepOcean = PresetWidgets.createFloatSlider(controlPoints.deepOcean, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_DEEP_OCEAN, (slider, value) -> {
-			value = Math.min(value, this.shallowOcean.getValue());
+			value = Mth.clamp(value, this.mushroomFieldsCoast.getValue(), this.shallowOcean.getValue());
 			controlPoints.deepOcean = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
@@ -147,10 +161,12 @@ public class WorldSettingsPage extends PresetEditorPage {
 		});
 		this.spawnType = PresetWidgets.createCycle(SpawnType.values(), properties.spawnType, RTFTranslationKeys.GUI_BUTTON_SPAWN_TYPE, (button, value) -> {
 			properties.spawnType = value;
+			this.regenerate();
 		});
 		this.worldHeight = PresetWidgets.createIntSlider(properties.worldHeight, 0, 1024, RTFTranslationKeys.GUI_SLIDER_WORLD_HEIGHT, (slider, value) -> {
 			int nearestMultiple = Math.max(getNearestMultiple(slider, (float) value, 16), 16);
 			properties.worldHeight = nearestMultiple;
+			this.regenerate();
 			return slider.getSliderValue(nearestMultiple);
 		});
 		this.worldDepth = PresetWidgets.createIntSlider(properties.worldDepth, 0, 1024, RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH, (slider, value) -> {
@@ -160,6 +176,7 @@ public class WorldSettingsPage extends PresetEditorPage {
 		});
 		this.seaLevel = PresetWidgets.createIntSlider(properties.seaLevel, 0, 255, RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL, (slider, value) -> {
 			properties.seaLevel = (int) slider.scaleValue(value);
+			this.regenerate();
 			return value;
 		});
 		this.lavaLevel = PresetWidgets.createIntSlider(properties.lavaLevel, -1024, 128, RTFTranslationKeys.GUI_SLIDER_LAVA_LEVEL, (slider, value) -> {
@@ -179,6 +196,8 @@ public class WorldSettingsPage extends PresetEditorPage {
 		this.left.addWidget(this.continentNoiseLacunarity);
 
 		this.left.addWidget(PresetWidgets.createLabel(RTFTranslationKeys.GUI_LABEL_CONTROL_POINTS));
+		this.left.addWidget(this.mushroomFieldsInland);
+		this.left.addWidget(this.mushroomFieldsCoast);
 		this.left.addWidget(this.deepOcean);
 		this.left.addWidget(this.shallowOcean);
 		this.left.addWidget(this.beach);

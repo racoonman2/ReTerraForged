@@ -5,9 +5,10 @@ import java.util.Arrays;
 import raccoonman.reterraforged.concurrent.Resource;
 import raccoonman.reterraforged.concurrent.cache.SafeCloseable;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
+import raccoonman.reterraforged.world.worldgen.cell.CellLookup;
 import raccoonman.reterraforged.world.worldgen.densityfunction.tile.filter.Filterable;
 
-public class Tile implements SafeCloseable, Filterable {
+public class Tile implements SafeCloseable, Filterable, CellLookup {
 	private int x, z;
 	private int chunkX, chunkZ;
 	private int size;
@@ -42,9 +43,11 @@ public class Tile implements SafeCloseable, Filterable {
 		return this.z;
 	}
 	
-	public Cell getCell(int x, int z) {
-        int relBlockX = this.blockSize.border() + this.blockSize.mask(x);
-        int relBlockZ = this.blockSize.border() + this.blockSize.mask(z);
+	@Override
+	public Cell lookup(int blockX, int blockZ) {
+		int border = this.blockSize.border();
+        int relBlockX = border + this.blockSize.mask(blockX);
+        int relBlockZ = border + this.blockSize.mask(blockZ);
         int index = this.blockSize.indexOf(relBlockX, relBlockZ);
         return this.cache[index];
 	}

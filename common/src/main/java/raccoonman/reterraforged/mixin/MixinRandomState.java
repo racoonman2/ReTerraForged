@@ -26,16 +26,16 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.concurrent.ThreadPools;
 import raccoonman.reterraforged.config.PerformanceConfig;
-import raccoonman.reterraforged.data.worldgen.preset.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.tags.RTFDensityFunctionTags;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
-import raccoonman.reterraforged.world.worldgen.biome.RTFClimateSampler;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
 import raccoonman.reterraforged.world.worldgen.densityfunction.NoiseFunction;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
+import raccoonman.reterraforged.world.worldgen.terrablender.TBClimateSampler;
 import raccoonman.reterraforged.world.worldgen.terrablender.TBCompat;
 
 @Mixin(RandomState.class)
@@ -99,9 +99,9 @@ class MixinRandomState {
 			set.forEach((function) -> function.value().mapAll(this.densityFunctionWrapper));
 		});
 		
-		if((Object) this.sampler instanceof RTFClimateSampler rtfClimateSampler && TBCompat.isEnabled()) {
+		if((Object) this.sampler instanceof TBClimateSampler tbClimateSampler && TBCompat.isEnabled()) {
 			functions.get(TBCompat.uniquenessKey()).ifPresent((uniqueness) -> {
-				rtfClimateSampler.setUniqueness(uniqueness.value().mapAll(this.densityFunctionWrapper));
+				tbClimateSampler.setUniqueness(uniqueness.value().mapAll(this.densityFunctionWrapper));
 			});
 		}
 		
