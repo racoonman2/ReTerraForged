@@ -72,7 +72,6 @@ public class ErodeFeature extends Feature<Config> {
 					}
 				}
 			}
-			
 			return true;
 		} else {
 			throw new IllegalStateException();
