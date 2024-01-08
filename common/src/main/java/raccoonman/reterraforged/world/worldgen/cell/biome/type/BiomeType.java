@@ -1,7 +1,10 @@
 package raccoonman.reterraforged.world.worldgen.cell.biome.type;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 
 import raccoonman.reterraforged.world.worldgen.biome.Humidity;
@@ -10,23 +13,22 @@ import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil.Vec2f;
 
 public enum BiomeType {
-    TROPICAL_RAINFOREST(7, 83, 48, new Color(7, 83, 48), constant(Temperature.LEVEL_3), range(Humidity.LEVEL_3, Humidity.LEVEL_4)), 
-    SAVANNA(151, 165, 39, new Color(151, 165, 39), constant(Temperature.LEVEL_3), range(Humidity.LEVEL_0, Humidity.LEVEL_1)),
-    DESERT(200, 113, 55, new Color(200, 113, 55), constant(Temperature.LEVEL_4), range(Humidity.LEVEL_0, Humidity.LEVEL_4)), 
-    TEMPERATE_RAINFOREST(10, 84, 109, new Color(10, 160, 65), constant(Temperature.LEVEL_2), constant(Humidity.LEVEL_4)), 
-    TEMPERATE_FOREST(44, 137, 160, new Color(50, 200, 80), constant(Temperature.LEVEL_2), range(Humidity.LEVEL_2, Humidity.LEVEL_3)), 
-    GRASSLAND(179, 124, 6, new Color(100, 220, 60), range(Temperature.LEVEL_1, Temperature.LEVEL_2), range(Humidity.LEVEL_0, Humidity.LEVEL_1)), 
-    COLD_STEPPE(131, 112, 71, new Color(175, 180, 150), constant(Temperature.LEVEL_0), constant(Humidity.LEVEL_4)), 
-    STEPPE(199, 155, 60, new Color(200, 200, 120), range(Temperature.LEVEL_1, Temperature.LEVEL_2), range(Humidity.LEVEL_1, Humidity.LEVEL_2)), 
-    TAIGA(91, 143, 82, new Color(91, 143, 82), constant(Temperature.LEVEL_1), constant(Humidity.LEVEL_3)), 
-    TUNDRA(147, 167, 172, new Color(147, 167, 172), constant(Temperature.LEVEL_0), range(Humidity.LEVEL_0, Humidity.LEVEL_3)), 
-    ALPINE(0, 0, 0, new Color(160, 120, 170), constant(Temperature.LEVEL_0), constant(Humidity.LEVEL_4));
+    TROPICAL_RAINFOREST(new Color(7, 83, 48), new Color(7, 83, 48), range(Temperature.LEVEL_3, Temperature.LEVEL_3, Humidity.LEVEL_3, Humidity.LEVEL_4)), 
+    SAVANNA(new Color(151, 165, 39), new Color(151, 165, 39), range(Temperature.LEVEL_3, Temperature.LEVEL_3, Humidity.LEVEL_0, Humidity.LEVEL_1)),
+    DESERT(new Color(200, 113, 55), new Color(200, 113, 55), range(Temperature.LEVEL_4, Temperature.LEVEL_4, Humidity.LEVEL_0, Humidity.LEVEL_4)), 
+    TEMPERATE_RAINFOREST(new Color(10, 84, 109), new Color(10, 160, 65), constant(Temperature.LEVEL_2, Humidity.LEVEL_4)), 
+    TEMPERATE_FOREST(new Color(44, 137, 160), new Color(50, 200, 80), range(Temperature.LEVEL_2, Temperature.LEVEL_2, Humidity.LEVEL_2, Humidity.LEVEL_3)), 
+    GRASSLAND(new Color(179, 124, 6), new Color(100, 220, 60), range(Temperature.LEVEL_1, Temperature.LEVEL_2, Humidity.LEVEL_0, Humidity.LEVEL_1)), 
+    COLD_STEPPE(new Color(131, 112, 71), new Color(175, 180, 150), constant(Temperature.LEVEL_0, Humidity.LEVEL_4)), 
+    STEPPE(new Color(199, 155, 60), new Color(200, 200, 120), range(Temperature.LEVEL_1, Temperature.LEVEL_2, Humidity.LEVEL_1, Humidity.LEVEL_2)), 
+    TAIGA(new Color(91, 143, 82), new Color(91, 143, 82), range(Temperature.LEVEL_1, Temperature.LEVEL_1, Humidity.LEVEL_3, Humidity.LEVEL_4)), 
+    TUNDRA(new Color(147, 167, 172), new Color(147, 167, 172), range(Temperature.LEVEL_0, Temperature.LEVEL_0, Humidity.LEVEL_0, Humidity.LEVEL_3)), 
+    ALPINE(new Color(0, 0, 0), new Color(160, 120, 170), constant(Temperature.LEVEL_1, Humidity.LEVEL_4));
 
     public static final int RESOLUTION = 256;
     public static final int MAX = 255;
     private static final BiomeType[] BIOMES = values();
-    private Pair<Temperature, Temperature> temperatureRange;
-    private Pair<Humidity, Humidity> moistureRange;
+    private List<Pair<Temperature, Humidity>> noisePairs;
     private Color lookup;
     private Color color;
     private float minTemp;
@@ -34,14 +36,14 @@ public enum BiomeType {
     private float minMoist;
     private float maxMoist;
 
-    private BiomeType(int r, int g, int b, Color color, Pair<Temperature, Temperature> temperatureRange, Pair<Humidity, Humidity> moistureRange) {
-        this(new Color(r, g, b), color, temperatureRange, moistureRange);
+    @SafeVarargs
+	private BiomeType(Color lookup, Color color, Pair<Temperature, Humidity>... noisePairs) {
+    	this(lookup, color, ImmutableList.copyOf(noisePairs));
     }
     
-    private BiomeType(Color lookup, Color color, Pair<Temperature, Temperature> temperatureRange, Pair<Humidity, Humidity> moistureRange) {
+    private BiomeType(Color lookup, Color color, List<Pair<Temperature, Humidity>> noisePairs) {
         this.lookup = lookup;
-        this.temperatureRange = temperatureRange;
-        this.moistureRange = moistureRange;
+        this.noisePairs = ImmutableList.copyOf(noisePairs);
         this.color = BiomeTypeColors.getInstance().getColor(this.name(), color);
     }
     
@@ -49,24 +51,17 @@ public enum BiomeType {
         return this.lookup;
     }
 
-    private static final Temperature[] TEMPERATURE_LEVELS = Temperature.values();
-    private static final Humidity[] MOISTURE_LEVELS = Humidity.values();
-
     public float getTemperature(float identity) {
-    	return getRandom(identity, this.temperatureRange, TEMPERATURE_LEVELS).mid();
+    	return this.getRandomPair(identity).getFirst().mid();
     }
 
     public float getMoisture(float identity) {
-    	return getRandom(identity, this.moistureRange, MOISTURE_LEVELS).mid();
+    	return this.getRandomPair(identity).getSecond().mid();
     }
-
-    private static <E extends Enum<E>> E getRandom(float identity, Pair<E, E> range, E[] values) {
-    	E min = range.getFirst();
-    	E max = range.getSecond();
-    	int minOrdinal = min.ordinal();
-    	int count = max.ordinal() - minOrdinal;
-        int index = NoiseUtil.round(count * identity);
-        return values[minOrdinal + index];
+    
+    private Pair<Temperature, Humidity> getRandomPair(float identity) {
+    	int maxIndex = this.noisePairs.size() - 1;
+    	return this.noisePairs.get(NoiseUtil.round(identity * maxIndex));
     }
 
     public float mapTemperature(float value) {
@@ -152,6 +147,27 @@ public enum BiomeType {
         int max = x + (255 - x) / 2;
         int y = NoiseUtil.round(max * moisture);
         return Math.min(x, y);
+    }
+    
+    private static List<Pair<Temperature, Humidity>> range(Temperature t0, Temperature t1, Humidity h0, Humidity h1) {
+    	List<Pair<Temperature, Humidity>> set = new ArrayList<>();
+    	
+    	Temperature[] temperatures = Temperature.values();
+    	Humidity[] humidities = Humidity.values();
+    	for(int i = t0.ordinal(); i <= t1.ordinal(); i++) {
+    		Temperature temperature = temperatures[i];
+    		for(int j = h0.ordinal(); j <= h1.ordinal(); j++) {
+    			Humidity humidity = humidities[j];
+    			
+    			set.add(Pair.of(temperature, humidity));
+    		}
+    	}
+    	
+    	return set;
+    }
+    
+    private static Pair<Temperature, Humidity> constant(Temperature t, Humidity h) {
+    	return Pair.of(t, h);
     }
     
     private static <T> Pair<T, T> range(T min, T max) {

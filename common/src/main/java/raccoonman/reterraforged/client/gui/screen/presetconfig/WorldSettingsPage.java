@@ -224,7 +224,7 @@ public class WorldSettingsPage extends PresetEditorPage {
 	
 	private void applyContinentType(ContinentType type) {
 		this.continentShape.active = type == ContinentType.MULTI || type == ContinentType.SINGLE;
-
+		
 		boolean isMultiImproved = type == ContinentType.MULTI_IMPROVED;
 		this.continentSkipping.active = isMultiImproved;
 		this.continentSizeVariance.active = isMultiImproved;

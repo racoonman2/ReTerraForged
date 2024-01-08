@@ -30,14 +30,14 @@ public class WorldSettings {
     public static class Continent {
     	public static final Codec<Continent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		ContinentType.CODEC.fieldOf("continentType").forGetter((o) -> o.continentType),
-    		DistanceFunction.CODEC.fieldOf("continentShape").forGetter((o) -> o.continentShape),
+    		DistanceFunction.CODEC.optionalFieldOf("continentShape", DistanceFunction.EUCLIDEAN).forGetter((o) -> o.continentShape),
     		Codec.INT.fieldOf("continentScale").forGetter((o) -> o.continentScale),
     		Codec.FLOAT.fieldOf("continentJitter").forGetter((o) -> o.continentJitter),
-    		Codec.FLOAT.fieldOf("continentSkipping").forGetter((o) -> o.continentSkipping),
-    		Codec.FLOAT.fieldOf("continentSizeVariance").forGetter((o) -> o.continentSizeVariance),
-    		Codec.INT.fieldOf("continentNoiseOctaves").forGetter((o) -> o.continentNoiseOctaves),
-    		Codec.FLOAT.fieldOf("continentNoiseGain").forGetter((o) -> o.continentNoiseGain),
-    		Codec.FLOAT.fieldOf("continentNoiseLacunarity").forGetter((o) -> o.continentNoiseLacunarity)
+    		Codec.FLOAT.optionalFieldOf("continentSkipping", 0.25F).forGetter((o) -> o.continentSkipping),
+    		Codec.FLOAT.optionalFieldOf("continentSizeVariance", 0.25F).forGetter((o) -> o.continentSizeVariance),
+    		Codec.INT.optionalFieldOf("continentNoiseOctaves", 5).forGetter((o) -> o.continentNoiseOctaves),
+    		Codec.FLOAT.optionalFieldOf("continentNoiseGain", 0.26F).forGetter((o) -> o.continentNoiseGain),
+    		Codec.FLOAT.optionalFieldOf("continentNoiseLacunarity", 4.33F).forGetter((o) -> o.continentNoiseLacunarity)
     	).apply(instance, Continent::new));
     	
         public ContinentType continentType;

@@ -3,6 +3,7 @@ package raccoonman.reterraforged.world.worldgen.biome.modifier;
 import java.util.Map;
 import java.util.Optional;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -32,16 +33,16 @@ public class BiomeModifiers {
 	}
 
 	@SafeVarargs
-	public static BiomeModifier add(Order order, GenerationStep.Decoration step, HolderSet<Biome> biomes, Holder<PlacedFeature>... features) {
-		return add(order, step, biomes, HolderSet.direct(features));
+	public static BiomeModifier add(Order order, GenerationStep.Decoration step, Filter.Behavior filterBehavior, HolderSet<Biome> biomes, Holder<PlacedFeature>... features) {
+		return add(order, step, filterBehavior, biomes, HolderSet.direct(features));
 	}
 
-	public static BiomeModifier add(Order order, GenerationStep.Decoration step, HolderSet<Biome> biomes, HolderSet<PlacedFeature> features) {
-		return add(order, step, Optional.of(biomes), features);
+	public static BiomeModifier add(Order order, GenerationStep.Decoration step, Filter.Behavior filterBehavior, HolderSet<Biome> biomes, HolderSet<PlacedFeature> features) {
+		return add(order, step, Optional.of(Pair.of(filterBehavior, biomes)), features);
 	}
 	
 	@ExpectPlatform
-	public static BiomeModifier add(Order order, GenerationStep.Decoration step, Optional<HolderSet<Biome>> biomes, HolderSet<PlacedFeature> features) {
+	public static BiomeModifier add(Order order, GenerationStep.Decoration step, Optional<Pair<Filter.Behavior, HolderSet<Biome>>> biomes, HolderSet<PlacedFeature> features) {
 		throw new UnsupportedOperationException();
 	}
 

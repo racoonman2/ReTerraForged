@@ -16,13 +16,14 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.common.world.ModifiableBiomeInfo.BiomeInfo;
 import raccoonman.reterraforged.forge.mixin.MixinBiomeGenerationSettingsPlainsBuilder;
+import raccoonman.reterraforged.world.worldgen.biome.modifier.Filter;
 import raccoonman.reterraforged.world.worldgen.biome.modifier.Order;
 
-record AddModifier(Order order, GenerationStep.Decoration step, Optional<HolderSet<Biome>> biomes, HolderSet<PlacedFeature> features) implements ForgeBiomeModifier {
+record AddModifier(Order order, GenerationStep.Decoration step, Optional<Filter> biomes, HolderSet<PlacedFeature> features) implements ForgeBiomeModifier {
 	public static final Codec<AddModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Order.CODEC.fieldOf("order").forGetter(AddModifier::order),
 		GenerationStep.Decoration.CODEC.fieldOf("step").forGetter(AddModifier::step),
-		Biome.LIST_CODEC.optionalFieldOf("biomes").forGetter(AddModifier::biomes),
+		Filter.CODEC.optionalFieldOf("biomes").forGetter(AddModifier::biomes),
 		PlacedFeature.LIST_CODEC.fieldOf("features").forGetter(AddModifier::features)
 	).apply(instance, AddModifier::new));
 	
@@ -30,7 +31,7 @@ record AddModifier(Order order, GenerationStep.Decoration step, Optional<HolderS
 	public void modify(Holder<Biome> biome, Phase phase, BiomeInfo.Builder builder) {
 		if(phase == Phase.AFTER_EVERYTHING) {
 			if(builder.getGenerationSettings() instanceof MixinBiomeGenerationSettingsPlainsBuilder builderAccessor) {
-				if(this.biomes.isPresent() && !this.biomes.get().contains(biome)) {
+				if(this.biomes.isPresent() && !this.biomes.get().test(biome)) {
 					return;
 				}
 				

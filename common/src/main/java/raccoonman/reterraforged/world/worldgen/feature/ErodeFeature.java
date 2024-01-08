@@ -7,9 +7,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -61,7 +64,8 @@ public class ErodeFeature extends Feature<Config> {
 					Cell cell = tileChunk.getCell(x, z);
 					int scaledY = levels.scale(cell.height);
 					int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
-			        if(scaledY == surfaceY && scaledY >= generator.getSeaLevel()) {
+					Holder<Biome> biome = level.getBiome(pos);
+			        if(surfaceY <= scaledY && surfaceY >= generator.getSeaLevel() - 1 && !biome.is(Biomes.WOODED_BADLANDS) && !biome.is(Biomes.BADLANDS)) {
 						pos.set(chunkPos.getBlockX(x), surfaceY, chunkPos.getBlockZ(z));
 						
 						erodeColumn(config, rand, generator, chunk, cell, pos, surfaceY);
@@ -76,6 +80,7 @@ public class ErodeFeature extends Feature<Config> {
 	}
 	
 	private static void erodeColumn(Config config, Noise rand, ChunkGenerator generator, ChunkAccess chunk, Cell cell, BlockPos.MutableBlockPos pos, int surfaceY) {
+		// this is consistent with 1.16 but like, what about lakes??
         if (cell.terrain.isRiver() || cell.terrain.isWetland()) {
             return;
         }

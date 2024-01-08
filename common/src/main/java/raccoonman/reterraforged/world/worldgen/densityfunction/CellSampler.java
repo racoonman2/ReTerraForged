@@ -138,7 +138,7 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 				float beach = controlPoints.beach();
 				float coast = controlPoints.coast();
 				float inland = controlPoints.inland();
-
+				
 				if(cell.terrain.isDeepOcean()) {
 					float alpha = NoiseUtil.clamp(cell.continentEdge, 0.0F, deepOcean);
 					alpha = NoiseUtil.lerp(alpha, 0.0F, deepOcean, 0.0F, 1.0F);
