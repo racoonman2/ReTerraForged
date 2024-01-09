@@ -399,6 +399,7 @@ public class Noises {
 		return new Warp(input, domain);
 	}
 
+	@Deprecated
 	public static Noise cache2d(Noise input) {
 		return new Cache2d(input);
 	}

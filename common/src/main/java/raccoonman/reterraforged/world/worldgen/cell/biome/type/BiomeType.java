@@ -16,8 +16,8 @@ public enum BiomeType {
     TROPICAL_RAINFOREST(new Color(7, 83, 48), new Color(7, 83, 48), range(Temperature.LEVEL_3, Temperature.LEVEL_3, Humidity.LEVEL_3, Humidity.LEVEL_4)), 
     SAVANNA(new Color(151, 165, 39), new Color(151, 165, 39), range(Temperature.LEVEL_3, Temperature.LEVEL_3, Humidity.LEVEL_0, Humidity.LEVEL_1)),
     DESERT(new Color(200, 113, 55), new Color(200, 113, 55), range(Temperature.LEVEL_4, Temperature.LEVEL_4, Humidity.LEVEL_0, Humidity.LEVEL_4)), 
-    TEMPERATE_RAINFOREST(new Color(10, 84, 109), new Color(10, 160, 65), constant(Temperature.LEVEL_2, Humidity.LEVEL_4)), 
-    TEMPERATE_FOREST(new Color(44, 137, 160), new Color(50, 200, 80), range(Temperature.LEVEL_2, Temperature.LEVEL_2, Humidity.LEVEL_2, Humidity.LEVEL_3)), 
+    TEMPERATE_RAINFOREST(new Color(10, 84, 109), new Color(10, 160, 65), addAdditional(5, Temperature.LEVEL_2, Humidity.LEVEL_1, constant(Temperature.LEVEL_2, Humidity.LEVEL_4))), 
+    TEMPERATE_FOREST(new Color(44, 137, 160), new Color(50, 200, 80), addAdditional(5, Temperature.LEVEL_2, Humidity.LEVEL_1, range(Temperature.LEVEL_2, Temperature.LEVEL_2, Humidity.LEVEL_2, Humidity.LEVEL_3))), 
     GRASSLAND(new Color(179, 124, 6), new Color(100, 220, 60), range(Temperature.LEVEL_1, Temperature.LEVEL_2, Humidity.LEVEL_0, Humidity.LEVEL_1)), 
     COLD_STEPPE(new Color(131, 112, 71), new Color(175, 180, 150), constant(Temperature.LEVEL_0, Humidity.LEVEL_4)), 
     STEPPE(new Color(199, 155, 60), new Color(200, 200, 120), range(Temperature.LEVEL_1, Temperature.LEVEL_2, Humidity.LEVEL_1, Humidity.LEVEL_2)), 
@@ -72,32 +72,8 @@ public enum BiomeType {
         return (value - this.minMoist) / (this.maxMoist - this.minMoist);
     }
     
-    public int getId() {
-        return this.ordinal();
-    }
-    
-    public float getMinMoisture() {
-        return this.minMoist;
-    }
-    
-    public float getMaxMoisture() {
-        return this.maxMoist;
-    }
-    
-    public float getMinTemperature() {
-        return this.minTemp;
-    }
-    
-    public float getMaxTemperature() {
-        return this.maxTemp;
-    }
-    
     public Color getColor() {
         return this.color;
-    }
-    
-    public boolean isExtreme() {
-        return this == BiomeType.TUNDRA || this == BiomeType.DESERT;
     }
     
     public static BiomeType get(int id) {
@@ -168,6 +144,19 @@ public enum BiomeType {
     
     private static Pair<Temperature, Humidity> constant(Temperature t, Humidity h) {
     	return Pair.of(t, h);
+    }
+
+    private static List<Pair<Temperature, Humidity>> addAdditional(int count, Temperature t, Humidity h, Pair<Temperature, Humidity> noisePair) {
+    	return addAdditional(count, t, h, ImmutableList.of(noisePair));
+    }
+    
+    private static List<Pair<Temperature, Humidity>> addAdditional(int count, Temperature t, Humidity h, List<Pair<Temperature, Humidity>> noisePairs) {
+    	List<Pair<Temperature, Humidity>> newNoisePairs = new ArrayList<>(noisePairs);
+    	Pair<Temperature, Humidity> noisePair = Pair.of(t, h);
+    	for(int i = 0; i < count; i++) {
+    		newNoisePairs.add(noisePair);
+    	}
+    	return newNoisePairs;
     }
     
     private static <T> Pair<T, T> range(T min, T max) {

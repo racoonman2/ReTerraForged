@@ -159,7 +159,7 @@ public class PresetBiomeModifierData {
 		}
 		
 		if(miscellaneous.erosionDecorator) {
-			ctx.register(ADD_EROSION, prepend(GenerationStep.Decoration.RAW_GENERATION, Filter.Behavior.BLACKLIST, HolderSet.direct(biomes.getOrThrow(Biomes.BADLANDS), biomes.getOrThrow(Biomes.WOODED_BADLANDS), biomes.getOrThrow(Biomes.DRIPSTONE_CAVES), biomes.getOrThrow(Biomes.LUSH_CAVES), biomes.getOrThrow(Biomes.DEEP_DARK)), placedFeatures.getOrThrow(PresetPlacedFeatures.ERODE)));
+			ctx.register(ADD_EROSION, prepend(GenerationStep.Decoration.RAW_GENERATION, placedFeatures.getOrThrow(PresetPlacedFeatures.ERODE)));
 		}
 		if(miscellaneous.naturalSnowDecorator || miscellaneous.smoothLayerDecorator) {
 			ctx.register(ADD_SNOW_PROCESSING, append(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, placedFeatures.getOrThrow(PresetPlacedFeatures.DECORATE_SNOW)));

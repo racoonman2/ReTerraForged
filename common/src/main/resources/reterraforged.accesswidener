@@ -61,8 +61,6 @@ accessible method net/minecraft/world/level/levelgen/NoiseRouterData noiseGradie
 accessible method net/minecraft/world/level/levelgen/NoiseRouterData getFunction (Lnet/minecraft/core/HolderGetter;Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/world/level/levelgen/DensityFunction;
 accessible method net/minecraft/world/level/levelgen/NoiseRouterData registerAndWrap (Lnet/minecraft/data/worldgen/BootstapContext;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;
 accessible field net/minecraft/client/gui/screens/worldselection/CreateWorldScreen tabNavigationBar Lnet/minecraft/client/gui/components/tabs/TabNavigationBar;
-accessible class net/minecraft/world/level/biome/Climate$SpawnFinder
-accessible class net/minecraft/world/level/biome/Climate$SpawnFinder$Result
 accessible class net/minecraft/world/level/levelgen/DensityFunctions$Marker
 accessible class net/minecraft/world/level/levelgen/DensityFunctions$Marker$Type
 accessible class net/minecraft/world/level/levelgen/NoiseChunk$FlatCache

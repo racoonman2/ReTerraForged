@@ -7,7 +7,6 @@ import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
-import raccoonman.reterraforged.world.worldgen.RTFRandomState;
 import raccoonman.reterraforged.world.worldgen.biome.Erosion;
 import raccoonman.reterraforged.world.worldgen.biome.Weirdness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
@@ -34,10 +33,10 @@ import raccoonman.reterraforged.world.worldgen.util.Seed;
 
 public record Heightmap(CellPopulator terrain, CellPopulator region, Continent continent, Climate climate, Levels levels, ControlPoints controlPoints, float terrainFrequency, Noise beachNoise) {
 	
-	public void apply(Cell cell, float x, float z) {
+	public void apply(Cell cell, float x, float z, boolean applyClimate) {
 		this.applyTerrain(cell, x, z);
 		this.applyRivers(cell, x, z, this.continent.getRivermap(cell));
-		this.applyClimate(cell, x, z);
+		this.applyClimate(cell, x, z, applyClimate);
 	}
 	
 	public void applyTerrain(Cell cell, float x, float z) {
@@ -54,7 +53,7 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         VolcanoPopulator.modifyVolcanoType(cell, this.levels);
 	}
 	
-	public void applyClimate(Cell cell, float x, float z) {
+	public void applyClimate(Cell cell, float x, float z, boolean applyClimate) {
 		float riverValleyThreshold = 0.675F;
         if(cell.riverMask < riverValleyThreshold) {
         	cell.erosion = 0.445F;
@@ -75,7 +74,7 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         	cell.weirdness = Weirdness.VALLEY.mid();
         }
         
-        this.climate.apply(cell, x, z);
+        this.climate.apply(cell, x, z, applyClimate);
 
         if(cell.riverMask >= riverValleyThreshold && cell.macroBiomeId > 0.5F) { 
         	cell.weirdness = -cell.weirdness;
@@ -135,5 +134,18 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         Noise beachNoise = Noises.perlin2(context.seed.next(), 20, 1);
         beachNoise = Noises.mul(beachNoise, context.levels.scale(5));
         return new Heightmap(terrain, region, continent, climate, levels, controlPoints, terrainFrequency, beachNoise);
+	}
+	
+	private static CellPopulator makeIslandPopulator(GeneratorContext context) {
+//		float islandCoastPoint = 0.01F;
+//        float islandInlandPoint = 0.005F;
+//        
+//        CellPopulator land = (cell, x, z) -> {
+//        	cell.height = context.levels.water(3);
+//        };
+//        CellPopulator oceans = new ContinentLerper3(deepOcean, shallowOcean, coast, controlPoints.deepOcean(), controlPoints.shallowOcean(), controlPoints.coast());
+//        CellPopulator terrain = new ContinentLerper2(oceans, land, controlPoints.shallowOcean(), controlPoints.inland());
+//        return terrain
+		return null;
 	}
 }

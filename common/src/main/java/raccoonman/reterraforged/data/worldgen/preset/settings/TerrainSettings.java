@@ -59,6 +59,7 @@ public class TerrainSettings {
         public float globalVerticalScale;
         public float globalHorizontalScale;
         public boolean fancyMountains;
+        public boolean legacyMountainScaling;
         
         public General(int terrainSeedOffset, int terrainRegionSize, float globalVerticalScale, float globalHorizontalScale, boolean fancyMountains) {
         	this.terrainSeedOffset = terrainSeedOffset;

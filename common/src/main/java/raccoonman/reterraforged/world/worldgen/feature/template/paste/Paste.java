@@ -8,5 +8,5 @@ import raccoonman.reterraforged.world.worldgen.feature.template.placement.Templa
 import raccoonman.reterraforged.world.worldgen.feature.template.template.TemplateContext;
 
 public interface Paste {
-    <T extends TemplateContext>	boolean apply(LevelAccessor world, T ctx, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement placement, PasteConfig config);
+    <T extends TemplateContext>	boolean apply(LevelAccessor world, T ctx, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement<T> placement, PasteConfig config);
 }

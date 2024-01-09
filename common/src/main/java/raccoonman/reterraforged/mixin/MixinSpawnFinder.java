@@ -1,18 +1,11 @@
 package raccoonman.reterraforged.mixin;
 
-import java.util.List;
-
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.world.level.biome.Climate;
-import net.minecraft.world.level.biome.Climate.ParameterPoint;
-import net.minecraft.world.level.biome.Climate.SpawnFinder.Result;
-
-@Mixin(Climate.SpawnFinder.class)
+//TODO this just wont fucking load for some reason
+@Mixin(targets = "net.minecraft.world.level.biome.Climate$SpawnFinder")
 class MixinSpawnFinder {
-
-//
+	
 //	@Redirect(
 //		at = @At(
 //			value = "INVOKE",
@@ -69,9 +62,4 @@ class MixinSpawnFinder {
 //			return 0;
 //		}
 //	}
-//	
-    @Shadow
-    private static Result getSpawnPositionAndFitness(List<ParameterPoint> points, Climate.Sampler sampler, int x, int z) {
-    	throw new IllegalStateException();
-    }
 }

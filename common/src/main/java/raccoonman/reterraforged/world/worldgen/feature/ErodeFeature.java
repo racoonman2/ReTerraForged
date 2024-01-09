@@ -61,12 +61,15 @@ public class ErodeFeature extends Feature<Config> {
 			Config config = placeContext.config();
 			for(int x = 0; x < 16; x++) {
 				for(int z = 0; z < 16; z++) {
+					int worldX = chunkPos.getBlockX(x);
+					int worldZ = chunkPos.getBlockZ(z);
+					
 					Cell cell = tileChunk.getCell(x, z);
 					int scaledY = levels.scale(cell.height);
 					int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
-					Holder<Biome> biome = level.getBiome(pos);
+					Holder<Biome> biome = level.getBiome(pos.set(worldX, surfaceY, worldZ));
 			        if(surfaceY <= scaledY && surfaceY >= generator.getSeaLevel() - 1 && !biome.is(Biomes.WOODED_BADLANDS) && !biome.is(Biomes.BADLANDS)) {
-						pos.set(chunkPos.getBlockX(x), surfaceY, chunkPos.getBlockZ(z));
+						pos.set(worldX, surfaceY, worldZ);
 						
 						erodeColumn(config, rand, generator, chunk, cell, pos, surfaceY);
 					}
@@ -79,7 +82,6 @@ public class ErodeFeature extends Feature<Config> {
 	}
 	
 	private static void erodeColumn(Config config, Noise rand, ChunkGenerator generator, ChunkAccess chunk, Cell cell, BlockPos.MutableBlockPos pos, int surfaceY) {
-		// this is consistent with 1.16 but like, what about lakes??
         if (cell.terrain.isRiver() || cell.terrain.isWetland()) {
             return;
         }

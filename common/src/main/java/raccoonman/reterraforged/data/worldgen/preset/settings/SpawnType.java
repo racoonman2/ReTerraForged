@@ -24,6 +24,18 @@ public enum SpawnType implements StringRepresentable {
     		return new BlockPos(PosUtil.unpackLeft(center), 0, PosUtil.unpackRight(center));
     	}
 	}, 
+    ISLANDS("ISLANDS") {
+
+		@Override
+		public BlockPos getSearchCenter(GeneratorContext ctx) {
+			return BlockPos.ZERO;
+		}
+//		
+//		@Override
+//		public List<ParameterPoint> getParameterPoints() {
+//			return ImmutableList.of();
+//		}
+	},
     WORLD_ORIGIN("WORLD_ORIGIN") {
 
 		@Override

@@ -18,6 +18,7 @@ import raccoonman.reterraforged.world.worldgen.cell.heightmap.Heightmap;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.WorldLookup;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainCategory;
+import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler.Field;
 import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;
@@ -28,7 +29,7 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 	@Override
 	public double compute(FunctionContext ctx) {
 		WorldLookup worldLookup = this.deferredLookup.get();
-		Cell cell = CELL.get().getAndUpdate(worldLookup, ctx.blockX(), ctx.blockZ());
+		Cell cell = CELL.get().getAndUpdate(worldLookup, ctx.blockX(), ctx.blockZ(), true);
 		return this.field.read(cell, worldLookup.getHeightmap());
 	}
 
@@ -46,10 +47,10 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 		private long lastPos = Long.MAX_VALUE;
 		private Cell cell = new Cell();
 		
-		public Cell getAndUpdate(WorldLookup lookup, int blockX, int blockZ) {
+		public Cell getAndUpdate(WorldLookup lookup, int blockX, int blockZ, boolean sampleClimate) {
 			long packedPos = PosUtil.pack(blockX, blockZ);
 			if(this.lastPos != packedPos) {
-				lookup.applyCell(this.cell.reset(), blockX, blockZ);
+				lookup.applyCell(this.cell.reset(), blockX, blockZ, false, sampleClimate);
 				this.lastPos = packedPos;
 			}
 			return this.cell;
@@ -78,7 +79,7 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 			WorldLookup worldLookup = CellSampler.this.deferredLookup.get();
 			Cell cell = (this.chunk != null && this.chunkX == chunkX && this.chunkZ == chunkZ) ? 
 				this.chunk.getCell(blockX, blockZ) :
-				this.cache2d.getAndUpdate(worldLookup, blockX, blockZ);
+				this.cache2d.getAndUpdate(worldLookup, blockX, blockZ, false);
 			return this.structureRiverFix(cell, CellSampler.this.field.read(cell, worldLookup.getHeightmap()));
 		}
 

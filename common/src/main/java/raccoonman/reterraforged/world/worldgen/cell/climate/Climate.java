@@ -8,7 +8,6 @@ import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
-import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.cell.continent.Continent;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
@@ -16,17 +15,17 @@ import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 
-public record Climate(int randomSeed, Noise offsetX, Noise offsetZ, int offsetDistance, Levels levels, ClimateModule biomeNoise) implements CellPopulator {
+public record Climate(int randomSeed, Noise offsetX, Noise offsetZ, int offsetDistance, Levels levels, ClimateModule biomeNoise) {
 
-	@Override
-	public void apply(Cell cell, float x, float z) {
-		this.biomeNoise.apply(cell, x, z, x, z, true);
+	public void apply(Cell cell, float x, float z, boolean applyClimate) {
+		if(applyClimate)
+			this.biomeNoise.apply(cell, x, z, x, z, true);
 		float edgeBlend = 0.4F;
 		if (cell.height <= this.levels.water) {
 			if (cell.terrain == TerrainType.COAST) {
 				cell.terrain = TerrainType.SHALLOW_OCEAN;
 			}
-		} else if (cell.biomeRegionEdge < edgeBlend || cell.terrain == TerrainType.MOUNTAIN_CHAIN) {
+		} else if (applyClimate && (cell.biomeRegionEdge < edgeBlend || cell.terrain == TerrainType.MOUNTAIN_CHAIN)) {
 			float modifier = 1.0F - NoiseUtil.map(cell.biomeRegionEdge, 0.0F, edgeBlend, edgeBlend);
 			float distance = this.offsetDistance * modifier;
 			float dx = this.offsetX.compute(x, z, 0) * distance;

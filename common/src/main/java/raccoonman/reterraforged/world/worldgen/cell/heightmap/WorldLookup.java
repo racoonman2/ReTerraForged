@@ -25,18 +25,18 @@ public class WorldLookup {
 		return this.heightmap;
 	}
 
-	public boolean applyCell(Cell cell, int x, int z) {
-		return this.applyCell(cell, x, z, false);
+	public boolean applyCell(Cell cell, int x, int z, boolean applyClimate) {
+		return this.applyCell(cell, x, z, false, applyClimate);
 	}
 
-	public boolean applyCell(Cell cell, int x, int z, boolean load) {
+	public boolean applyCell(Cell cell, int x, int z, boolean load, boolean applyClimate) {
 		if (load && this.computeAccurate(cell, x, z)) {
 			return true;
 		}
 		if (this.computeCached(cell, x, z)) {
 			return true;
 		}
-		return this.compute(cell, x, z);
+		return this.compute(cell, x, z, applyClimate);
 	}
 
 	private boolean computeAccurate(Cell cell, int x, int z) {
@@ -64,8 +64,8 @@ public class WorldLookup {
 		return false;
 	}
 
-	private boolean compute(Cell cell, int x, int z) {
-		this.heightmap.apply(cell, x, z);
+	private boolean compute(Cell cell, int x, int z, boolean applyClimate) {
+		this.heightmap.apply(cell, x, z, applyClimate);
 		if (cell.terrain == TerrainType.COAST && cell.height > this.waterLevel && cell.height <= this.beachLevel) {
 			cell.terrain = TerrainType.BEACH;
 		}
