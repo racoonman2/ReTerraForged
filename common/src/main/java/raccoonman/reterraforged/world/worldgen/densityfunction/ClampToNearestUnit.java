@@ -46,7 +46,7 @@ public record ClampToNearestUnit(DensityFunction function, int resolution) imple
 	}
 	
 	private double computeClamped(double value) {
-		float scaled = (int) (value * this.resolution);
-		return scaled / this.resolution;
+		float scaled = (int) (value * this.resolution) + 1;
+		return (scaled / this.resolution);
 	}
 }

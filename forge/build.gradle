@@ -63,12 +63,12 @@ sourceSets {
 }
 
 processResources {
-	inputs.property "forgeVersion", "48.0.34"
+	inputs.property "forgeVersion", "47.2.19"
     inputs.property "version", project.version
 
     filesMatching("META-INF/mods.toml") {
         expand "version": project.version
-		expand "forgeVersion": "48.0.34"
+		expand "forgeVersion": "47.2.19"
     }
 }
 

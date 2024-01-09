@@ -2,7 +2,7 @@ package raccoonman.reterraforged.world.worldgen;
 
 import java.util.function.IntFunction;
 
-import raccoonman.reterraforged.data.worldgen.preset.FilterSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.FilterSettings;
 import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.densityfunction.tile.filter.BeachDetect;
 import raccoonman.reterraforged.world.worldgen.densityfunction.tile.filter.Erosion;

@@ -1,6 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.cell.rivermap.wetland;
 
-import raccoonman.reterraforged.data.worldgen.preset.RiverSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.RiverSettings;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.util.Variance;
 

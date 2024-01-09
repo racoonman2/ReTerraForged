@@ -25,9 +25,10 @@ import raccoonman.reterraforged.client.gui.widget.ValueButton;
 @Deprecated
 final class PresetWidgets {
 	
-	public static EditBox createEditBox(Font font, Consumer<String> responder) {
+	public static EditBox createEditBox(Font font, Consumer<String> responder, Component prompt) {
 		EditBox box = new EditBox(font, -1, -1, -1, -1, CommonComponents.EMPTY);
 		box.setResponder(responder);
+		box.setHint(prompt);
 		return box;
 	}
 	

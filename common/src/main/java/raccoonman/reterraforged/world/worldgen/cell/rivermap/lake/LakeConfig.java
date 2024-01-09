@@ -1,6 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.cell.rivermap.lake;
 
-import raccoonman.reterraforged.data.worldgen.preset.RiverSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.RiverSettings;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 
 public class LakeConfig {

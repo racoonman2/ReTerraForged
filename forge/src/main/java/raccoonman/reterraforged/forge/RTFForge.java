@@ -22,20 +22,20 @@ public class RTFForge {
     	RTFCommon.bootstrap();
 
     	IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-    	
+
     	if (FMLEnvironment.dist == Dist.CLIENT) {
     		modBus.addListener(RTFForgeClient::registerPresetEditors);
     	}
     	modBus.addListener(RTFForge::gatherData);
-    	
+
     	RegistryUtilImpl.register(modBus);
     }
-
+    
     private static void gatherData(GatherDataEvent event) {
     	boolean includeClient = event.includeClient();
     	DataGenerator generator = event.getGenerator();
     	PackOutput output = generator.getPackOutput();
-
+    	
     	generator.addProvider(includeClient, new RTFLanguageProvider.EnglishUS(output));
     	generator.addProvider(includeClient, PackMetadataGenerator.forFeaturePack(output, Component.translatable(RTFTranslationKeys.METADATA_DESCRIPTION)));
     }

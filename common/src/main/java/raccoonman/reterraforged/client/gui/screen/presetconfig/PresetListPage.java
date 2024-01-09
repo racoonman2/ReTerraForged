@@ -29,6 +29,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.toasts.SystemToast.SystemToastIds;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.GsonHelper;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
@@ -39,8 +40,8 @@ import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.Pr
 import raccoonman.reterraforged.client.gui.widget.Label;
 import raccoonman.reterraforged.client.gui.widget.WidgetList;
 import raccoonman.reterraforged.client.gui.widget.WidgetList.Entry;
-import raccoonman.reterraforged.data.worldgen.preset.Preset;
-import raccoonman.reterraforged.data.worldgen.preset.Presets;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Presets;
 import raccoonman.reterraforged.platform.ConfigUtil;
 
 class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, AbstractWidget> {
@@ -56,7 +57,7 @@ class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abstr
 	private Button exportAsDatapack;
 	private Button copyPreset;
 	private Button openPresetFolder;
-	private Button openDatapackFolder;
+	private Button openExportFolder;
 	
 	public PresetListPage(PresetConfigScreen screen) {
 		super(screen);
@@ -84,7 +85,7 @@ class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abstr
 			final int red = 0xFFFF3F30;
 			this.createPreset.active = isValid;
 			this.input.setTextColor(isValid ? white : red);
-		});
+		}, Component.translatable(RTFTranslationKeys.GUI_INPUT_PROMPT).withStyle(ChatFormatting.DARK_GRAY));
 		this.createPreset = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_CREATE, () -> {
 			new PresetEntry(Component.literal(this.input.getValue()), Presets.makeLegacyDefault(), false, this).save();
 			this.rebuildPresets();
@@ -111,7 +112,7 @@ class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abstr
 			Util.getPlatform().openUri(PRESET_PATH.toUri());
 			this.rebuildPresets();
 		});
-		this.openDatapackFolder = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_OPEN_DATAPACK_FOLDER, () -> {
+		this.openExportFolder = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_OPEN_EXPORT_FOLDER, () -> {
 			Util.getPlatform().openUri(EXPORT_PATH.toUri());
 			this.rebuildPresets();
 		});
@@ -129,7 +130,7 @@ class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abstr
 		this.right.addWidget(this.copyPreset);
 		this.right.addWidget(this.deletePreset);
 		this.right.addWidget(this.openPresetFolder);
-		this.right.addWidget(this.openDatapackFolder);
+		this.right.addWidget(this.openExportFolder);
 		this.right.addWidget(this.exportAsDatapack);
 		
 		this.left.setRenderSelected(true);

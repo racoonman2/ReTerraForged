@@ -17,7 +17,10 @@ public final class RTFLanguageProvider {
 		protected void addTranslations() {
 			this.add(RTFTranslationKeys.METADATA_DESCRIPTION, "ReTerraForged resources");
 			this.add(RTFTranslationKeys.PRESET_METADATA_DESCRIPTION, "ReTerraForged preset");
+			this.add(RTFTranslationKeys.MUD_SWAMPS_METADATA_DESCRIPTION, "Changes the swamp material to mud");
 			this.add(RTFTranslationKeys.NO_ERROR_MESSAGE, "{No error message}");
+			
+			this.add(RTFTranslationKeys.GUI_INPUT_PROMPT, "Type preset name");
 			
 			this.add(RTFTranslationKeys.GUI_SELECT_PRESET_MISSING_LEGACY_PRESETS, "Couldn't find any legacy presets");
 			this.add(RTFTranslationKeys.GUI_SELECT_PRESET_TITLE, "Presets & Defaults");
@@ -41,7 +44,7 @@ public final class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_BUTTON_COPY, "Copy");
 			this.add(RTFTranslationKeys.GUI_BUTTON_DELETE, "Delete");
 			this.add(RTFTranslationKeys.GUI_BUTTON_OPEN_PRESET_FOLDER, "Open Preset Folder");
-			this.add(RTFTranslationKeys.GUI_BUTTON_OPEN_DATAPACK_FOLDER, "Open Datapack Folder");
+			this.add(RTFTranslationKeys.GUI_BUTTON_OPEN_EXPORT_FOLDER, "Open Export Folder");
 			this.add(RTFTranslationKeys.GUI_BUTTON_EXPORT_AS_DATAPACK, "Export As Datapack");
 			this.add(RTFTranslationKeys.GUI_BUTTON_EXPORT_SUCCESS, "Exported Preset");
 			this.add(RTFTranslationKeys.GUI_BUTTON_SEED, "Seed");
@@ -76,6 +79,8 @@ public final class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_OCTAVES , "Continent Noise Octaves");
 			this.add(RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_GAIN, "Continent Noise Gain");
 			this.add(RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_LACUNARITY, "Continent Noise Lacunarity");
+			this.add(RTFTranslationKeys.GUI_SLIDER_MUSHROOM_FIELDS_INLAND, "Mushroom Fields Inland");
+			this.add(RTFTranslationKeys.GUI_SLIDER_MUSHROOM_FIELDS_COAST, "Mushroom Fields Coast");
 			this.add(RTFTranslationKeys.GUI_SLIDER_DEEP_OCEAN, "Deep Ocean");
 			this.add(RTFTranslationKeys.GUI_SLIDER_SHALLOW_OCEAN, "Shallow Ocean");
 			this.add(RTFTranslationKeys.GUI_SLIDER_BEACH, "Beach");
@@ -217,6 +222,8 @@ public final class RTFLanguageProvider {
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_OCTAVES), "The number of octaves of noise used to distort the continent.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_GAIN), "The contribution strength of each noise octave.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CONTINENT_NOISE_LACUNARITY), "The frequency multiplier for each noise octave.");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_MUSHROOM_FIELDS_INLAND), "Controls the point below which mushroom fields coasts transition into mushroom fields. The greater the gap to the mushroom fields coasts slider, the more gradual the transition.");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_MUSHROOM_FIELDS_COAST), "Controls the point below which deep oceans transition into mushroom fields coasts. The greater the gap to the deep ocean slider, the more gradual the transition.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_DEEP_OCEAN), "Controls the point above which deep oceans transition into shallow oceans. The greater the gap to the shallow ocean slider, the more gradual the transition.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SHALLOW_OCEAN), "Controls the point above which shallow oceans transition into coastal terrain. The greater the gap to the coast slider, the more gradual the transition.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_BEACH), "Controls how much of the coastal terrain is assigned to beach biomes.");

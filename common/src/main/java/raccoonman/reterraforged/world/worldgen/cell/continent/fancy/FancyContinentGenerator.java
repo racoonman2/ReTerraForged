@@ -1,6 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.cell.continent.fancy;
 
-import raccoonman.reterraforged.data.worldgen.preset.WorldSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.continent.Continent;

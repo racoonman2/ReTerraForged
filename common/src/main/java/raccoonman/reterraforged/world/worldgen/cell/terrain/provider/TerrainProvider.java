@@ -7,9 +7,9 @@ import java.util.Random;
 import java.util.function.BiFunction;
 
 import net.minecraft.core.HolderGetter;
-import raccoonman.reterraforged.data.worldgen.NoiseData;
-import raccoonman.reterraforged.data.worldgen.TerrainTypeNoise;
-import raccoonman.reterraforged.data.worldgen.preset.TerrainSettings;
+import raccoonman.reterraforged.data.worldgen.preset.PresetNoiseData;
+import raccoonman.reterraforged.data.worldgen.preset.PresetTerrainTypeNoise;
+import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.RegionConfig;
@@ -30,7 +30,7 @@ public class TerrainProvider {
     	boolean fancyMountains = general.fancyMountains;
     	Seed terrainSeed = seed.offset(general.terrainSeedOffset);
     	
-    	Noise ground = NoiseData.getNoise(noiseLookup, TerrainTypeNoise.GROUND);
+    	Noise ground = PresetNoiseData.getNoise(noiseLookup, PresetTerrainTypeNoise.GROUND);
     	
     	List<TerrainPopulator> mixable = new ArrayList<>();
     	mixable.add(Populators.makeSteppe(terrainSeed, ground, settings.steppe));

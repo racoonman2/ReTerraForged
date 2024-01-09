@@ -12,11 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.Climate.TargetPoint;
 import net.minecraft.world.level.levelgen.DensityFunction;
-import raccoonman.reterraforged.world.worldgen.biome.RTFClimateSampler;
-import raccoonman.reterraforged.world.worldgen.biome.RTFTargetPoint;
+import raccoonman.reterraforged.world.worldgen.terrablender.TBClimateSampler;
+import raccoonman.reterraforged.world.worldgen.terrablender.TBTargetPoint;
 
 @Mixin(Climate.Sampler.class)
-@Implements(@Interface(iface = RTFClimateSampler.class, prefix = "reterraforged$RTFClimateSampler$"))
+@Implements(@Interface(iface = TBClimateSampler.class, prefix = "reterraforged$TBClimateSampler$"))
 class MixinClimateSampler {
 	@Nullable
 	private DensityFunction uniqueness;
@@ -27,16 +27,16 @@ class MixinClimateSampler {
 		locals = LocalCapture.CAPTURE_FAILHARD
 	)
 	public void sample(int i, int j, int k, CallbackInfoReturnable<TargetPoint> callback, int l, int m, int n, DensityFunction.SinglePointContext ctx) {
-		if(this.uniqueness != null && (Object) callback.getReturnValue() instanceof RTFTargetPoint rtfTargetPoint) {
-			rtfTargetPoint.setUniqueness(this.uniqueness.compute(ctx));
+		if(this.uniqueness != null && (Object) callback.getReturnValue() instanceof TBTargetPoint tbTargetPoint) {
+			tbTargetPoint.setUniqueness(this.uniqueness.compute(ctx));
 		}
 	}
 	
-	public void reterraforged$RTFClimateSampler$setUniqueness(DensityFunction uniqueness) {
+	public void reterraforged$TBClimateSampler$setUniqueness(DensityFunction uniqueness) {
 		this.uniqueness = uniqueness;
 	}
 	
-	public DensityFunction reterraforged$RTFClimateSampler$getUniqueness() {
+	public DensityFunction reterraforged$TBClimateSampler$getUniqueness() {
 		return this.uniqueness;
 	}
 }

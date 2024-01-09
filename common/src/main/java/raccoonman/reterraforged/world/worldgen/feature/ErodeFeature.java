@@ -3,12 +3,16 @@ package raccoonman.reterraforged.world.worldgen.feature;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -31,22 +35,6 @@ import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 
 public class ErodeFeature extends Feature<Config> {
-	public static final int ROCK_VAR = 30;
-    public static final int ROCK_MIN = 140;
-
-    public static final int DIRT_VAR = 40;
-    public static final int DIRT_MIN = 95;
-
-    public static final float ROCK_STEEPNESS = 0.65F;
-    public static final float DIRT_STEEPNESS = 0.475F;
-    public static final float SCREE_STEEPNESS = 0.4F;
-
-    public static final float HEIGHT_MODIFIER = 6F / 255F;
-    public static final float SLOPE_MODIFIER = 3F / 255F;
-
-    private static final float SEDIMENT_MODIFIER = 256;
-    private static final float SEDIMENT_NOISE = 3F / 255F;
-    private static final float SCREE_VALUE = 0.55F;
 
 	public ErodeFeature(Codec<Config> codec) {
 		super(codec);
@@ -70,27 +58,30 @@ public class ErodeFeature extends Feature<Config> {
 			Levels levels = heightmap.levels();
 			Noise rand = Noises.white(heightmap.climate().randomSeed(), 1);
 			BlockPos.MutableBlockPos pos = new MutableBlockPos();
-			
+			Config config = placeContext.config();
 			for(int x = 0; x < 16; x++) {
 				for(int z = 0; z < 16; z++) {
+					int worldX = chunkPos.getBlockX(x);
+					int worldZ = chunkPos.getBlockZ(z);
+					
 					Cell cell = tileChunk.getCell(x, z);
 					int scaledY = levels.scale(cell.height);
 					int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
-			        if(scaledY == surfaceY && scaledY >= generator.getSeaLevel()) {
-						pos.set(chunkPos.getBlockX(x), surfaceY, chunkPos.getBlockZ(z));
+					Holder<Biome> biome = level.getBiome(pos.set(worldX, surfaceY, worldZ));
+			        if(surfaceY <= scaledY && surfaceY >= generator.getSeaLevel() - 1 && !biome.is(Biomes.WOODED_BADLANDS) && !biome.is(Biomes.BADLANDS)) {
+						pos.set(worldX, surfaceY, worldZ);
 						
-						erodeColumn(rand, generator, chunk, cell, pos, surfaceY);
+						erodeColumn(config, rand, generator, chunk, cell, pos, surfaceY);
 					}
 				}
 			}
-			
 			return true;
 		} else {
 			throw new IllegalStateException();
 		}
 	}
 	
-	private static void erodeColumn(Noise rand, ChunkGenerator generator, ChunkAccess chunk, Cell cell, BlockPos.MutableBlockPos pos, int surfaceY) {
+	private static void erodeColumn(Config config, Noise rand, ChunkGenerator generator, ChunkAccess chunk, Cell cell, BlockPos.MutableBlockPos pos, int surfaceY) {
         if (cell.terrain.isRiver() || cell.terrain.isWetland()) {
             return;
         }
@@ -101,7 +92,7 @@ public class ErodeFeature extends Feature<Config> {
 		
         BlockState top = chunk.getBlockState(pos);
         if(top.is(RTFBlockTags.ERODIBLE)) {
-            BlockState material = getMaterial(rand, cell, pos, top, generator instanceof NoiseBasedChunkGenerator noiseChunkGenerator ? noiseChunkGenerator.generatorSettings().value().defaultBlock() : Blocks.STONE.defaultBlockState());
+            BlockState material = getMaterial(config, rand, cell, pos, top, generator instanceof NoiseBasedChunkGenerator noiseChunkGenerator ? noiseChunkGenerator.generatorSettings().value().defaultBlock() : Blocks.STONE.defaultBlockState());
             if (material != top) {
                 if (material.is(RTFBlockTags.ROCK)) {
                 	erodeRock(chunk, cell, pos, surfaceY);
@@ -110,7 +101,7 @@ public class ErodeFeature extends Feature<Config> {
                     ColumnDecorator.fillDownSolid(chunk, pos, surfaceY, surfaceY - 4, material);
                 }
             }
-            placeScree(rand, chunk, cell, pos, surfaceY);
+            placeScree(config, rand, chunk, cell, pos, surfaceY);
         }
 	}
 
@@ -134,32 +125,32 @@ public class ErodeFeature extends Feature<Config> {
         }
     }
 	
-	private static void placeScree(Noise rand, ChunkAccess chunk, Cell cell, BlockPos.MutableBlockPos pos, int surfaceY) {
+	private static void placeScree(Config config, Noise rand, ChunkAccess chunk, Cell cell, BlockPos.MutableBlockPos pos, int surfaceY) {
     	int x = pos.getX();
     	int z = pos.getZ();
-    	float steepness = cell.gradient + rand.compute(x, z, 1) * SLOPE_MODIFIER;
-        if (steepness < SCREE_STEEPNESS) {
+    	float steepness = cell.gradient + rand.compute(x, z, 1) * config.slopeModifier();
+        if (steepness < config.screeSteepness()) {
             return;
         }
 
-        float sediment = cell.sediment * SEDIMENT_MODIFIER;
-        float noise = rand.compute(x, z, 2) * SEDIMENT_NOISE;
-        if (sediment + noise > SCREE_VALUE) {
+        float sediment = cell.sediment * config.sedimentNoise();
+        float noise = rand.compute(x, z, 2) * config.sedimentNoise();
+        if (sediment + noise > config.screeValue()) {
             ColumnDecorator.fillDownSolid(chunk, pos, surfaceY, surfaceY - 2, Blocks.GRAVEL.defaultBlockState());
         }
 	}
 	
-    private static BlockState getMaterial(Noise rand, Cell cell, BlockPos.MutableBlockPos pos, BlockState top, BlockState middle) {
+    private static BlockState getMaterial(Config config, Noise rand, Cell cell, BlockPos.MutableBlockPos pos, BlockState top, BlockState middle) {
     	int x = pos.getX();
     	int z = pos.getZ();
-        float height = cell.height + rand.compute(x, z, 0) * HEIGHT_MODIFIER;
-        float steepness = cell.gradient + rand.compute(x, z, 1) * SLOPE_MODIFIER;
+        float height = cell.height + rand.compute(x, z, 0) * config.heightModifier();
+        float steepness = cell.gradient + rand.compute(x, z, 1) * config.slopeModifier();
 
-        if (steepness > ROCK_STEEPNESS || height > ColumnDecorator.sampleNoise(x, z, ROCK_VAR, ROCK_MIN)) {
+        if (steepness > config.rockSteepness() || height > ColumnDecorator.sampleNoise(x, z, config.rockVar(), config.rockMin())) {
             return rock(middle);
         }
 
-        if (steepness > DIRT_STEEPNESS && height > ColumnDecorator.sampleNoise(x, z, DIRT_VAR, DIRT_MIN)) {
+        if (steepness > config.dirtSteepness() && height > ColumnDecorator.sampleNoise(x, z, config.dirtVar(), config.dirtMin())) {
             return ground(top);
         }
 
@@ -191,8 +182,21 @@ public class ErodeFeature extends Feature<Config> {
         }
         return Blocks.COARSE_DIRT.defaultBlockState();
     }
-	
-	public record Config() implements FeatureConfiguration {
-		public static final Codec<Config> CODEC = Codec.unit(Config::new);
+
+    public record Config(int rockVar, int rockMin, int dirtVar, int dirtMin, float rockSteepness, float dirtSteepness, float screeSteepness, float heightModifier, float slopeModifier, float sedimentModifier, float sedimentNoise, float screeValue) implements FeatureConfiguration {
+		public static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.INT.fieldOf("rock_var").forGetter(Config::rockVar),
+			Codec.INT.fieldOf("rock_min").forGetter(Config::rockMin),
+			Codec.INT.fieldOf("dirt_var").forGetter(Config::dirtVar),
+			Codec.INT.fieldOf("dirt_min").forGetter(Config::dirtMin),
+			Codec.FLOAT.fieldOf("rock_steepness").forGetter(Config::rockSteepness),
+			Codec.FLOAT.fieldOf("dirt_steepness").forGetter(Config::dirtSteepness),
+			Codec.FLOAT.fieldOf("scree_steepness").forGetter(Config::screeSteepness),
+			Codec.FLOAT.fieldOf("height_modifier").forGetter(Config::heightModifier),
+			Codec.FLOAT.fieldOf("slope_modifier").forGetter(Config::slopeModifier),
+			Codec.FLOAT.fieldOf("sediment_modifier").forGetter(Config::sedimentModifier),
+			Codec.FLOAT.fieldOf("sediment_noise").forGetter(Config::sedimentNoise),
+			Codec.FLOAT.fieldOf("screeValue").forGetter(Config::screeValue)
+		).apply(instance, Config::new));
 	}
 }

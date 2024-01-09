@@ -8,14 +8,9 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.biome.Climate;
-import raccoonman.reterraforged.data.worldgen.RTFSurfaceRuleData;
-import raccoonman.reterraforged.data.worldgen.preset.Preset;
-import raccoonman.reterraforged.registries.RTFRegistries;
-import raccoonman.reterraforged.world.worldgen.biome.RTFTargetPoint;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
-import raccoonman.reterraforged.world.worldgen.terrablender.TBCompat;
+import raccoonman.reterraforged.world.worldgen.terrablender.TBTargetPoint;
 import terrablender.api.RegionType;
 import terrablender.api.Regions;
 
@@ -53,8 +48,8 @@ class MixinParameterList<T> {
 		require = 0	
 	)
     public int getUniqueness(Climate.ParameterList<T> parameterList, int x, int y, int z, Climate.TargetPoint targetPoint) {
-		if((Object) targetPoint instanceof RTFTargetPoint rtfTargetPoint) {
-			double uniqueness = rtfTargetPoint.getUniqueness();
+		if((Object) targetPoint instanceof TBTargetPoint tbTargetPoint) {
+			double uniqueness = tbTargetPoint.getUniqueness();
 			if(Double.isNaN(uniqueness)) {
 				return this.getUniqueness(x, y, z);
 			}

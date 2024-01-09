@@ -53,8 +53,7 @@ public class BiomeTypeLoader {
                 for (int x = 0; x < 256; ++x) {
                     if (255 - y > x) {
                         this.map[255 - y][x] = BiomeType.ALPINE;
-                    }
-                    else {
+                    } else {
                         int ix = NoiseUtil.round(x * xf);
                         int iy = NoiseUtil.round(y * yf);
                         int argb = image.getRGB(ix, iy);
