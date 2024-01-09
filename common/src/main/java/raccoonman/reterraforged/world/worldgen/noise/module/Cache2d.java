@@ -46,7 +46,7 @@ public record Cache2d(Noise noise, ThreadLocal<Cached> cache) implements Noise {
 	
 	public static class Cached implements Noise {
 		public Noise noise;
-		public long lastPos;
+		public long lastPos = Long.MIN_VALUE;
 		public float value;
 		
 		public Cached(Noise noise) {

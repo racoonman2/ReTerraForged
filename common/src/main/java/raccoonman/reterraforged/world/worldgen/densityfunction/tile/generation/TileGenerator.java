@@ -71,7 +71,7 @@ public class TileGenerator {
 			                        this.heightmap.applyTerrain(cell, worldX, worldZ);
 			                        rivers = Rivermap.get(cell, rivers, this.heightmap);
 			                        this.heightmap.applyRivers(cell, worldX, worldZ, rivers);
-			                        this.heightmap.applyClimate(cell, worldX, worldZ);
+			                        this.heightmap.applyClimate(cell, worldX, worldZ, true);
 			                    }
 			                }
 			            }
@@ -111,7 +111,7 @@ public class TileGenerator {
 			                        this.heightmap.applyTerrain(cell, worldX, worldZ);
 			                        rivers = Rivermap.get(cell, rivers, this.heightmap);
 			                        this.heightmap.applyRivers(cell, worldX, worldZ, rivers);
-			                        this.heightmap.applyClimate(cell, worldX, worldZ);
+			                        this.heightmap.applyClimate(cell, worldX, worldZ, true);
 			                    }
 			                }
 			            }

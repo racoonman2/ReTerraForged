@@ -6,17 +6,19 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-  	"terrablender.MixinParameterList",
-  	"terrablender.MixinClimateSampler",
-  	"terrablender.MixinTargetPoint",
-  	"terrablender.MixinNoiseChunk",
   	"MixinNoiseChunk",
   	"MixinRandomState",
   	"MixinChunkMap",
   	"MixinUtil",
   	"MixinBiomeGenerationSettings",
   	"MixinSurfaceSystem",
-  	"MixinStructure"
+  	"MixinStructure",
+  	"MixinMinecraftServer",
+  	"MixinSpawnFinder",
+  	"terrablender.MixinParameterList",
+  	"terrablender.MixinClimateSampler",
+  	"terrablender.MixinTargetPoint",
+  	"terrablender.MixinNoiseChunk"
   ],
   "client": [
   	"ScreenInvoker"

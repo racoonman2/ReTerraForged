@@ -35,6 +35,11 @@ public class TileCache implements TileFactory {
 		return entry != null ? entry.get().tile : null;
 	}
 
+	@Nullable
+	public Tile provideAtChunkIfPresent(int chunkX, int chunkZ) {
+		return this.provideIfPresent(this.chunkToTile(chunkX), this.chunkToTile(chunkZ));
+	}
+
 	@Override
 	public Tile provide(int tileX, int tileZ) {
 		return this.computeEntry(tileX, tileZ).get().tile;

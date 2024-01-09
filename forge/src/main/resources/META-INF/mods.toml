@@ -1,11 +1,11 @@
 modLoader="javafml"
-loaderVersion="[40,)"
+loaderVersion="[30,)"
 license="MIT"
 
 [[mods]]
 modId="reterraforged"
 displayName="ReTerraForged"
-version="0.0.5"
+version="0.0.6"
 authors="dags,Won-Ton,raccoonman"
 credits="dags,Won-Ton,raccoonman"
 logoFile="logo.png"
@@ -16,7 +16,7 @@ description="A continuation of https://github.com/TerraForged/TerraForged"
 [[dependencies.reterraforged]]
     modId="forge"
     mandatory=true
-    versionRange="[40,)"
+    versionRange="[47,)"
     ordering="NONE"
     side="BOTH"
 

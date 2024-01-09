@@ -4,7 +4,7 @@ import java.util.BitSet;
 
 public class PasteBuffer implements BufferIterator {
     private int index = -1;
-    private BitSet placed = null;
+    private BitSet placed = new BitSet();
     private boolean recordPlaced = false;
 
     public void reset() {
@@ -13,9 +13,7 @@ public class PasteBuffer implements BufferIterator {
 
     public void clear() {
     	this.index = -1;
-        if (this.placed != null) {
-        	this.placed.clear();
-        }
+    	this.placed.clear();
     }
 
     public void setRecording(boolean recording) {
@@ -40,18 +38,13 @@ public class PasteBuffer implements BufferIterator {
 
     public void record(int i) {
         if (this.recordPlaced) {
-            if (this.placed == null) {
-            	this.placed = new BitSet();
-            }
             this.placed.set(i);
         }
     }
 
     public void exclude(int i) {
         if (this.recordPlaced) {
-            if (this.placed != null) {
-            	this.placed.set(i, false);
-            }
+        	this.placed.set(i, false);
         }
     }
 }

@@ -6,19 +6,19 @@ import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.world.level.biome.Climate;
-import raccoonman.reterraforged.world.worldgen.biome.RTFTargetPoint;
+import raccoonman.reterraforged.world.worldgen.terrablender.TBTargetPoint;
 
 @Mixin(Climate.TargetPoint.class)
-@Implements(@Interface(iface = RTFTargetPoint.class, prefix = "reterraforged$RTFTargetPoint$"))
+@Implements(@Interface(iface = TBTargetPoint.class, prefix = "reterraforged$TBTargetPoint$"))
 class MixinTargetPoint {
 	private double uniqueness = Double.NaN;
 	
-	public void reterraforged$RTFTargetPoint$setUniqueness(double uniqueness) {
+	public void reterraforged$TBTargetPoint$setUniqueness(double uniqueness) {
 		this.uniqueness = uniqueness;
 	}
 	
 	@Nullable
-	public double reterraforged$RTFTargetPoint$getUniqueness() {
+	public double reterraforged$TBTargetPoint$getUniqueness() {
 		return this.uniqueness;
 	}
 }

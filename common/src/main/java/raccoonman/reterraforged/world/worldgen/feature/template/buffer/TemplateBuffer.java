@@ -28,16 +28,16 @@ public class TemplateBuffer extends PasteBuffer {
     }
 
     public void record(int i, BlockInfo block, BlockPos pastePos, TemplatePlacement<?> placement, PasteConfig config) {
-        if (!config.replaceSolid() && !placement.canReplaceAt(world, pastePos)) {
+        if (!config.replaceSolid() && !placement.canReplaceAt(this.world, pastePos)) {
         	this.placementMask.set(block.pos().getX(), block.pos().getY(), block.pos().getZ());
             return;
         }
 
-        if (!config.pasteAir() && block.state().getBlock() == Blocks.AIR) {
+        if (!config.pasteAir() && block.state().is(Blocks.AIR)) {
             return;
         }
 
-        record(i);
+        this.record(i);
     }
 
     public boolean test(BlockPos pos) {

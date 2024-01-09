@@ -1,7 +1,7 @@
 package raccoonman.reterraforged.world.worldgen.cell.climate;
 
-import raccoonman.reterraforged.data.worldgen.preset.ClimateSettings;
-import raccoonman.reterraforged.data.worldgen.preset.WorldSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.ClimateSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.biome.type.BiomeType;
 import raccoonman.reterraforged.world.worldgen.cell.continent.Continent;

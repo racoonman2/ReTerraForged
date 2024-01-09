@@ -97,7 +97,7 @@ public class FeatureTemplate {
         };
     }
     
-    public <T extends TemplateContext> boolean pasteWorldGen(LevelAccessor world, T ctx, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement placement, PasteConfig config) {
+    public <T extends TemplateContext> boolean pasteWorldGen(LevelAccessor world, T ctx, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement<T> placement, PasteConfig config) {
         if (config.checkBounds()) {
             ChunkAccess chunk = world.getChunk(origin);
             if (StructureUtils.hasOvergroundStructure(world.holderLookup(Registries.STRUCTURE), chunk)) {
@@ -107,7 +107,7 @@ public class FeatureTemplate {
         return this.pasteUnChecked(world, ctx, origin, mirror, rotation, placement, config);
     }
 
-    private <T extends TemplateContext> boolean pasteUnChecked(LevelAccessor world, T ctx, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement placement, PasteConfig config) {
+    private <T extends TemplateContext> boolean pasteUnChecked(LevelAccessor world, T ctx, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement<T> placement, PasteConfig config) {
         boolean placed = false;
         BlockReader reader = new BlockReader();
         PasteBuffer buffer = PASTE_BUFFER.get();
@@ -155,11 +155,10 @@ public class FeatureTemplate {
             buffer.reset();
             updatePostPlacement(world, setter, buffer, blocks, origin, pos1, pos2);
         }
-
         return placed;
     }
 
-    private <T extends TemplateContext> boolean pasteChecked(LevelAccessor world, T ctx, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement placement, PasteConfig config) {
+    private <T extends TemplateContext> boolean pasteChecked(LevelAccessor world, T ctx, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement<T> placement, PasteConfig config) {
         Dimensions dimensions = this.dimensions.get(mirror, rotation);
         TemplateRegion region = TEMPLATE_REGION.get().init(origin);
         TemplateBuffer buffer = TEMPLATE_BUFFER.get().init(world, origin, dimensions.min(), dimensions.max());
@@ -222,7 +221,7 @@ public class FeatureTemplate {
         return new Paste() {
 
 			@Override
-			public <T extends TemplateContext> boolean apply(LevelAccessor world, T ctx, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement placement, PasteConfig config) {
+			public <T extends TemplateContext> boolean apply(LevelAccessor world, T ctx, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement<T> placement, PasteConfig config) {
 				return FeatureTemplate.this.pasteWorldGen(world, ctx, origin, mirror, rotation, placement, config);
 			}
         };
@@ -232,7 +231,7 @@ public class FeatureTemplate {
         return new Paste() {
 
 			@Override
-			public <T extends TemplateContext> boolean apply(LevelAccessor world, T ctx, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement placement, PasteConfig config) {
+			public <T extends TemplateContext> boolean apply(LevelAccessor world, T ctx, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement<T> placement, PasteConfig config) {
 				return FeatureTemplate.this.pasteChecked(world, ctx, origin, mirror, rotation, placement, config);
 			}
         };
@@ -242,7 +241,7 @@ public class FeatureTemplate {
         return new Paste() {
 
 			@Override
-			public <T extends TemplateContext> boolean apply(LevelAccessor world, T ctx, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement placement, PasteConfig config) {
+			public <T extends TemplateContext> boolean apply(LevelAccessor world, T ctx, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement<T> placement, PasteConfig config) {
 				return FeatureTemplate.this.pasteUnChecked(world, ctx, origin, mirror, rotation, placement, config);
 			}
         };
@@ -397,7 +396,7 @@ public class FeatureTemplate {
     }
 
     public interface PasteFunction {
-        boolean paste(LevelAccessor world, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement placement, PasteConfig config);
+        <T extends TemplateContext> boolean paste(LevelAccessor world, BlockPos origin, Mirror mirror, Rotation rotation, TemplatePlacement<T> placement, PasteConfig config);
     }
     
     public interface BlockSetter {

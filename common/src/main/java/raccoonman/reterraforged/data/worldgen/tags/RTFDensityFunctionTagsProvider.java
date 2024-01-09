@@ -7,7 +7,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.level.levelgen.DensityFunction;
-import raccoonman.reterraforged.data.worldgen.RTFNoiseRouterData;
+import raccoonman.reterraforged.data.worldgen.preset.PresetNoiseRouterData;
 import raccoonman.reterraforged.tags.RTFDensityFunctionTags;
 import raccoonman.reterraforged.world.worldgen.terrablender.TBCompat;
 
@@ -19,6 +19,6 @@ public class RTFDensityFunctionTagsProvider extends TagsProvider<DensityFunction
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		this.tag(RTFDensityFunctionTags.ADDITIONAL_NOISE_ROUTER_FUNCTIONS).add(RTFNoiseRouterData.GRADIENT, RTFNoiseRouterData.EROSION, RTFNoiseRouterData.SEDIMENT, TBCompat.uniquenessKey());
+		this.tag(RTFDensityFunctionTags.ADDITIONAL_NOISE_ROUTER_FUNCTIONS).add(PresetNoiseRouterData.GRADIENT, PresetNoiseRouterData.EROSION, PresetNoiseRouterData.SEDIMENT, TBCompat.uniquenessKey());
 	}
 }

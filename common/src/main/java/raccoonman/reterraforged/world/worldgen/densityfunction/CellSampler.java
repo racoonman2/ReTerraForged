@@ -11,7 +11,6 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 import raccoonman.reterraforged.world.worldgen.biome.Continentalness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.ControlPoints;
@@ -22,7 +21,6 @@ import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainCategory;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler.Field;
 import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
-import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;
 
 public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) implements MarkerFunction.Mapped {
@@ -31,7 +29,7 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 	@Override
 	public double compute(FunctionContext ctx) {
 		WorldLookup worldLookup = this.deferredLookup.get();
-		Cell cell = CELL.get().getAndUpdate(worldLookup, ctx.blockX(), ctx.blockZ());
+		Cell cell = CELL.get().getAndUpdate(worldLookup, ctx.blockX(), ctx.blockZ(), true);
 		return this.field.read(cell, worldLookup.getHeightmap());
 	}
 
@@ -49,10 +47,10 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 		private long lastPos = Long.MAX_VALUE;
 		private Cell cell = new Cell();
 		
-		public Cell getAndUpdate(WorldLookup lookup, int blockX, int blockZ) {
+		public Cell getAndUpdate(WorldLookup lookup, int blockX, int blockZ, boolean sampleClimate) {
 			long packedPos = PosUtil.pack(blockX, blockZ);
 			if(this.lastPos != packedPos) {
-				lookup.applyCell(this.cell.reset(), blockX, blockZ);
+				lookup.applyCell(this.cell.reset(), blockX, blockZ, false, sampleClimate);
 				this.lastPos = packedPos;
 			}
 			return this.cell;
@@ -81,7 +79,7 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 			WorldLookup worldLookup = CellSampler.this.deferredLookup.get();
 			Cell cell = (this.chunk != null && this.chunkX == chunkX && this.chunkZ == chunkZ) ? 
 				this.chunk.getCell(blockX, blockZ) :
-				this.cache2d.getAndUpdate(worldLookup, blockX, blockZ);
+				this.cache2d.getAndUpdate(worldLookup, blockX, blockZ, false);
 			return this.structureRiverFix(cell, CellSampler.this.field.read(cell, worldLookup.getHeightmap()));
 		}
 
@@ -141,11 +139,11 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 				float beach = controlPoints.beach();
 				float coast = controlPoints.coast();
 				float inland = controlPoints.inland();
-
+				
 				if(cell.terrain.isDeepOcean()) {
 					float alpha = NoiseUtil.clamp(cell.continentEdge, 0.0F, deepOcean);
 					alpha = NoiseUtil.lerp(alpha, 0.0F, deepOcean, 0.0F, 1.0F);
-					return NoiseUtil.lerp(Continentalness.DEEP_OCEAN.min(), Continentalness.DEEP_OCEAN.max(), alpha);					
+					return NoiseUtil.lerp(Continentalness.DEEP_OCEAN.min() + 0.05F, Continentalness.DEEP_OCEAN.max(), alpha);					
 				}
 				
 				if(cell.terrain.isShallowOcean()) {

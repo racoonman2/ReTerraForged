@@ -15,6 +15,8 @@ import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
+import raccoonman.reterraforged.world.worldgen.RTFRandomState;
+import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.feature.placement.RTFPlacementModifiers;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
@@ -77,25 +79,24 @@ public class FastPoissonModifier extends PlacementModifier {
 	}
 
 	private DensityNoise getDensityNoise(int seed, ChunkPos chunkPos, RandomState randomState) {
-		Noise densityVariance = Noises.one();
-//		BiomeVariance biomeVariance = BiomeVariance.NONE;
-//		
-//		if (this.biomeFade > BiomeVariance.MIN_FADE) {
-//			if((Object) randomState instanceof RTFRandomState rtfRandomState) {
-//				ChunkReader reader = rtfRandomState.getTileCache().getChunk(chunkPos.x, chunkPos.z);
-//				if (reader != null) {
-//					biomeVariance = new BiomeVariance(reader, this.biomeFade);
-//				}
-//			}
-//		}
+		BiomeVariance biomeVariance = BiomeVariance.NONE;
+		
+		if (this.biomeFade > BiomeVariance.MIN_FADE) {
+			if((Object) randomState instanceof RTFRandomState rtfRandomState) {
+				Tile.Chunk reader = rtfRandomState.generatorContext().cache.provideAtChunk(chunkPos.x, chunkPos.z).getChunkReader(chunkPos.x, chunkPos.z);
+				if (reader != null) {
+					biomeVariance = new BiomeVariance(reader, this.biomeFade);
+				}
+			}
+		}
 
+		Noise densityVariance = Noises.one();
 		if (this.densityVariation > 0) {
 			densityVariance = Noises.simplex(seed + 1, this.densityVariationScale, 1);
 			densityVariance = Noises.mul(densityVariance, this.densityVariation);
 			densityVariance = Noises.add(densityVariance, 1.0F - this.densityVariation);
 		}
 
-//		return new DensityNoise(biomeVariance, densityVariance);
-		return new DensityNoise();
+		return new DensityNoise(biomeVariance, densityVariance);
 	}
 }

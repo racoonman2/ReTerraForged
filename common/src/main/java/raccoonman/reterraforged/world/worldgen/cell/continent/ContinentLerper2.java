@@ -6,7 +6,7 @@ import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.function.Interpolation;
 
 public class ContinentLerper2 implements CellPopulator {
-    private CellPopulator lower;
+	private CellPopulator lower;
     private CellPopulator upper;
     private Interpolation interpolation;
     private float blendLower;

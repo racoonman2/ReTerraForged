@@ -6,8 +6,8 @@ import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetConfigScree
 
 class RTFForgeClient {
 
-    public static void registerPresetEditors(RegisterPresetEditorsEvent event) {
-    	// TODO we probably shouldn't register this for the default preset
-    	event.register(WorldPresets.NORMAL, (screen, ctx) -> new PresetConfigScreen(screen));
-    }
+	public static void registerPresetEditors(RegisterPresetEditorsEvent event) {
+		// TODO we probably shouldn't register this for the default preset
+		event.register(WorldPresets.NORMAL, (screen, ctx) -> new PresetConfigScreen(screen));
+	}
 }

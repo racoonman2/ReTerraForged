@@ -59,7 +59,9 @@ public class RiverCarver implements Comparable<RiverCarver> {
         valleyAlpha = this.valleyCurve.apply(valleyAlpha);
         cell.riverMask = Math.min(cell.riverMask, 1.0F - valleyAlpha);
         cell.height = Math.min(NoiseUtil.lerp(cell.height, bankHeight, valleyAlpha), cell.height);
-        if (!this.connecting || t > 1.0F) {}
+        if (!this.connecting || t > 1.0F) {
+        	
+        }
         float mouthModifier = getMouthModifier(cell);
         float bedHeight = this.getScaledSize(t, this.bedDepth);
         float banksAlpha = this.getDistanceAlpha(t, d2 * mouthModifier, this.banksWidth);
