@@ -28,6 +28,7 @@ public class Cell {
     public float regionTemperature;
     public float continentId;
     public float continentEdge;
+    public float continentDistance;
     public float terrainRegionId;
     public float terrainRegionEdge;
     public float biomeRegionId;
@@ -66,6 +67,7 @@ public class Cell {
         this.regionTemperature = other.regionTemperature;
         this.continentId = other.continentId;
         this.continentEdge = other.continentEdge;
+        this.continentDistance = other.continentDistance;
         this.terrainRegionId = other.terrainRegionId;
         this.terrainRegionEdge = other.terrainRegionEdge;
         this.biomeRegionId = other.biomeRegionId;

@@ -78,8 +78,8 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
             }
         }
         nearest = Float.MAX_VALUE;
-        float sumX = 0.0f;
-        float sumY = 0.0f;
+        float sumX = 0.0F;
+        float sumY = 0.0F;
         for (int cy2 = cellY - 1; cy2 <= cellY + 1; ++cy2) {
             for (int cx2 = cellX - 1; cx2 <= cellX + 1; ++cx2) {
                 if (cx2 != cellX || cy2 != cellY) {
@@ -95,6 +95,7 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
                 }
             }
         }
+        cell.continentDistance = NoiseUtil.sqrt(nearest);
         if (this.shouldSkip(cellX, cellY)) {
             return;
         }
@@ -140,7 +141,7 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
     protected float getDistanceValue(float x, float y, int cellX, int cellY, float distance) {
         distance = this.getVariedDistanceValue(cellX, cellY, distance);
         distance = NoiseUtil.sqrt(distance);
-        distance = NoiseUtil.map(distance, 0.05f, 0.25f, 0.2f);
+        distance = NoiseUtil.map(distance, 0.05F, 0.25F, 0.2F);
         distance = this.getCoastalDistanceValue(x, y, distance);
         if (distance < this.controlPoints.inland() && distance >= this.controlPoints.shallowOcean()) {
             distance = this.getCoastalDistanceValue(x, y, distance);

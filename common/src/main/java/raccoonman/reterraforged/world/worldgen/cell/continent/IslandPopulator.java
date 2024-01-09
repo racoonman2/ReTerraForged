@@ -4,7 +4,8 @@ import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 
-public record MushroomIslandPopulator(CellPopulator ocean, CellPopulator coast, CellPopulator land, float coastPoint, float inlandPoint) implements CellPopulator {
+@Deprecated(forRemoval = true)
+public record IslandPopulator(CellPopulator ocean, CellPopulator coast, CellPopulator land, float coastPoint, float inlandPoint) implements CellPopulator {
 	public static final float DEFAULT_INLAND_POINT = 0.0F;
 	public static final float DEFAULT_COAST_POINT = DEFAULT_INLAND_POINT + 0.1F;
 	

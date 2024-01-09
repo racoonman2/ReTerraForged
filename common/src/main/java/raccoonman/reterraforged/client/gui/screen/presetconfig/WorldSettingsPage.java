@@ -28,8 +28,8 @@ public class WorldSettingsPage extends PresetEditorPage {
 	private Slider continentNoiseGain;
 	private Slider continentNoiseLacunarity;
 
-	private Slider mushroomFieldsInland;
-	private Slider mushroomFieldsCoast;
+	private Slider islandInland;
+	private Slider islandCoast;
 	private Slider deepOcean;
 	private Slider shallowOcean;
 	private Slider beach;
@@ -117,20 +117,20 @@ public class WorldSettingsPage extends PresetEditorPage {
 		
 		this.applyContinentType(this.continentType.getValue());
 
-		this.mushroomFieldsInland = PresetWidgets.createFloatSlider(controlPoints.mushroomFieldsInland, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_MUSHROOM_FIELDS_INLAND, (slider, value) -> {
-			value = Math.min(value, this.mushroomFieldsCoast.getValue());
-			controlPoints.mushroomFieldsInland = (float) slider.scaleValue(value);
+		this.islandInland = PresetWidgets.createFloatSlider(controlPoints.islandInland, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_ISLAND_INLAND, (slider, value) -> {
+			value = Math.min(value, this.islandCoast.getValue());
+			controlPoints.islandInland = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
-		this.mushroomFieldsCoast = PresetWidgets.createFloatSlider(controlPoints.mushroomFieldsCoast, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_MUSHROOM_FIELDS_COAST, (slider, value) -> {
+		this.islandCoast = PresetWidgets.createFloatSlider(controlPoints.islandCoast, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_ISLAND_COAST, (slider, value) -> {
 			value = Math.min(value, this.deepOcean.getValue());
-			controlPoints.mushroomFieldsCoast = (float) slider.scaleValue(value);
+			controlPoints.islandCoast = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.deepOcean = PresetWidgets.createFloatSlider(controlPoints.deepOcean, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_DEEP_OCEAN, (slider, value) -> {
-			value = Mth.clamp(value, this.mushroomFieldsCoast.getValue(), this.shallowOcean.getValue());
+			value = Mth.clamp(value, this.islandCoast.getValue(), this.shallowOcean.getValue());
 			controlPoints.deepOcean = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
@@ -196,8 +196,8 @@ public class WorldSettingsPage extends PresetEditorPage {
 		this.left.addWidget(this.continentNoiseLacunarity);
 
 		this.left.addWidget(PresetWidgets.createLabel(RTFTranslationKeys.GUI_LABEL_CONTROL_POINTS));
-		this.left.addWidget(this.mushroomFieldsInland);
-		this.left.addWidget(this.mushroomFieldsCoast);
+		this.left.addWidget(this.islandInland);
+		this.left.addWidget(this.islandCoast);
 		this.left.addWidget(this.deepOcean);
 		this.left.addWidget(this.shallowOcean);
 		this.left.addWidget(this.beach);

@@ -18,6 +18,7 @@ import raccoonman.reterraforged.world.worldgen.cell.heightmap.Heightmap;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.WorldLookup;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainCategory;
+import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler.Field;
 import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
@@ -139,6 +140,10 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 				float beach = controlPoints.beach();
 				float coast = controlPoints.coast();
 				float inland = controlPoints.inland();
+				
+				if(cell.terrain == TerrainType.MUSHROOM_FIELDS) {
+					return Continentalness.MUSHROOM_FIELDS.mid();
+				}
 				
 				if(cell.terrain.isDeepOcean()) {
 					float alpha = NoiseUtil.clamp(cell.continentEdge, 0.0F, deepOcean);

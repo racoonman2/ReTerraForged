@@ -19,6 +19,7 @@ import raccoonman.reterraforged.world.worldgen.cell.rivermap.Rivermap;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.Blender;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.Populators;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
+import raccoonman.reterraforged.world.worldgen.cell.terrain.populator.IslandPopulator;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.populator.VolcanoPopulator;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.provider.TerrainProvider;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.region.RegionLerper;
@@ -42,7 +43,6 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 	public void applyTerrain(Cell cell, float x, float z) {
         cell.terrain = TerrainType.FLATS;
         cell.beachNoise = this.beachNoise.compute(x, z, 0);
-        
         this.continent.apply(cell, x, z);
         this.region.apply(cell, x, z);
         this.terrain.apply(cell, x * this.terrainFrequency, z * this.terrainFrequency);
@@ -81,33 +81,33 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         }
 	}
 	
-	public static Heightmap make(GeneratorContext context) {
-    	HolderGetter<Noise> noiseLookup = context.noiseLookup;
+	public static Heightmap make(GeneratorContext ctx) {
+    	HolderGetter<Noise> noiseLookup = ctx.noiseLookup;
     	
-        Preset preset = context.preset;
-        WorldSettings world = context.preset.world();
+        Preset preset = ctx.preset;
+        WorldSettings world = ctx.preset.world();
         ControlPoints controlPoints = ControlPoints.make(world.controlPoints);
 
         TerrainSettings terrainSettings = preset.terrain();
         TerrainSettings.General general = terrainSettings.general;
         float globalVerticalScale = general.globalVerticalScale;
         
-        Seed regionWarp = context.seed.offset(8934);
+        Seed regionWarp = ctx.seed.offset(8934);
         int regionWarpScale = 400;
         int regionWarpStrength = 200;
         
         RegionConfig regionConfig = new RegionConfig(
-        	context.seed.root() + 789124, 
+        	ctx.seed.root() + 789124, 
         	general.terrainRegionSize, 
         	Noises.simplex(regionWarp.next(), regionWarpScale, 1),
         	Noises.simplex(regionWarp.next(), regionWarpScale, 1), 
         	regionWarpStrength
         );
-        Levels levels = context.levels;
+        Levels levels = ctx.levels;
         float terrainFrequency = 1.0F / terrainSettings.general.globalHorizontalScale;
         CellPopulator region = new RegionModule(regionConfig);
 
-        Seed mountainSeed = context.seed.offset(general.terrainSeedOffset);
+        Seed mountainSeed = ctx.seed.offset(general.terrainSeedOffset);
         Noise mountainShape = Noises.worleyEdge(mountainSeed.next(), 1000, EdgeFunction.DISTANCE_2_ADD, DistanceFunction.EUCLIDEAN);
         mountainShape = Noises.warpPerlin(mountainShape, mountainSeed.next(), 333, 2, 250.0F);
         mountainShape = Noises.curve(mountainShape, Interpolation.CURVE3);
@@ -116,36 +116,32 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 
         Noise ground = PresetNoiseData.getNoise(noiseLookup, PresetTerrainTypeNoise.GROUND);
         
-        CellPopulator terrainRegions = new RegionSelector(TerrainProvider.generateTerrain(context.seed, terrainSettings, regionConfig, levels, noiseLookup));
-        CellPopulator terrainRegionBorders = Populators.makeBorder(context.seed, ground, terrainSettings.plains, terrainSettings.steppe, globalVerticalScale);
+        CellPopulator terrainRegions = new RegionSelector(TerrainProvider.generateTerrain(ctx.seed, terrainSettings, regionConfig, levels, noiseLookup));
+        CellPopulator terrainRegionBorders = Populators.makeBorder(ctx.seed, ground, terrainSettings.plains, terrainSettings.steppe, globalVerticalScale);
         CellPopulator terrainBlend = new RegionLerper(terrainRegionBorders, terrainRegions);
         CellPopulator mountains = Populators.makeMountainChain(mountainSeed, ground, terrainSettings.mountains, globalVerticalScale, general.fancyMountains);
-        Continent continent = world.continent.continentType.create(context.seed, context);
-        Climate climate = Climate.make(continent, context);
+        Continent continent = world.continent.continentType.create(ctx.seed, ctx);
+        Climate climate = Climate.make(continent, ctx);
         CellPopulator land = new Blender(mountainShape, terrainBlend, mountains, 0.3F, 0.8F, 0.575F);
         
-        CellPopulator deepOcean = Populators.makeDeepOcean(context.seed.next(), levels.water);
-        CellPopulator shallowOcean = Populators.makeShallowOcean(context.levels);
-        CellPopulator coast = Populators.makeCoast(context.levels);
+        CellPopulator deepOcean = Populators.makeDeepOcean(ctx.seed.next(), levels.water);
+        CellPopulator shallowOcean = Populators.makeShallowOcean(ctx.levels);
+        CellPopulator coast = Populators.makeCoast(ctx.levels);
         
         CellPopulator oceans = new ContinentLerper3(deepOcean, shallowOcean, coast, controlPoints.deepOcean(), controlPoints.shallowOcean(), controlPoints.coast());
         CellPopulator terrain = new ContinentLerper2(oceans, land, controlPoints.shallowOcean(), controlPoints.inland());
+        CellPopulator islands = makeIslandPopulator(ctx, controlPoints, terrain);
 
-        Noise beachNoise = Noises.perlin2(context.seed.next(), 20, 1);
-        beachNoise = Noises.mul(beachNoise, context.levels.scale(5));
-        return new Heightmap(terrain, region, continent, climate, levels, controlPoints, terrainFrequency, beachNoise);
+        Noise beachNoise = Noises.perlin2(ctx.seed.next(), 20, 1);
+        beachNoise = Noises.mul(beachNoise, ctx.levels.scale(5));
+        return new Heightmap(islands, region, continent, climate, levels, controlPoints, terrainFrequency, beachNoise);
 	}
 	
-	private static CellPopulator makeIslandPopulator(GeneratorContext context) {
-//		float islandCoastPoint = 0.01F;
-//        float islandInlandPoint = 0.005F;
-//        
-//        CellPopulator land = (cell, x, z) -> {
-//        	cell.height = context.levels.water(3);
-//        };
-//        CellPopulator oceans = new ContinentLerper3(deepOcean, shallowOcean, coast, controlPoints.deepOcean(), controlPoints.shallowOcean(), controlPoints.coast());
-//        CellPopulator terrain = new ContinentLerper2(oceans, land, controlPoints.shallowOcean(), controlPoints.inland());
-//        return terrain
-		return null;
+	private static CellPopulator makeIslandPopulator(GeneratorContext ctx, ControlPoints controlPoints, CellPopulator oceans) {
+		CellPopulator islands = (cell, x, z) -> {
+			cell.height = 0.26F;
+			cell.terrain = TerrainType.MUSHROOM_FIELDS;
+		};
+        return new IslandPopulator(oceans, islands, controlPoints.islandCoast(), controlPoints.islandInland());
 	}
 }
