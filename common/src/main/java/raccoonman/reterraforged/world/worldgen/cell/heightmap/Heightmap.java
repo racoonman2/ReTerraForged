@@ -6,6 +6,7 @@ import raccoonman.reterraforged.data.worldgen.preset.PresetTerrainTypeNoise;
 import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.biome.Erosion;
 import raccoonman.reterraforged.world.worldgen.biome.Weirdness;
@@ -86,7 +87,7 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
     	
         Preset preset = ctx.preset;
         WorldSettings world = ctx.preset.world();
-        ControlPoints controlPoints = ControlPoints.make(world.controlPoints);
+        ControlPoints controlPoints = world.controlPoints;
 
         TerrainSettings terrainSettings = preset.terrain();
         TerrainSettings.General general = terrainSettings.general;
@@ -119,7 +120,7 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         CellPopulator terrainRegions = new RegionSelector(TerrainProvider.generateTerrain(ctx.seed, terrainSettings, regionConfig, levels, noiseLookup));
         CellPopulator terrainRegionBorders = Populators.makeBorder(ctx.seed, ground, terrainSettings.plains, terrainSettings.steppe, globalVerticalScale);
         CellPopulator terrainBlend = new RegionLerper(terrainRegionBorders, terrainRegions);
-        CellPopulator mountains = Populators.makeMountainChain(mountainSeed, ground, terrainSettings.mountains, globalVerticalScale, general.fancyMountains);
+        CellPopulator mountains = Populators.makeMountainChain(mountainSeed, ground, terrainSettings.mountains, 1.0F, globalVerticalScale, general.fancyMountains);
         Continent continent = world.continent.continentType.create(ctx.seed, ctx);
         Climate climate = Climate.make(continent, ctx);
         CellPopulator land = new Blender(mountainShape, terrainBlend, mountains, 0.3F, 0.8F, 0.575F);
@@ -128,20 +129,17 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         CellPopulator shallowOcean = Populators.makeShallowOcean(ctx.levels);
         CellPopulator coast = Populators.makeCoast(ctx.levels);
         
-        CellPopulator oceans = new ContinentLerper3(deepOcean, shallowOcean, coast, controlPoints.deepOcean(), controlPoints.shallowOcean(), controlPoints.coast());
-        CellPopulator terrain = new ContinentLerper2(oceans, land, controlPoints.shallowOcean(), controlPoints.inland());
-        CellPopulator islands = makeIslandPopulator(ctx, controlPoints, terrain);
+        //pass coast/ocean spline to makeIslandPopulator instead of deepOcean
+//        CellPopulator islandsOceans = new ContinentLerper3(coast, shallowOcean, deepOcean, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast);
+        CellPopulator oceans = new ContinentLerper3(deepOcean, shallowOcean, coast, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast);
+        CellPopulator terrain = new ContinentLerper2(oceans, land, controlPoints.shallowOcean, controlPoints.inland);
 
         Noise beachNoise = Noises.perlin2(ctx.seed.next(), 20, 1);
         beachNoise = Noises.mul(beachNoise, ctx.levels.scale(5));
-        return new Heightmap(islands, region, continent, climate, levels, controlPoints, terrainFrequency, beachNoise);
+        return new Heightmap(terrain, region, continent, climate, levels, controlPoints, terrainFrequency, beachNoise);
 	}
 	
 	private static CellPopulator makeIslandPopulator(GeneratorContext ctx, ControlPoints controlPoints, CellPopulator oceans) {
-		CellPopulator islands = (cell, x, z) -> {
-			cell.height = 0.26F;
-			cell.terrain = TerrainType.MUSHROOM_FIELDS;
-		};
-        return new IslandPopulator(oceans, islands, controlPoints.islandCoast(), controlPoints.islandInland());
+        return new IslandPopulator(ctx.levels, oceans, controlPoints.islandCoast, controlPoints.islandInland);
 	}
 }

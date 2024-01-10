@@ -1,10 +1,10 @@
 package raccoonman.reterraforged.world.worldgen.cell.continent.advanced;
 
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.continent.SimpleContinent;
 import raccoonman.reterraforged.world.worldgen.cell.continent.simple.SimpleRiverGenerator;
-import raccoonman.reterraforged.world.worldgen.cell.heightmap.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.cell.rivermap.RiverCache;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;
@@ -28,7 +28,7 @@ public abstract class AbstractContinent implements SimpleContinent {
         this.jitter = settings.continent.continentJitter;
         this.skipThreshold = settings.continent.continentSkipping;
         this.hasSkipping = (this.skipThreshold > 0.0F);
-        this.controlPoints = ControlPoints.make(settings.controlPoints);
+        this.controlPoints = settings.controlPoints;
         this.riverCache = new RiverCache(new SimpleRiverGenerator(this, context));
     }
     
@@ -41,7 +41,7 @@ public abstract class AbstractContinent implements SimpleContinent {
             float x = cx + dx * mid;
             float z = cz + dz * mid;
             float edge = this.getEdgeValue(x, z);
-            if (edge > this.controlPoints.shallowOcean()) {
+            if (edge > this.controlPoints.shallowOcean) {
                 low = mid;
             } else {
                 high = mid;

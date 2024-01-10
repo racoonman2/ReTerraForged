@@ -18,6 +18,11 @@ import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 
 public class Presets {
 
+	// TODO turn off spring generation here
+	public static Preset makeAmplified() {
+		return null;
+	}
+	
 	public static Preset makeLegacyDefault() {
 		return new Preset(
 			new WorldSettings(

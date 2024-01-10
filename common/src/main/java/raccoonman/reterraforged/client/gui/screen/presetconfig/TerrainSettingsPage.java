@@ -13,6 +13,7 @@ import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings.General;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings.Terrain;
+import raccoonman.reterraforged.world.worldgen.feature.ErodeFeature;
 
 public class TerrainSettingsPage extends PresetEditorPage {
 	private ValueButton<Integer> terrainSeedOffset;
@@ -93,12 +94,12 @@ public class TerrainSettingsPage extends PresetEditorPage {
 			return value;
 		});
 		this.globalVerticalScale = PresetWidgets.createFloatSlider(general.globalVerticalScale, 0.01F, 1.0F, RTFTranslationKeys.GUI_SLIDER_GLOBAL_VERTICAL_SCALE, (slider, value) -> {
-			general.globalVerticalScale = (int) slider.scaleValue(value);
+			general.globalVerticalScale = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.globalHorizontalScale = PresetWidgets.createFloatSlider(general.globalHorizontalScale, 0.01F, 5.0F, RTFTranslationKeys.GUI_SLIDER_GLOBAL_HORIZONTAL_SCALE, (slider, value) -> {
-			general.globalHorizontalScale = (int) slider.scaleValue(value);
+			general.globalHorizontalScale = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});

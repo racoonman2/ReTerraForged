@@ -1,8 +1,8 @@
 package raccoonman.reterraforged.world.worldgen.densityfunction.tile.filter;
 
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
-import raccoonman.reterraforged.world.worldgen.cell.heightmap.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Size;
@@ -17,7 +17,7 @@ public record BeachDetect(Levels levels, ControlPoints transition) implements Fi
         for(int x = 0; x < total; x++) {
         	for(int z = 0; z < total; z++) {
         		Cell cell = map.getCellRaw(x, z);
-	        	if (cell.terrain.isCoast() && !cell.terrain.isWetland() && cell.continentEdge < this.transition.beach()) {
+	        	if (cell.terrain.isCoast() && !cell.terrain.isWetland() && cell.continentEdge < this.transition.beach) {
 	                Cell n = map.getCellRaw(x, z - 8);
 	                Cell s = map.getCellRaw(x, z + 8);
 	                Cell e = map.getCellRaw(x + 8, z);
@@ -48,7 +48,7 @@ public record BeachDetect(Levels levels, ControlPoints transition) implements Fi
     
     public static BeachDetect make(GeneratorContext ctx) {
     	Levels levels = ctx.levels;
-    	ControlPoints transition = ControlPoints.make(ctx.preset.world().controlPoints);
+    	ControlPoints transition = ctx.preset.world().controlPoints;
     	return new BeachDetect(levels, transition);
     }
 }

@@ -1,6 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.cell.continent.fancy;
 
-import raccoonman.reterraforged.world.worldgen.cell.heightmap.ControlPoints;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil.Vec2f;
 import raccoonman.reterraforged.world.worldgen.noise.module.Line;

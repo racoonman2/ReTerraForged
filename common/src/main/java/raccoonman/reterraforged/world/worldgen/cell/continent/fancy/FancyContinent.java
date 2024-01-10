@@ -2,8 +2,8 @@ package raccoonman.reterraforged.world.worldgen.cell.continent.fancy;
 
 import java.util.Random;
 
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
-import raccoonman.reterraforged.world.worldgen.cell.heightmap.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.cell.rivermap.RiverGenerator;
 import raccoonman.reterraforged.world.worldgen.cell.rivermap.Rivermap;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
@@ -15,7 +15,7 @@ public class FancyContinent implements RiverGenerator {
 	private FancyRiverGenerator riverGenerator;
 
 	public FancyContinent(int seed, int nodes, float radius, GeneratorContext context, FancyContinentGenerator continent) {
-		ControlPoints controlPoints = ControlPoints.make(context.preset.world().controlPoints);
+		ControlPoints controlPoints = context.preset.world().controlPoints;
 		this.islands = generateIslands(controlPoints, 3, nodes, radius, new Random(seed));
 		this.riverGenerator = new FancyRiverGenerator(continent, context);
 	}

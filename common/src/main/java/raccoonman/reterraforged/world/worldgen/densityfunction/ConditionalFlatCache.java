@@ -1,15 +1,17 @@
 package raccoonman.reterraforged.world.worldgen.densityfunction;
 
+import java.util.Arrays;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
 
-public record ConditionalArrayCache(DensityFunction function) implements MarkerFunction {
-	public static final Codec<ConditionalArrayCache> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		DensityFunction.HOLDER_HELPER_CODEC.fieldOf("function").forGetter(ConditionalArrayCache::function)
-	).apply(instance, ConditionalArrayCache::new));
+public record ConditionalFlatCache(DensityFunction function) implements MarkerFunction {
+	public static final Codec<ConditionalFlatCache> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		DensityFunction.HOLDER_HELPER_CODEC.fieldOf("function").forGetter(ConditionalFlatCache::function)
+	).apply(instance, ConditionalFlatCache::new));
 
 	@Override
 	public double compute(FunctionContext ctx) {
@@ -17,13 +19,13 @@ public record ConditionalArrayCache(DensityFunction function) implements MarkerF
 	}
 	
 	@Override
-	public KeyDispatchDataCodec<ConditionalArrayCache> codec() {
+	public KeyDispatchDataCodec<ConditionalFlatCache> codec() {
 		return new KeyDispatchDataCodec<>(CODEC);
 	}
 
 	@Override
 	public DensityFunction mapAll(Visitor visitor) {
-		return visitor.apply(new ConditionalArrayCache(this.function.mapAll(visitor)));
+		return visitor.apply(new ConditionalFlatCache(this.function.mapAll(visitor)));
 	}
 	
 	public class Cache implements MarkerFunction.Mapped {
@@ -37,12 +39,7 @@ public record ConditionalArrayCache(DensityFunction function) implements MarkerF
 			this.firstBlockZ = firstBlockZ;
 			this.width = width;
 			this.cache = new float[width * width];
-			MutableFunctionContext ctx = new MutableFunctionContext();
-			for(int x = 0; x < width; x++) {
-				for(int z = 0; z < width; z++) {
-					this.cache[x * width + z] = (float) ConditionalArrayCache.this.function.compute(ctx.at(firstBlockX + x, 0, firstBlockZ + z));
-				}
-			}
+			Arrays.fill(this.cache, Float.NaN);
 		}
 		
 		@Override
@@ -52,19 +49,23 @@ public record ConditionalArrayCache(DensityFunction function) implements MarkerF
             int cacheX = blockX - this.firstBlockX;
             int cacheZ = blockZ - this.firstBlockZ;
             if (cacheX >= 0 && cacheZ >= 0 && cacheX < this.width && cacheZ < this.width) {
-                return this.cache[cacheX * this.width + cacheZ];
+            	int index = cacheX * this.width + cacheZ;
+            	if(Float.isNaN(this.cache[index])) {
+            		this.cache[index] = (float) ConditionalFlatCache.this.function.compute(ctx);
+            	}
+                return this.cache[index];
             }
-            return ConditionalArrayCache.this.function.compute(ctx);
+            return ConditionalFlatCache.this.function.compute(ctx);
 		}
 
 		@Override
 		public double minValue() {
-			return ConditionalArrayCache.this.function.minValue();
+			return ConditionalFlatCache.this.function.minValue();
 		}
 
 		@Override
 		public double maxValue() {
-			return ConditionalArrayCache.this.function.maxValue();
+			return ConditionalFlatCache.this.function.maxValue();
 		}		
 	}
 }

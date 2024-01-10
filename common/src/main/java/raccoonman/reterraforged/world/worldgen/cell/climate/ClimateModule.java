@@ -2,10 +2,10 @@ package raccoonman.reterraforged.world.worldgen.cell.climate;
 
 import raccoonman.reterraforged.data.worldgen.preset.settings.ClimateSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.biome.type.BiomeType;
 import raccoonman.reterraforged.world.worldgen.cell.continent.Continent;
-import raccoonman.reterraforged.world.worldgen.cell.heightmap.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
@@ -47,7 +47,7 @@ public class ClimateModule {
 		this.continent = continent;
 		this.seed = seed.next();
 		this.biomeFreq = 1.0F / biomeSize;
-		this.controlPoints = ControlPoints.make(controlPoints);
+		this.controlPoints = controlPoints;
 		this.warpStrength = (float) climateSettings.biomeShape.biomeWarpStrength;
 		this.levels = levels;
 		

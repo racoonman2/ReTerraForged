@@ -96,6 +96,10 @@ public class WorldSettings {
             this.inland = inland;
         }
         
+        public float coastMarker() {
+        	return this.coast + (this.inland - this.coast) / 2.0F;
+        }
+        
         public ControlPoints copy() {
         	return new ControlPoints(this.islandInland, this.islandCoast, this.deepOcean, this.shallowOcean, this.beach, this.coast, this.inland);
         }

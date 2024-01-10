@@ -47,7 +47,7 @@ public class TerrainProvider {
         
         List<CellPopulator> unmixable = new ArrayList<>();
         unmixable.add(Populators.makeBadlands(terrainSeed, ground, settings.badlands));
-        unmixable.add(Populators.makeMountains(terrainSeed, ground, settings.mountains, verticalScale, fancyMountains));
+        unmixable.add(Populators.makeMountains(terrainSeed, ground, settings.mountains, 1.0F, verticalScale, fancyMountains));
         unmixable.add(Populators.makeMountains2(terrainSeed, ground, settings.mountains, verticalScale, fancyMountains));
         unmixable.add(Populators.makeMountains3(terrainSeed, ground, settings.mountains, verticalScale, fancyMountains));
         unmixable.add(new VolcanoPopulator(terrainSeed, config, levels, settings.volcano.weight));
