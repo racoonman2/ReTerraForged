@@ -34,7 +34,7 @@ public class MixinChunkStatus {
 		at = @At("HEAD"),
 		method = { "lambda$static$2", "m_304610_" },
 		remap = false,
-		require = 0
+		require = 1
 	)
 	private static void lambda$static$2(ChunkStatus status, Executor executor, ServerLevel level, ChunkGenerator generator, StructureTemplateManager templateManager, ThreadedLevelLightEngine lightEngine, Function<ChunkAccess, CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>>> chunkLookup, List<ChunkAccess> regionChunks, ChunkAccess centerChunk, CallbackInfoReturnable<CompletableFuture<ChunkAccess>> callback) {
 		RandomState randomState = level.getChunkSource().randomState();
@@ -53,7 +53,7 @@ public class MixinChunkStatus {
 		at = @At("TAIL"),
 		method = { "lambda$static$11", "m_279978_" },
 		remap = false,
-		require = 0
+		require = 1
 	)
 	private static void lambda$static$11(ChunkStatus status, ServerLevel level, ChunkGenerator generator, List<ChunkAccess> chunks, ChunkAccess centerChunk, CallbackInfo callback) {
 		RandomState randomState = level.getChunkSource().randomState();
