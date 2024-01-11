@@ -219,7 +219,7 @@ public class WorldSettingsPage extends PresetEditorPage {
 
 	@Override
 	public Optional<Page> next() {
-		return Optional.of(new CaveSettingsPage(this.screen, this.preset));
+		return Optional.of(new SurfaceSettingsPage(this.screen, this.preset));
 	}
 	
 	private void applyContinentType(ContinentType type) {

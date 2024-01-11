@@ -26,7 +26,7 @@ import raccoonman.reterraforged.world.worldgen.terrablender.TBCompat;
 public class PresetNoiseRouterData {
 	public static final ResourceKey<DensityFunction> HEIGHT = createKey("height");
 	public static final ResourceKey<DensityFunction> GRADIENT = createKey("gradient");
-	public static final ResourceKey<DensityFunction> EROSION = createKey("erosion");
+	public static final ResourceKey<DensityFunction> HEIGHT_EROSION = createKey("erosion");
 	public static final ResourceKey<DensityFunction> SEDIMENT = createKey("sediment");
 	
 	private static final float SCALER = 128.0F;
@@ -44,11 +44,11 @@ public class PresetNoiseRouterData {
         int worldHeight = properties.worldHeight;
         int worldDepth = properties.worldDepth;
         
-        ctx.register(NoiseRouterData.CONTINENTS, RTFDensityFunctions.conditionalFlatCache(RTFDensityFunctions.cell(CellSampler.Field.CONTINENT)));
-        ctx.register(NoiseRouterData.EROSION, RTFDensityFunctions.conditionalFlatCache(RTFDensityFunctions.cell(CellSampler.Field.EROSION)));
-        ctx.register(NoiseRouterData.RIDGES, RTFDensityFunctions.conditionalFlatCache(RTFDensityFunctions.cell(CellSampler.Field.WEIRDNESS)));
+        ctx.register(NoiseRouterData.CONTINENTS, RTFDensityFunctions.cell(CellSampler.Field.CONTINENT));
+        ctx.register(NoiseRouterData.EROSION, RTFDensityFunctions.cell(CellSampler.Field.EROSION));
+        ctx.register(NoiseRouterData.RIDGES, RTFDensityFunctions.cell(CellSampler.Field.WEIRDNESS));
 
-        DensityFunction height = NoiseRouterData.registerAndWrap(ctx, HEIGHT, RTFDensityFunctions.conditionalFlatCache(RTFDensityFunctions.cell(CellSampler.Field.HEIGHT)));
+        DensityFunction height = NoiseRouterData.registerAndWrap(ctx, HEIGHT, RTFDensityFunctions.cell(CellSampler.Field.HEIGHT));
         DensityFunction offset = NoiseRouterData.registerAndWrap(ctx, NoiseRouterData.OFFSET, DensityFunctions.add(DensityFunctions.constant(NoiseRouterData.GLOBAL_OFFSET - 0.5F), DensityFunctions.mul(RTFDensityFunctions.clampToNearestUnit(height, properties.terrainScaler()), DensityFunctions.constant(2.0D))));
         ctx.register(NoiseRouterData.DEPTH, DensityFunctions.add(DensityFunctions.yClampedGradient(-worldDepth, worldHeight, yGradientRange(-worldDepth), yGradientRange(worldHeight)), offset));
         ctx.register(NoiseRouterData.BASE_3D_NOISE_OVERWORLD, DensityFunctions.zero());
@@ -59,9 +59,8 @@ public class PresetNoiseRouterData {
         ctx.register(NoiseRouterData.SPAGHETTI_2D, probabilityDensity(caveSettings.spaghettiCaveProbability, spaghetti2D(-worldDepth, worldHeight, densityFunctions, noiseParams)));
         
         ctx.register(GRADIENT, RTFDensityFunctions.cell(CellSampler.Field.GRADIENT));
-        ctx.register(EROSION, RTFDensityFunctions.cell(CellSampler.Field.HEIGHT_EROSION));
+        ctx.register(HEIGHT_EROSION, RTFDensityFunctions.cell(CellSampler.Field.HEIGHT_EROSION));
         ctx.register(SEDIMENT, RTFDensityFunctions.cell(CellSampler.Field.SEDIMENT));
-        ctx.register(TBCompat.uniquenessKey(), RTFDensityFunctions.conditionalFlatCache(RTFDensityFunctions.cell(CellSampler.Field.BIOME_REGION)));
     }
     
     protected static NoiseRouter overworld(Preset preset, HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, HolderGetter<Noise> noises) {
@@ -86,8 +85,6 @@ public class PresetNoiseRouterData {
 //        DensityFunction slopedCheeseCaves = DensityFunctions.rangeChoice(slopedCheese, -1000000.0, 1.5625, entrances, NoiseRouterData.underground(densityFunctions, noiseParams, slopedCheese));
 //        DensityFunction finalDensity = DensityFunctions.min(NoiseRouterData.postProcess(slideOverworld(slopedCheeseCaves, -worldDepth)), NoiseRouterData.getFunction(densityFunctions, NoiseRouterData.NOODLE));
 
-//        
-//        
         DensityFunction entrances = caves.entranceCaveProbability > 0.0F ? DensityFunctions.min(slopedCheese, DensityFunctions.mul(DensityFunctions.constant(5.0D), DensityFunctions.interpolated(NoiseRouterData.getFunction(densityFunctions, NoiseRouterData.ENTRANCES)))) : slopedCheese;
 
         DensityFunction slopedCheeseRange = DensityFunctions.mul(DensityFunctions.rangeChoice(slopedCheese, -1000000.0D, cheeseCaveDepthOffset, entrances, DensityFunctions.interpolated(slideOverworld(underground(caves.cheeseCaveProbability, densityFunctions, noiseParams, slopedCheese), -worldDepth))), DensityFunctions.constant(0.64)).squeeze();

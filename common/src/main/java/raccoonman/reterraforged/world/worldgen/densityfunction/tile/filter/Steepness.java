@@ -27,7 +27,7 @@ public record Steepness(int radius, float scaler, float waterLevel) implements F
 				}
 			}
 		}
-		cell.gradient = Math.min(1.0F, totalHeightDif * this.scaler);
+		cell.gradient = totalHeightDif * this.scaler;
 	}
 	
 	public static Steepness make(int radius, float scaler, Levels levels) {

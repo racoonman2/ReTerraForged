@@ -26,6 +26,7 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.concurrent.ThreadPools;
 import raccoonman.reterraforged.config.PerformanceConfig;
+import raccoonman.reterraforged.data.worldgen.compat.terrablender.TBNoiseRouterData;
 import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.tags.RTFDensityFunctionTags;
@@ -100,7 +101,7 @@ class MixinRandomState {
 		});
 		
 		if((Object) this.sampler instanceof TBClimateSampler tbClimateSampler && TBCompat.isEnabled()) {
-			functions.get(TBCompat.uniquenessKey()).ifPresent((uniqueness) -> {
+			functions.get(TBNoiseRouterData.UNIQUENESS).ifPresent((uniqueness) -> {
 				tbClimateSampler.setUniqueness(uniqueness.value().mapAll(this.densityFunctionWrapper));
 			});
 		}

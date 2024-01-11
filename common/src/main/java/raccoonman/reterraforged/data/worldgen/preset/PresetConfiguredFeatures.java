@@ -16,7 +16,6 @@ import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.data.worldgen.placement.TreePlacements;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -29,16 +28,13 @@ import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfigur
 import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
-import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
-import net.minecraft.world.level.levelgen.feature.foliageplacers.BushFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedBlockStateProvider;
-import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.data.worldgen.preset.settings.MiscellaneousSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.SurfaceSettings;
 import raccoonman.reterraforged.world.worldgen.feature.BushFeature;
 import raccoonman.reterraforged.world.worldgen.feature.DecorateSnowFeature;
 import raccoonman.reterraforged.world.worldgen.feature.ErodeFeature;
@@ -110,8 +106,10 @@ public class PresetConfiguredFeatures {
 	
 	public static void bootstrap(Preset preset, BootstapContext<ConfiguredFeature<?, ?>> ctx) {
 		MiscellaneousSettings miscellaneous = preset.miscellaneous();
-
-		ErodeFeature.Config erodeConfig = new ErodeFeature.Config(30, 140, 40, 95, 0.65F, 0.475F, 0.4F, 6F / 255F, 3F / 255F, 256, 3F / 255F, 0.55F);
+		SurfaceSettings surface = preset.surface();
+		SurfaceSettings.Erosion erosion = surface.erosion();
+		
+		ErodeFeature.Config erodeConfig = new ErodeFeature.Config(erosion.rockVariance, erosion.rockMin, erosion.dirtVariance, erosion.dirtMin, erosion.rockSteepness, erosion.dirtSteepness, erosion.screeSteepness, 6F / 255F, 3F / 255F, 256, 3F / 255F, 0.55F);
 		if(miscellaneous.erosionDecorator) {
 			FeatureUtils.register(ctx, ERODE, RTFFeatures.ERODE, erodeConfig);
 		}

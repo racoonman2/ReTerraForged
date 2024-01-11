@@ -24,7 +24,6 @@ import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
-import raccoonman.reterraforged.world.worldgen.densityfunction.ConditionalFlatCache;
 import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
 
 @Mixin(NoiseChunk.class)
@@ -100,9 +99,5 @@ class MixinNoiseChunk {
 		if((Object) this.randomState instanceof RTFRandomState randomState && function instanceof CellSampler mapped) {
 			callback.setReturnValue(mapped.new CacheChunk(this.chunk, this.cache2d, this.chunkX, this.chunkZ));
 		}
-		
-        if(function instanceof ConditionalFlatCache cache && this.cellCountXZ == 1) {
-//        	callback.setReturnValue(((NoiseChunk) (Object) this).new FlatCache(cache.function(), true));
-        }
 	}
 }

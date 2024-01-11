@@ -32,7 +32,7 @@ public class MixinChunkStatus {
 
 	@Inject(
 		at = @At("HEAD"),
-		method = { "lambda$static$2", "m_304610_" },
+		method = { "lambda$static$2", "m_292435_" },
 		remap = false,
 		require = 1
 	)

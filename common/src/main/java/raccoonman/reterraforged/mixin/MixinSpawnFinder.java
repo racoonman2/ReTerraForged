@@ -1,32 +1,33 @@
 package raccoonman.reterraforged.mixin;
 
-import org.spongepowered.asm.mixin.Mixin;
+import java.util.List;
 
-//TODO this just wont fucking load for some reason
-@Mixin(targets = "net.minecraft.world.level.biome.Climate$SpawnFinder")
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.biome.Climate.ParameterPoint;
+import net.minecraft.world.level.biome.Climate.Sampler;
+import raccoonman.reterraforged.world.worldgen.GeneratorContext;
+import raccoonman.reterraforged.world.worldgen.biome.RTFClimateSampler;
+import raccoonman.reterraforged.world.worldgen.cell.biome.spawn.SpawnFinderFix;
+
+// FIXME the mixin that we should actually be using just refuses to work for some reason
+
+//@Mixin(targets = "net.minecraft.world.level.biome.Climate$SpawnFinder")
+@Mixin(Climate.class)
 class MixinSpawnFinder {
-	
-//	@Redirect(
-//		at = @At(
-//			value = "INVOKE",
-//			target = "Lnet/minecraft/world/level/biome/Climate$SpawnFinder;getSpawnPositionAndFitness(Ljava/util/List;Lnet/minecraft/world/level/biome/Climate$Sampler;II)Lnet/minecraft/world/level/biome/Climate$SpawnFinder$Result;"
-//		),
-//		method = "<init>",
-//		require = 1
-//	)
-//	Result SpawnFinder(List<ParameterPoint> list, Climate.Sampler sampler, int i, int j) {
-//		int centerX = 0;
-//		int centerZ = 0;
-//		RTFCommon.LOGGER.info("Marker");
-//		if((Object) sampler instanceof RTFClimateSampler rtfClimateSampler) {
-//			BlockPos center = rtfClimateSampler.getSpawnSearchCenter();
-//			RTFCommon.LOGGER.info("Setting spawn search center {}", center);
-//			centerX = center.getX();
-//			centerZ = center.getZ();
-//		}
-//		return getSpawnPositionAndFitness(list, sampler, centerX, centerZ);
-//    }
-	
+
+	@Inject(at = @At("HEAD"), method = "findSpawnPosition", cancellable = true)
+    private static void findSpawnPosition(List<ParameterPoint> list, Sampler sampler, CallbackInfoReturnable<BlockPos> callback) {
+		GeneratorContext generatorContext;
+//		if((Object) sampler instanceof RTFClimateSampler)
+//		
+    	callback.setReturnValue(new SpawnFinderFix(list, sampler).result.location());
+    }
 //	@ModifyArg(
 //		at = @At(
 //			value = "INVOKE",
@@ -36,7 +37,7 @@ class MixinSpawnFinder {
 //		index = 2,
 //		require = 1
 //	)
-//	int modifyX(List<ParameterPoint> points, Climate.Sampler sampler, int x, int z) {
+//	private static int modifyX(List<ParameterPoint> points, Climate.Sampler sampler, int x, int z) {
 //		if((Object) sampler instanceof RTFClimateSampler rtfClimateSampler) {
 //			BlockPos center = rtfClimateSampler.getSpawnSearchCenter();
 //			return center != null ? center.getX() : 0;
@@ -54,7 +55,7 @@ class MixinSpawnFinder {
 //		index = 3,
 //		require = 1
 //	)
-//	int modifyZ(List<ParameterPoint> points, Climate.Sampler sampler, int x, int z) {
+//	private static int modifyZ(List<ParameterPoint> points, Climate.Sampler sampler, int x, int z) {
 //		if((Object) sampler instanceof RTFClimateSampler rtfClimateSampler) {
 //			BlockPos center = rtfClimateSampler.getSpawnSearchCenter();
 //			return center != null ? center.getZ() : 0;

@@ -25,11 +25,13 @@ public final class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_SELECT_PRESET_MISSING_LEGACY_PRESETS, "Couldn't find any legacy presets");
 			this.add(RTFTranslationKeys.GUI_SELECT_PRESET_TITLE, "Presets & Defaults");
 			this.add(RTFTranslationKeys.GUI_DEFAULT_PRESET_NAME, "Default");
+			this.add(RTFTranslationKeys.GUI_AMPLIFIED_PRESET_NAME, "ReTerraForged - Amplified");
 			this.add(RTFTranslationKeys.GUI_BEAUTIFUL_PRESET_NAME, "TerraForged - Beautiful (Legacy)");
 			this.add(RTFTranslationKeys.GUI_HUGE_BIOMES_PRESET_NAME, "TerraForged - Huge Biomes (Legacy)");
 			this.add(RTFTranslationKeys.GUI_LITE_PRESET_NAME, "TerraForged - Lite (Legacy)");
 			this.add(RTFTranslationKeys.GUI_VANILLAISH_PRESET_NAME, "TerraForged - Vanilla-ish (Legacy)");
 			this.add(RTFTranslationKeys.GUI_WORLD_SETTINGS_TITLE, "World Settings");
+			this.add(RTFTranslationKeys.GUI_SURFACE_SETTINGS_TITLE, "Surface Settings (Experimental)");
 			this.add(RTFTranslationKeys.GUI_CAVE_SETTINGS_TITLE, "Cave Settings (Experimental)");
 			this.add(RTFTranslationKeys.GUI_CLIMATE_SETTINGS_TITLE, "Climate Settings");
 			this.add(RTFTranslationKeys.GUI_TERRAIN_SETTINGS_TITLE, "Terrain Settings");
@@ -57,6 +59,7 @@ public final class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_BUTTON_BIOME_EDGE_TYPE, "Type");
 			this.add(RTFTranslationKeys.GUI_BUTTON_TERRAIN_SEED_OFFSET, "Terrain Seed Offset");
 			this.add(RTFTranslationKeys.GUI_BUTTON_FANCY_MOUNTAINS, "Fancy Mountains");
+			this.add(RTFTranslationKeys.GUI_BUTTON_LEGACY_MOUNTAIN_SCALING, "Legacy Mountain Scaling");
 			this.add(RTFTranslationKeys.GUI_BUTTON_RIVER_SEED_OFFSET, "Seed Offset");
 			this.add(RTFTranslationKeys.GUI_BUTTON_SALT, "Salt");
 			this.add(RTFTranslationKeys.GUI_BUTTON_DISABLED, "Disabled");
@@ -90,6 +93,13 @@ public final class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH, "World Depth");
 			this.add(RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL, "Sea Level");
 			this.add(RTFTranslationKeys.GUI_SLIDER_LAVA_LEVEL, "Lava Level");
+			this.add(RTFTranslationKeys.GUI_SLIDER_ROCK_VARIANCE, "Rock Variance");
+			this.add(RTFTranslationKeys.GUI_SLIDER_ROCK_MIN, "Rock Min");
+			this.add(RTFTranslationKeys.GUI_SLIDER_DIRT_VARIANCE, "Dirt Variance");
+			this.add(RTFTranslationKeys.GUI_SLIDER_DIRT_MIN, "Dirt Min");
+			this.add(RTFTranslationKeys.GUI_SLIDER_ROCK_STEEPNESS, "Rock Steepness");
+			this.add(RTFTranslationKeys.GUI_SLIDER_DIRT_STEEPNESS, "Dirt Steepness");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SCREE_STEEPNESS, "Scree Steepness");
 			this.add(RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY, "Entrance Cave Chance");
 			this.add(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_DEPTH_OFFSET, "Cheese Cave Depth Offset");
 			this.add(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_PROBABILITY, "Cheese Cave Chance");
@@ -164,6 +174,7 @@ public final class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_LABEL_CONTINENT, "Continent");
 			this.add(RTFTranslationKeys.GUI_LABEL_CONTROL_POINTS, "Control Points");
 			this.add(RTFTranslationKeys.GUI_LABEL_PROPERTIES, "Properties");
+			this.add(RTFTranslationKeys.GUI_LABEL_SURFACE_EROSION, "Erosion");
 			this.add(RTFTranslationKeys.GUI_LABEL_NOISE_CAVES, "Noise Caves");
 			this.add(RTFTranslationKeys.GUI_LABEL_CARVERS, "Carvers");
 			this.add(RTFTranslationKeys.GUI_LABEL_TEMPERATURE, "Temperature");
@@ -201,6 +212,7 @@ public final class RTFLanguageProvider {
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_BIOME_EDGE_TYPE), "The noise type");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_TERRAIN_SEED_OFFSET), "A seed offset used to randomise terrain distribution");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_FANCY_MOUNTAINS), "Carries out extra processing on mountains to make them look even nicer. Can be disabled to improve performance slightly.");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_LEGACY_MOUNTAIN_SCALING), "Changes mountain scaling to be compatible with legacy TerraForged");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_RIVER_SEED_OFFSET), "A seed offset used to randomise river distribution");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_SALT), "A random seed value for the structure.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_DISABLED), "Prevent this structure from generating.");
@@ -233,6 +245,13 @@ public final class RTFLanguageProvider {
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH), "Controls the minimum y level");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL), "Controls the sea level");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_LAVA_LEVEL), "Controls the lava level.");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_ROCK_VARIANCE), "Controls the density of the rock gradient");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_ROCK_MIN), "Controls the y level at which the surface can transition into rock");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_DIRT_VARIANCE), "Controls the density of the dirt gradient");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_DIRT_MIN), "Controls the y level at which the surface can transition into dirt");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_ROCK_STEEPNESS), "The steepness at which the surface can transition into rock");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_DIRT_STEEPNESS), "The steepness at which the surface can transition into dirt");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SCREE_STEEPNESS), "The steepness at which the surface can transition into gravel");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY), "Controls the probability that an entrance cave will generate");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_DEPTH_OFFSET), "Controls the depth at which cheese caves start to generate");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_PROBABILITY), "Controls probability that a cheese cave will generate");
