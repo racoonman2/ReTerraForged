@@ -30,13 +30,14 @@ import raccoonman.reterraforged.world.worldgen.RTFRandomState;
 @Mixin(ChunkStatus.class)
 public class MixinChunkStatus {
 
+	
 	@Inject(
 		at = @At("HEAD"),
-		method = { "lambda$static$2", "m_304610_" },
+		method = { "method_39464", "m_289181_" },
 		remap = false,
-		require = 0
+		require = 1
 	)
-	private static void lambda$static$2(ChunkStatus status, Executor executor, ServerLevel level, ChunkGenerator generator, StructureTemplateManager templateManager, ThreadedLevelLightEngine lightEngine, Function<ChunkAccess, CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>>> chunkLookup, List<ChunkAccess> regionChunks, ChunkAccess centerChunk, CallbackInfoReturnable<CompletableFuture<ChunkAccess>> callback) {
+	private static void method_39464(ChunkStatus status, Executor executor, ServerLevel level, ChunkGenerator generator, StructureTemplateManager templateManager, ThreadedLevelLightEngine lightEngine, Function<ChunkAccess, CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>>> chunkLookup, List<ChunkAccess> regionChunks, ChunkAccess centerChunk, CallbackInfoReturnable<CompletableFuture<ChunkAccess>> callback) {
 		RandomState randomState = level.getChunkSource().randomState();
 		if((Object) randomState instanceof RTFRandomState rtfRandomState) {
 			ChunkPos chunkPos = centerChunk.getPos();
@@ -47,15 +48,16 @@ public class MixinChunkStatus {
 				context.cache.queueAtChunk(chunkPos.x, chunkPos.z);
 			}
 		}
+		
 	}
 	
 	@Inject(
 		at = @At("TAIL"),
-		method = { "lambda$static$11", "m_279978_" },
+		method = { "method_51375", "m_279978_" },
 		remap = false,
-		require = 0
+		require = 1
 	)
-	private static void lambda$static$11(ChunkStatus status, ServerLevel level, ChunkGenerator generator, List<ChunkAccess> chunks, ChunkAccess centerChunk, CallbackInfo callback) {
+	private static void method_51375(ChunkStatus status, ServerLevel level, ChunkGenerator generator, List<ChunkAccess> chunks, ChunkAccess centerChunk, CallbackInfo callback) {
 		RandomState randomState = level.getChunkSource().randomState();
 		if((Object) randomState instanceof RTFRandomState rtfRandomState) {
 			ChunkPos chunkPos = centerChunk.getPos();

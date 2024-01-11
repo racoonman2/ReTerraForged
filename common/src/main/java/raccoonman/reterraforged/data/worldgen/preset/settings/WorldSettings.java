@@ -3,7 +3,7 @@ package raccoonman.reterraforged.data.worldgen.preset.settings;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import raccoonman.reterraforged.world.worldgen.cell.continent.MushroomIslandPopulator;
+import raccoonman.reterraforged.world.worldgen.cell.continent.IslandPopulator;
 import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 
 public class WorldSettings {
@@ -69,8 +69,8 @@ public class WorldSettings {
     
     public static class ControlPoints {
     	public static final Codec<ControlPoints> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        	Codec.FLOAT.optionalFieldOf("mushroomFieldsInland", MushroomIslandPopulator.DEFAULT_INLAND_POINT).forGetter((o) -> o.mushroomFieldsInland),
-        	Codec.FLOAT.optionalFieldOf("mushroomFieldsCoast", MushroomIslandPopulator.DEFAULT_COAST_POINT).forGetter((o) -> o.mushroomFieldsCoast),
+        	Codec.FLOAT.optionalFieldOf("islandInland", IslandPopulator.DEFAULT_INLAND_POINT).forGetter((o) -> o.islandInland),
+        	Codec.FLOAT.optionalFieldOf("islandCoast", IslandPopulator.DEFAULT_COAST_POINT).forGetter((o) -> o.islandCoast),
     		Codec.FLOAT.fieldOf("deepOcean").forGetter((o) -> o.deepOcean),
     		Codec.FLOAT.fieldOf("shallowOcean").forGetter((o) -> o.shallowOcean),
     		Codec.FLOAT.fieldOf("beach").forGetter((o) -> o.beach),
@@ -78,17 +78,17 @@ public class WorldSettings {
     		Codec.FLOAT.fieldOf("inland").forGetter((o) -> o.inland)
         ).apply(instance, ControlPoints::new));
 
-    	public float mushroomFieldsInland;
-    	public float mushroomFieldsCoast;
+    	public float islandInland;
+    	public float islandCoast;
         public float deepOcean;
         public float shallowOcean;
         public float beach;
         public float coast;
         public float inland;
         
-        public ControlPoints(float mushroomFieldsInland, float mushroomFieldsCoast, float deepOcean, float shallowOcean, float beach, float coast, float inland) {
-        	this.mushroomFieldsInland = mushroomFieldsInland;
-        	this.mushroomFieldsCoast = mushroomFieldsCoast;
+        public ControlPoints(float islandInland, float islandCoast, float deepOcean, float shallowOcean, float beach, float coast, float inland) {
+        	this.islandInland = islandInland;
+        	this.islandCoast = islandCoast;
             this.deepOcean = deepOcean;
             this.shallowOcean = shallowOcean;
             this.beach = beach;
@@ -96,8 +96,12 @@ public class WorldSettings {
             this.inland = inland;
         }
         
+        public float coastMarker() {
+        	return this.coast + (this.inland - this.coast) / 2.0F;
+        }
+        
         public ControlPoints copy() {
-        	return new ControlPoints(this.mushroomFieldsInland, this.mushroomFieldsCoast, this.deepOcean, this.shallowOcean, this.beach, this.coast, this.inland);
+        	return new ControlPoints(this.islandInland, this.islandCoast, this.deepOcean, this.shallowOcean, this.beach, this.coast, this.inland);
         }
     }
     

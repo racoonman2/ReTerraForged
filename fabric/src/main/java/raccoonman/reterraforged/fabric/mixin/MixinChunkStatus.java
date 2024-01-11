@@ -32,7 +32,8 @@ public class MixinChunkStatus {
 	@Inject(
 		at = @At("HEAD"),
 		remap = false,
-		method = "method_39464"
+		method = "method_39464",
+		require = 1
 	)
 	private static void method_39464(ChunkStatus status, Executor executor, ServerLevel level, ChunkGenerator generaotr, StructureTemplateManager templateManager, ThreadedLevelLightEngine lightEngine, Function<ChunkAccess, CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>>> chunkLookup, List<ChunkAccess> regionChunks, ChunkAccess centerChunk, CallbackInfoReturnable<CompletableFuture<ChunkAccess>> callback) {
 		RandomState randomState = level.getChunkSource().randomState();
@@ -50,7 +51,8 @@ public class MixinChunkStatus {
 	@Inject(
 		at = @At("TAIL"),
 		remap = false,
-		method = "method_51375"
+		method = "method_51375",
+		require = 1
 	)
 	private static void method_51375(ChunkStatus status, ServerLevel level, ChunkGenerator generator, List<ChunkAccess> chunks, ChunkAccess centerChunk, CallbackInfo callback) {
 		RandomState randomState = level.getChunkSource().randomState();

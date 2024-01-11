@@ -38,9 +38,9 @@ public class ContinentLerper2 implements CellPopulator {
         }
         float alpha = this.interpolation.apply((cell.continentEdge - this.blendLower) / this.blendRange);
         this.lower.apply(cell, x, y);
-        float lowerVal = cell.height;
+        float lowerHeight = cell.height;
         this.upper.apply(cell, x, y);
-        float upperVal = cell.height;
-        cell.height = NoiseUtil.lerp(lowerVal, upperVal, alpha);
+        float upperHeight = cell.height;
+        cell.height = NoiseUtil.lerp(lowerHeight, upperHeight, alpha);
     }
 }

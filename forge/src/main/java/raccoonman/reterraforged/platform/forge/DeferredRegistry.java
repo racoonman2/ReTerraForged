@@ -211,19 +211,6 @@ class DeferredRegistry<T> implements Registry<T> {
 		public void register(IEventBus bus) {
 			this.register.register(bus);
 		}
-		
-		@Override
-		public Holder<T> registerMapping(int i, ResourceKey<T> key, T value, Lifecycle lifecycle) {
-			Holder.Reference<T> holder = Holder.Reference.createStandAlone(new HolderOwner<>() {
-			    
-				@Override
-				public boolean canSerializeIn(HolderOwner<T> arg) {
-			        return false;
-			    }
-			}, key);
-			this.register.register(key.location().getPath(), () -> value);
-			return holder;
-		}
 
 		@Override
 		public Reference<T> register(ResourceKey<T> key, T value, Lifecycle lifecycle) {
@@ -237,6 +224,8 @@ class DeferredRegistry<T> implements Registry<T> {
 			this.register.register(key.location().getPath(), () -> value);
 			return holder;
 		}
+		
+		
 
 		@Override
 		public boolean isEmpty() {
@@ -246,6 +235,19 @@ class DeferredRegistry<T> implements Registry<T> {
 		@Override
 		public HolderGetter<T> createRegistrationLookup() {
 			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Holder<T> registerMapping(int i, ResourceKey<T> key, T value, Lifecycle lifecycle) {
+			Holder.Reference<T> holder = Holder.Reference.createStandAlone(new HolderOwner<>() {
+			    
+				@Override
+				public boolean canSerializeIn(HolderOwner<T> arg) {
+			        return false;
+			    }
+			}, key);
+			this.register.register(key.location().getPath(), () -> value);
+			return holder;
 		}
 	}
 }

@@ -9,8 +9,6 @@ public interface MarkerFunction extends DensityFunction.SimpleFunction {
 	default double compute(FunctionContext ctx) {
 		throw new UnsupportedOperationException();
 	}
-	
-    DensityFunction mapAll(Visitor visitor);
 		
 	@Override
 	default double minValue() {

@@ -78,8 +78,8 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
             }
         }
         nearest = Float.MAX_VALUE;
-        float sumX = 0.0f;
-        float sumY = 0.0f;
+        float sumX = 0.0F;
+        float sumY = 0.0F;
         for (int cy2 = cellY - 1; cy2 <= cellY + 1; ++cy2) {
             for (int cx2 = cellX - 1; cx2 <= cellX + 1; ++cx2) {
                 if (cx2 != cellX || cy2 != cellY) {
@@ -95,13 +95,14 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
                 }
             }
         }
+        cell.continentDistance = NoiseUtil.sqrt(nearest);
+        cell.continentX = this.getCorrectedContinentCenter(cellPointX, sumX / 8.0F);
+        cell.continentZ = this.getCorrectedContinentCenter(cellPointY, sumY / 8.0F);
         if (this.shouldSkip(cellX, cellY)) {
             return;
         }
         cell.continentId = AbstractContinent.getCellValue(this.seed, cellX, cellY);
         cell.continentEdge = this.getDistanceValue(x, y, cellX, cellY, nearest);
-        cell.continentX = this.getCorrectedContinentCenter(cellPointX, sumX / 8.0F);
-        cell.continentZ = this.getCorrectedContinentCenter(cellPointY, sumY / 8.0F);
     }
     
     @Override
@@ -140,9 +141,9 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
     protected float getDistanceValue(float x, float y, int cellX, int cellY, float distance) {
         distance = this.getVariedDistanceValue(cellX, cellY, distance);
         distance = NoiseUtil.sqrt(distance);
-        distance = NoiseUtil.map(distance, 0.05f, 0.25f, 0.2f);
+        distance = NoiseUtil.map(distance, 0.05F, 0.25F, 0.2F);
         distance = this.getCoastalDistanceValue(x, y, distance);
-        if (distance < this.controlPoints.inland() && distance >= this.controlPoints.shallowOcean()) {
+        if (distance < this.controlPoints.inland && distance >= this.controlPoints.shallowOcean) {
             distance = this.getCoastalDistanceValue(x, y, distance);
         }
         return distance;
@@ -158,12 +159,12 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
     }
     
     protected float getCoastalDistanceValue(float x, float y, float distance) {
-        if (distance > this.controlPoints.shallowOcean() && distance < this.controlPoints.inland()) {
-            float alpha = distance / this.controlPoints.inland();
+        if (distance > this.controlPoints.shallowOcean && distance < this.controlPoints.inland) {
+            float alpha = distance / this.controlPoints.inland;
             float cliff = this.cliffNoise.compute(x, y, 0);
             distance = NoiseUtil.lerp(distance * cliff, distance, alpha);
-            if (distance < this.controlPoints.shallowOcean()) {
-                distance = this.controlPoints.shallowOcean() * this.bayNoise.compute(x, y, 0);
+            if (distance < this.controlPoints.shallowOcean) {
+                distance = this.controlPoints.shallowOcean * this.bayNoise.compute(x, y, 0);
             }
         }
         return distance;

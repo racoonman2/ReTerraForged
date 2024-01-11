@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.core.QuartPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Aquifer;
@@ -25,7 +24,6 @@ import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
-import raccoonman.reterraforged.world.worldgen.densityfunction.ConditionalArrayCache;
 import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
 
 @Mixin(NoiseChunk.class)
@@ -101,9 +99,5 @@ class MixinNoiseChunk {
 		if((Object) this.randomState instanceof RTFRandomState randomState && function instanceof CellSampler mapped) {
 			callback.setReturnValue(mapped.new CacheChunk(this.chunk, this.cache2d, this.chunkX, this.chunkZ));
 		}
-		
-        if(function instanceof ConditionalArrayCache cache && this.cellCountXZ == 1) {
-        	callback.setReturnValue(cache.new Cache(QuartPos.toBlock(this.firstNoiseX), QuartPos.toBlock(this.firstNoiseZ), QuartPos.toBlock(this.cellCountXZ)));
-        }
 	}
 }

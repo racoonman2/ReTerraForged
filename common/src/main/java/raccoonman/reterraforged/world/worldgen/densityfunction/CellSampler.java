@@ -7,18 +7,18 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.QuartPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.level.levelgen.DensityFunction;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.biome.Continentalness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
-import raccoonman.reterraforged.world.worldgen.cell.heightmap.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Heightmap;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.WorldLookup;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainCategory;
-import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler.Field;
+import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;
@@ -48,6 +48,9 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 		private Cell cell = new Cell();
 		
 		public Cell getAndUpdate(WorldLookup lookup, int blockX, int blockZ, boolean sampleClimate) {
+			blockX = QuartPos.toBlock(QuartPos.fromBlock(blockX));
+			blockZ = QuartPos.toBlock(QuartPos.fromBlock(blockZ));
+			
 			long packedPos = PosUtil.pack(blockX, blockZ);
 			if(this.lastPos != packedPos) {
 				lookup.applyCell(this.cell.reset(), blockX, blockZ, false, sampleClimate);
@@ -80,7 +83,7 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 			Cell cell = (this.chunk != null && this.chunkX == chunkX && this.chunkZ == chunkZ) ? 
 				this.chunk.getCell(blockX, blockZ) :
 				this.cache2d.getAndUpdate(worldLookup, blockX, blockZ, false);
-			return this.structureRiverFix(cell, CellSampler.this.field.read(cell, worldLookup.getHeightmap()));
+			return CellSampler.this.field.read(cell, worldLookup.getHeightmap());
 		}
 
 		@Override
@@ -92,15 +95,6 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 		public double maxValue() {
 			return CellSampler.this.maxValue();
 		}
-		
-		private float structureRiverFix(Cell cell, float value) {
-			if(CellSampler.this.field == Field.HEIGHT) {
-				if(cell.riverMask < 0.1F) {
-					return value;
-				}
-			}
-			return value;
-		}
 	}
 	
 	public record Marker(Field field) implements MarkerFunction {
@@ -111,11 +105,6 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 		@Override
 		public KeyDispatchDataCodec<Marker> codec() {
 			return new KeyDispatchDataCodec<>(CODEC);
-		}
-
-		@Override
-		public DensityFunction mapAll(Visitor visitor) {
-			return visitor.apply(this);
 		}
 	}
 	
@@ -129,16 +118,21 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 		},
 		CONTINENT("continent") {
 			
+			//TODO move this somewhere else
 			@Override
 			public float read(Cell cell, Heightmap heightmap) {
 				Levels levels = heightmap.levels();
 				ControlPoints controlPoints = heightmap.controlPoints();
 				
-				float deepOcean = controlPoints.deepOcean();
-				float shallowOcean = controlPoints.shallowOcean();
-				float beach = controlPoints.beach();
-				float coast = controlPoints.coast();
-				float inland = controlPoints.inland();
+				float deepOcean = controlPoints.deepOcean;
+				float shallowOcean = controlPoints.shallowOcean;
+				float beach = controlPoints.beach;
+				float coast = controlPoints.coast;
+				float inland = controlPoints.inland;
+				
+				if(cell.terrain == TerrainType.MUSHROOM_FIELDS) {
+					return Continentalness.MUSHROOM_FIELDS.mid();
+				}
 				
 				if(cell.terrain.isDeepOcean()) {
 					float alpha = NoiseUtil.clamp(cell.continentEdge, 0.0F, deepOcean);

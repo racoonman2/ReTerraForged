@@ -1,10 +1,10 @@
 package raccoonman.reterraforged.world.worldgen.cell.continent.simple;
 
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.continent.SimpleContinent;
-import raccoonman.reterraforged.world.worldgen.cell.heightmap.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.cell.rivermap.LegacyRiverCache;
 import raccoonman.reterraforged.world.worldgen.cell.rivermap.RiverCache;
 import raccoonman.reterraforged.world.worldgen.cell.rivermap.Rivermap;
@@ -39,7 +39,7 @@ public abstract class ContinentGenerator implements SimpleContinent {
         this.continentScale = settings.continent.continentScale / 2;
         this.seed = seed.next();
         this.distanceFunc = settings.continent.continentShape;
-        this.controlPoints = ControlPoints.make(settings.controlPoints);
+        this.controlPoints = settings.controlPoints;
         this.frequency = 1.0F / tectonicScale;
         this.clampMin = 0.2F;
         this.clampMax = 1.0F;
@@ -183,7 +183,7 @@ public abstract class ContinentGenerator implements SimpleContinent {
             float x = cx + dx * mid;
             float z = cz + dz * mid;
             float edge = this.getEdgeValue(x, z);
-            if (edge > this.controlPoints.shallowOcean()) {
+            if (edge > this.controlPoints.shallowOcean) {
                 low = mid;
             }
             else {
@@ -251,10 +251,10 @@ public abstract class ContinentGenerator implements SimpleContinent {
     }
     
     protected float getShape(float x, float z, float edgeValue) {
-        if (edgeValue >= this.controlPoints.inland()) {
+        if (edgeValue >= this.controlPoints.inland) {
             return 1.0F;
         }
-        float alpha = edgeValue / this.controlPoints.inland();
+        float alpha = edgeValue / this.controlPoints.inland;
         return this.shape.compute(x, z, 0) * alpha;
     }
 }

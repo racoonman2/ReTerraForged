@@ -13,6 +13,7 @@ import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings.General;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings.Terrain;
+import raccoonman.reterraforged.world.worldgen.feature.ErodeFeature;
 
 public class TerrainSettingsPage extends PresetEditorPage {
 	private ValueButton<Integer> terrainSeedOffset;
@@ -20,6 +21,7 @@ public class TerrainSettingsPage extends PresetEditorPage {
 	private Slider globalVerticalScale;
 	private Slider globalHorizontalScale;
 	private CycleButton<Boolean> fancyMountains;
+	private CycleButton<Boolean> legacyMountainScaling;
 	
 	private Slider steppeWeight;
 	private Slider steppeBaseScale;
@@ -93,17 +95,21 @@ public class TerrainSettingsPage extends PresetEditorPage {
 			return value;
 		});
 		this.globalVerticalScale = PresetWidgets.createFloatSlider(general.globalVerticalScale, 0.01F, 1.0F, RTFTranslationKeys.GUI_SLIDER_GLOBAL_VERTICAL_SCALE, (slider, value) -> {
-			general.globalVerticalScale = (int) slider.scaleValue(value);
+			general.globalVerticalScale = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.globalHorizontalScale = PresetWidgets.createFloatSlider(general.globalHorizontalScale, 0.01F, 5.0F, RTFTranslationKeys.GUI_SLIDER_GLOBAL_HORIZONTAL_SCALE, (slider, value) -> {
-			general.globalHorizontalScale = (int) slider.scaleValue(value);
+			general.globalHorizontalScale = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
 		this.fancyMountains = PresetWidgets.createToggle(general.fancyMountains, RTFTranslationKeys.GUI_BUTTON_FANCY_MOUNTAINS, (button, value) -> {
 			general.fancyMountains = value;
+			this.regenerate();
+		});
+		this.legacyMountainScaling = PresetWidgets.createToggle(general.legacyMountainScaling, RTFTranslationKeys.GUI_BUTTON_LEGACY_MOUNTAIN_SCALING, (button, value) -> {
+			general.legacyMountainScaling = value;
 			this.regenerate();
 		});
 
@@ -311,6 +317,7 @@ public class TerrainSettingsPage extends PresetEditorPage {
 		this.left.addWidget(this.globalVerticalScale);
 		this.left.addWidget(this.globalHorizontalScale);
 		this.left.addWidget(this.fancyMountains);
+		this.left.addWidget(this.legacyMountainScaling);
 
 		this.left.addWidget(PresetWidgets.createLabel(RTFTranslationKeys.GUI_LABEL_STEPPE));
 		this.left.addWidget(this.steppeWeight);

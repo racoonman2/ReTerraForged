@@ -57,6 +57,7 @@ public class ErodeFeature extends Feature<Config> {
 			raccoonman.reterraforged.world.worldgen.cell.heightmap.Heightmap heightmap = generatorContext.generator.getHeightmap();
 			Levels levels = heightmap.levels();
 			Noise rand = Noises.white(heightmap.climate().randomSeed(), 1);
+			Noise desertErosionVariance = makeDesertErosionVariance(levels);
 			BlockPos.MutableBlockPos pos = new MutableBlockPos();
 			Config config = placeContext.config();
 			for(int x = 0; x < 16; x++) {
@@ -68,10 +69,21 @@ public class ErodeFeature extends Feature<Config> {
 					int scaledY = levels.scale(cell.height);
 					int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
 					Holder<Biome> biome = level.getBiome(pos.set(worldX, surfaceY, worldZ));
+					
+					pos.set(worldX, surfaceY, worldZ);
+					
+					if(biome.is(Biomes.DESERT)) {
+						erodeDesert(desertErosionVariance, levels, chunk, cell, pos, surfaceY);
+						continue;
+					}
+					
 			        if(surfaceY <= scaledY && surfaceY >= generator.getSeaLevel() - 1 && !biome.is(Biomes.WOODED_BADLANDS) && !biome.is(Biomes.BADLANDS)) {
-						pos.set(worldX, surfaceY, worldZ);
-						
 						erodeColumn(config, rand, generator, chunk, cell, pos, surfaceY);
+						//remove any foliage that may have generated above
+						pos.setY(surfaceY);
+						while(!level.getBlockState(pos.setY(pos.getY() + 1)).canSurvive(level, pos)) {
+							level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+						}
 					}
 				}
 			}
@@ -79,6 +91,48 @@ public class ErodeFeature extends Feature<Config> {
 		} else {
 			throw new IllegalStateException();
 		}
+	}
+	
+	// TODO expose this to config
+	@Deprecated(forRemoval = true)
+	private static Noise makeDesertErosionVariance(Levels levels) {
+		Noise noise = Noises.perlin(435, 8, 1);
+		return Noises.mul(noise, levels.scale(16));
+	}
+	
+	// TODO ^
+	private static void erodeDesert(Noise variance, Levels levels, ChunkAccess chunk, Cell cell, BlockPos.MutableBlockPos pos, int surfaceY) {
+		float min = levels.ground(10);
+		float threshold = levels.ground(40);
+
+        if (cell.gradient < 0.15F) {
+            return;
+        }
+
+        if (cell.height < min) {
+            return;
+        }
+
+        float value = cell.height + variance.compute(pos.getX(), pos.getZ(), 0);
+        if (cell.gradient > 0.3F || value > threshold) {
+            BlockState state = Blocks.SMOOTH_SANDSTONE.defaultBlockState();
+
+            if (value > threshold) {
+                if (cell.gradient > 0.975) {
+                    state = Blocks.TERRACOTTA.defaultBlockState();
+                } else if (cell.gradient > 0.85) {
+                    state = Blocks.BROWN_TERRACOTTA.defaultBlockState();
+                } else if (cell.gradient > 0.75) {
+                    state = Blocks.ORANGE_TERRACOTTA.defaultBlockState();
+                } else if (cell.gradient > 0.65) {
+                    state = Blocks.TERRACOTTA.defaultBlockState();
+                }
+            }
+
+            for (int dy = 0; dy < 4; dy++) {
+                chunk.setBlockState(pos.setY(surfaceY - dy), state, false);
+            }
+        }
 	}
 	
 	private static void erodeColumn(Config config, Noise rand, ChunkGenerator generator, ChunkAccess chunk, Cell cell, BlockPos.MutableBlockPos pos, int surfaceY) {

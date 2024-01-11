@@ -46,15 +46,15 @@ public class ContinentLerper3 implements CellPopulator {
         if (select < this.midpoint) {
             float alpha = this.interpolation.apply((select - this.blendLower) / this.lowerRange);
             this.lower.apply(cell, x, y);
-            float lowerVal = cell.height;
+            float lowerHeight = cell.height;
             this.middle.apply(cell, x, y);
-            cell.height = NoiseUtil.lerp(lowerVal, cell.height, alpha);
+            cell.height = NoiseUtil.lerp(lowerHeight, cell.height, alpha);
         } else {
             float alpha = this.interpolation.apply((select - this.midpoint) / this.upperRange);
             this.middle.apply(cell, x, y);
-            float lowerVal = cell.height;
+            float lowerHeight = cell.height;
             this.upper.apply(cell, x, y);
-            cell.height = NoiseUtil.lerp(lowerVal, cell.height, alpha);
+            cell.height = NoiseUtil.lerp(lowerHeight, cell.height, alpha);
         }
     }
 }
