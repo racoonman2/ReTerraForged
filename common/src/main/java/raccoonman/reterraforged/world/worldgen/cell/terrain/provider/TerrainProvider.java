@@ -28,6 +28,7 @@ public class TerrainProvider {
     	TerrainSettings.General general = settings.general;
     	float verticalScale = general.globalVerticalScale;
     	boolean fancyMountains = general.fancyMountains;
+    	boolean legacyMountainScaling = general.legacyMountainScaling;
     	Seed terrainSeed = seed.offset(general.terrainSeedOffset);
     	
     	Noise ground = PresetNoiseData.getNoise(noiseLookup, PresetTerrainTypeNoise.GROUND);
@@ -47,9 +48,9 @@ public class TerrainProvider {
         
         List<CellPopulator> unmixable = new ArrayList<>();
         unmixable.add(Populators.makeBadlands(terrainSeed, ground, settings.badlands));
-        unmixable.add(Populators.makeMountains(terrainSeed, ground, settings.mountains, 1.0F, verticalScale, fancyMountains));
-        unmixable.add(Populators.makeMountains2(terrainSeed, ground, settings.mountains, verticalScale, fancyMountains));
-        unmixable.add(Populators.makeMountains3(terrainSeed, ground, settings.mountains, verticalScale, fancyMountains));
+        unmixable.add(Populators.makeMountains(terrainSeed, ground, settings.mountains, 1.0F, verticalScale, fancyMountains, legacyMountainScaling));
+        unmixable.add(Populators.makeMountains2(terrainSeed, ground, settings.mountains, verticalScale, fancyMountains, legacyMountainScaling));
+        unmixable.add(Populators.makeMountains3(terrainSeed, ground, settings.mountains, verticalScale, fancyMountains, legacyMountainScaling));
         unmixable.add(new VolcanoPopulator(terrainSeed, config, levels, settings.volcano.weight));
 
         List<TerrainPopulator> mixed = combine(mixable, (t1, t2) -> {

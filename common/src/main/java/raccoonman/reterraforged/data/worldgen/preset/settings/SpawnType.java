@@ -9,14 +9,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.Climate.ParameterPoint;
-import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;
 
-//TODO fix this
 public enum SpawnType implements StringRepresentable {
     CONTINENT_CENTER("CONTINENT_CENTER") {
         private static final Climate.Parameter FULL_RANGE = Climate.Parameter.span(-1.0F, 1.0F);
+        private static final Climate.Parameter SURFACE_DEPTH = Climate.Parameter.point(0.0F);
         private static final Climate.Parameter INLAND_CONTINENTALNESS = Climate.Parameter.span(-0.11F, 0.55F);
 
 		@Override
@@ -27,8 +26,7 @@ public enum SpawnType implements StringRepresentable {
     	
 		@Override
 		public List<ParameterPoint> getParameterPoints() {
-	        Climate.Parameter depth = Climate.Parameter.point(0.0F);
-			return List.of(new Climate.ParameterPoint(FULL_RANGE, FULL_RANGE, Climate.Parameter.span(INLAND_CONTINENTALNESS, FULL_RANGE), FULL_RANGE, depth, FULL_RANGE, 0L), new Climate.ParameterPoint(FULL_RANGE, FULL_RANGE, Climate.Parameter.span(INLAND_CONTINENTALNESS, FULL_RANGE), FULL_RANGE, depth, FULL_RANGE, 0L));
+			return List.of(new Climate.ParameterPoint(FULL_RANGE, FULL_RANGE, Climate.Parameter.span(INLAND_CONTINENTALNESS, FULL_RANGE), FULL_RANGE, SURFACE_DEPTH, FULL_RANGE, 0L), new Climate.ParameterPoint(FULL_RANGE, FULL_RANGE, Climate.Parameter.span(INLAND_CONTINENTALNESS, FULL_RANGE), FULL_RANGE, SURFACE_DEPTH, FULL_RANGE, 0L));
 		}
 	}, 
     ISLANDS("ISLANDS") {

@@ -11,8 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.Climate.ParameterPoint;
 import net.minecraft.world.level.biome.Climate.Sampler;
-import raccoonman.reterraforged.world.worldgen.GeneratorContext;
-import raccoonman.reterraforged.world.worldgen.biome.RTFClimateSampler;
 import raccoonman.reterraforged.world.worldgen.cell.biome.spawn.SpawnFinderFix;
 
 // FIXME the mixin that we should actually be using just refuses to work for some reason
@@ -23,9 +21,6 @@ class MixinSpawnFinder {
 
 	@Inject(at = @At("HEAD"), method = "findSpawnPosition", cancellable = true)
     private static void findSpawnPosition(List<ParameterPoint> list, Sampler sampler, CallbackInfoReturnable<BlockPos> callback) {
-		GeneratorContext generatorContext;
-//		if((Object) sampler instanceof RTFClimateSampler)
-//		
     	callback.setReturnValue(new SpawnFinderFix(list, sampler).result.location());
     }
 //	@ModifyArg(
