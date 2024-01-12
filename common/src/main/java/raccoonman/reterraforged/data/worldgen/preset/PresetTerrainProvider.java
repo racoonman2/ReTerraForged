@@ -2,13 +2,13 @@ package raccoonman.reterraforged.data.worldgen.preset;
 
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 
 public class PresetTerrainProvider {
 
-	public static DensityFunction createOffsetSpline(Preset preset, DensityFunction continent, DensityFunction erosion, DensityFunction ridge) {
+	public static DensityFunction createOffsetSpline(WorldPreset preset, DensityFunction continent, DensityFunction erosion, DensityFunction ridge) {
 		WorldSettings worldSettings = preset.world();
 		WorldSettings.Properties properties = worldSettings.properties;
 		WorldSettings.ControlPoints controlPoints = worldSettings.controlPoints;

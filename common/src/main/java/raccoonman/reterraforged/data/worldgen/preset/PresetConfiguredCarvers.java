@@ -20,14 +20,14 @@ import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import raccoonman.reterraforged.data.worldgen.preset.settings.CaveSettings;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.world.worldgen.floatproviders.LegacyCanyonYScale;
 import raccoonman.reterraforged.world.worldgen.heightproviders.LegacyCarverHeight;
 
 public class PresetConfiguredCarvers {
 
 	//TODO make lava level configurable
-	public static void bootstrap(Preset preset, BootstapContext<ConfiguredWorldCarver<?>> ctx) {
+	public static void bootstrap(WorldPreset preset, BootstapContext<ConfiguredWorldCarver<?>> ctx) {
 		CaveSettings caveSettings = preset.caves();
         HolderGetter<Block> blocks = ctx.lookup(Registries.BLOCK);
         

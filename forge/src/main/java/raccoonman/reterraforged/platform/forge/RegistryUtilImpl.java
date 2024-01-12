@@ -49,13 +49,11 @@ public final class RegistryUtilImpl {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static <T> Registry<T> createRegistry(ResourceKey<? extends Registry<T>> key) {
-		if(!key.equals(RTFRegistries.BIOME_MODIFIER_TYPE)) {
-			DeferredRegister<T> register = DeferredRegister.create((ResourceKey) key, RTFCommon.MOD_ID);
-			register.makeRegistry(() -> {
-				return new RegistryBuilder().hasTags();
-			});
-			REGISTERS.put(key, new DeferredRegistry.Writable<>(register));
-		}
+		DeferredRegister<T> register = DeferredRegister.create((ResourceKey) key, RTFCommon.MOD_ID);
+		register.makeRegistry(() -> {
+			return new RegistryBuilder().hasTags();
+		});
+		REGISTERS.put(key, new DeferredRegistry.Writable<>(register));
 		return DeferredRegistry.memoize(key, () -> {
 			return GameData.getWrapper(key, Lifecycle.stable());
 		});

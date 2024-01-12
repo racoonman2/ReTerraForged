@@ -76,7 +76,6 @@ public class ErodeFeature extends Feature<Config> {
 						erodeDesert(desertErosionVariance, levels, chunk, cell, pos, surfaceY);
 						continue;
 					}
-					
 			        if(surfaceY <= scaledY && surfaceY >= generator.getSeaLevel() - 1 && !biome.is(Biomes.WOODED_BADLANDS) && !biome.is(Biomes.BADLANDS)) {
 						erodeColumn(config, rand, generator, chunk, cell, pos, surfaceY);
 						//remove any foliage that may have generated above

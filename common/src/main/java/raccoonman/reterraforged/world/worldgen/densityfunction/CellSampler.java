@@ -43,6 +43,10 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 		return 1.0F;
 	}
 
+	public static boolean isCachedNoiseChunk(int cellCountXZ) {
+		return cellCountXZ > 1;
+	}
+	
 	public static class Cache2d {
 		private long lastPos = Long.MAX_VALUE;
 		private Cell cell = new Cell();
@@ -152,9 +156,7 @@ public record CellSampler(Supplier<WorldLookup> deferredLookup, Field field) imp
 					return NoiseUtil.lerp(Continentalness.COAST.min(), Continentalness.COAST.max(), alpha);
 				}
 			
-				float alpha = NoiseUtil.clamp(cell.continentEdge, beach, inland);
-				alpha = NoiseUtil.lerp(alpha, beach, inland, 0.0F, 1.0F);
-				return NoiseUtil.lerp(Continentalness.NEAR_INLAND.mid(), Continentalness.FAR_INLAND.max(), alpha);
+				return NoiseUtil.lerp(Continentalness.NEAR_INLAND.min(), Continentalness.FAR_INLAND.max(), (cell.continentalness / 3.0F + 0.1F));
 			}
 		},
 		EROSION("erosion") {

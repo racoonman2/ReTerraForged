@@ -23,7 +23,7 @@ public interface MarkerFunction extends DensityFunction.SimpleFunction {
 	public interface Mapped extends DensityFunction.SimpleFunction {
 
 		@Override
-		default KeyDispatchDataCodec<NoiseFunction> codec() {
+		default KeyDispatchDataCodec<NoiseSampler> codec() {
 			throw new UnsupportedOperationException();
 		}
 	}

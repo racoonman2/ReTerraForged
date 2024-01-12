@@ -3,6 +3,7 @@ package raccoonman.reterraforged.world.worldgen.cell.continent.advanced;
 import raccoonman.reterraforged.concurrent.Resource;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
+import raccoonman.reterraforged.world.worldgen.biome.Continentalness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.continent.SimpleContinent;
 import raccoonman.reterraforged.world.worldgen.cell.rivermap.Rivermap;
@@ -95,7 +96,8 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
                 }
             }
         }
-        cell.continentDistance = NoiseUtil.sqrt(nearest);
+        
+        cell.continentalness = this.getContinentalnessValue(x, y, cellX, cellY, nearest);
         cell.continentX = this.getCorrectedContinentCenter(cellPointX, sumX / 8.0F);
         cell.continentZ = this.getCorrectedContinentCenter(cellPointY, sumY / 8.0F);
         if (this.shouldSkip(cellX, cellY)) {
@@ -137,11 +139,23 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
         	Noises.constant(strength)
         );
     }
-    
+
+    @Deprecated
     protected float getDistanceValue(float x, float y, int cellX, int cellY, float distance) {
         distance = this.getVariedDistanceValue(cellX, cellY, distance);
         distance = NoiseUtil.sqrt(distance);
         distance = NoiseUtil.map(distance, 0.05F, 0.25F, 0.2F);
+        distance = this.getCoastalDistanceValue(x, y, distance);
+        if (distance < this.controlPoints.inland && distance >= this.controlPoints.shallowOcean) {
+            distance = this.getCoastalDistanceValue(x, y, distance);
+        }
+        return distance;
+    }
+
+    protected float getContinentalnessValue(float x, float y, int cellX, int cellY, float distance) {
+        distance = this.getVariedDistanceValue(cellX, cellY, distance);
+        distance = NoiseUtil.sqrt(distance);
+        distance = NoiseUtil.map(distance, 0.05F, 0.25F, 0.2F, false);
         distance = this.getCoastalDistanceValue(x, y, distance);
         if (distance < this.controlPoints.inland && distance >= this.controlPoints.shallowOcean) {
             distance = this.getCoastalDistanceValue(x, y, distance);

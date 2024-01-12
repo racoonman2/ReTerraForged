@@ -24,11 +24,15 @@ public class Cell {
     public float heightErosion;
     public float sediment;
     public float gradient;
+    @Deprecated
     public float regionMoisture;
+    @Deprecated
     public float regionTemperature;
     public float continentId;
+    //use continentalness instead
+    @Deprecated
     public float continentEdge;
-    public float continentDistance;
+    public float continentalness;
     public float terrainRegionId;
     public float terrainRegionEdge;
     public float biomeRegionId;
@@ -48,6 +52,9 @@ public class Cell {
     @Deprecated(forRemoval = true)
     public float beachNoise;
 
+    @Deprecated(forRemoval = true)
+    public float volcanoHeightThreshold;
+    
     public Cell() {
         this.regionMoisture = 0.5F;
         this.regionTemperature = 0.5F;
@@ -67,7 +74,7 @@ public class Cell {
         this.regionTemperature = other.regionTemperature;
         this.continentId = other.continentId;
         this.continentEdge = other.continentEdge;
-        this.continentDistance = other.continentDistance;
+        this.continentalness = other.continentalness;
         this.terrainRegionId = other.terrainRegionId;
         this.terrainRegionEdge = other.terrainRegionEdge;
         this.biomeRegionId = other.biomeRegionId;
@@ -84,6 +91,7 @@ public class Cell {
         this.temperature = other.temperature;
         this.moisture = other.moisture;
         this.beachNoise = other.beachNoise;
+        this.volcanoHeightThreshold = other.volcanoHeightThreshold;
     }
 
     public Cell reset() {

@@ -8,7 +8,6 @@ import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.RegionConfig;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.Terrain;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
-import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.function.CellFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.EdgeFunction;
@@ -27,7 +26,7 @@ public class VolcanoPopulator implements CellPopulator, WeightedPopulator {
     private float bias;
     private Terrain inner;
     private Terrain outer;
-    
+    private Levels levels;
     private float weight;
     
     public VolcanoPopulator(Seed seed, RegionConfig region, Levels levels, float weight) {
@@ -63,11 +62,13 @@ public class VolcanoPopulator implements CellPopulator, WeightedPopulator {
         this.blendRange = this.blendUpper - this.blendLower;
         this.outer = TerrainType.VOLCANO;
         this.inner = TerrainType.VOLCANO_PIPE;
+        this.levels = levels;
         this.bias = levels.ground;
         
         this.weight = weight;
     }
     
+    @Override
     public float weight() {
     	return this.weight;
     }
@@ -87,7 +88,9 @@ public class VolcanoPopulator implements CellPopulator, WeightedPopulator {
             if (alpha > 0.925F) {
                 cell.terrain = this.inner;
             }
+            cell.terrain = TerrainType.VOLCANO_PIPE;
             value = maxHeight - maxHeight / 5.0F * alpha;
+            cell.volcanoHeightThreshold = this.levels.scale(maxHeight);
         } else if (value < this.blendLower) {
             value += this.lowlands.compute(x, z, 0);
             cell.terrain = this.outer;

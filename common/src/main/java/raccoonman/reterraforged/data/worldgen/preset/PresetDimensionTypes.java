@@ -7,12 +7,12 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 
 public final class PresetDimensionTypes {
 	
-	public static void bootstrap(Preset preset, BootstapContext<DimensionType> ctx) {
+	public static void bootstrap(WorldPreset preset, BootstapContext<DimensionType> ctx) {
 		WorldSettings worldSettings = preset.world();
 		WorldSettings.Properties properties = worldSettings.properties;
 		int worldHeight = properties.worldHeight;

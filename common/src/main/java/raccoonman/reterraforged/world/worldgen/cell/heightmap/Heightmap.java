@@ -3,7 +3,8 @@ package raccoonman.reterraforged.world.worldgen.cell.heightmap;
 import net.minecraft.core.HolderGetter;
 import raccoonman.reterraforged.data.worldgen.preset.PresetNoiseData;
 import raccoonman.reterraforged.data.worldgen.preset.PresetTerrainTypeNoise;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.MiscellaneousSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings.ControlPoints;
@@ -72,7 +73,6 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         }
         if(cell.terrain.isWetland()) {
         	cell.erosion = Erosion.LEVEL_6.mid();
-        	cell.weirdness = Weirdness.VALLEY.mid();
         }
         
         this.climate.apply(cell, x, z, applyClimate);
@@ -85,13 +85,15 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 	public static Heightmap make(GeneratorContext ctx) {
     	HolderGetter<Noise> noiseLookup = ctx.noiseLookup;
     	
-        Preset preset = ctx.preset;
+        WorldPreset preset = ctx.preset;
         WorldSettings world = ctx.preset.world();
         ControlPoints controlPoints = world.controlPoints;
 
         TerrainSettings terrainSettings = preset.terrain();
         TerrainSettings.General general = terrainSettings.general;
         float globalVerticalScale = general.globalVerticalScale;
+        
+        MiscellaneousSettings miscellaneousSettings = preset.miscellaneous();
         
         Seed regionWarp = ctx.seed.offset(8934);
         int regionWarpScale = 400;
@@ -109,7 +111,7 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         CellPopulator region = new RegionModule(regionConfig);
 
         Seed mountainSeed = ctx.seed.offset(general.terrainSeedOffset);
-        Noise mountainShape = Noises.worleyEdge(mountainSeed.next(), general.legacyMountainScaling ? 1000 : Math.round(1000 * terrainSettings.mountains.horizontalScale * 2.25F), EdgeFunction.DISTANCE_2_ADD, DistanceFunction.EUCLIDEAN);
+        Noise mountainShape = Noises.worleyEdge(mountainSeed.next(), 1000, EdgeFunction.DISTANCE_2_ADD, DistanceFunction.EUCLIDEAN);
         mountainShape = Noises.warpPerlin(mountainShape, mountainSeed.next(), 333, 2, 250.0F);
         mountainShape = Noises.curve(mountainShape, Interpolation.CURVE3);
         mountainShape = Noises.clamp(mountainShape, 0.0F, 0.9F);
@@ -117,10 +119,10 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 
         Noise ground = PresetNoiseData.getNoise(noiseLookup, PresetTerrainTypeNoise.GROUND);
         
-        CellPopulator terrainRegions = new RegionSelector(TerrainProvider.generateTerrain(ctx.seed, terrainSettings, regionConfig, levels, noiseLookup));
+        CellPopulator terrainRegions = new RegionSelector(TerrainProvider.generateTerrain(ctx.seed, terrainSettings, miscellaneousSettings, regionConfig, levels, noiseLookup));
         CellPopulator terrainRegionBorders = Populators.makeBorder(ctx.seed, ground, terrainSettings.plains, terrainSettings.steppe, globalVerticalScale);
         CellPopulator terrainBlend = new RegionLerper(terrainRegionBorders, terrainRegions);
-        CellPopulator mountains = Populators.makeMountainChain(mountainSeed, ground, terrainSettings.mountains, terrainSettings.general.legacyMountainScaling ? 1.0F : terrainSettings.mountains.horizontalScale * 2.25F, terrainSettings.general.legacyMountainScaling ? globalVerticalScale : globalVerticalScale * terrainSettings.mountains.verticalScale, general.fancyMountains, general.legacyMountainScaling);
+        CellPopulator mountains = Populators.makeMountainChain(mountainSeed, ground, terrainSettings.mountains, miscellaneousSettings, terrainSettings.general.legacyWorldGen ? globalVerticalScale : globalVerticalScale * terrainSettings.mountains.verticalScale, general.fancyMountains, general.legacyWorldGen);
         Continent continent = world.continent.continentType.create(ctx.seed, ctx);
         Climate climate = Climate.make(continent, ctx);
         CellPopulator land = new Blender(mountainShape, terrainBlend, mountains, 0.3F, 0.8F, 0.575F);

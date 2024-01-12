@@ -33,7 +33,7 @@ import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.client.gui.widget.ValueButton;
 import raccoonman.reterraforged.concurrent.cache.CacheManager;
 import raccoonman.reterraforged.config.PerformanceConfig;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.SpawnType;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.registries.RTFRegistries;
@@ -129,14 +129,13 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	    
 	    private String hoveredCoords = "";
 	    //TODO maybe make this a map or something instead?
-	    private String[] legendValues = {"", "", ""};
-	    private Component[] legendLabels = { Component.translatable(RTFTranslationKeys.GUI_LABEL_PREVIEW_AREA), Component.translatable(RTFTranslationKeys.GUI_LABEL_PREVIEW_TERRAIN), Component.translatable(RTFTranslationKeys.GUI_LABEL_PREVIEW_BIOME) };
+	    private String[] legendValues = {"", "", "", ""};
+	    private Component[] legendLabels = { Component.translatable(RTFTranslationKeys.GUI_LABEL_PREVIEW_AREA), Component.translatable(RTFTranslationKeys.GUI_LABEL_PREVIEW_TERRAIN), Component.translatable(RTFTranslationKeys.GUI_LABEL_PREVIEW_BIOME), Component.translatable(RTFTranslationKeys.GUI_LABEL_PREVIEW_NOISE_VALUE) };
 	    
 	    private int offsetX, offsetZ;
 
 	    public Preview() {
 	        super(-1, -1, -1, -1, CommonComponents.EMPTY, (b) -> {
-		    	System.out.println("clicked");
 	        	Minecraft mc = Minecraft.getInstance();
 	        	MouseHandler mouse = mc.mouseHandler;
 	        	if(b instanceof Preview self) {
@@ -152,9 +151,9 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 			WorldCreationContext settings = PresetEditorPage.this.screen.getSettings();
 	        RegistryAccess.Frozen registries = settings.worldgenLoadContext();
 	        HolderLookup.Provider provider = PresetEditorPage.this.preset.getPreset().buildPatch(registries);
-	        HolderGetter<Preset> presets = provider.lookupOrThrow(RTFRegistries.PRESET);
+	        HolderGetter<WorldPreset> presets = provider.lookupOrThrow(RTFRegistries.PRESET);
 	        HolderGetter<Noise> noises = provider.lookupOrThrow(RTFRegistries.NOISE);
-	        Preset preset = presets.getOrThrow(Preset.KEY).value();
+	        WorldPreset preset = presets.getOrThrow(WorldPreset.KEY).value();
 	        WorldSettings world = preset.world();
 	        WorldSettings.Properties properties = world.properties;
 	        
@@ -241,6 +240,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	                Cell cell = this.tile.lookup(ix, iz);
 	                this.legendValues[1] = getTerrainName(cell);
 	                this.legendValues[2] = getBiomeName(cell);
+	                this.legendValues[3] = String.valueOf(PresetEditorPage.this.renderMode.getValue().getNoiseValue(cell));
 	
 	                int dx = (ix - (this.tile.getBlockSize().size() / 2)) * zoom;
 	                int dz = (iz - (this.tile.getBlockSize().size() / 2)) * zoom;

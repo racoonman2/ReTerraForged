@@ -4,6 +4,6 @@ import com.mojang.serialization.Codec;
 
 import raccoonman.reterraforged.world.worldgen.biome.modifier.BiomeModifier;
 
-interface ForgeBiomeModifier extends BiomeModifier, net.minecraftforge.common.world.BiomeModifier {
+public interface ForgeBiomeModifier extends BiomeModifier, net.minecraftforge.common.world.BiomeModifier {
 	Codec<? extends ForgeBiomeModifier> codec();
 }

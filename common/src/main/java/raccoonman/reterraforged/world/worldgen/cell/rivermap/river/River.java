@@ -31,6 +31,7 @@ public class River {
     public float minZ;
     public float maxX;
     public float maxZ;
+    public boolean weird;
     
     public River(float x1, float z1, float x2, float z2) {
         this(x1, z1, x2, z2, 275.0F);
@@ -54,6 +55,7 @@ public class River {
         this.minZ = Math.min(z1, z2) - radius;
         this.maxX = Math.max(x1, x2) + radius;
         this.maxZ = Math.max(z1, z2) + radius;
+        this.weird = PosUtil.pack(x1, z1) % 2 == 0;
     }
     
     public float length() {

@@ -78,6 +78,9 @@ public class FancyContinentGenerator implements Continent {
         cell.continentX = 0;
         cell.continentZ = 0;
         cell.continentId = 0.0F;
-        cell.continentEdge = this.getEdgeValue(x, y);
+        
+        float continentalness = this.getEdgeValue(x, y);
+        cell.continentEdge = continentalness;
+        cell.continentalness = continentalness;
     }
 }

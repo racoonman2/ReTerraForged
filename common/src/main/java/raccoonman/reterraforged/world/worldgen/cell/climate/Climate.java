@@ -4,7 +4,7 @@ import net.minecraft.core.HolderGetter;
 import raccoonman.reterraforged.data.worldgen.preset.PresetClimateNoise;
 import raccoonman.reterraforged.data.worldgen.preset.PresetNoiseData;
 import raccoonman.reterraforged.data.worldgen.preset.settings.ClimateSettings;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
@@ -40,7 +40,7 @@ public record Climate(int randomSeed, Noise offsetX, Noise offsetZ, int offsetDi
 	public static Climate make(Continent continent, GeneratorContext context) {
 		HolderGetter<Noise> noiseLookup = context.noiseLookup;
 		
-		Preset preset = context.preset;
+		WorldPreset preset = context.preset;
 		
 		WorldSettings worldSettings = preset.world();
 		ClimateSettings climateSettings = preset.climate();

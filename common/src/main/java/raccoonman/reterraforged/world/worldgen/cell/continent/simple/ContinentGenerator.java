@@ -30,7 +30,7 @@ public abstract class ContinentGenerator implements SimpleContinent {
     private float clampRange;
     private float offsetAlpha;
     protected Domain warp;
-    protected Noise shape;
+    protected Noise continentalness;
     protected RiverCache cache;
     
     public ContinentGenerator(Seed seed, GeneratorContext context) {
@@ -53,7 +53,7 @@ public abstract class ContinentGenerator implements SimpleContinent {
         Noise shape = Noises.simplex(seed.next(), settings.continent.continentScale * 2, 1);
         shape = Noises.add(shape, 0.65F);
         shape = Noises.clamp(shape, 0.0F, 1.0F);
-        this.shape = shape;
+        this.continentalness = shape;
 
         this.cache = new LegacyRiverCache(new SimpleRiverGenerator(this, context));
     }
@@ -101,10 +101,12 @@ public abstract class ContinentGenerator implements SimpleContinent {
             }
         }
         cell.continentId = this.cellIdentity(this.seed, cellX, cellY);
-        cell.continentEdge = this.cellEdgeValue(edgeDistance, edgeDistance2);
+        float continentalness = this.cellEdgeValue(edgeDistance, edgeDistance2);
         cell.continentX = (int) (centerX / this.frequency);
         cell.continentZ = (int) (centerY / this.frequency);
-        cell.continentEdge *= this.getShape(x, y, cell.continentEdge);
+        continentalness *= this.getContinentalness(x, y, continentalness);
+        cell.continentEdge = continentalness;
+        cell.continentalness = continentalness * 0.315F;
     }
     
     @Override
@@ -137,7 +139,7 @@ public abstract class ContinentGenerator implements SimpleContinent {
             }
         }
         float edgeValue = this.cellEdgeValue(edgeDistance, edgeDistance2);
-        float shapeNoise = this.getShape(x, y, edgeValue);
+        float shapeNoise = this.getContinentalness(x, y, edgeValue);
         return edgeValue * shapeNoise;
     }
     
@@ -250,11 +252,11 @@ public abstract class ContinentGenerator implements SimpleContinent {
         return (value - this.clampMin) / this.clampRange;
     }
     
-    protected float getShape(float x, float z, float edgeValue) {
+    protected float getContinentalness(float x, float z, float edgeValue) {
         if (edgeValue >= this.controlPoints.inland) {
             return 1.0F;
         }
         float alpha = edgeValue / this.controlPoints.inland;
-        return this.shape.compute(x, z, 0) * alpha;
+        return this.continentalness.compute(x, z, 0) * alpha;
     }
 }

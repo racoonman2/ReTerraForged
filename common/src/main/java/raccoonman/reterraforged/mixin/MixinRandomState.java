@@ -27,13 +27,13 @@ import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.concurrent.ThreadPools;
 import raccoonman.reterraforged.config.PerformanceConfig;
 import raccoonman.reterraforged.data.worldgen.compat.terrablender.TBNoiseRouterData;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.tags.RTFDensityFunctionTags;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
-import raccoonman.reterraforged.world.worldgen.densityfunction.NoiseFunction;
+import raccoonman.reterraforged.world.worldgen.densityfunction.NoiseSampler;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.terrablender.TBClimateSampler;
@@ -55,7 +55,7 @@ class MixinRandomState {
 	@Nullable
 	private GeneratorContext generatorContext;
 	@Nullable
-	private Preset preset;
+	private WorldPreset preset;
 	
 	private long seed;
 	
@@ -73,8 +73,8 @@ class MixinRandomState {
 			
 			@Override
 			public DensityFunction apply(DensityFunction function) {
-				if(function instanceof NoiseFunction.Marker marker) {
-					return new NoiseFunction(marker.noise(), (int) seed);
+				if(function instanceof NoiseSampler.Marker marker) {
+					return new NoiseSampler(marker.noise(), (int) seed);
 				}
 				if(function instanceof CellSampler.Marker marker) {
 					MixinRandomState.this.hasContext |= true;
@@ -92,7 +92,7 @@ class MixinRandomState {
 	}
 
 	public void reterraforged$RTFRandomState$initialize(RegistryAccess registries) {
-		RegistryLookup<Preset> presets = registries.lookupOrThrow(RTFRegistries.PRESET);
+		RegistryLookup<WorldPreset> presets = registries.lookupOrThrow(RTFRegistries.PRESET);
 		RegistryLookup<Noise> noises = registries.lookupOrThrow(RTFRegistries.NOISE);
 		RegistryLookup<DensityFunction> functions = registries.lookupOrThrow(Registries.DENSITY_FUNCTION);
 
@@ -106,7 +106,7 @@ class MixinRandomState {
 			});
 		}
 		
-		presets.get(Preset.KEY).ifPresentOrElse((presetHolder) -> {
+		presets.get(WorldPreset.KEY).ifPresentOrElse((presetHolder) -> {
 			this.preset = presetHolder.value();
 
 			if(this.hasContext) {
@@ -123,7 +123,7 @@ class MixinRandomState {
 	}
 	
 	@Nullable
-	public Preset reterraforged$RTFRandomState$preset() {
+	public WorldPreset reterraforged$RTFRandomState$preset() {
 		return this.preset;
 	}
 	

@@ -47,7 +47,7 @@ public final class RTFTranslationKeys {
 	public static final String GUI_BUTTON_BIOME_EDGE_TYPE = resolve("gui.button.biomeEdgeType");
 	public static final String GUI_BUTTON_TERRAIN_SEED_OFFSET = resolve("gui.button.terrainSeedOffset");
 	public static final String GUI_BUTTON_FANCY_MOUNTAINS = resolve("gui.button.fancyMountains");
-	public static final String GUI_BUTTON_LEGACY_MOUNTAIN_SCALING = resolve("gui.button.legacyMountainScaling");
+	public static final String GUI_BUTTON_LEGACY_WORLD_GEN = resolve("gui.button.legacyWorldGen");
 	public static final String GUI_BUTTON_RIVER_SEED_OFFSET = resolve("gui.button.riverSeedOffset");
 	public static final String GUI_BUTTON_SALT = resolve("gui.button.salt");
 	public static final String GUI_BUTTON_DISABLED = resolve("gui.button.disabled");
@@ -88,6 +88,9 @@ public final class RTFTranslationKeys {
 	public static final String GUI_SLIDER_ROCK_STEEPNESS = resolve("gui.slider.rockSteepness");
 	public static final String GUI_SLIDER_DIRT_STEEPNESS = resolve("gui.slider.dirtSteepness");
 	public static final String GUI_SLIDER_SCREE_STEEPNESS = resolve("gui.slider.screeSteepness");
+	public static final String GUI_SLIDER_SNOW_STEEPNESS = resolve("gui.slider.snowSteepness");
+	public static final String GUI_SLIDER_HEIGHT_MODIFIER = resolve("gui.slider.heightModifier");
+	public static final String GUI_SLIDER_SLOPE_MODIFIER = resolve("gui.slider.slopeModifier");
 	public static final String GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY = resolve("gui.slider.entranceCaveProbability");
 	public static final String GUI_SLIDER_CHEESE_CAVE_DEPTH_OFFSET = resolve("gui.slider.cheeseCaveDepthOffset");
 	public static final String GUI_SLIDER_CHEESE_CAVE_PROBABILITY = resolve("gui.slider.cheeseCaveProbability");
@@ -158,6 +161,7 @@ public final class RTFTranslationKeys {
 	public static final String GUI_LABEL_PREVIEW_AREA = resolve("gui.label.previewArea");
 	public static final String GUI_LABEL_PREVIEW_TERRAIN = resolve("gui.label.previewTerrain");
 	public static final String GUI_LABEL_PREVIEW_BIOME = resolve("gui.label.previewBiome");
+	public static final String GUI_LABEL_PREVIEW_NOISE_VALUE = resolve("gui.label.noiseValue");
 	public static final String GUI_LABEL_CONTINENT = resolve("gui.label.continent");
 	public static final String GUI_LABEL_CONTROL_POINTS = resolve("gui.label.controlPoints");
 	public static final String GUI_LABEL_PROPERTIES = resolve("gui.label.properties");

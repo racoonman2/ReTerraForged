@@ -6,8 +6,8 @@
   "mixins": [
   	"MixinTagsProvider",
   	"MixinBiomeGenerationSettingsPlainsBuilder",
-  	"MixinChunkStatus",
-  	"MixinMinecraftServer"
+  	"MixinMinecraftServer",
+  	"MixinServerLifecycleHooks"
   ],
   "injectors": {
     "defaultRequire": 1

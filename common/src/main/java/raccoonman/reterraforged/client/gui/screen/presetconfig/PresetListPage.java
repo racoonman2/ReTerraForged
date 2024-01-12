@@ -29,7 +29,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.toasts.SystemToast.SystemToastIds;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.util.GsonHelper;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
@@ -40,8 +39,8 @@ import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.Pr
 import raccoonman.reterraforged.client.gui.widget.Label;
 import raccoonman.reterraforged.client.gui.widget.WidgetList;
 import raccoonman.reterraforged.client.gui.widget.WidgetList.Entry;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.Presets;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.platform.ConfigUtil;
 
 class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, AbstractWidget> {
@@ -217,13 +216,13 @@ class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abstr
 			) {
 				try(Reader reader = Files.newBufferedReader(presetPath)) {
 					String base = FileNameUtils.getBaseName(presetPath.toString());
-					DataResult<Preset> result = Preset.DIRECT_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader));
-					Optional<PartialResult<Preset>> error = result.error();
+					DataResult<WorldPreset> result = WorldPreset.DIRECT_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader));
+					Optional<PartialResult<WorldPreset>> error = result.error();
 					if(error.isPresent()) {
 						RTFCommon.LOGGER.error(error.get().message());
 						continue;
 					}
-					Preset preset = result.result().get();
+					WorldPreset preset = result.result().get();
 					presets.add(new PresetEntry(Component.literal(base), preset, false, this));
 				}
 			}
@@ -233,10 +232,10 @@ class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abstr
 	
 	public static class PresetEntry extends Label {
 		private Component name;
-		private Preset preset;
+		private WorldPreset preset;
 		private boolean builtin;
 		
-		public PresetEntry(Component name, Preset preset, boolean builtin, OnPress onPress) {
+		public PresetEntry(Component name, WorldPreset preset, boolean builtin, OnPress onPress) {
 			super(-1, -1, -1, -1, onPress, name);
 			
 			this.name = name;
@@ -244,7 +243,7 @@ class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abstr
 			this.builtin = builtin;
 		}
 		
-		public PresetEntry(Component name, Preset preset, boolean builtin, PresetListPage page) {
+		public PresetEntry(Component name, WorldPreset preset, boolean builtin, PresetListPage page) {
 			this(name, preset, builtin, (b) -> {
 				if(b instanceof PresetEntry entry) {
 					page.selectPreset(entry);
@@ -256,7 +255,7 @@ class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abstr
 			return this.name;
 		}
 		
-		public Preset getPreset() {
+		public WorldPreset getPreset() {
 			return this.preset;
 		}
 		
@@ -275,7 +274,7 @@ class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abstr
 					Writer writer = Files.newBufferedWriter(this.getPath());
 					JsonWriter jsonWriter = new JsonWriter(writer);
 				) {
-					JsonElement element = Preset.DIRECT_CODEC.encodeStart(JsonOps.INSTANCE, this.preset).result().orElseThrow();
+					JsonElement element = WorldPreset.DIRECT_CODEC.encodeStart(JsonOps.INSTANCE, this.preset).result().orElseThrow();
 					jsonWriter.setSerializeNulls(false);
 					jsonWriter.setIndent("  ");
 					GsonHelper.writeValue(jsonWriter, element, null);

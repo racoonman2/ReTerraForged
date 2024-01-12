@@ -28,6 +28,7 @@ public class Blender implements CellPopulator {
 	@Override
 	public void apply(Cell cell, float x, float y) {
 		float select = this.control.compute(x, y, 0);
+
 		if (select < this.blendLower) {
 			this.lower.apply(cell, x, y);
 			return;

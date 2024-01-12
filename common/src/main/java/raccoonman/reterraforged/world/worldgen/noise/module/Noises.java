@@ -265,10 +265,6 @@ public class Noises {
 	}
 	
 	public static Noise terrace(Noise input, float lowerCurve, float upperCurve, float lowerHeight, float blendRange, int steps) {
-        return terrace(input, constant(lowerCurve), constant(upperCurve), constant(lowerHeight), blendRange, steps);
-    }
-
-	public static Noise terrace(Noise input, Noise lowerCurve, Noise upperCurve, Noise lowerHeight, float blendRange, int steps) {
         return new Terrace(input, lowerCurve, upperCurve, lowerHeight, blendRange, steps);
     }
 

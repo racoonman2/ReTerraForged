@@ -52,7 +52,7 @@ public class TerrainSettings {
     		Codec.FLOAT.fieldOf("globalVerticalScale").forGetter((o) -> o.globalVerticalScale),
     		Codec.FLOAT.fieldOf("globalHorizontalScale").forGetter((o) -> o.globalHorizontalScale),
     		Codec.BOOL.fieldOf("fancyMountains").forGetter((o) -> o.fancyMountains),
-    		Codec.BOOL.optionalFieldOf("legacyMountainScaling", true).forGetter((o) -> o.legacyMountainScaling)
+    		Codec.BOOL.optionalFieldOf("legacyWorldGen", true).forGetter((o) -> o.legacyWorldGen)
     	).apply(instance, General::new));
     	
         public int terrainSeedOffset;
@@ -60,19 +60,19 @@ public class TerrainSettings {
         public float globalVerticalScale;
         public float globalHorizontalScale;
         public boolean fancyMountains;
-        public boolean legacyMountainScaling;
+        public boolean legacyWorldGen;
         
-        public General(int terrainSeedOffset, int terrainRegionSize, float globalVerticalScale, float globalHorizontalScale, boolean fancyMountains, boolean legacyMountainScaling) {
+        public General(int terrainSeedOffset, int terrainRegionSize, float globalVerticalScale, float globalHorizontalScale, boolean fancyMountains, boolean legacyWorldGen) {
         	this.terrainSeedOffset = terrainSeedOffset;
         	this.terrainRegionSize = terrainRegionSize;
         	this.globalVerticalScale = globalVerticalScale;
         	this.globalHorizontalScale = globalHorizontalScale;
         	this.fancyMountains = fancyMountains;
-        	this.legacyMountainScaling = legacyMountainScaling;
+        	this.legacyWorldGen = legacyWorldGen;
         }
         
         public General copy() {
-        	return new General(this.terrainSeedOffset, this.terrainRegionSize, this.globalVerticalScale, this.globalHorizontalScale, this.fancyMountains, this.legacyMountainScaling);
+        	return new General(this.terrainSeedOffset, this.terrainRegionSize, this.globalVerticalScale, this.globalHorizontalScale, this.fancyMountains, this.legacyWorldGen);
         }
     }
     

@@ -16,6 +16,7 @@
   	"MixinMinecraftServer",
   	"MixinSpawnFinder",
   	"MixinClimateSampler",
+  	"MixinChunkStatus",
   	"terrablender.MixinParameterList",
   	"terrablender.MixinClimateSampler",
   	"terrablender.MixinTargetPoint",

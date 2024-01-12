@@ -8,7 +8,7 @@ import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.client.gui.widget.ValueButton;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.RiverSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.RiverSettings.Lake;
 import raccoonman.reterraforged.data.worldgen.preset.settings.RiverSettings.River;
@@ -58,7 +58,7 @@ class RiverSettingsPage extends PresetEditorPage {
 	public void init() {
 		super.init();
 		
-		Preset preset = this.preset.getPreset();
+		WorldPreset preset = this.preset.getPreset();
 		RiverSettings river = preset.rivers();
 		
 		this.seedOffset = PresetWidgets.createRandomButton(RTFTranslationKeys.GUI_BUTTON_RIVER_SEED_OFFSET, river.seedOffset, (value) -> {

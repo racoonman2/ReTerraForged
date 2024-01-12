@@ -1,28 +1,27 @@
-package raccoonman.reterraforged.world.worldgen.noise.module;
+package raccoonman.reterraforged.world.worldgen.noise.function;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 
-@Deprecated // use the CurveFunction version instead
-public record Terrace(Noise input, float ramp, float cliff, float rampHeight, float blendRange, Step[] steps) implements Noise {
-	public static final Codec<Terrace> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Noise.HOLDER_HELPER_CODEC.fieldOf("input").forGetter(Terrace::input),
-		Codec.FLOAT.fieldOf("ramp").forGetter(Terrace::ramp),
-		Codec.FLOAT.fieldOf("cliff").forGetter(Terrace::cliff),
-		Codec.FLOAT.fieldOf("ramp_height").forGetter(Terrace::rampHeight),
-		Codec.FLOAT.fieldOf("blend_range").forGetter(Terrace::blendRange),
+record TerraceFunction(float inputRange, float ramp, float cliff, float rampHeight, float blendRange, Step[] steps) implements CurveFunction {
+	public static final Codec<TerraceFunction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Codec.FLOAT.fieldOf("input_range").forGetter(TerraceFunction::inputRange),
+		Codec.FLOAT.fieldOf("ramp").forGetter(TerraceFunction::ramp),
+		Codec.FLOAT.fieldOf("cliff").forGetter(TerraceFunction::cliff),
+		Codec.FLOAT.fieldOf("ramp_height").forGetter(TerraceFunction::rampHeight),
+		Codec.FLOAT.fieldOf("blend_range").forGetter(TerraceFunction::blendRange),
 		Codec.INT.fieldOf("steps").forGetter((terrace) -> terrace.steps().length)
-	).apply(instance, Terrace::new));
+	).apply(instance, TerraceFunction::new));
 	
-	public Terrace(Noise input, float ramp, float cliff, float rampHeight, float blendRange, int steps) {
-		this(input, ramp, cliff, rampHeight, blendRange, createSteps(input, blendRange, steps));
+	public TerraceFunction(float inputRange, float ramp, float cliff, float rampHeight, float blendRange, int steps) {
+		this(inputRange, ramp, cliff, rampHeight, blendRange, createSteps(inputRange, blendRange, steps));
 	}
 	
 	@Override
-	public float compute(float x, float z, int seed) {
-        float input = NoiseUtil.clamp(this.input.compute(x, z, seed), 0.0F, 0.999999F);
+	public float apply(float f) {
+        float input = NoiseUtil.clamp(f, 0.0F, 0.999999F);
         int index = NoiseUtil.floor(input * this.steps.length);
         Step step = this.steps[index];
         if (index == this.steps.length - 1) {
@@ -53,32 +52,14 @@ public record Terrace(Noise input, float ramp, float cliff, float rampHeight, fl
         }
         return value;
 	}
-
+	
 	@Override
-	public float minValue() {
-		return this.input.minValue();
-	}
-
-	@Override
-	public float maxValue() {
-		return this.input.maxValue();
-	}
-
-	@Override
-	public Noise mapAll(Visitor visitor) {
-		return visitor.apply(new Terrace(this.input.mapAll(visitor), this.ramp, this.cliff, this.rampHeight, this.blendRange, this.steps.length));
-	}
-
-	@Override
-	public Codec<Terrace> codec() {
+	public Codec<TerraceFunction> codec() {
 		return CODEC;
 	}
 	
-	private static Step[] createSteps(Noise input, float blendRange, int steps) {
-        float min = input.minValue();
-        float max = input.maxValue();
-        float range = max - min;
-        float spacing = range / (steps - 1);
+	private static Step[] createSteps(float inputRange, float blendRange, int steps) {
+        float spacing = inputRange / (steps - 1);
         Step[] array = new Step[steps];
         for (int i = 0; i < steps; ++i) {
             float value = i * spacing;

@@ -25,6 +25,7 @@ public class RiverCarver implements Comparable<RiverCarver> {
     public RiverWarp warp;
     public RiverConfig config;
     public CurveFunction valleyCurve;
+    public CurveFunction plateauCurve;
     
     public RiverCarver(River river, RiverWarp warp, RiverConfig config, Settings settings, Levels levels) {
         this.fade = settings.fadeIn;
@@ -57,17 +58,21 @@ public class RiverCarver implements Comparable<RiverCarver> {
         }
         float bankHeight = this.getScaledSize(t, this.banksDepth);
         valleyAlpha = this.valleyCurve.apply(valleyAlpha);
+        
         cell.riverMask = Math.min(cell.riverMask, 1.0F - valleyAlpha);
         cell.height = Math.min(NoiseUtil.lerp(cell.height, bankHeight, valleyAlpha), cell.height);
         if (!this.connecting || t > 1.0F) {
         	
         }
+//        cell.erosion = -0.05F;
+//        cell.weirdness = -0.03F;
         float mouthModifier = getMouthModifier(cell);
         float bedHeight = this.getScaledSize(t, this.bedDepth);
         float banksAlpha = this.getDistanceAlpha(t, d2 * mouthModifier, this.banksWidth);
         if (banksAlpha == 0.0F) {
             return;
         }
+        
         if (cell.height > bedHeight) {
             cell.height = Math.min(NoiseUtil.lerp(cell.height, bedHeight, banksAlpha), cell.height);
             this.tag(cell, bedHeight);
@@ -78,7 +83,7 @@ public class RiverCarver implements Comparable<RiverCarver> {
             this.tag(cell, bedHeight);
         }
     }
-    
+
     public RiverConfig createForkConfig(float t, Levels levels) {
         int bedHeight = levels.scale(this.getScaledSize(t, this.bedDepth));
         int bedWidth = (int)Math.round(Math.sqrt(this.getScaledSize(t, this.bedWidth)) * 0.75);

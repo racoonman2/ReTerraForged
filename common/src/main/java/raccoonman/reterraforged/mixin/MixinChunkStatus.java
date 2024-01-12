@@ -1,12 +1,11 @@
-package raccoonman.reterraforged.forge.mixin;
+package raccoonman.reterraforged.mixin;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 
-import javax.annotation.Nullable;
-
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -32,11 +31,11 @@ public class MixinChunkStatus {
 
 	@Inject(
 		at = @At("HEAD"),
-		method = { "lambda$static$2", "m_292435_" },
+		method = "method_39464",
 		remap = false,
 		require = 1
 	)
-	private static void lambda$static$2(ChunkStatus status, Executor executor, ServerLevel level, ChunkGenerator generator, StructureTemplateManager templateManager, ThreadedLevelLightEngine lightEngine, Function<ChunkAccess, CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>>> chunkLookup, List<ChunkAccess> regionChunks, ChunkAccess centerChunk, CallbackInfoReturnable<CompletableFuture<ChunkAccess>> callback) {
+	private static void method_39464(ChunkStatus status, Executor executor, ServerLevel level, ChunkGenerator generator, StructureTemplateManager templateManager, ThreadedLevelLightEngine lightEngine, Function<ChunkAccess, CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>>> chunkLookup, List<ChunkAccess> regionChunks, ChunkAccess centerChunk, CallbackInfoReturnable<CompletableFuture<ChunkAccess>> callback) {
 		RandomState randomState = level.getChunkSource().randomState();
 		if((Object) randomState instanceof RTFRandomState rtfRandomState) {
 			ChunkPos chunkPos = centerChunk.getPos();
@@ -51,11 +50,11 @@ public class MixinChunkStatus {
 	
 	@Inject(
 		at = @At("TAIL"),
-		method = { "lambda$static$11", "m_279978_" },
+		method = "method_51375",
 		remap = false,
 		require = 1
 	)
-	private static void lambda$static$11(ChunkStatus status, ServerLevel level, ChunkGenerator generator, List<ChunkAccess> chunks, ChunkAccess centerChunk, CallbackInfo callback) {
+	private static void method_51375(ChunkStatus status, ServerLevel level, ChunkGenerator generator, List<ChunkAccess> chunks, ChunkAccess centerChunk, CallbackInfo callback) {
 		RandomState randomState = level.getChunkSource().randomState();
 		if((Object) randomState instanceof RTFRandomState rtfRandomState) {
 			ChunkPos chunkPos = centerChunk.getPos();

@@ -25,6 +25,7 @@ public class SingleContinentGenerator extends ContinentGenerator {
             cell.continentEdge = 0.0F;
             cell.continentX = 0;
             cell.continentZ = 0;
+            cell.continentalness = 0.0F;
         }
     }
 }

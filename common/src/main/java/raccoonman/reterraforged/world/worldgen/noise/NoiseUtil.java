@@ -22,10 +22,14 @@ public class NoiseUtil {
     public static Vec2f cell(int seed, int x, int y) {
         return NoiseUtil.CELL_2D[hash2D(seed, x, y) & 0xFF];
     }
-    
+
     public static float map(float value, float min, float max, float range) {
-        float dif = clamp(value, min, max) - min;
-        return (dif >= range) ? 1.0F : (dif / range);
+    	return map(value, min, max, range, true);
+    }
+    
+    public static float map(float value, float min, float max, float range, boolean clamp) {
+        float dif = (clamp ? clamp(value, min, max) : value) - min;
+        return (dif >= range && clamp) ? 1.0F : (dif / range);
     }
     
     public static float map(float value, float from, float to, float min, float max) {

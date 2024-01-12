@@ -9,7 +9,7 @@ import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.data.worldgen.preset.settings.CaveSettings;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 
 public class CaveSettingsPage extends PresetEditorPage {
 	private Slider entranceCaveProbability;
@@ -36,7 +36,7 @@ public class CaveSettingsPage extends PresetEditorPage {
 	public void init() {
 		super.init();
 
-		Preset preset = this.preset.getPreset();
+		WorldPreset preset = this.preset.getPreset();
 		CaveSettings caves = preset.caves();
 
 		this.entranceCaveProbability = PresetWidgets.createFloatSlider(caves.entranceCaveProbability, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY, (slider, value) -> {

@@ -24,8 +24,8 @@ import net.minecraft.world.level.levelgen.WorldOptions;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
-import raccoonman.reterraforged.data.worldgen.Datapacks;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.Datapacks;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 
 //FIXME pressing the create world screen before the pack is copied will fuck the game up (surprisingly noone seems to have run into this?)
 public class PresetConfigScreen extends LinkedPageScreen {
@@ -72,7 +72,7 @@ public class PresetConfigScreen extends LinkedPageScreen {
 		
 		RegistryAccess registryAccess = this.getSettings().worldgenLoadContext();
 
-		Preset preset = presetEntry.getPreset();
+		WorldPreset preset = presetEntry.getPreset();
 		Component presetName = presetEntry.getName();
 		
 		DataGenerator dataGenerator = Datapacks.makePreset(preset, registryAccess, datagenPath, datagenOutputPath, presetName.getString());

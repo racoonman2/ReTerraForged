@@ -4,10 +4,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.resources.ResourceLocation;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.platform.RegistryUtil;
 import raccoonman.reterraforged.registries.RTFBuiltInRegistries;
 import raccoonman.reterraforged.registries.RTFRegistries;
+import raccoonman.reterraforged.world.worldgen.biome.modifier.BiomeModifier;
 import raccoonman.reterraforged.world.worldgen.biome.modifier.BiomeModifiers;
 import raccoonman.reterraforged.world.worldgen.densityfunction.RTFDensityFunctions;
 import raccoonman.reterraforged.world.worldgen.feature.RTFFeatures;
@@ -43,13 +44,14 @@ public class RTFCommon {
 		RTFFeatures.bootstrap();
 		RTFHeightProviderTypes.bootstrap();
 		RTFFloatProviderTypes.bootstrap();
-		BiomeModifiers.bootstrap();
 		RTFSurfaceRules.bootstrap();
+		BiomeModifiers.bootstrap();
 		StructureRules.bootstrap();
 		
 		RegistryUtil.createDataRegistry(RTFRegistries.NOISE, Noise.DIRECT_CODEC);
-		RegistryUtil.createDataRegistry(RTFRegistries.PRESET, Preset.DIRECT_CODEC);
+		RegistryUtil.createDataRegistry(RTFRegistries.BIOME_MODIFIER, BiomeModifier.DIRECT_CODEC);
 		RegistryUtil.createDataRegistry(RTFRegistries.STRUCTURE_RULE, StructureRule.DIRECT_CODEC);
+		RegistryUtil.createDataRegistry(RTFRegistries.PRESET, WorldPreset.DIRECT_CODEC);
 	}
 	
 	public static ResourceLocation location(String name) {

@@ -52,7 +52,7 @@ public class IslandPopulator implements CellPopulator {
     	float regionEdgeAlpha = NoiseUtil.clamp(cell.terrainRegionEdge, islandThresholdMin, islandThresholdMax);
     	regionEdgeAlpha = NoiseUtil.map(regionEdgeAlpha, 0.0F, 1.0F, 2.0F);
     	
-    	float islandAlpha = cell.continentDistance * regionVarianceAlpha * regionEdgeAlpha;
+    	float islandAlpha = cell.continentalness * regionVarianceAlpha * regionEdgeAlpha;
         if (islandAlpha < this.blendLower) {
             this.ocean.apply(cell, x, z);
             return;

@@ -2,6 +2,7 @@ package raccoonman.reterraforged.client.gui.screen.presetconfig;
 
 import java.awt.Color;
 
+import net.minecraft.world.level.levelgen.NoiseRouterData;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
@@ -33,6 +34,11 @@ public enum RenderMode {
                     }
             }
         }
+
+		@Override
+		public float getNoiseValue(Cell cell) {
+			return cell.biomeRegionEdge;
+		}
     },
     TRANSITION_POINTS {
     	
@@ -59,6 +65,11 @@ public enum RenderMode {
                     return rgba(0.3F, 0.7F, 0.5F);
             }
         }
+
+		@Override
+		public float getNoiseValue(Cell cell) {
+			return cell.continentalness;// cell.continentEdge;
+		}
     },
     TEMPERATURE {
     	
@@ -68,6 +79,11 @@ public enum RenderMode {
             float brightness = 0.8F;
             return rgba(step(1 - cell.regionTemperature, 8) * 0.65F, saturation, brightness);
         }
+
+		@Override
+		public float getNoiseValue(Cell cell) {
+			return cell.regionTemperature;
+		}
     },
     MOISTURE {
     	
@@ -77,6 +93,11 @@ public enum RenderMode {
             float brightness = 0.8F;
             return rgba(step(cell.regionMoisture, 8) * 0.65F, saturation, brightness);
         }
+
+		@Override
+		public float getNoiseValue(Cell cell) {
+			return cell.regionMoisture;
+		}
     },
     BIOME {
     	
@@ -86,6 +107,11 @@ public enum RenderMode {
             float brightness = 0.8F;
             return rgba(cell.biomeRegionId, saturation, brightness);
         }
+
+		@Override
+		public float getNoiseValue(Cell cell) {
+			return cell.biomeRegionId;
+		}
     },
     MACRO_NOISE {
     	
@@ -95,6 +121,11 @@ public enum RenderMode {
             float brightness = 0.8F;
             return rgba(cell.macroBiomeId, saturation, brightness);
         }
+
+		@Override
+		public float getNoiseValue(Cell cell) {
+			return cell.macroBiomeId;
+		}
     },
     TERRAIN_REGION {
     	
@@ -104,6 +135,68 @@ public enum RenderMode {
             float brightness = 0.8F;
             return rgba(cell.terrain.getRenderHue(), saturation, brightness);
         }
+
+		@Override
+		public float getNoiseValue(Cell cell) {
+			return cell.terrainRegionId;
+		}
+    },
+//    CONTINENTALNESS {
+//    	
+//        @Override
+//        public int getColor(Cell cell, Levels levels, float scale, float bias) {
+//        	float continentalness = this.getNoiseValue(cell);
+//        	return rgba(continentalness, continentalness, continentalness);
+//        }
+//        
+//        @Override
+//        public boolean handlesWater() {
+//            return true;
+//        }
+//
+//		@Override
+//		public float getNoiseValue(Cell cell) {
+//			return cell.continentalness;
+//		}
+//    },
+    EROSION {
+    	
+        @Override
+        public int getColor(Cell cell, Levels levels, float scale, float bias) {
+        	float erosion = this.getNoiseValue(cell);
+        	return rgba(erosion, erosion, erosion);
+        }
+
+		@Override
+		public float getNoiseValue(Cell cell) {
+			return cell.erosion;
+		}
+    },
+	WEIRDNESS {
+    	
+        @Override
+        public int getColor(Cell cell, Levels levels, float scale, float bias) {
+        	float weirdness = this.getNoiseValue(cell);
+        	return rgba(weirdness, weirdness, weirdness);
+        }
+
+		@Override
+		public float getNoiseValue(Cell cell) {
+			return cell.weirdness;
+		}
+    },
+	PEAKS_AND_VALLEYS {
+    	
+        @Override
+        public int getColor(Cell cell, Levels levels, float scale, float bias) {
+        	float peaksAndValleys = this.getNoiseValue(cell);
+        	return rgba(peaksAndValleys, peaksAndValleys, peaksAndValleys);
+        }
+
+		@Override
+		public float getNoiseValue(Cell cell) {
+			return NoiseRouterData.peaksAndValleys(cell.weirdness);
+		}
     };
 
     public int getColor(Cell cell, Levels levels) {
@@ -116,11 +209,13 @@ public enum RenderMode {
         int band = NoiseUtil.round(elevation * bands);
         float scale = 1.0F - alpha;
         float bias = alpha * (band / bands);
-        return getColor(cell, levels, scale, bias);
+        return this.getColor(cell, levels, scale, bias);
     }
 
     public abstract int getColor(Cell cell, Levels levels, float scale, float bias);
 
+    public abstract float getNoiseValue(Cell cell);
+    
     public boolean handlesWater() {
         return false;
     }

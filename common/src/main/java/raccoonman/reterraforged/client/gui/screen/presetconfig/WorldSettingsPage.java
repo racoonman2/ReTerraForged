@@ -12,7 +12,7 @@ import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.data.worldgen.preset.settings.ContinentType;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.SpawnType;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
@@ -55,7 +55,7 @@ public class WorldSettingsPage extends PresetEditorPage {
 	public void init() {
 		super.init();
 		
-		Preset preset = this.preset.getPreset();
+		WorldPreset preset = this.preset.getPreset();
 		WorldSettings world = preset.world();
 		WorldSettings.Continent continent = world.continent;
 		WorldSettings.ControlPoints controlPoints = world.controlPoints;
@@ -174,12 +174,12 @@ public class WorldSettingsPage extends PresetEditorPage {
 			properties.worldDepth = nearestMultiple;
 			return slider.getSliderValue(nearestMultiple);
 		});
-		this.seaLevel = PresetWidgets.createIntSlider(properties.seaLevel, 0, 255, RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL, (slider, value) -> {
+		this.seaLevel = PresetWidgets.createIntSlider(properties.seaLevel, 0, 1024, RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL, (slider, value) -> {
 			properties.seaLevel = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
-		this.lavaLevel = PresetWidgets.createIntSlider(properties.lavaLevel, -1024, 128, RTFTranslationKeys.GUI_SLIDER_LAVA_LEVEL, (slider, value) -> {
+		this.lavaLevel = PresetWidgets.createIntSlider(properties.lavaLevel, -1024, 1024, RTFTranslationKeys.GUI_SLIDER_LAVA_LEVEL, (slider, value) -> {
 			properties.lavaLevel = (int) slider.scaleValue(value);
 			return value;
 		});

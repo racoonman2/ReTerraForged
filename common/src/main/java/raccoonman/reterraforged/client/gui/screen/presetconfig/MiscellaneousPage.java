@@ -9,7 +9,7 @@ import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.data.worldgen.preset.settings.MiscellaneousSettings;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 
 public class MiscellaneousPage extends PresetEditorPage {
 	private CycleButton<Boolean> smoothLayerDecorator;
@@ -39,7 +39,7 @@ public class MiscellaneousPage extends PresetEditorPage {
 	public void init() {
 		super.init();
 		
-		Preset preset = this.preset.getPreset();
+		WorldPreset preset = this.preset.getPreset();
 		MiscellaneousSettings miscellaneous = preset.miscellaneous();
 		
 		this.smoothLayerDecorator = PresetWidgets.createToggle(miscellaneous.smoothLayerDecorator, RTFTranslationKeys.GUI_BUTTON_SMOOTH_LAYER_DECORATOR, (button, value) -> {

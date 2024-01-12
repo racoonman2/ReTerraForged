@@ -2,6 +2,7 @@ package raccoonman.reterraforged.fabric.mixin;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -41,7 +42,7 @@ public class MixinBiomeModificationImpl {
 		remap = false
 	)
 	public List<Object> getSortedModifiers(BiomeModificationImpl self, RegistryAccess registries) {
-		List<Object> modifiers = this.getSortedModifiers();
+		List<Object> modifiers = new ArrayList<>(this.getSortedModifiers());
 		for(Holder.Reference<BiomeModifier> holder : registries.lookupOrThrow(RTFRegistries.BIOME_MODIFIER).listElements().toList()) {
 			if(holder.value() instanceof FabricBiomeModifier modifier) {
 				modifiers.add(this.makeModifierRecord(holder.key().location(), ModificationPhase.POST_PROCESSING, (ctx) -> {

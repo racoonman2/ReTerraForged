@@ -14,7 +14,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraftforge.common.world.ModifiableBiomeInfo.BiomeInfo;
+import net.minecraftforge.common.world.ModifiableBiomeInfo.BiomeInfo.Builder;
 import raccoonman.reterraforged.forge.mixin.MixinBiomeGenerationSettingsPlainsBuilder;
 import raccoonman.reterraforged.world.worldgen.biome.modifier.Filter;
 import raccoonman.reterraforged.world.worldgen.biome.modifier.Order;
@@ -26,9 +26,9 @@ record AddModifier(Order order, GenerationStep.Decoration step, Optional<Filter>
 		Filter.CODEC.optionalFieldOf("biomes").forGetter(AddModifier::biomes),
 		PlacedFeature.LIST_CODEC.fieldOf("features").forGetter(AddModifier::features)
 	).apply(instance, AddModifier::new));
-	
+
 	@Override
-	public void modify(Holder<Biome> biome, Phase phase, BiomeInfo.Builder builder) {
+	public void modify(Holder<Biome> biome, Phase phase, Builder builder) {
 		if(phase == Phase.AFTER_EVERYTHING) {
 			if(builder.getGenerationSettings() instanceof MixinBiomeGenerationSettingsPlainsBuilder builderAccessor) {
 				if(this.biomes.isPresent() && !this.biomes.get().test(biome)) {
@@ -49,13 +49,13 @@ record AddModifier(Order order, GenerationStep.Decoration step, Optional<Filter>
 		}
 	}
 
-	@Override
-	public Codec<AddModifier> codec() {
-		return CODEC;
-	}
-
 	private List<Holder<PlacedFeature>> add(@Nullable List<Holder<PlacedFeature>> values) {
 		if (values == null) return this.features.stream().toList();
 		return this.order.add(values, this.features.stream().toList());
+	}
+
+	@Override
+	public Codec<AddModifier> codec() {
+		return CODEC;
 	}
 }
