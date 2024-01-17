@@ -26,8 +26,10 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.concurrent.ThreadPools;
 import raccoonman.reterraforged.config.PerformanceConfig;
-import raccoonman.reterraforged.data.worldgen.compat.terrablender.TBNoiseRouterData;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.integration.terrablender.TBClimateSampler;
+import raccoonman.reterraforged.integration.terrablender.TBIntegration;
+import raccoonman.reterraforged.integration.terrablender.TBNoiseRouterData;
 import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.tags.RTFDensityFunctionTags;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
@@ -36,8 +38,6 @@ import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
 import raccoonman.reterraforged.world.worldgen.densityfunction.NoiseSampler;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
-import raccoonman.reterraforged.world.worldgen.terrablender.TBClimateSampler;
-import raccoonman.reterraforged.world.worldgen.terrablender.TBCompat;
 
 @Mixin(RandomState.class)
 @Implements(@Interface(iface = RTFRandomState.class, prefix = "reterraforged$RTFRandomState$"))
@@ -78,7 +78,7 @@ class MixinRandomState {
 				}
 				if(function instanceof CellSampler.Marker marker) {
 					MixinRandomState.this.hasContext |= true;
-					return new CellSampler(Suppliers.memoize(() -> MixinRandomState.this.generatorContext.lookup), marker.field());
+					return new CellSampler(Suppliers.memoize(() -> MixinRandomState.this.generatorContext), marker.field());
 				}
 				return visitor.apply(function);
 			}
@@ -100,13 +100,13 @@ class MixinRandomState {
 			set.forEach((function) -> function.value().mapAll(this.densityFunctionWrapper));
 		});
 		
-		if((Object) this.sampler instanceof TBClimateSampler tbClimateSampler && TBCompat.isEnabled()) {
+		if((Object) this.sampler instanceof TBClimateSampler tbClimateSampler && TBIntegration.isEnabled()) {
 			functions.get(TBNoiseRouterData.UNIQUENESS).ifPresent((uniqueness) -> {
 				tbClimateSampler.setUniqueness(uniqueness.value().mapAll(this.densityFunctionWrapper));
 			});
 		}
 		
-		presets.get(WorldPreset.KEY).ifPresentOrElse((presetHolder) -> {
+		presets.get(WorldPreset.KEY).ifPresent((presetHolder) -> {
 			this.preset = presetHolder.value();
 
 			if(this.hasContext) {
@@ -114,10 +114,6 @@ class MixinRandomState {
 					.resultOrPartial(RTFCommon.LOGGER::error)
 					.orElseGet(PerformanceConfig::makeDefault);
 				this.generatorContext = GeneratorContext.makeCached(this.preset, noises, (int) this.seed, config.tileSize(), config.batchCount(), ThreadPools.availableProcessors() > 4);
-			}
-		}, () -> {
-			if(this.hasContext) {
-//				throw new IllegalStateException("Missing preset!");
 			}
 		});
 	}

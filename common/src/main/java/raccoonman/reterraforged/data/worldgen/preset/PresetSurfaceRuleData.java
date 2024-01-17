@@ -21,7 +21,7 @@ import raccoonman.reterraforged.world.worldgen.surface.rule.StrataRule.Strata;
 //TODO add forest surfaces
 // maybe have a custom meadow or cherry forest surface ?
 public class PresetSurfaceRuleData {
-	public static final SurfaceRules.RuleSource PACKED_ICE = SurfaceRules.state(Blocks.PACKED_ICE.defaultBlockState());
+	private static final SurfaceRules.RuleSource PACKED_ICE = SurfaceRules.state(Blocks.PACKED_ICE.defaultBlockState());
 	
     public static SurfaceRules.RuleSource overworld(WorldPreset preset, HolderGetter<DensityFunction> densityFunctions, HolderGetter<Noise> noise) {
     	ConditionSource isFrozenPeak = SurfaceRules.isBiome(Biomes.FROZEN_PEAKS);
@@ -32,12 +32,12 @@ public class PresetSurfaceRuleData {
     				isFrozenPeak, 
     				SurfaceRules.sequence(
     					SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, PACKED_ICE),
-    					SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, PACKED_ICE),
-    					SurfaceRules.ifTrue(SurfaceRules.DEEP_UNDER_FLOOR, PACKED_ICE)
+    					SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, PACKED_ICE)
     				)
     			)
     		),
-    		SurfaceRuleData.overworld()
+    		SurfaceRuleData.overworld(),
+    		makeStrataRule(noise)
     	);
     }
     

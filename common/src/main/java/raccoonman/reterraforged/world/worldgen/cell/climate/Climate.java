@@ -17,7 +17,7 @@ import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 
 public record Climate(int randomSeed, Noise offsetX, Noise offsetZ, int offsetDistance, Levels levels, ClimateModule biomeNoise) {
 
-	public void apply(Cell cell, float x, float z, boolean applyClimate) {
+	public void apply(Cell cell, float x, float z) {
 		this.biomeNoise.apply(cell, x, z, x, z, true);
 		float edgeBlend = 0.4F;
 		if (cell.height <= this.levels.water) {

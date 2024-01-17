@@ -11,7 +11,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import raccoonman.reterraforged.data.worldgen.compat.terrablender.TBNoiseRouterData;
 import raccoonman.reterraforged.data.worldgen.preset.PresetBiomeData;
 import raccoonman.reterraforged.data.worldgen.preset.PresetBiomeModifierData;
 import raccoonman.reterraforged.data.worldgen.preset.PresetConfiguredCarvers;
@@ -22,13 +21,15 @@ import raccoonman.reterraforged.data.worldgen.preset.PresetNoiseGeneratorSetting
 import raccoonman.reterraforged.data.worldgen.preset.PresetNoiseRouterData;
 import raccoonman.reterraforged.data.worldgen.preset.PresetPlacedFeatures;
 import raccoonman.reterraforged.data.worldgen.preset.PresetStructureRuleData;
+import raccoonman.reterraforged.data.worldgen.preset.PresetStructureSets;
+import raccoonman.reterraforged.integration.terrablender.TBNoiseRouterData;
 import raccoonman.reterraforged.registries.RTFRegistries;
 
 public record WorldPreset(WorldSettings world, SurfaceSettings surface, CaveSettings caves, ClimateSettings climate, TerrainSettings terrain, RiverSettings rivers, FilterSettings filters, StructureSettings structures, MiscellaneousSettings miscellaneous) {
 	public static final Codec<WorldPreset> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		WorldSettings.CODEC.fieldOf("world").forGetter(WorldPreset::world),
 		SurfaceSettings.CODEC.optionalFieldOf("surface", new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F))).forGetter(WorldPreset::surface),
-		CaveSettings.CODEC.optionalFieldOf("caves", new CaveSettings(0.0F, 1.5625F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false)).forGetter(WorldPreset::caves),
+		CaveSettings.CODEC.optionalFieldOf("caves", new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false)).forGetter(WorldPreset::caves),
 		ClimateSettings.CODEC.fieldOf("climate").forGetter(WorldPreset::climate),
 		TerrainSettings.CODEC.fieldOf("terrain").forGetter(WorldPreset::terrain),
 		RiverSettings.CODEC.fieldOf("rivers").forGetter(WorldPreset::rivers),
@@ -56,6 +57,7 @@ public record WorldPreset(WorldSettings world, SurfaceSettings surface, CaveSett
 		this.addPatch(builder, Registries.CONFIGURED_CARVER, (preset, ctx) -> {
 			PresetConfiguredCarvers.bootstrap(preset, ctx);	
 		});
+		this.addPatch(builder, Registries.STRUCTURE_SET, PresetStructureSets::bootstrap);
 		this.addPatch(builder, Registries.PLACED_FEATURE, PresetPlacedFeatures::bootstrap);
 		this.addPatch(builder, Registries.BIOME, PresetBiomeData::bootstrap);
 		this.addPatch(builder, Registries.DIMENSION_TYPE, PresetDimensionTypes::bootstrap);

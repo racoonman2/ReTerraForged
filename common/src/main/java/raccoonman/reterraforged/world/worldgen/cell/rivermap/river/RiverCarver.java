@@ -25,7 +25,6 @@ public class RiverCarver implements Comparable<RiverCarver> {
     public RiverWarp warp;
     public RiverConfig config;
     public CurveFunction valleyCurve;
-    public CurveFunction plateauCurve;
     
     public RiverCarver(River river, RiverWarp warp, RiverConfig config, Settings settings, Levels levels) {
         this.fade = settings.fadeIn;

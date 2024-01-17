@@ -3,8 +3,8 @@ package raccoonman.reterraforged.world.worldgen.cell.heightmap;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
-import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
-import raccoonman.reterraforged.world.worldgen.densityfunction.tile.TileCache;
+import raccoonman.reterraforged.world.worldgen.tile.Tile;
+import raccoonman.reterraforged.world.worldgen.tile.TileCache;
 
 public class WorldLookup {
 	private float waterLevel;
@@ -25,18 +25,18 @@ public class WorldLookup {
 		return this.heightmap;
 	}
 
-	public boolean applyCell(Cell cell, int x, int z, boolean applyClimate) {
-		return this.applyCell(cell, x, z, false, applyClimate);
+	public boolean applyCell(Cell cell, int x, int z) {
+		return this.applyCell(cell, x, z, false);
 	}
 
-	public boolean applyCell(Cell cell, int x, int z, boolean load, boolean applyClimate) {
+	public boolean applyCell(Cell cell, int x, int z, boolean load) {
 		if (load && this.computeAccurate(cell, x, z)) {
 			return true;
 		}
 		if (this.computeCached(cell, x, z)) {
 			return true;
 		}
-		return this.compute(cell, x, z, applyClimate);
+		return this.compute(cell, x, z);
 	}
 
 	private boolean computeAccurate(Cell cell, int x, int z) {
@@ -64,8 +64,8 @@ public class WorldLookup {
 		return false;
 	}
 
-	private boolean compute(Cell cell, int x, int z, boolean applyClimate) {
-		this.heightmap.apply(cell, x, z, applyClimate);
+	private boolean compute(Cell cell, int x, int z) {
+		this.heightmap.apply(cell, x, z);
 		if (cell.terrain == TerrainType.COAST && cell.height > this.waterLevel && cell.height <= this.beachLevel) {
 			cell.terrain = TerrainType.BEACH;
 		}

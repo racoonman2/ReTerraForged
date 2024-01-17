@@ -27,8 +27,8 @@ package raccoonman.reterraforged.world.worldgen.feature.placement.poisson;
 import com.mojang.serialization.Codec;
 
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
-import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
+import raccoonman.reterraforged.world.worldgen.tile.Tile;
 
 public class BiomeVariance implements Noise {
     public static final BiomeVariance NONE = new BiomeVariance(null, 0.0F) {

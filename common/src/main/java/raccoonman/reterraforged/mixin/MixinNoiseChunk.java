@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Aquifer;
@@ -23,16 +24,18 @@ import net.minecraft.world.level.levelgen.RandomState;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
+import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
-import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
+import raccoonman.reterraforged.world.worldgen.tile.Tile;
 
 @Mixin(NoiseChunk.class)
 class MixinNoiseChunk {
 	private RandomState randomState;
 	private int chunkX, chunkZ;
+	//TODO just cache the whole tile instead
 	@Nullable
 	private Tile.Chunk chunk;
-	private CellSampler.Cache2d cache2d;
+	private Long2ObjectOpenHashMap<Cell> cache2d;
 	@Shadow
     @Final
 	int firstNoiseX;
@@ -58,7 +61,7 @@ class MixinNoiseChunk {
 		if((Object) randomState instanceof RTFRandomState rtfRandomState && CellSampler.isCachedNoiseChunk(cellCountXZ) && (generatorContext = rtfRandomState.generatorContext()) != null) {
 			this.chunk = generatorContext.cache.provideAtChunk(this.chunkX, this.chunkZ).getChunkReader(this.chunkX, this.chunkZ);
 		}
-		this.cache2d = new CellSampler.Cache2d();
+		this.cache2d = new Long2ObjectOpenHashMap<>();
 		return this.randomState.router();
 	}
 

@@ -7,9 +7,10 @@ import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Heightmap;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.WorldLookup;
-import raccoonman.reterraforged.world.worldgen.densityfunction.tile.TileCache;
-import raccoonman.reterraforged.world.worldgen.densityfunction.tile.generation.TileGenerator;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
+import raccoonman.reterraforged.world.worldgen.tile.TileCache;
+import raccoonman.reterraforged.world.worldgen.tile.filter.WorldFilters;
+import raccoonman.reterraforged.world.worldgen.tile.generation.TileGenerator;
 import raccoonman.reterraforged.world.worldgen.util.Seed;
 
 public class GeneratorContext {

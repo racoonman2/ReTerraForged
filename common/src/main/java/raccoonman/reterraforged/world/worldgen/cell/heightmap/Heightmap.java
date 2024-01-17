@@ -4,13 +4,12 @@ import net.minecraft.core.HolderGetter;
 import raccoonman.reterraforged.data.worldgen.preset.PresetNoiseData;
 import raccoonman.reterraforged.data.worldgen.preset.PresetTerrainTypeNoise;
 import raccoonman.reterraforged.data.worldgen.preset.settings.MiscellaneousSettings;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings;
+import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.biome.Erosion;
-import raccoonman.reterraforged.world.worldgen.biome.Weirdness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.cell.climate.Climate;
@@ -19,9 +18,9 @@ import raccoonman.reterraforged.world.worldgen.cell.continent.ContinentLerper2;
 import raccoonman.reterraforged.world.worldgen.cell.continent.ContinentLerper3;
 import raccoonman.reterraforged.world.worldgen.cell.rivermap.Rivermap;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.Blender;
-import raccoonman.reterraforged.world.worldgen.cell.terrain.Populators;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.populator.IslandPopulator;
+import raccoonman.reterraforged.world.worldgen.cell.terrain.populator.Populators;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.populator.VolcanoPopulator;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.provider.TerrainProvider;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.region.RegionLerper;
@@ -36,10 +35,10 @@ import raccoonman.reterraforged.world.worldgen.util.Seed;
 
 public record Heightmap(CellPopulator terrain, CellPopulator region, Continent continent, Climate climate, Levels levels, ControlPoints controlPoints, float terrainFrequency, Noise beachNoise) {
 	
-	public void apply(Cell cell, float x, float z, boolean applyClimate) {
+	public void apply(Cell cell, float x, float z) {
 		this.applyTerrain(cell, x, z);
 		this.applyRivers(cell, x, z, this.continent.getRivermap(cell));
-		this.applyClimate(cell, x, z, applyClimate);
+		this.applyClimate(cell, x, z);
 	}
 	
 	public void applyTerrain(Cell cell, float x, float z) {
@@ -55,13 +54,16 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         VolcanoPopulator.modifyVolcanoType(cell, this.levels);
 	}
 	
-	public void applyClimate(Cell cell, float x, float z, boolean applyClimate) {
+	public void applyClimate(Cell cell, float x, float z) {
 		float riverValleyThreshold = 0.675F;
         if(cell.riverMask < riverValleyThreshold) {
         	cell.erosion = 0.445F;
         	cell.weirdness = 0.34F;
         }
         
+        if(cell.terrain.isWetland()) {
+        	cell.erosion = Erosion.LEVEL_6.mid();
+        }
         if(cell.terrain.isRiver()) {
             cell.erosion = -0.05F;
             cell.weirdness = -0.03F;
@@ -71,11 +73,8 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
             cell.erosion = Erosion.LEVEL_4.mid();
             cell.weirdness = -0.03F;
         }
-        if(cell.terrain.isWetland()) {
-        	cell.erosion = Erosion.LEVEL_6.mid();
-        }
         
-        this.climate.apply(cell, x, z, applyClimate);
+        this.climate.apply(cell, x, z);
 
         if(cell.riverMask >= riverValleyThreshold && cell.macroBiomeId > 0.5F) { 
         	cell.weirdness = -cell.weirdness;

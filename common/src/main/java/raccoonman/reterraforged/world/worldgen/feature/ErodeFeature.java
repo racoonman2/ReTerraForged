@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.ChunkPos;
@@ -29,10 +30,10 @@ import raccoonman.reterraforged.world.worldgen.RTFRandomState;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
-import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.feature.ErodeFeature.Config;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
+import raccoonman.reterraforged.world.worldgen.tile.Tile;
 
 public class ErodeFeature extends Feature<Config> {
 
@@ -77,10 +78,10 @@ public class ErodeFeature extends Feature<Config> {
 						continue;
 					}
 			        if(surfaceY <= scaledY && surfaceY >= generator.getSeaLevel() - 1 && !biome.is(Biomes.WOODED_BADLANDS) && !biome.is(Biomes.BADLANDS)) {
-						erodeColumn(config, rand, generator, chunk, cell, pos, surfaceY);
-						//remove any foliage that may have generated above
+						erodeColumn(config, rand, generator, chunk, cell, pos, surfaceY, biome);
+						//remove any stuff that may have leaked from other chunks
 						pos.setY(surfaceY);
-						while(!level.getBlockState(pos.setY(pos.getY() + 1)).canSurvive(level, pos)) {
+						while(!level.getBlockState(pos.move(Direction.UP)).canSurvive(level, pos)) {
 							level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
 						}
 					}
@@ -134,7 +135,7 @@ public class ErodeFeature extends Feature<Config> {
         }
 	}
 	
-	private static void erodeColumn(Config config, Noise rand, ChunkGenerator generator, ChunkAccess chunk, Cell cell, BlockPos.MutableBlockPos pos, int surfaceY) {
+	private static void erodeColumn(Config config, Noise rand, ChunkGenerator generator, ChunkAccess chunk, Cell cell, BlockPos.MutableBlockPos pos, int surfaceY, Holder<Biome> biome) {
         if (cell.terrain.isRiver() || cell.terrain.isWetland()) {
             return;
         }
@@ -145,7 +146,11 @@ public class ErodeFeature extends Feature<Config> {
 		
         BlockState top = chunk.getBlockState(pos);
         if(top.is(RTFBlockTags.ERODIBLE)) {
-            BlockState material = getMaterial(config, rand, cell, pos, top, generator instanceof NoiseBasedChunkGenerator noiseChunkGenerator ? noiseChunkGenerator.generatorSettings().value().defaultBlock() : Blocks.STONE.defaultBlockState());
+        	if((top.is(Blocks.SNOW_BLOCK) || top.is(Blocks.POWDER_SNOW)) && cell.gradient < 0.45F) {
+        		return;
+        	}
+        	
+            BlockState material = getMaterial(config, rand, chunk, cell, pos, top, generator instanceof NoiseBasedChunkGenerator noiseChunkGenerator ? noiseChunkGenerator.generatorSettings().value().defaultBlock() : Blocks.STONE.defaultBlockState(), biome);
             if (material != top) {
                 if (material.is(RTFBlockTags.ROCK)) {
                 	erodeRock(chunk, cell, pos, surfaceY);
@@ -193,7 +198,7 @@ public class ErodeFeature extends Feature<Config> {
         }
 	}
 	
-    private static BlockState getMaterial(Config config, Noise rand, Cell cell, BlockPos.MutableBlockPos pos, BlockState top, BlockState middle) {
+    private static BlockState getMaterial(Config config, Noise rand, ChunkAccess chunk, Cell cell, BlockPos.MutableBlockPos pos, BlockState top, BlockState middle, Holder<Biome> biome) {
     	int x = pos.getX();
     	int z = pos.getZ();
         float height = cell.height + rand.compute(x, z, 0) * config.heightModifier();
@@ -203,10 +208,11 @@ public class ErodeFeature extends Feature<Config> {
             return rock(middle);
         }
 
-        if (steepness > config.dirtSteepness() && height > ColumnDecorator.sampleNoise(x, z, config.dirtVar(), config.dirtMin())) {
-            return ground(top);
+        if (!top.is(Blocks.SNOW_BLOCK) && !top.is(Blocks.POWDER_SNOW) && steepness > config.dirtSteepness()) {
+        	if(height > ColumnDecorator.sampleNoise(x, z, config.dirtVar(), config.dirtMin())) {
+        		return ground(top);
+        	}
         }
-
         return top;
     }
     

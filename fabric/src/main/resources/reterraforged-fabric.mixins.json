@@ -9,7 +9,8 @@
   ],
   "mixins": [
   	"MixinMinecraftServer",
-  	"MixinBiomeModificationImpl"
+  	"MixinBiomeModificationImpl",
+  	"MixinFabricDataGenerator$Pack"
   ],
   "injectors": {
     "defaultRequire": 1

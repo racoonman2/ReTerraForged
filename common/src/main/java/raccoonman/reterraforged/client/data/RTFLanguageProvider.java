@@ -103,8 +103,8 @@ public final class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_SLIDER_SNOW_STEEPNESS, "Snow Steepness");
 			this.add(RTFTranslationKeys.GUI_SLIDER_HEIGHT_MODIFIER, "Height Modifier");
 			this.add(RTFTranslationKeys.GUI_SLIDER_SLOPE_MODIFIER, "Slope Modifier");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SURFACE_DENSITY_THRESHOLD, "Surface Density Threshold");
 			this.add(RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY, "Entrance Cave Chance");
-			this.add(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_DEPTH_OFFSET, "Cheese Cave Depth Offset");
 			this.add(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_PROBABILITY, "Cheese Cave Chance");
 			this.add(RTFTranslationKeys.GUI_SLIDER_SPAGHETTI_CAVE_PROBABILITY, "Spaghetti Cave Chance");
 			this.add(RTFTranslationKeys.GUI_SLIDER_NOODLE_CAVE_PROBABILITY, "Noodle Cave Chance");
@@ -259,8 +259,8 @@ public final class RTFLanguageProvider {
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SNOW_STEEPNESS), "The steepness at which the surface can transition into snow");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_HEIGHT_MODIFIER), "Controls the height modifier");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SLOPE_MODIFIER), "Controls the slope modifier");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SURFACE_DENSITY_THRESHOLD), "Controls the surface depth at which cheese caves start to generate");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY), "Controls the probability that an entrance cave will generate");
-			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_DEPTH_OFFSET), "Controls the depth at which cheese caves start to generate");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_PROBABILITY), "Controls probability that a cheese cave will generate");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SPAGHETTI_CAVE_PROBABILITY), "Controls the probability that a spaghetti cave will generate");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_NOODLE_CAVE_PROBABILITY), "Controls probability that a noodle cave will generate");

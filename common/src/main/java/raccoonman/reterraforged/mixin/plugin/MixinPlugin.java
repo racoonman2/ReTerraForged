@@ -8,13 +8,13 @@ import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import raccoonman.reterraforged.RTFCommon;
-import raccoonman.reterraforged.world.worldgen.terrablender.TBCompat;
+import raccoonman.reterraforged.integration.terrablender.TBIntegration;
 
 public class MixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public void onLoad(String mixinPackage) {
-		if(TBCompat.isEnabled()) {
+		if(TBIntegration.isEnabled()) {
 			RTFCommon.LOGGER.info("Enabling Terrablender compat");
 		} else {
 			RTFCommon.LOGGER.info("Disabling Terrablender compat");
@@ -28,7 +28,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-		return TBCompat.isTBMixin(mixinClassName) ? TBCompat.isEnabled() : true;
+		return TBIntegration.isTBMixin(mixinClassName) ? TBIntegration.isEnabled() : true;
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public List<String> getMixins() {
-		return TBCompat.TERRABLENDER_COMPAT_MIXINS.stream().map((str) -> {
+		return TBIntegration.COMPAT_MIXINS.stream().map((str) -> {
 			return str.replace("raccoonman.reterraforged.mixin.", "");
 		}).toList();
 	}

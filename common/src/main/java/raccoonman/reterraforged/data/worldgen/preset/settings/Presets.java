@@ -26,8 +26,8 @@ public class Presets {
 				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.327F, 0.448F, 0.502F), 
 				new Properties(SpawnType.CONTINENT_CENTER, 384, 64, 63, -54)
 			), 
-			new SurfaceSettings(new SurfaceSettings.Erosion(30, 256, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
-			new CaveSettings(0.0F, 1.5625F, 1.0F, 1.0F, 1.0F, 0.05F, 0.07F, 0.0075F, true, false),
+			new SurfaceSettings(new SurfaceSettings.Erosion(30, 1000, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 0.0F, 0.0F)),
+			new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.05F, 0.07F, 0.0075F, true, false),
 			new ClimateSettings(
 				new RangeValue(0, 6, 2, 0.0F, 0.98F, 0.05F), 
 				new RangeValue(0, 6, 1, 0.0F, 1.0F, 0.0F), 
@@ -70,7 +70,7 @@ public class Presets {
 				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			), 
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
-			new CaveSettings(0.0F, 1.5625F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false),
+			new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false),
 			new ClimateSettings(
 				new RangeValue(0, 6, 2, 0.0F, 0.98F, 0.05F), 
 				new RangeValue(0, 6, 1, 0.0F, 1.0F, 0.0F), 
@@ -113,7 +113,7 @@ public class Presets {
 				new Properties(SpawnType.WORLD_ORIGIN, 320, 64, 63, -54)
 			), 
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
-			new CaveSettings(1.0F, 1.5625F, 1.0F, 1.0F, 1.0F, 0.15F, 0.07F, 0.021F, true, false),
+			new CaveSettings(1.5625F, 1.0F, 1.0F, 1.0F, 1.0F, 0.15F, 0.07F, 0.021F, true, false),
 			new ClimateSettings(
 				new RangeValue(0, 4, 1, 0.0F, 0.98F, 0.05F), 
 				new RangeValue(0, 5, 1, 0.0F, 1.0F, 0.0F), 
@@ -157,7 +157,7 @@ public class Presets {
 				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			), 
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
-			new CaveSettings(0.0F, 1.5625F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false),
+			new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false),
 			new ClimateSettings(
 				new RangeValue(0, 7, 1, 0.0F, 1.0F, -0.004F), 
 				new RangeValue(0, 6, 1, 0.0F, 1.0F, 0.0F), 
@@ -200,7 +200,7 @@ public class Presets {
 				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			),
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
-			new CaveSettings(0.0F, 1.5625F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, false, false),
+			new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, false, false),
 			new ClimateSettings(
 				new RangeValue(0, 4, 1, 0.0F, 0.98F, 0.05F),
 				new RangeValue(0, 5, 1, 0.0F, 1.0F, 0.0F), 
@@ -243,7 +243,7 @@ public class Presets {
 				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			), 
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
-			new CaveSettings(0.0F, 1.5625F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false),
+			new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false),
 			new ClimateSettings(
 				new RangeValue(0, 4, 2, 0.0F, 1.0F, 0.097F), 
 				new RangeValue(0, 3, 1, 0.0F, 1.0F, 0.0F), 

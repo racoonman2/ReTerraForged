@@ -5,7 +5,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.RTFCommon;
 
-public final class RTFDensityFunctionTags {
+public class RTFDensityFunctionTags {
 	// i dont like this but dont know what to do about it
 	// note: this should only include functions not present in the NoiseRouter
 	@Deprecated

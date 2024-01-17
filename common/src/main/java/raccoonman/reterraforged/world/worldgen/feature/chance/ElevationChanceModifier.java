@@ -10,7 +10,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
-import raccoonman.reterraforged.world.worldgen.densityfunction.tile.Tile;
+import raccoonman.reterraforged.world.worldgen.tile.Tile;
 
 class ElevationChanceModifier extends RangeChanceModifier {
 	public static final Codec<ElevationChanceModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(

@@ -174,7 +174,7 @@ public class WorldSettingsPage extends PresetEditorPage {
 			properties.worldDepth = nearestMultiple;
 			return slider.getSliderValue(nearestMultiple);
 		});
-		this.seaLevel = PresetWidgets.createIntSlider(properties.seaLevel, 0, 1024, RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL, (slider, value) -> {
+		this.seaLevel = PresetWidgets.createIntSlider(properties.seaLevel, 0, 255, RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL, (slider, value) -> {
 			properties.seaLevel = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;

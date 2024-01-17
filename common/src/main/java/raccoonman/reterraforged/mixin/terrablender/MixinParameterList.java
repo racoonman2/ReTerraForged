@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.biome.Climate;
+import raccoonman.reterraforged.integration.terrablender.TBTargetPoint;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
-import raccoonman.reterraforged.world.worldgen.terrablender.TBTargetPoint;
 import terrablender.api.RegionType;
 import terrablender.api.Regions;
 

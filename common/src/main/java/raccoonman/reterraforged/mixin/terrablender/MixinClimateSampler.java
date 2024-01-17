@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.Climate.TargetPoint;
 import net.minecraft.world.level.levelgen.DensityFunction;
-import raccoonman.reterraforged.world.worldgen.terrablender.TBClimateSampler;
-import raccoonman.reterraforged.world.worldgen.terrablender.TBTargetPoint;
+import raccoonman.reterraforged.integration.terrablender.TBClimateSampler;
+import raccoonman.reterraforged.integration.terrablender.TBTargetPoint;
 
 @Mixin(Climate.Sampler.class)
 @Implements(@Interface(iface = TBClimateSampler.class, prefix = "reterraforged$TBClimateSampler$"))

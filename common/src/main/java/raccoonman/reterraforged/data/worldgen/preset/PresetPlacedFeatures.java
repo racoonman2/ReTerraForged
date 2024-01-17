@@ -2,6 +2,7 @@ package raccoonman.reterraforged.data.worldgen.preset;
 
 import java.util.List;
 
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -14,9 +15,12 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
+import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter;
 import net.minecraft.world.level.levelgen.placement.CountPlacement;
+import net.minecraft.world.level.levelgen.placement.EnvironmentScanPlacement;
 import net.minecraft.world.level.levelgen.placement.HeightmapPlacement;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -29,7 +33,7 @@ import raccoonman.reterraforged.world.worldgen.feature.placement.RTFPlacementMod
 
 public class PresetPlacedFeatures {
 	public static final ResourceKey<PlacedFeature> ERODE = createKey("erode");
-	public static final ResourceKey<PlacedFeature> DECORATE_SNOW = createKey("decorate_snow");
+	public static final ResourceKey<PlacedFeature> ERODE_SNOW = createKey("erode_snow");
 	public static final ResourceKey<PlacedFeature> SWAMP_SURFACE = createKey("swamp_surface");
 
 	public static final ResourceKey<PlacedFeature> OAK_SMALL = createKey("oak/small");
@@ -47,9 +51,11 @@ public class PresetPlacedFeatures {
 	public static final ResourceKey<PlacedFeature> HUGE_RED_MUSHROOM = createKey("mushrooms/huge_red_mushroom");
 	public static final ResourceKey<PlacedFeature> WILLOW_SMALL = createKey("willow/small");
 	public static final ResourceKey<PlacedFeature> WILLOW_LARGE = createKey("willow/large");
-	public static final ResourceKey<PlacedFeature> PINE = createKey("pine");
+	public static final ResourceKey<PlacedFeature> PINE = createKey("pine/pine");
 	public static final ResourceKey<PlacedFeature> SPRUCE_SMALL = createKey("spruce/small");
 	public static final ResourceKey<PlacedFeature> SPRUCE_LARGE = createKey("spruce/large");
+	public static final ResourceKey<PlacedFeature> SPRUCE_SMALL_ON_SNOW = createKey("spruce/small_on_snow");
+	public static final ResourceKey<PlacedFeature> SPRUCE_LARGE_ON_SNOW = createKey("spruce/large_on_snow");
 	public static final ResourceKey<PlacedFeature> REDWOOD_LARGE = createKey("redwood/large");
 	public static final ResourceKey<PlacedFeature> REDWOOD_HUGE = createKey("redwood/huge");
 	public static final ResourceKey<PlacedFeature> JUNGLE_SMALL = createKey("jungle/small");
@@ -76,6 +82,7 @@ public class PresetPlacedFeatures {
 	public static final ResourceKey<PlacedFeature> SWAMP_TREES = createKey("swamp_trees");
 	public static final ResourceKey<PlacedFeature> MEADOW_TREES = createKey("meadow_trees");
 	public static final ResourceKey<PlacedFeature> FIR_TREES = createKey("fir_trees");
+	public static final ResourceKey<PlacedFeature> GROVE_TREES = createKey("grove_trees");
 	public static final ResourceKey<PlacedFeature> WINDSWEPT_HILLS_FIR_TREES = createKey("windswept_hills_fir_trees");
 	public static final ResourceKey<PlacedFeature> PINE_TREES = createKey("pine_trees");
 	public static final ResourceKey<PlacedFeature> SPRUCE_TREES = createKey("spruce_trees");
@@ -95,7 +102,7 @@ public class PresetPlacedFeatures {
 		}
 
 		if(miscellaneous.naturalSnowDecorator || miscellaneous.smoothLayerDecorator) {
-			PlacementUtils.register(ctx, DECORATE_SNOW, features.getOrThrow(PresetConfiguredFeatures.DECORATE_SNOW));
+			PlacementUtils.register(ctx, ERODE_SNOW, features.getOrThrow(PresetConfiguredFeatures.ERODE_SNOW));
 		}
 		
 		PlacementUtils.register(ctx, SWAMP_SURFACE, features.getOrThrow(PresetConfiguredFeatures.SWAMP_SURFACE));
@@ -144,6 +151,11 @@ public class PresetPlacedFeatures {
             PlacementUtils.register(ctx, PINE, features.getOrThrow(PresetConfiguredFeatures.PINE), PlacementUtils.filteredByBlockSurvival(Blocks.SPRUCE_SAPLING));
             PlacementUtils.register(ctx, SPRUCE_SMALL, features.getOrThrow(PresetConfiguredFeatures.SPRUCE_SMALL), PlacementUtils.filteredByBlockSurvival(Blocks.SPRUCE_SAPLING));
             PlacementUtils.register(ctx, SPRUCE_LARGE, features.getOrThrow(PresetConfiguredFeatures.SPRUCE_LARGE), PlacementUtils.filteredByBlockSurvival(Blocks.SPRUCE_SAPLING));
+
+            BlockPredicate isSnowPredicate = BlockPredicate.matchesBlocks(Direction.DOWN.getNormal(), Blocks.SNOW_BLOCK, Blocks.POWDER_SNOW);
+            List<PlacementModifier> onSnowPlacement = List.of(EnvironmentScanPlacement.scanningFor(Direction.UP, BlockPredicate.not(BlockPredicate.matchesBlocks(Blocks.POWDER_SNOW)), 8), BlockPredicateFilter.forPredicate(isSnowPredicate));
+            PlacementUtils.register(ctx, SPRUCE_SMALL_ON_SNOW, features.getOrThrow(PresetConfiguredFeatures.SPRUCE_SMALL_ON_SNOW), onSnowPlacement);
+            PlacementUtils.register(ctx, SPRUCE_LARGE_ON_SNOW, features.getOrThrow(PresetConfiguredFeatures.SPRUCE_LARGE_ON_SNOW), onSnowPlacement);
             PlacementUtils.register(ctx, REDWOOD_LARGE, features.getOrThrow(PresetConfiguredFeatures.REDWOOD_LARGE), PlacementUtils.filteredByBlockSurvival(Blocks.SPRUCE_SAPLING));
             PlacementUtils.register(ctx, REDWOOD_HUGE, features.getOrThrow(PresetConfiguredFeatures.REDWOOD_HUGE), PlacementUtils.filteredByBlockSurvival(Blocks.SPRUCE_SAPLING));
             PlacementUtils.register(ctx, JUNGLE_SMALL, features.getOrThrow(PresetConfiguredFeatures.JUNGLE_SMALL), PlacementUtils.filteredByBlockSurvival(Blocks.JUNGLE_SAPLING));
@@ -170,6 +182,7 @@ public class PresetPlacedFeatures {
         	PlacementUtils.register(ctx, SWAMP_TREES, features.getOrThrow(PresetConfiguredFeatures.SWAMP_TREES), PlacementUtils.HEIGHTMAP, RTFPlacementModifiers.countExtra(3, 0.05F, 1), BiomeFilter.biome());
         	PlacementUtils.register(ctx, MEADOW_TREES, features.getOrThrow(PresetConfiguredFeatures.OAK_SMALL), RarityFilter.onAverageOnceEvery(30), HeightmapPlacement.onHeightmap(Types.WORLD_SURFACE), BiomeFilter.biome());
         	PlacementUtils.register(ctx, FIR_TREES, features.getOrThrow(PresetConfiguredFeatures.FIR_TREES), RTFPlacementModifiers.poisson(4, 0.25F, 0.3F, 300, 0.6F), HeightmapPlacement.onHeightmap(Types.WORLD_SURFACE), BiomeFilter.biome());
+        	PlacementUtils.register(ctx, GROVE_TREES, features.getOrThrow(PresetConfiguredFeatures.GROVE_TREES), RTFPlacementModifiers.poisson(4, 0.25F, 0.3F, 300, 0.6F), HeightmapPlacement.onHeightmap(Types.WORLD_SURFACE), BiomeFilter.biome());
         	PlacementUtils.register(ctx, WINDSWEPT_HILLS_FIR_TREES, features.getOrThrow(PresetConfiguredFeatures.FIR_TREES), RarityFilter.onAverageOnceEvery(30), HeightmapPlacement.onHeightmap(Types.WORLD_SURFACE), BiomeFilter.biome());
         	PlacementUtils.register(ctx, PINE_TREES, features.getOrThrow(PresetConfiguredFeatures.PINE), RTFPlacementModifiers.poisson(7, 0.25F, 0.25F, 250, 0.7F), HeightmapPlacement.onHeightmap(Types.WORLD_SURFACE), BiomeFilter.biome());
         	PlacementUtils.register(ctx, SPRUCE_TREES, features.getOrThrow(PresetConfiguredFeatures.PINE), RTFPlacementModifiers.poisson(7, 0.3F, 0.25F, 250, 0.75F), HeightmapPlacement.onHeightmap(Types.WORLD_SURFACE), BiomeFilter.biome());
@@ -177,9 +190,6 @@ public class PresetPlacedFeatures {
         	PlacementUtils.register(ctx, REDWOOD_TREES, features.getOrThrow(PresetConfiguredFeatures.REDWOOD_TREES), RTFPlacementModifiers.poisson(6, 0.3F, 0.25F, 250, 0.75F), HeightmapPlacement.onHeightmap(Types.WORLD_SURFACE), BiomeFilter.biome());
         	PlacementUtils.register(ctx, JUNGLE_TREES, features.getOrThrow(PresetConfiguredFeatures.JUNGLE_TREES), RTFPlacementModifiers.poisson(6, 0.4F, 0.2F, 400, 0.75F), HeightmapPlacement.onHeightmap(Types.WORLD_SURFACE), BiomeFilter.biome());
         	PlacementUtils.register(ctx, JUNGLE_EDGE_TREES, features.getOrThrow(PresetConfiguredFeatures.JUNGLE_EDGE_TREES), RTFPlacementModifiers.poisson(8, 0.35F, 0.25F, 350, 0.75F), HeightmapPlacement.onHeightmap(Types.WORLD_SURFACE), BiomeFilter.biome());
-        	
-//			TODO shattered savanna
-//        	PlacementUtils.register(ctx, VegetationPlacements.TREES_WINDSWEPT_SAVANNA, features.getOrThrow(VegetationFeatures.TREES_SAVANNA), RTFPlacementModifiers.disabled());
         }
 	}
 	

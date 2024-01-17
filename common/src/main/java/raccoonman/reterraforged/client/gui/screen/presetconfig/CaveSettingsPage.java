@@ -12,8 +12,8 @@ import raccoonman.reterraforged.data.worldgen.preset.settings.CaveSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 
 public class CaveSettingsPage extends PresetEditorPage {
+	private Slider surfaceDensityThreshold;
 	private Slider entranceCaveProbability;
-	private Slider cheeseCaveDepthOffset;
 	private Slider cheeseCaveProbability;
 	private Slider spaghettiProbability;
 	private Slider noodleCaveProbability;
@@ -39,12 +39,12 @@ public class CaveSettingsPage extends PresetEditorPage {
 		WorldPreset preset = this.preset.getPreset();
 		CaveSettings caves = preset.caves();
 
-		this.entranceCaveProbability = PresetWidgets.createFloatSlider(caves.entranceCaveProbability, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY, (slider, value) -> {
-			caves.entranceCaveProbability = (float) slider.scaleValue(value);
+		this.surfaceDensityThreshold = PresetWidgets.createFloatSlider(caves.surfaceDensityThreshold, 1.5625F, 10.0F, RTFTranslationKeys.GUI_SLIDER_SURFACE_DENSITY_THRESHOLD, (slider, value) -> {
+			caves.surfaceDensityThreshold = (float) slider.scaleValue(value);
 			return value;
 		});
-		this.cheeseCaveDepthOffset = PresetWidgets.createFloatSlider(caves.cheeseCaveDepthOffset, 1.5625F, 10.0F, RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_DEPTH_OFFSET, (slider, value) -> {
-			caves.cheeseCaveDepthOffset = (float) slider.scaleValue(value);
+		this.entranceCaveProbability = PresetWidgets.createFloatSlider(caves.entranceCaveProbability, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY, (slider, value) -> {
+			caves.entranceCaveProbability = (float) slider.scaleValue(value);
 			return value;
 		});
 		this.cheeseCaveProbability = PresetWidgets.createFloatSlider(caves.cheeseCaveProbability, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_PROBABILITY, (slider, value) -> {
@@ -79,8 +79,8 @@ public class CaveSettingsPage extends PresetEditorPage {
 		});
 
 		this.left.addWidget(PresetWidgets.createLabel(RTFTranslationKeys.GUI_LABEL_NOISE_CAVES));
+		this.left.addWidget(this.surfaceDensityThreshold);
 		this.left.addWidget(this.entranceCaveProbability);
-		this.left.addWidget(this.cheeseCaveDepthOffset);
 		this.left.addWidget(this.cheeseCaveProbability);
 		this.left.addWidget(this.spaghettiProbability);
 		this.left.addWidget(this.noodleCaveProbability);

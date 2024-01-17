@@ -20,7 +20,6 @@ public class RTFPlacementModifiers {
     }
     
     @SafeVarargs
-    @Deprecated(forRemoval = true) // use biome modifiers to remove features instead
 	public static BlacklistDimensionFilter blacklistDimensions(ResourceKey<LevelStem>... levels) {
     	return new BlacklistDimensionFilter(ImmutableList.copyOf(levels));
     }

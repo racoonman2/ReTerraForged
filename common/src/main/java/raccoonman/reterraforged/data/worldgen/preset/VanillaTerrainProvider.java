@@ -2,20 +2,19 @@ package raccoonman.reterraforged.data.worldgen.preset;
 
 import net.minecraft.util.CubicSpline;
 import net.minecraft.util.ToFloatFunction;
-import raccoonman.reterraforged.world.worldgen.biome.Continentalness;
 
-// this is only for reference because the original is impossible to read
-class TerrainProvider {
+// this is only for reference because the original TerrainProvider class is impossible to read
+class VanillaTerrainProvider {
 
     public static <C, I extends ToFloatFunction<C>> CubicSpline<C, I> overworldFactor(I continentalness, I erosion, I ridges, I peaksAndValleys) {
         return CubicSpline.builder(continentalness)
         	.addPoint(-0.19F, 3.95F)
-        	.addPoint(-0.15F, TerrainProvider.getErosionFactor(erosion, ridges, peaksAndValleys, 6.25F, true))
-        	.addPoint(-0.1F, TerrainProvider.getErosionFactor(erosion, ridges, peaksAndValleys, 5.47F, true))
-        	.addPoint(0.03F, TerrainProvider.getErosionFactor(erosion, ridges, peaksAndValleys, 5.08F, true))
-        	.addPoint(0.06F, TerrainProvider.getErosionFactor(erosion, ridges, peaksAndValleys, 4.69F, false)).build();
+        	.addPoint(-0.15F, getErosionFactor(erosion, ridges, peaksAndValleys, 6.25F, true))
+        	.addPoint(-0.1F, getErosionFactor(erosion, ridges, peaksAndValleys, 5.47F, true))
+        	.addPoint(0.03F, getErosionFactor(erosion, ridges, peaksAndValleys, 5.08F, true))
+        	.addPoint(0.06F, getErosionFactor(erosion, ridges, peaksAndValleys, 4.69F, false)).build();
     }
-
+    
     private static <C, I extends ToFloatFunction<C>> CubicSpline<C, I> getErosionFactor(I erosion, I ridges, I peaksAndValleys, float baseFactor, boolean nonFarInland) {
         CubicSpline<C, I> baseSpline = CubicSpline.builder(ridges)
         	.addPoint(-0.2F, 6.3F)

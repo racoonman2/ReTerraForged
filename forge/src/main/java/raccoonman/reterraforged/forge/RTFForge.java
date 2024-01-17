@@ -1,5 +1,7 @@
 package raccoonman.reterraforged.forge;
 
+import java.nio.file.Path;
+
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.metadata.PackMetadataGenerator;
@@ -13,6 +15,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.client.data.RTFLanguageProvider;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
+import raccoonman.reterraforged.data.RTFDataGen;
 import raccoonman.reterraforged.platform.forge.RegistryUtilImpl;
 
 @Mod(RTFCommon.MOD_ID)
@@ -35,7 +38,14 @@ public class RTFForge {
     	boolean includeClient = event.includeClient();
     	DataGenerator generator = event.getGenerator();
     	PackOutput output = generator.getPackOutput();
-    	
+
+		RTFDataGen.generateResourcePacks(() -> {
+			return generator.new PackGenerator(true, "default", output);
+		});
+		RTFDataGen.generateDataPacks((id) -> {
+			Path path = output.getOutputFolder().resolve(RTFDataGen.DATAPACK_PATH).resolve(id.getPath());
+			return generator.new PackGenerator(true, id.toString(), new PackOutput(path));
+		});
     	generator.addProvider(includeClient, new RTFLanguageProvider.EnglishUS(output));
     	generator.addProvider(includeClient, PackMetadataGenerator.forFeaturePack(output, Component.translatable(RTFTranslationKeys.METADATA_DESCRIPTION)));
     }

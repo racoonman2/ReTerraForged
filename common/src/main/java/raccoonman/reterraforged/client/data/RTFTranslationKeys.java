@@ -91,8 +91,8 @@ public final class RTFTranslationKeys {
 	public static final String GUI_SLIDER_SNOW_STEEPNESS = resolve("gui.slider.snowSteepness");
 	public static final String GUI_SLIDER_HEIGHT_MODIFIER = resolve("gui.slider.heightModifier");
 	public static final String GUI_SLIDER_SLOPE_MODIFIER = resolve("gui.slider.slopeModifier");
+	public static final String GUI_SLIDER_SURFACE_DENSITY_THRESHOLD = resolve("gui.slider.surfaceDensityThreshold");
 	public static final String GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY = resolve("gui.slider.entranceCaveProbability");
-	public static final String GUI_SLIDER_CHEESE_CAVE_DEPTH_OFFSET = resolve("gui.slider.cheeseCaveDepthOffset");
 	public static final String GUI_SLIDER_CHEESE_CAVE_PROBABILITY = resolve("gui.slider.cheeseCaveProbability");
 	public static final String GUI_SLIDER_SPAGHETTI_CAVE_PROBABILITY = resolve("gui.slider.spaghettiCaveProbability");
 	public static final String GUI_SLIDER_NOODLE_CAVE_PROBABILITY = resolve("gui.slider.noodleCaveProbability");

@@ -14,9 +14,9 @@ import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.cell.heightmap.RegionConfig;
-import raccoonman.reterraforged.world.worldgen.cell.terrain.Populators;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.Terrain;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
+import raccoonman.reterraforged.world.worldgen.cell.terrain.populator.Populators;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.populator.TerrainPopulator;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.populator.VolcanoPopulator;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
@@ -25,6 +25,12 @@ import raccoonman.reterraforged.world.worldgen.util.Seed;
 
 public class TerrainProvider {
 
+	public static CellPopulator makeTerrainSpline() {
+		
+		return null;
+	}
+	
+	@Deprecated
     public static List<CellPopulator> generateTerrain(Seed seed, TerrainSettings terrainSettings, MiscellaneousSettings miscellaneousSettings, RegionConfig config, Levels levels, HolderGetter<Noise> noiseLookup) {
     	TerrainSettings.General general = terrainSettings.general;
     	float verticalScale = general.globalVerticalScale;

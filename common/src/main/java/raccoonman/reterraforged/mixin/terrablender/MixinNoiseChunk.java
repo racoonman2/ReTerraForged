@@ -19,7 +19,7 @@ import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
-import raccoonman.reterraforged.world.worldgen.terrablender.TBClimateSampler;
+import raccoonman.reterraforged.integration.terrablender.TBClimateSampler;
 
 @Mixin(NoiseChunk.class)
 public class MixinNoiseChunk {
