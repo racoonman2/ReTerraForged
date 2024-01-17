@@ -40,9 +40,9 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
 	}
 	
 	@Override
-	public Source apply(Context ctx) {
+	public Rule apply(Context ctx) {
 		if(ctx.system instanceof RTFSurfaceSystem rtfSurfaceSystem && (Object) ctx.randomState instanceof RTFRandomState rtfRandomState) {
-			return new Source(ctx, rtfRandomState.seed(this.selector.value()), rtfSurfaceSystem.getOrCreateStrata(this.name, this::generateStrata));
+			return new Rule(ctx, rtfRandomState.seed(this.selector.value()), rtfSurfaceSystem.getOrCreateStrata(this.name, this::generateStrata));
 		} else {
 			throw new IllegalStateException();
 		}
@@ -109,7 +109,7 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
 		}
 	}
 	
-	private class Source implements SurfaceRules.SurfaceRule {
+	private class Rule implements SurfaceRules.SurfaceRule {
 		private Context surfaceContext;
 		private Noise selector;
 		private List<List<Layer>> strata;
@@ -117,7 +117,7 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
 		private float[] depthBuffer;
 		private long lastUpdateXZ;
 		
-		public Source(Context surfaceContext, Noise selector, List<List<Layer>> strata) {
+		public Rule(Context surfaceContext, Noise selector, List<List<Layer>> strata) {
 			this.surfaceContext = surfaceContext;
 			this.selector = selector;
 			this.strata = strata;

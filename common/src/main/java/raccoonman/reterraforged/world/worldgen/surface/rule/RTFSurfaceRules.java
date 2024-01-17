@@ -2,6 +2,7 @@ package raccoonman.reterraforged.world.worldgen.surface.rule;
 
 import java.util.List;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.Holder;
@@ -16,10 +17,15 @@ public class RTFSurfaceRules {
 
 	public static void bootstrap() {
 		register("strata", StrataRule.CODEC);
+		register("noise", NoiseRule.CODEC);
 	}
 	
 	public static StrataRule strata(ResourceLocation name, Holder<Noise> selector, List<Strata> strata, int iterations) {
 		return new StrataRule(name, selector, strata, iterations);
+	}
+	
+	public static NoiseRule noise(Holder<Noise> noise, List<Pair<Float, SurfaceRules.RuleSource>> rules) {
+		return new NoiseRule(noise, rules);
 	}
 	
 	public static void register(String name, Codec<? extends SurfaceRules.RuleSource> value) {

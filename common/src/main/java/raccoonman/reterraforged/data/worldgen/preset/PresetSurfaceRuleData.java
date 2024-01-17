@@ -3,6 +3,8 @@ package raccoonman.reterraforged.data.worldgen.preset;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.datafixers.util.Pair;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.worldgen.SurfaceRuleData;
@@ -22,22 +24,53 @@ import raccoonman.reterraforged.world.worldgen.surface.rule.StrataRule.Strata;
 // maybe have a custom meadow or cherry forest surface ?
 public class PresetSurfaceRuleData {
 	private static final SurfaceRules.RuleSource PACKED_ICE = SurfaceRules.state(Blocks.PACKED_ICE.defaultBlockState());
+	private static final SurfaceRules.RuleSource PODZOL = SurfaceRules.state(Blocks.PODZOL.defaultBlockState());
+	private static final SurfaceRules.RuleSource DIRT = SurfaceRules.state(Blocks.DIRT.defaultBlockState());
 	
     public static SurfaceRules.RuleSource overworld(WorldPreset preset, HolderGetter<DensityFunction> densityFunctions, HolderGetter<Noise> noise) {
+    	return makeSurface(preset, densityFunctions, noise, SurfaceRuleData.overworld());
+    }
+    
+    public static SurfaceRules.RuleSource makeSurface(WorldPreset preset, HolderGetter<DensityFunction> densityFunctions, HolderGetter<Noise> noise, SurfaceRules.RuleSource ruleSource) {
+    	ConditionSource isForest = SurfaceRules.isBiome(Biomes.FOREST);
     	ConditionSource isFrozenPeak = SurfaceRules.isBiome(Biomes.FROZEN_PEAKS);
     	return SurfaceRules.sequence(
     		SurfaceRules.ifTrue(
     			SurfaceRules.abovePreliminarySurface(),
-    			SurfaceRules.ifTrue(
-    				isFrozenPeak, 
-    				SurfaceRules.sequence(
-    					SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, PACKED_ICE),
-    					SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, PACKED_ICE)
-    				)
-    			)
-    		),
-    		SurfaceRuleData.overworld(),
+    			SurfaceRules.sequence(
+	    			SurfaceRules.ifTrue(
+	    				isForest, 
+	    				makeForestRule(noise)
+	    			),
+	    			SurfaceRules.ifTrue(
+	    				isFrozenPeak, 
+	    				makeFrozenPeakRule()
+	    			)
+	    		)
+        	),
+    		ruleSource,
     		makeStrataRule(noise)
+        );
+    }
+    
+    private static SurfaceRules.RuleSource makeForestRule(HolderGetter<Noise> noise) {
+    	Holder<Noise> forestNoise = noise.getOrThrow(PresetSurfaceNoise.FOREST);
+    	return RTFSurfaceRules.noise(forestNoise, List.of(
+    		Pair.of(0.65F, PODZOL),
+    		Pair.of(0.725F, DIRT)
+    	));
+    }
+    
+    //TODO remove the desert stuff from ErodeFeature and move it here
+    private static SurfaceRules.RuleSource makeDesertRule(HolderGetter<Noise> noise) {
+
+    	return null;
+    }
+    
+    private static SurfaceRules.RuleSource makeFrozenPeakRule() {
+    	return SurfaceRules.sequence(
+			SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, PACKED_ICE),
+			SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, PACKED_ICE)
     	);
     }
     
