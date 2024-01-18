@@ -39,7 +39,7 @@ import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.Pr
 import raccoonman.reterraforged.client.gui.widget.Label;
 import raccoonman.reterraforged.client.gui.widget.WidgetList;
 import raccoonman.reterraforged.client.gui.widget.WidgetList.Entry;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Presets;
+import raccoonman.reterraforged.data.worldgen.preset.settings.BuiltinPresets;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.platform.ConfigUtil;
 
@@ -86,7 +86,7 @@ class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abstr
 			this.input.setTextColor(isValid ? white : red);
 		}, Component.translatable(RTFTranslationKeys.GUI_INPUT_PROMPT).withStyle(ChatFormatting.DARK_GRAY));
 		this.createPreset = PresetWidgets.createThrowingButton(RTFTranslationKeys.GUI_BUTTON_CREATE, () -> {
-			new PresetEntry(Component.literal(this.input.getValue()), Presets.makeLegacyDefault(), false, this).save();
+			new PresetEntry(Component.literal(this.input.getValue()), BuiltinPresets.makeLegacyDefault(), false, this).save();
 			this.rebuildPresets();
 			this.input.setValue(StringUtil.EMPTY_STRING);
 		});
@@ -188,12 +188,12 @@ class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abstr
 		entries.addAll(this.listPresets(PRESET_PATH));
 		entries.addAll(this.listPresets(LEGACY_PRESET_PATH));
 
-		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_DEFAULT_PRESET_NAME).withStyle(ChatFormatting.GRAY), Presets.makeRTFDefault(), true, this));
-		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_DEFAULT_LEGACY_PRESET_NAME).withStyle(ChatFormatting.GRAY), Presets.makeLegacyDefault(), true, this));
-		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_BEAUTIFUL_PRESET_NAME).withStyle(ChatFormatting.GRAY), Presets.makeLegacyBeautiful(), true, this));
-		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_HUGE_BIOMES_PRESET_NAME).withStyle(ChatFormatting.GRAY), Presets.makeLegacyHugeBiomes(), true, this));
-		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_LITE_PRESET_NAME).withStyle(ChatFormatting.GRAY), Presets.makeLegacyLite(), true, this));
-		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_VANILLAISH_PRESET_NAME).withStyle(ChatFormatting.GRAY), Presets.makeLegacyVanillaish(), true, this));
+		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_DEFAULT_PRESET_NAME).withStyle(ChatFormatting.GRAY), BuiltinPresets.makeRTFDefault(), true, this));
+		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_DEFAULT_LEGACY_PRESET_NAME).withStyle(ChatFormatting.GRAY), BuiltinPresets.makeLegacyDefault(), true, this));
+		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_BEAUTIFUL_PRESET_NAME).withStyle(ChatFormatting.GRAY), BuiltinPresets.makeLegacyBeautiful(), true, this));
+		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_HUGE_BIOMES_PRESET_NAME).withStyle(ChatFormatting.GRAY), BuiltinPresets.makeLegacyHugeBiomes(), true, this));
+		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_LITE_PRESET_NAME).withStyle(ChatFormatting.GRAY), BuiltinPresets.makeLegacyLite(), true, this));
+		entries.add(new PresetEntry(Component.translatable(RTFTranslationKeys.GUI_VANILLAISH_PRESET_NAME).withStyle(ChatFormatting.GRAY), BuiltinPresets.makeLegacyVanillaish(), true, this));
 		this.left.replaceEntries(entries.stream().map(WidgetList.Entry::new).toList());
 	}
 	

@@ -77,7 +77,7 @@ public class RTFDataGen {
 			return new PresetDensityFunctionTagsProvider(output, lookup);
 		});
 		packGenerator.addProvider((output) -> {
-			return new PresetBlockTagsProvider(preset, output, lookup);
+			return new PresetBlockTagsProvider(output, lookup);
 		});
 		packGenerator.addProvider((output) -> {
 			return new PresetBiomeTagsProvider(preset, output, CompletableFuture.completedFuture(registryAccess));

@@ -60,7 +60,6 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         	cell.erosion = 0.445F;
         	cell.weirdness = 0.34F;
         }
-        
         if(cell.terrain.isWetland()) {
         	cell.erosion = Erosion.LEVEL_6.mid();
         }
@@ -73,7 +72,6 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
             cell.erosion = Erosion.LEVEL_4.mid();
             cell.weirdness = -0.03F;
         }
-        
         this.climate.apply(cell, x, z);
 
         if(cell.riverMask >= riverValleyThreshold && cell.macroBiomeId > 0.5F) { 
@@ -134,7 +132,9 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 //        CellPopulator islandsOceans = new ContinentLerper3(coast, shallowOcean, deepOcean, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast);
         CellPopulator oceans = new ContinentLerper3(deepOcean, shallowOcean, coast, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast);
         CellPopulator terrain = new ContinentLerper2(oceans, land, controlPoints.shallowOcean, controlPoints.inland);
-
+        
+//        terrain = Populators.makeSteppe(ctx.seed, ground, terrainSettings.steppe);
+        
         Noise beachNoise = Noises.perlin2(ctx.seed.next(), 20, 1);
         beachNoise = Noises.mul(beachNoise, ctx.levels.scale(5));
         return new Heightmap(terrain, region, continent, climate, levels, controlPoints, terrainFrequency, beachNoise);

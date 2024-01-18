@@ -40,8 +40,8 @@ public class MixinMinecraftServer {
 	}
 
 	@Inject(
-		method = { "lambda$reloadResources$27" },
-		require = 0,
+		method = "lambda$reloadResources$27",
+		require = 1,
 		at = @At("TAIL")
 	)
 	private void lambda$reloadResources$27(CallbackInfo callback) {

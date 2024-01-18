@@ -38,7 +38,6 @@ public record WorldPreset(WorldSettings world, SurfaceSettings surface, CaveSett
 		MiscellaneousSettings.CODEC.fieldOf("miscellaneous").forGetter(WorldPreset::miscellaneous)
 	).apply(instance, WorldPreset::new));
 	
-	@Deprecated
 	public static final ResourceKey<WorldPreset> KEY = RTFRegistries.createKey(RTFRegistries.PRESET, "preset");
 	
 	public WorldPreset copy() {

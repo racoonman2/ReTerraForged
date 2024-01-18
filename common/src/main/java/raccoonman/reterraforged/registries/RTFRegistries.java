@@ -28,7 +28,6 @@ public class RTFRegistries {
 	public static final ResourceKey<Registry<BiomeModifier>> BIOME_MODIFIER = createKey("worldgen/biome_modifier");
 	public static final ResourceKey<Registry<StructureRule>> STRUCTURE_RULE = createKey("worldgen/structure_rule");
 
-	@Deprecated
 	public static final ResourceKey<Registry<WorldPreset>> PRESET = createKey("worldgen/preset");
 	
 	public static <T> ResourceKey<T> createKey(ResourceKey<? extends Registry<T>> registryKey, String valueKey) {

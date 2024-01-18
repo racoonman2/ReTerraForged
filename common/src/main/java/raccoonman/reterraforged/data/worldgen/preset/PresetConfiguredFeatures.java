@@ -12,6 +12,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.features.MiscOverworldFeatures;
+import net.minecraft.data.worldgen.features.TreeFeatures;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.data.worldgen.placement.TreePlacements;
 import net.minecraft.resources.ResourceKey;
@@ -36,8 +37,8 @@ import raccoonman.reterraforged.data.worldgen.preset.settings.MiscellaneousSetti
 import raccoonman.reterraforged.data.worldgen.preset.settings.SurfaceSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.world.worldgen.feature.BushFeature;
-import raccoonman.reterraforged.world.worldgen.feature.ErodeSnowFeature;
 import raccoonman.reterraforged.world.worldgen.feature.ErodeFeature;
+import raccoonman.reterraforged.world.worldgen.feature.ErodeSnowFeature;
 import raccoonman.reterraforged.world.worldgen.feature.RTFFeatures;
 import raccoonman.reterraforged.world.worldgen.feature.SwampSurfaceFeature;
 import raccoonman.reterraforged.world.worldgen.feature.chance.ChanceFeature;
@@ -113,7 +114,7 @@ public class PresetConfiguredFeatures {
 		SurfaceSettings surface = preset.surface();
 		SurfaceSettings.Erosion erosion = surface.erosion();
 		
-		ErodeFeature.Config erodeConfig = new ErodeFeature.Config(erosion.rockVariance, erosion.rockMin, erosion.dirtVariance, erosion.dirtMin, erosion.rockSteepness, erosion.dirtSteepness, erosion.screeSteepness, erosion.heightModifier / 255F, erosion.slopeModifier / 255F, 256, 3F / 255F, 0.55F);
+		ErodeFeature.Config erodeConfig = new ErodeFeature.Config(miscellaneous.rockTag(), erosion.rockVariance, erosion.rockMin, erosion.dirtVariance, erosion.dirtMin, erosion.rockSteepness, erosion.dirtSteepness, erosion.screeSteepness, erosion.heightModifier / 255F, erosion.slopeModifier / 255F, 256, 3F / 255F, 0.55F);
 		if(miscellaneous.erosionDecorator) {
 			FeatureUtils.register(ctx, ERODE, RTFFeatures.ERODE, erodeConfig);
 		}
@@ -167,14 +168,17 @@ public class PresetConfiguredFeatures {
 			FeatureUtils.register(ctx, HUGE_RED_MUSHROOM, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.RED_MUSHROOM));
 			FeatureUtils.register(ctx, WILLOW_SMALL, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.WILLOW_SMALL));
 			FeatureUtils.register(ctx, WILLOW_LARGE, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.WILLOW_LARGE));
-			FeatureUtils.register(ctx, PINE, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.PINE));
+			TemplateFeature.Config<?> pineConfig = makeTree(PresetTemplatePaths.PINE);
+			FeatureUtils.register(ctx, PINE, RTFFeatures.TEMPLATE, pineConfig);
 			FeatureUtils.register(ctx, SPRUCE_SMALL, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.SPRUCE_SMALL));
 			FeatureUtils.register(ctx, SPRUCE_LARGE, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.SPRUCE_LARGE));
 			FeatureUtils.register(ctx, SPRUCE_SMALL_ON_SNOW, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.SPRUCE_SMALL, TemplatePlacements.any(), 3));
 			FeatureUtils.register(ctx, SPRUCE_LARGE_ON_SNOW, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.SPRUCE_LARGE, TemplatePlacements.any(), 3));
 			FeatureUtils.register(ctx, REDWOOD_LARGE, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.REDWOOD_LARGE));
-			FeatureUtils.register(ctx, REDWOOD_HUGE, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.REDWOOD_HUGE));
-			FeatureUtils.register(ctx, JUNGLE_SMALL, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.JUNGLE_SMALL));
+			TemplateFeature.Config<?> redwoodHugeConfig = makeTree(PresetTemplatePaths.REDWOOD_HUGE);
+			FeatureUtils.register(ctx, REDWOOD_HUGE, RTFFeatures.TEMPLATE, redwoodHugeConfig);
+			TemplateFeature.Config<?> jungleSmallConfig = makeTree(PresetTemplatePaths.JUNGLE_SMALL);
+			FeatureUtils.register(ctx, JUNGLE_SMALL, RTFFeatures.TEMPLATE, jungleSmallConfig);
 			FeatureUtils.register(ctx, JUNGLE_LARGE, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.JUNGLE_LARGE));
 			FeatureUtils.register(ctx, JUNGLE_HUGE, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.JUNGLE_HUGE));
 			
@@ -236,6 +240,7 @@ public class PresetConfiguredFeatures {
 				makeChanceEntry(spruceSmallOnSnow, 0.1F, RTFChanceModifiers.elevation(1.0F, 0.2F)),
 				makeChanceEntry(spruceLargeOnSnow, 0.25F, RTFChanceModifiers.elevation(0.3F, 0.0F))
 			));
+			
 			FeatureUtils.register(ctx, REDWOOD_TREES, RTFFeatures.CHANCE, makeChance(
 				makeChanceEntry(redwoodHuge, 0.4F, RTFChanceModifiers.elevation(0.15F, 0.0F), RTFChanceModifiers.biomeEdge(0.1F, 0.3F)),
 				makeChanceEntry(redwoodLarge, 0.2F, RTFChanceModifiers.elevation(0.25F, 0.0F), RTFChanceModifiers.biomeEdge(0.05F, 0.25F)),
@@ -276,9 +281,44 @@ public class PresetConfiguredFeatures {
 	        FeatureUtils.register(ctx, MiscOverworldFeatures.DISK_CLAY, RTFFeatures.DISK, new DiskConfiguration(RuleBasedBlockStateProvider.simple(Blocks.CLAY), BlockPredicate.matchesBlocks(List.of(Blocks.DIRT, Blocks.CLAY)), UniformInt.of(2, 3), 1));
 	        FeatureUtils.register(ctx, MiscOverworldFeatures.DISK_GRAVEL, RTFFeatures.DISK, new DiskConfiguration(RuleBasedBlockStateProvider.simple(Blocks.GRAVEL), BlockPredicate.matchesBlocks(List.of(Blocks.DIRT, Blocks.GRASS_BLOCK)), UniformInt.of(2, 5), 2));
 	        FeatureUtils.register(ctx, MiscOverworldFeatures.DISK_SAND, RTFFeatures.DISK, new DiskConfiguration(new RuleBasedBlockStateProvider(BlockStateProvider.simple(Blocks.SAND), List.of(new RuleBasedBlockStateProvider.Rule(BlockPredicate.matchesBlocks(Direction.DOWN.getNormal(), Blocks.AIR), BlockStateProvider.simple(Blocks.SANDSTONE)))), BlockPredicate.matchesBlocks(List.of(Blocks.DIRT, Blocks.GRASS_BLOCK)), UniformInt.of(2, 6), 2));
+
+	        FeatureUtils.register(ctx, TreeFeatures.ACACIA, Feature.RANDOM_SELECTOR, makeRandom(acaciaSmall, List.of(
+	        	makeWeighted(1.0F, acaciaSmall), 
+	        	makeWeighted(0.5F, acaciaLarge)
+			)));
+	        RandomFeatureConfiguration birchConfig = makeRandom(birchSmall, List.of(
+	        	makeWeighted(1.0F, birchSmall), 
+	        	makeWeighted(0.5F, birchLarge)
+			));
+	        FeatureUtils.register(ctx, TreeFeatures.BIRCH, Feature.RANDOM_SELECTOR, birchConfig);
+	        FeatureUtils.register(ctx, TreeFeatures.BIRCH_BEES_005, Feature.RANDOM_SELECTOR, birchConfig);
+	        FeatureUtils.register(ctx, TreeFeatures.DARK_OAK, Feature.RANDOM_SELECTOR, makeRandom(darkOakSmall, List.of(
+	        	makeWeighted(1.0F, darkOakSmall), 
+	        	makeWeighted(0.5F, darkOakLarge)
+			)));
+	        FeatureUtils.register(ctx, TreeFeatures.JUNGLE_TREE_NO_VINE, RTFFeatures.TEMPLATE, jungleSmallConfig);
+	        FeatureUtils.register(ctx, TreeFeatures.MEGA_JUNGLE_TREE, Feature.RANDOM_SELECTOR, makeRandom(jungleLarge, List.of(
+	        	makeWeighted(1.0F, jungleLarge), 
+	        	makeWeighted(0.5F, jungleHuge)
+			)));
+	        RandomFeatureConfiguration oakConfig = makeRandom(oakSmall, List.of(
+	        	makeWeighted(1.0F, oakSmall), 
+	        	makeWeighted(0.5F, oakLarge)
+			));
+	        FeatureUtils.register(ctx, TreeFeatures.OAK, Feature.RANDOM_SELECTOR, oakConfig);
+	        FeatureUtils.register(ctx, TreeFeatures.OAK_BEES_005, Feature.RANDOM_SELECTOR, oakConfig);
+	        FeatureUtils.register(ctx, TreeFeatures.FANCY_OAK_BEES_005, Feature.RANDOM_SELECTOR, oakConfig);
+	        FeatureUtils.register(ctx, TreeFeatures.FANCY_OAK, Feature.RANDOM_SELECTOR, oakConfig);
+	        FeatureUtils.register(ctx, TreeFeatures.SPRUCE, Feature.RANDOM_SELECTOR, makeRandom(spruceSmall, List.of(
+	        	makeWeighted(1.0F, spruceSmall), 
+	        	makeWeighted(0.5F, spruceLarge)
+			)));
+	        FeatureUtils.register(ctx, TreeFeatures.PINE, RTFFeatures.TEMPLATE, pineConfig);
+	        FeatureUtils.register(ctx, TreeFeatures.MEGA_PINE, RTFFeatures.TEMPLATE, redwoodHugeConfig);
+	        FeatureUtils.register(ctx, TreeFeatures.MEGA_SPRUCE, RTFFeatures.TEMPLATE, redwoodHugeConfig);
 	    }
 	}
-
+	
 	private static BushFeature.Config makeSmallBush(Block log, Block leaves, float air, float leaf, float size) {
 		return new BushFeature.Config(log.defaultBlockState(), leaves.defaultBlockState(), air, leaf, size);
 	}

@@ -67,13 +67,15 @@ public class Populators {
         Noise warpX = Noises.perlin(seed.next(), scaleH / 4, 3, 3.0F);
         Noise warpZ = Noises.perlin(seed.next(), scaleH / 4, 3, 3.0F);
         
-        Noise height = Noises.perlin(seed.next(), scaleH, 1);
-        height = Noises.mul(height, erosion);
-        height = Noises.warp(height, warpX, warpZ, scaleH / 4.0F);
-        height = Noises.warpPerlin(height, seed.next(), 256, 1, 200.0F);
-        height = Noises.mul(height, 0.08F);
+        Noise weirdness = Noises.perlin(seed.next(), scaleH, 1);
+        weirdness = Noises.mul(weirdness, erosion);
+        weirdness = Noises.warp(weirdness, warpX, warpZ, scaleH / 4.0F);
+        weirdness = Noises.warpPerlin(weirdness, seed.next(), 256, 1, 200.0F);
+        weirdness = Noises.cache2d(weirdness);
+        
+        Noise height = Noises.mul(weirdness, 0.08F);
         height = Noises.add(height, -0.02F);
-		return TerrainPopulator.make(TerrainType.FLATS, ground, height, DEFAULT_EROSION, DEFAULT_WEIRDNESS, settings);
+		return TerrainPopulator.make(TerrainType.FLATS, ground, height, Erosion.LEVEL_4.source(), Noises.mul(weirdness, Noises.constant(-1.0F)), settings);
     }
     
     private static TerrainPopulator makePlains(@Deprecated Seed seed, Noise ground, TerrainSettings.Terrain noiseSettings, TerrainSettings.Terrain scalingSettings, float verticalScale) {
@@ -85,13 +87,15 @@ public class Populators {
       	Noise warpX = Noises.perlin(seed.next(), scaleH / 4, 3, 3.5F);
       	Noise warpZ = Noises.perlin(seed.next(), scaleH / 4, 3, 3.5F);
       	
-      	Noise height = Noises.perlin(seed.next(), scaleH, 1);
-      	height = Noises.mul(height, erosion);
-      	height = Noises.warp(height, warpX, warpZ, scaleH / 4.0F);
-      	height = Noises.warpPerlin(height, seed.next(), 256, 1, 256.0F);
-      	height = Noises.mul(height, 0.15F * verticalScale);
+      	Noise weirdness = Noises.perlin(seed.next(), scaleH, 1);
+      	weirdness = Noises.mul(weirdness, erosion);
+      	weirdness = Noises.warp(weirdness, warpX, warpZ, scaleH / 4.0F);
+      	weirdness = Noises.warpPerlin(weirdness, seed.next(), 256, 1, 256.0F);
+        weirdness = Noises.cache2d(weirdness);
+        
+      	Noise height = Noises.mul(weirdness, 0.15F * verticalScale);
       	height = Noises.add(height, -0.02F);
-      	return TerrainPopulator.make(TerrainType.FLATS, ground, height, DEFAULT_EROSION, DEFAULT_WEIRDNESS, scalingSettings);
+      	return TerrainPopulator.make(TerrainType.FLATS, ground, height, Erosion.LEVEL_4.source(), Noises.mul(Noises.add(weirdness, 0.025F), Noises.constant(-1.0F)), scalingSettings);
     }
 
     public static TerrainPopulator makePlains(@Deprecated Seed seed, Noise ground, TerrainSettings.Terrain settings, float verticalScale) {

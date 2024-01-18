@@ -9,11 +9,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -116,7 +119,7 @@ public class ErodeFeature extends Feature<Config> {
         float value = cell.height + variance.compute(pos.getX(), pos.getZ(), 0);
         if (cell.gradient > 0.3F || value > threshold) {
             BlockState state = Blocks.SMOOTH_SANDSTONE.defaultBlockState();
-
+            
             if (value > threshold) {
                 if (cell.gradient > 0.975) {
                     state = Blocks.TERRACOTTA.defaultBlockState();
@@ -152,8 +155,8 @@ public class ErodeFeature extends Feature<Config> {
         	
             BlockState material = getMaterial(config, rand, chunk, cell, pos, top, generator instanceof NoiseBasedChunkGenerator noiseChunkGenerator ? noiseChunkGenerator.generatorSettings().value().defaultBlock() : Blocks.STONE.defaultBlockState(), biome);
             if (material != top) {
-                if (material.is(RTFBlockTags.ROCK)) {
-                	erodeRock(chunk, cell, pos, surfaceY);
+                if (material.is(config.rockTag())) {
+                	erodeRock(config, chunk, cell, pos, surfaceY);
                     return;
                 } else {
                     ColumnDecorator.fillDownSolid(chunk, pos, surfaceY, surfaceY - 4, material);
@@ -163,14 +166,14 @@ public class ErodeFeature extends Feature<Config> {
         }
 	}
 
-    private static void erodeRock(ChunkAccess chunk, Cell cell, BlockPos.MutableBlockPos pos, int y) {
+    private static void erodeRock(Config config, ChunkAccess chunk, Cell cell, BlockPos.MutableBlockPos pos, int y) {
         int depth = 32;
         BlockState material = Blocks.GRAVEL.defaultBlockState();
         // find the uppermost layer of rock & record it's depth
         for (int dy = 3; dy < 32; dy++) {
             pos.setY(y - dy);
             BlockState state = chunk.getBlockState(pos);
-            if (state.is(RTFBlockTags.ROCK)) {
+            if (state.is(config.rockTag())) {
                 material = state;
                 depth = dy + 1;
                 break;
@@ -242,8 +245,9 @@ public class ErodeFeature extends Feature<Config> {
         return Blocks.COARSE_DIRT.defaultBlockState();
     }
 
-    public record Config(int rockVar, int rockMin, int dirtVar, int dirtMin, float rockSteepness, float dirtSteepness, float screeSteepness, float heightModifier, float slopeModifier, float sedimentModifier, float sedimentNoise, float screeValue) implements FeatureConfiguration {
+    public record Config(TagKey<Block> rockTag, int rockVar, int rockMin, int dirtVar, int dirtMin, float rockSteepness, float dirtSteepness, float screeSteepness, float heightModifier, float slopeModifier, float sedimentModifier, float sedimentNoise, float screeValue) implements FeatureConfiguration {
 		public static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			TagKey.codec(Registries.BLOCK).fieldOf("rock_tag").forGetter(Config::rockTag),
 			Codec.INT.fieldOf("rock_var").forGetter(Config::rockVar),
 			Codec.INT.fieldOf("rock_min").forGetter(Config::rockMin),
 			Codec.INT.fieldOf("dirt_var").forGetter(Config::dirtVar),

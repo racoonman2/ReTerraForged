@@ -6,6 +6,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -80,7 +81,7 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
 			int lastIndex = -1;
 	        int layers = this.minLayers + NoiseUtil.round(random.nextFloat() * (this.maxLayers - this.minLayers));
 	        List<Layer> result = new ArrayList<>();
-	        List<Holder<Block>> materials = ImmutableList.copyOf(BuiltInRegistries.BLOCK.getTagOrEmpty(this.materials));
+	        List<Holder<Block>> materials = Lists.newArrayList(BuiltInRegistries.BLOCK.getTagOrEmpty(this.materials));
 	        
 	        int seed = random.nextInt();
 	        for (int i = 0; i < layers; i++) {

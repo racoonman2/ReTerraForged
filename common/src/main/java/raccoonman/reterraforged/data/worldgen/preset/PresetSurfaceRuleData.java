@@ -14,6 +14,7 @@ import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.SurfaceRules.ConditionSource;
 import raccoonman.reterraforged.RTFCommon;
+import raccoonman.reterraforged.data.worldgen.preset.settings.MiscellaneousSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
 import raccoonman.reterraforged.tags.RTFBlockTags;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
@@ -32,6 +33,8 @@ public class PresetSurfaceRuleData {
     }
     
     public static SurfaceRules.RuleSource makeSurface(WorldPreset preset, HolderGetter<DensityFunction> densityFunctions, HolderGetter<Noise> noise, SurfaceRules.RuleSource ruleSource) {
+    	MiscellaneousSettings miscellaneousSettings = preset.miscellaneous();
+    	
     	ConditionSource isForest = SurfaceRules.isBiome(Biomes.FOREST);
     	ConditionSource isFrozenPeak = SurfaceRules.isBiome(Biomes.FROZEN_PEAKS);
     	return SurfaceRules.sequence(
@@ -49,16 +52,22 @@ public class PresetSurfaceRuleData {
 	    		)
         	),
     		ruleSource,
-    		makeStrataRule(noise)
+    		makeStrataRule(miscellaneousSettings, noise)
         );
     }
     
     private static SurfaceRules.RuleSource makeForestRule(HolderGetter<Noise> noise) {
     	Holder<Noise> forestNoise = noise.getOrThrow(PresetSurfaceNoise.FOREST);
-    	return RTFSurfaceRules.noise(forestNoise, List.of(
-    		Pair.of(0.65F, PODZOL),
-    		Pair.of(0.725F, DIRT)
-    	));
+    	return SurfaceRules.ifTrue(
+    		SurfaceRules.ON_FLOOR, 
+    		RTFSurfaceRules.noise(
+    			forestNoise, 
+    			List.of(
+    				Pair.of(0.65F, PODZOL),
+    				Pair.of(0.725F, DIRT)
+    			)
+    		)	
+    	);
     }
     
     //TODO remove the desert stuff from ErodeFeature and move it here
@@ -74,14 +83,14 @@ public class PresetSurfaceRuleData {
     	);
     }
     
-	private static SurfaceRules.RuleSource makeStrataRule(HolderGetter<Noise> noise) {
+	private static SurfaceRules.RuleSource makeStrataRule(MiscellaneousSettings miscellaneousSettings, HolderGetter<Noise> noise) {
 		Holder<Noise> depth = noise.getOrThrow(PresetStrataNoise.STRATA_DEPTH);
 		
 		List<Strata> strata = new ArrayList<>();
 		strata.add(new Strata(RTFBlockTags.SOIL, depth, 3, 0, 1, 0.1F, 0.25F));
 		strata.add(new Strata(RTFBlockTags.SEDIMENT, depth, 3, 0, 2, 0.05F, 0.15F));
 		strata.add(new Strata(RTFBlockTags.CLAY, depth, 3, 0, 2, 0.05F, 0.1F));
-		strata.add(new Strata(RTFBlockTags.ROCK, depth, 3, 10, 30, 0.1F, 1.5F));
+		strata.add(new Strata(miscellaneousSettings.rockTag(), depth, 3, 10, 30, 0.1F, 1.5F));
 		return RTFSurfaceRules.strata(RTFCommon.location("overworld_strata"), noise.getOrThrow(PresetStrataNoise.STRATA_SELECTOR), strata, 100);
 	}
 }

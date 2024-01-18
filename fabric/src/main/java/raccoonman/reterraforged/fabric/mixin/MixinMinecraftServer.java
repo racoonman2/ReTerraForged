@@ -31,8 +31,8 @@ public class MixinMinecraftServer {
 	}
 	
 	@Inject(
-		method = { "method_29440" },
-		require = 0,
+		method = "method_29440",
+		require = 1,
 		at = @At("TAIL"),
 		remap = false
 	)

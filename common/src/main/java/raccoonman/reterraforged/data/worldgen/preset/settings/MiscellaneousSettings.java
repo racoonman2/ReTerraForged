@@ -3,6 +3,10 @@ package raccoonman.reterraforged.data.worldgen.preset.settings;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+import raccoonman.reterraforged.tags.RTFBlockTags;
+
 public class MiscellaneousSettings {
 	public static final Codec<MiscellaneousSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.BOOL.fieldOf("smoothLayerDecorator").forGetter((s) -> s.smoothLayerDecorator),
@@ -66,5 +70,9 @@ public class MiscellaneousSettings {
 	
 	public MiscellaneousSettings copy() {
 		return new MiscellaneousSettings(this.smoothLayerDecorator, this.strataRegionSize, this.strataDecorator, this.oreCompatibleStoneOnly, this.erosionDecorator, this.plainStoneErosion, this.naturalSnowDecorator, this.customBiomeFeatures, this.vanillaSprings, this.vanillaLavaLakes, this.vanillaLavaSprings, this.mountainBiomeUsage, this.volcanoBiomeUsage);
+	}
+	
+	public TagKey<Block> rockTag() {
+		return this.oreCompatibleStoneOnly ? RTFBlockTags.ORE_COMPATIBLE_ROCK : RTFBlockTags.ROCK;
 	}
 }

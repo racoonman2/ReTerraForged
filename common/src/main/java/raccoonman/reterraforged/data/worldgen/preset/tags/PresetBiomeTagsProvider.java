@@ -30,7 +30,7 @@ public class PresetBiomeTagsProvider extends TagsProvider<Biome> {
 		
 		if(miscellaneous.customBiomeFeatures)	{
 			this.tag(RTFBiomeTags.HAS_SWAMP_TREES).add(Biomes.SWAMP);
-			this.tag(RTFBiomeTags.HAS_PLAINS_TREES).add(Biomes.RIVER, Biomes.PLAINS, Biomes.SUNFLOWER_PLAINS);
+			this.tag(RTFBiomeTags.HAS_PLAINS_TREES).add(Biomes.PLAINS, Biomes.SUNFLOWER_PLAINS, Biomes.RIVER, Biomes.FROZEN_OCEAN, Biomes.DEEP_FROZEN_OCEAN, Biomes.COLD_OCEAN, Biomes.DEEP_COLD_OCEAN, Biomes.OCEAN, Biomes.DEEP_OCEAN, Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN, Biomes.WARM_OCEAN);
 			this.tag(RTFBiomeTags.HAS_FOREST_TREES).add(Biomes.FOREST);
 			this.tag(RTFBiomeTags.HAS_FLOWER_FOREST_TREES).add(Biomes.FLOWER_FOREST);
 			this.tag(RTFBiomeTags.HAS_BIRCH_FOREST_TREES).add(Biomes.BIRCH_FOREST, Biomes.OLD_GROWTH_BIRCH_FOREST);
