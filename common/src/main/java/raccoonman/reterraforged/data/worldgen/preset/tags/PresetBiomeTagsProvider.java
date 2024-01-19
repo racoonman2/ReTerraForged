@@ -10,13 +10,13 @@ import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import raccoonman.reterraforged.data.worldgen.preset.settings.MiscellaneousSettings;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.tags.RTFBiomeTags;
 
 public class PresetBiomeTagsProvider extends TagsProvider<Biome> {
-	private WorldPreset preset;
+	private Preset preset;
 	
-	public PresetBiomeTagsProvider(WorldPreset preset, PackOutput packOutput, CompletableFuture<Provider> completableFuture) {
+	public PresetBiomeTagsProvider(Preset preset, PackOutput packOutput, CompletableFuture<Provider> completableFuture) {
 		super(packOutput, Registries.BIOME, completableFuture);
 		
 		this.preset = preset;

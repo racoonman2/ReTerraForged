@@ -9,7 +9,7 @@ import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.data.worldgen.preset.settings.CaveSettings;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 
 public class CaveSettingsPage extends PresetEditorPage {
 	private Slider surfaceDensityThreshold;
@@ -36,7 +36,7 @@ public class CaveSettingsPage extends PresetEditorPage {
 	public void init() {
 		super.init();
 
-		WorldPreset preset = this.preset.getPreset();
+		Preset preset = this.preset.getPreset();
 		CaveSettings caves = preset.caves();
 
 		this.surfaceDensityThreshold = PresetWidgets.createFloatSlider(caves.surfaceDensityThreshold, 1.5625F, 10.0F, RTFTranslationKeys.GUI_SLIDER_SURFACE_DENSITY_THRESHOLD, (slider, value) -> {

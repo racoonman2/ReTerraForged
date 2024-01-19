@@ -34,6 +34,7 @@ configurations {
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi("net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}") { exclude group: 'net.fabricmc', module: 'fabric-loader' }
+	modImplementation group: 'dev.lukebemish.biomesquisher', name: 'biomesquisher-fabric-1.20.2', version: '0.1.6-alpha'
 // 	modImplementation("com.github.glitchfiend:TerraBlender-fabric:${rootProject.minecraft_version}-${rootProject.terrablender_version}")
     
     common(project(path: ":common", configuration: "namedElements")) { transitive false }

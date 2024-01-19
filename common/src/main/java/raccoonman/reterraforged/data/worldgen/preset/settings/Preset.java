@@ -15,6 +15,7 @@ import raccoonman.reterraforged.data.worldgen.preset.PresetBiomeData;
 import raccoonman.reterraforged.data.worldgen.preset.PresetBiomeModifierData;
 import raccoonman.reterraforged.data.worldgen.preset.PresetConfiguredCarvers;
 import raccoonman.reterraforged.data.worldgen.preset.PresetConfiguredFeatures;
+import raccoonman.reterraforged.data.worldgen.preset.PresetData;
 import raccoonman.reterraforged.data.worldgen.preset.PresetDimensionTypes;
 import raccoonman.reterraforged.data.worldgen.preset.PresetNoiseData;
 import raccoonman.reterraforged.data.worldgen.preset.PresetNoiseGeneratorSettings;
@@ -25,28 +26,26 @@ import raccoonman.reterraforged.data.worldgen.preset.PresetStructureSets;
 import raccoonman.reterraforged.integration.terrablender.TBNoiseRouterData;
 import raccoonman.reterraforged.registries.RTFRegistries;
 
-public record WorldPreset(WorldSettings world, SurfaceSettings surface, CaveSettings caves, ClimateSettings climate, TerrainSettings terrain, RiverSettings rivers, FilterSettings filters, StructureSettings structures, MiscellaneousSettings miscellaneous) {
-	public static final Codec<WorldPreset> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		WorldSettings.CODEC.fieldOf("world").forGetter(WorldPreset::world),
-		SurfaceSettings.CODEC.optionalFieldOf("surface", new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F))).forGetter(WorldPreset::surface),
-		CaveSettings.CODEC.optionalFieldOf("caves", new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false)).forGetter(WorldPreset::caves),
-		ClimateSettings.CODEC.fieldOf("climate").forGetter(WorldPreset::climate),
-		TerrainSettings.CODEC.fieldOf("terrain").forGetter(WorldPreset::terrain),
-		RiverSettings.CODEC.fieldOf("rivers").forGetter(WorldPreset::rivers),
-		FilterSettings.CODEC.fieldOf("filters").forGetter(WorldPreset::filters),
-		StructureSettings.CODEC.fieldOf("structures").forGetter(WorldPreset::structures),
-		MiscellaneousSettings.CODEC.fieldOf("miscellaneous").forGetter(WorldPreset::miscellaneous)
-	).apply(instance, WorldPreset::new));
+public record Preset(WorldSettings world, SurfaceSettings surface, CaveSettings caves, ClimateSettings climate, TerrainSettings terrain, RiverSettings rivers, FilterSettings filters, StructureSettings structures, MiscellaneousSettings miscellaneous) {
+	public static final Codec<Preset> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		WorldSettings.CODEC.fieldOf("world").forGetter(Preset::world),
+		SurfaceSettings.CODEC.optionalFieldOf("surface", new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F))).forGetter(Preset::surface),
+		CaveSettings.CODEC.optionalFieldOf("caves", new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false)).forGetter(Preset::caves),
+		ClimateSettings.CODEC.fieldOf("climate").forGetter(Preset::climate),
+		TerrainSettings.CODEC.fieldOf("terrain").forGetter(Preset::terrain),
+		RiverSettings.CODEC.fieldOf("rivers").forGetter(Preset::rivers),
+		FilterSettings.CODEC.fieldOf("filters").forGetter(Preset::filters),
+		StructureSettings.CODEC.fieldOf("structures").forGetter(Preset::structures),
+		MiscellaneousSettings.CODEC.fieldOf("miscellaneous").forGetter(Preset::miscellaneous)
+	).apply(instance, Preset::new));
 	
-	public static final ResourceKey<WorldPreset> KEY = RTFRegistries.createKey(RTFRegistries.PRESET, "preset");
-	
-	public WorldPreset copy() {
-		return new WorldPreset(this.world.copy(), this.surface.copy(), this.caves.copy(), this.climate.copy(), this.terrain.copy(), this.rivers.copy(), this.filters.copy(), this.structures.copy(), this.miscellaneous.copy());
+	public Preset copy() {
+		return new Preset(this.world.copy(), this.surface.copy(), this.caves.copy(), this.climate.copy(), this.terrain.copy(), this.rivers.copy(), this.filters.copy(), this.structures.copy(), this.miscellaneous.copy());
 	}
 
 	public HolderLookup.Provider buildPatch(RegistryAccess registries) {
 		RegistrySetBuilder builder = new RegistrySetBuilder();
-		this.addPatch(builder, RTFRegistries.PRESET, (preset, ctx) -> ctx.register(KEY, preset));
+		this.addPatch(builder, RTFRegistries.PRESET, PresetData::bootstrap);
 		this.addPatch(builder, RTFRegistries.NOISE, PresetNoiseData::bootstrap);
 		this.addPatch(builder, RTFRegistries.BIOME_MODIFIER, PresetBiomeModifierData::bootstrap);
 		this.addPatch(builder, RTFRegistries.STRUCTURE_RULE, PresetStructureRuleData::bootstrap);
@@ -75,6 +74,6 @@ public record WorldPreset(WorldSettings world, SurfaceSettings surface, CaveSett
     }
     
 	private interface Patch<T> {
-        void apply(WorldPreset preset, BootstapContext<T> ctx);
+        void apply(Preset preset, BootstapContext<T> ctx);
 	}
 }

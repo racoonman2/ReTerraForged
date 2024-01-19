@@ -103,30 +103,29 @@ public class Erosion implements Filter {
             if ((dirX == 0.0f && dirY == 0.0f) || posX < 0.0f || posX >= mapSize - 1 || posY < 0.0f || posY >= mapSize - 1) {
                 return;
             }
-            final float newHeight = gradient2.at(cells, mapSize, posX, posY).height;
-            final float deltaHeight = newHeight - gradient1.height;
-            final float sedimentCapacity = Math.max(-deltaHeight * speed * water * 4.0f, 0.01f);
+            float newHeight = gradient2.at(cells, mapSize, posX, posY).height;
+            float deltaHeight = newHeight - gradient1.height;
+            float sedimentCapacity = Math.max(-deltaHeight * speed * water * 4.0f, 0.01f);
             if (sediment > sedimentCapacity || deltaHeight > 0.0f) {
-                final float amountToDeposit = (deltaHeight > 0.0f) ? Math.min(deltaHeight, sediment) : ((sediment - sedimentCapacity) * this.depositSpeed);
+                float amountToDeposit = (deltaHeight > 0.0f) ? Math.min(deltaHeight, sediment) : ((sediment - sedimentCapacity) * this.depositSpeed);
                 sediment -= amountToDeposit;
                 this.deposit(cells[dropletIndex], amountToDeposit * (1.0f - cellOffsetX) * (1.0f - cellOffsetY));
                 this.deposit(cells[dropletIndex + 1], amountToDeposit * cellOffsetX * (1.0f - cellOffsetY));
                 this.deposit(cells[dropletIndex + mapSize], amountToDeposit * (1.0f - cellOffsetX) * cellOffsetY);
                 this.deposit(cells[dropletIndex + mapSize + 1], amountToDeposit * cellOffsetX * cellOffsetY);
-            }
-            else {
-                final float amountToErode = Math.min((sedimentCapacity - sediment) * this.erodeSpeed, -deltaHeight);
+            } else {
+                float amountToErode = Math.min((sedimentCapacity - sediment) * this.erodeSpeed, -deltaHeight);
                 for (int brushPointIndex = 0; brushPointIndex < this.erosionBrushIndices[dropletIndex].length; ++brushPointIndex) {
-                    final int nodeIndex = this.erosionBrushIndices[dropletIndex][brushPointIndex];
-                    final Cell cell = cells[nodeIndex];
-                    final float brushWeight = this.erosionBrushWeights[dropletIndex][brushPointIndex];
-                    final float weighedErodeAmount = amountToErode * brushWeight;
-                    final float deltaSediment = Math.min(cell.height, weighedErodeAmount);
+                    int nodeIndex = this.erosionBrushIndices[dropletIndex][brushPointIndex];
+                    Cell cell = cells[nodeIndex];
+                    float brushWeight = this.erosionBrushWeights[dropletIndex][brushPointIndex];
+                    float weighedErodeAmount = amountToErode * brushWeight;
+                    float deltaSediment = Math.min(cell.height, weighedErodeAmount);
                     this.erode(cell, deltaSediment);
                     sediment += deltaSediment;
                 }
             }
-            speed = (float)Math.sqrt(speed * speed + deltaHeight * 3.0f);
+            speed = (float) Math.sqrt(speed * speed + deltaHeight * 3.0f);
             water *= 0.99f;
             if (Float.isNaN(speed)) {
                 speed = 0.0f;
@@ -134,10 +133,10 @@ public class Erosion implements Filter {
         }
     }
     
-    private void initBrushes(final int size, final int radius) {
-        final int[] xOffsets = new int[radius * radius * 4];
-        final int[] yOffsets = new int[radius * radius * 4];
-        final float[] weights = new float[radius * radius * 4];
+    private void initBrushes(int size, int radius) {
+        int[] xOffsets = new int[radius * radius * 4];
+        int[] yOffsets = new int[radius * radius * 4];
+        float[] weights = new float[radius * radius * 4];
         float weightSum = 0.0f;
         int addIndex = 0;
         for (int i = 0; i < this.erosionBrushIndices.length; ++i) {
@@ -164,7 +163,7 @@ public class Erosion implements Filter {
                     }
                 }
             }
-            final int numEntries = addIndex;
+            int numEntries = addIndex;
             this.erosionBrushIndices[i] = new int[numEntries];
             this.erosionBrushWeights[i] = new float[numEntries];
             for (int j = 0; j < numEntries; ++j) {
@@ -176,7 +175,7 @@ public class Erosion implements Filter {
     
     private void deposit(final Cell cell, final float amount) {
         if (!cell.erosionMask) {
-            final float change = this.modifier.modify(cell, amount);
+        	float change = this.modifier.modify(cell, amount);
             cell.height += change;
             cell.sediment += change;
         }
@@ -184,7 +183,7 @@ public class Erosion implements Filter {
     
     private void erode(final Cell cell, final float amount) {
         if (!cell.erosionMask) {
-            final float change = this.modifier.modify(cell, amount);
+            float change = this.modifier.modify(cell, amount);
             cell.height -= change;
             cell.heightErosion -= change;
         }

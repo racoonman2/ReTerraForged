@@ -24,7 +24,7 @@ import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.client.gui.widget.ValueButton;
 import raccoonman.reterraforged.data.worldgen.preset.settings.StructureSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.StructureSettings.StructureSetEntry;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 
 public class StructureSettingsPage extends PresetEditorPage {
 
@@ -41,7 +41,7 @@ public class StructureSettingsPage extends PresetEditorPage {
 	public void init() {
 		super.init();
 		
-		WorldPreset preset = this.preset.getPreset();
+		Preset preset = this.preset.getPreset();
 		StructureSettings structures = preset.structures();
 		
 		WorldCreationContext settings = this.screen.getSettings();

@@ -11,5 +11,7 @@ import raccoonman.reterraforged.world.worldgen.feature.template.decorator.TreeCo
 
 public class PresetTemplateDecoratorLists {
 	public static final List<TemplateDecorator<TreeContext>> BEEHIVE_RARITY_005 = ImmutableList.of(TemplateDecorators.tree(new BeehiveDecorator(0.05F)));
-	
+	public static final List<TemplateDecorator<TreeContext>> BEEHIVE_RARITY_005_AND_0002 = ImmutableList.of(TemplateDecorators.tree(new BeehiveDecorator(0.05F), new BeehiveDecorator(0.002F)));
+	public static final List<TemplateDecorator<TreeContext>> BEEHIVE_RARITY_002_AND_005 = ImmutableList.of(TemplateDecorators.tree(new BeehiveDecorator(0.02F), new BeehiveDecorator(0.05F)));
+	public static final List<TemplateDecorator<TreeContext>> BEEHIVE_RARITY_0002_AND_005 = ImmutableList.of(TemplateDecorators.tree(new BeehiveDecorator(0.002F), new BeehiveDecorator(0.05F)));
 }

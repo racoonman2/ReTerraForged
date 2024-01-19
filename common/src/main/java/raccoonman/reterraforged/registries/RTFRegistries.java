@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import raccoonman.reterraforged.RTFCommon;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.world.worldgen.biome.modifier.BiomeModifier;
 import raccoonman.reterraforged.world.worldgen.feature.chance.ChanceModifier;
 import raccoonman.reterraforged.world.worldgen.feature.template.decorator.TemplateDecorator;
@@ -28,7 +28,7 @@ public class RTFRegistries {
 	public static final ResourceKey<Registry<BiomeModifier>> BIOME_MODIFIER = createKey("worldgen/biome_modifier");
 	public static final ResourceKey<Registry<StructureRule>> STRUCTURE_RULE = createKey("worldgen/structure_rule");
 
-	public static final ResourceKey<Registry<WorldPreset>> PRESET = createKey("worldgen/preset");
+	public static final ResourceKey<Registry<Preset>> PRESET = createKey("worldgen/preset");
 	
 	public static <T> ResourceKey<T> createKey(ResourceKey<? extends Registry<T>> registryKey, String valueKey) {
 		return ResourceKey.create(registryKey, RTFCommon.location(valueKey));

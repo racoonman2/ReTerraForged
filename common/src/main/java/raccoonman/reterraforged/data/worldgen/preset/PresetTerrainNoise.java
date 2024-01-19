@@ -2,7 +2,7 @@ package raccoonman.reterraforged.data.worldgen.preset;
 
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.EdgeFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.Interpolation;
@@ -21,7 +21,7 @@ public class PresetTerrainNoise {
 	public static final ResourceKey<Noise> RIDGES_FOLDED = createKey("ridges_folded");
 	public static final ResourceKey<Noise> OFFSET = createKey("offset");
 	
-	public static void bootstrap(WorldPreset preset, BootstapContext<Noise> ctx) {
+	public static void bootstrap(Preset preset, BootstapContext<Noise> ctx) {
 		PresetTerrainTypeNoise.bootstrap(preset, ctx);
 		
 		Noise mountainChainAlpha = PresetNoiseData.registerAndWrap(ctx, MOUNTAIN_CHAIN_ALPHA, makeMountainChainAlpha(0));

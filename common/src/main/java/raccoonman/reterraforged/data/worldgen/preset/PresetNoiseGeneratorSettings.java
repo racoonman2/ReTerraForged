@@ -9,14 +9,14 @@ import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.data.worldgen.preset.settings.CaveSettings;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 
 public class PresetNoiseGeneratorSettings {
 	
-	public static void bootstrap(WorldPreset preset, BootstapContext<NoiseGeneratorSettings> ctx) {
+	public static void bootstrap(Preset preset, BootstapContext<NoiseGeneratorSettings> ctx) {
 		HolderGetter<DensityFunction> densityFunctions = ctx.lookup(Registries.DENSITY_FUNCTION);
 		HolderGetter<NormalNoise.NoiseParameters> noiseParams = ctx.lookup(Registries.NOISE);
 		HolderGetter<Noise> noises = ctx.lookup(RTFRegistries.NOISE);

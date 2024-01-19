@@ -64,6 +64,7 @@ public class RegionModule implements CellPopulator {
         }
         cell.terrainRegionId = this.cellValue(this.seed, cellX, cellY);
         cell.terrainRegionEdge = this.edgeValue(edgeDistance, edgeDistance2);
+        cell.terrainCenter = EdgeFunction.DISTANCE_2_DIV.apply(edgeDistance, edgeDistance2);
     }
     
     private float cellValue(int seed, int cellX, int cellY) {

@@ -16,7 +16,7 @@ import net.minecraft.world.level.levelgen.OreVeinifier;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.data.worldgen.preset.settings.CaveSettings;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
 import raccoonman.reterraforged.world.worldgen.densityfunction.RTFDensityFunctions;
@@ -31,7 +31,7 @@ public class PresetNoiseRouterData {
 	private static final float SCALER = 128.0F;
 	private static final float UNIT = 1.0F / SCALER;
 	
-    public static void bootstrap(WorldPreset preset, BootstapContext<DensityFunction> ctx) {
+    public static void bootstrap(Preset preset, BootstapContext<DensityFunction> ctx) {
         HolderGetter<DensityFunction> densityFunctions = ctx.lookup(Registries.DENSITY_FUNCTION);
         HolderGetter<NormalNoise.NoiseParameters> noiseParams = ctx.lookup(Registries.NOISE);
         
@@ -62,7 +62,7 @@ public class PresetNoiseRouterData {
         ctx.register(SEDIMENT, RTFDensityFunctions.cell(CellSampler.Field.SEDIMENT));
     }
     
-    protected static NoiseRouter overworld(WorldPreset preset, HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, HolderGetter<Noise> noises) {
+    protected static NoiseRouter overworld(Preset preset, HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, HolderGetter<Noise> noises) {
     	WorldSettings worldSettings = preset.world();
     	WorldSettings.Properties properties = worldSettings.properties;
     	int worldDepth = properties.worldDepth;

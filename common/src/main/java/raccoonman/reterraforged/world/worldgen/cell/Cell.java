@@ -35,6 +35,7 @@ public class Cell {
     public float continentalness;
     public float terrainRegionId;
     public float terrainRegionEdge;
+    public float terrainCenter;
     public float biomeRegionId;
     public float biomeRegionEdge;
     public float macroBiomeId;
@@ -77,6 +78,7 @@ public class Cell {
         this.continentalness = other.continentalness;
         this.terrainRegionId = other.terrainRegionId;
         this.terrainRegionEdge = other.terrainRegionEdge;
+        this.terrainCenter = other.terrainCenter;
         this.biomeRegionId = other.biomeRegionId;
         this.biomeRegionEdge = other.biomeRegionEdge;
         this.macroBiomeId = other.macroBiomeId;

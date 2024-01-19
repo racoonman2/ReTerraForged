@@ -10,7 +10,7 @@ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.data.worldgen.preset.settings.MiscellaneousSettings;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.world.worldgen.biome.RTFBiomes;
 
 public final class PresetBiomeData {
@@ -32,7 +32,7 @@ public final class PresetBiomeData {
     public static final ResourceKey<Biome> TAIGA_SCRUB = createKey("taiga_scrub");
     public static final ResourceKey<Biome> WARM_BEACH = createKey("warm_beach");
 	
-	public static void bootstrap(WorldPreset preset, BootstapContext<Biome> ctx) {
+	public static void bootstrap(Preset preset, BootstapContext<Biome> ctx) {
 		MiscellaneousSettings miscellaneousSettings = preset.miscellaneous();
 		
 		if(miscellaneousSettings.customBiomeFeatures) {

@@ -25,7 +25,7 @@ import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
 import raccoonman.reterraforged.data.RTFDataGen;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 
 //FIXME pressing the create world screen before the pack is copied will fuck the game up (surprisingly noone seems to have run into this?)
 public class PresetConfigScreen extends LinkedPageScreen {
@@ -72,7 +72,7 @@ public class PresetConfigScreen extends LinkedPageScreen {
 		
 		RegistryAccess registryAccess = this.getSettings().worldgenLoadContext();
 
-		WorldPreset preset = presetEntry.getPreset();
+		Preset preset = presetEntry.getPreset();
 		Component presetName = presetEntry.getName();
 		
 		DataGenerator dataGenerator = RTFDataGen.makePreset(preset, registryAccess, datagenPath, datagenOutputPath, presetName.getString());

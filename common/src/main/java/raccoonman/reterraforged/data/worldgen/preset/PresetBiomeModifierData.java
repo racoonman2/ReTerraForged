@@ -14,7 +14,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.data.worldgen.preset.settings.MiscellaneousSettings;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.tags.RTFBiomeTags;
 import raccoonman.reterraforged.world.worldgen.biome.modifier.BiomeModifier;
@@ -56,7 +56,7 @@ public class PresetBiomeModifierData {
 	public static final ResourceKey<BiomeModifier> FOREST_GRASS = createKey("vegetation/grass/forest");
 	public static final ResourceKey<BiomeModifier> BIRCH_FOREST_GRASS = createKey("vegetation/grass/birch_forest");
 	
-	public static void bootstrap(WorldPreset preset, BootstapContext<BiomeModifier> ctx) {
+	public static void bootstrap(Preset preset, BootstapContext<BiomeModifier> ctx) {
 		MiscellaneousSettings miscellaneous = preset.miscellaneous();
 		HolderGetter<PlacedFeature> placedFeatures = ctx.lookup(Registries.PLACED_FEATURE);
 		HolderGetter<Biome> biomes = ctx.lookup(Registries.BIOME);

@@ -19,8 +19,8 @@ import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 public class BuiltinPresets {
 	
 	//TODO increase mountain biome usage and increase snowyness
-	public static WorldPreset makeRTFDefault() {
-		return new WorldPreset(
+	public static Preset makeRTFDefault() {
+		return new Preset(
 			new WorldSettings(
 				new Continent(ContinentType.MULTI_IMPROVED, DistanceFunction.EUCLIDEAN, 3000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.327F, 0.448F, 0.502F), 
@@ -62,8 +62,8 @@ public class BuiltinPresets {
 		); 
 	}
 	
-	public static WorldPreset makeLegacyDefault() {
-		return new WorldPreset(
+	public static Preset makeLegacyDefault() {
+		return new Preset(
 			new WorldSettings(
 				new Continent(ContinentType.MULTI_IMPROVED, DistanceFunction.EUCLIDEAN, 3000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.327F, 0.448F, 0.502F), 
@@ -105,8 +105,8 @@ public class BuiltinPresets {
 		); 
 	}
 	
-	public static WorldPreset makeLegacyVanillaish() {
-		return new WorldPreset(
+	public static Preset makeLegacyVanillaish() {
+		return new Preset(
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 2000, 0.763F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F), 
@@ -149,8 +149,8 @@ public class BuiltinPresets {
 	}
 	
 	//TODO make mushroom islands bigger
-	public static WorldPreset makeLegacyBeautiful() {
-		return new WorldPreset(
+	public static Preset makeLegacyBeautiful() {
+		return new Preset(
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 3000, 0.8F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F), 
@@ -192,8 +192,8 @@ public class BuiltinPresets {
 		); 
 	}
 	
-	public static WorldPreset makeLegacyLite() {
-		return new WorldPreset(
+	public static Preset makeLegacyLite() {
+		return new Preset(
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 2000, 0.765F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(-1.0F, -1.0F, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F), 
@@ -235,8 +235,8 @@ public class BuiltinPresets {
 		);
 	}
 	
-	public static WorldPreset makeLegacyHugeBiomes() {
-		return new WorldPreset(
+	public static Preset makeLegacyHugeBiomes() {
+		return new Preset(
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 4029, 0.8F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(-1.0F, -1.0F, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F), 
@@ -278,7 +278,7 @@ public class BuiltinPresets {
 		);
 	}
 	
-	public static WorldPreset makeLegacy1_18() {
+	public static Preset makeLegacy1_18() {
 		throw new UnsupportedOperationException("TODO");
 	}
 }

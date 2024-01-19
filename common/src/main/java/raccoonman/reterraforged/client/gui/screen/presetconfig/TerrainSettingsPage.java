@@ -9,7 +9,7 @@ import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.client.gui.widget.ValueButton;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings.General;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings.Terrain;
@@ -80,7 +80,7 @@ public class TerrainSettingsPage extends PresetEditorPage {
 	public void init() {
 		super.init();
 
-		WorldPreset preset = this.preset.getPreset();
+		Preset preset = this.preset.getPreset();
 		TerrainSettings terrain = preset.terrain();
 		General general = terrain.general;
 		

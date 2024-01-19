@@ -24,11 +24,6 @@ import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.util.Seed;
 
 public class TerrainProvider {
-
-	public static CellPopulator makeTerrainSpline() {
-		
-		return null;
-	}
 	
 	@Deprecated
     public static List<CellPopulator> generateTerrain(Seed seed, TerrainSettings terrainSettings, MiscellaneousSettings miscellaneousSettings, RegionConfig config, Levels levels, HolderGetter<Noise> noiseLookup) {

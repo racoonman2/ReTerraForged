@@ -2,7 +2,7 @@ package raccoonman.reterraforged.data.worldgen.preset;
 
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.util.Seed;
@@ -11,7 +11,7 @@ public class PresetStrataNoise {
 	public static final ResourceKey<Noise> STRATA_SELECTOR = createKey("selector");
 	public static final ResourceKey<Noise> STRATA_DEPTH = createKey("depth");
 
-	public static void bootstrap(WorldPreset preset, BootstapContext<Noise> ctx) {
+	public static void bootstrap(Preset preset, BootstapContext<Noise> ctx) {
 		Seed seed = new Seed(1234153);
 		int strataScale = preset.miscellaneous().strataRegionSize;
 		

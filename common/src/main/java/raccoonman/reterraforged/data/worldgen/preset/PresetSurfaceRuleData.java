@@ -15,7 +15,7 @@ import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.SurfaceRules.ConditionSource;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.data.worldgen.preset.settings.MiscellaneousSettings;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.tags.RTFBlockTags;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.surface.rule.RTFSurfaceRules;
@@ -28,11 +28,11 @@ public class PresetSurfaceRuleData {
 	private static final SurfaceRules.RuleSource PODZOL = SurfaceRules.state(Blocks.PODZOL.defaultBlockState());
 	private static final SurfaceRules.RuleSource DIRT = SurfaceRules.state(Blocks.DIRT.defaultBlockState());
 	
-    public static SurfaceRules.RuleSource overworld(WorldPreset preset, HolderGetter<DensityFunction> densityFunctions, HolderGetter<Noise> noise) {
+    public static SurfaceRules.RuleSource overworld(Preset preset, HolderGetter<DensityFunction> densityFunctions, HolderGetter<Noise> noise) {
     	return makeSurface(preset, densityFunctions, noise, SurfaceRuleData.overworld());
     }
     
-    public static SurfaceRules.RuleSource makeSurface(WorldPreset preset, HolderGetter<DensityFunction> densityFunctions, HolderGetter<Noise> noise, SurfaceRules.RuleSource ruleSource) {
+    public static SurfaceRules.RuleSource makeSurface(Preset preset, HolderGetter<DensityFunction> densityFunctions, HolderGetter<Noise> noise, SurfaceRules.RuleSource ruleSource) {
     	MiscellaneousSettings miscellaneousSettings = preset.miscellaneous();
     	
     	ConditionSource isForest = SurfaceRules.isBiome(Biomes.FOREST);

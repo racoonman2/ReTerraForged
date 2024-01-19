@@ -26,7 +26,8 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.concurrent.ThreadPools;
 import raccoonman.reterraforged.config.PerformanceConfig;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.PresetData;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.integration.terrablender.TBClimateSampler;
 import raccoonman.reterraforged.integration.terrablender.TBIntegration;
 import raccoonman.reterraforged.integration.terrablender.TBNoiseRouterData;
@@ -55,7 +56,7 @@ class MixinRandomState {
 	@Nullable
 	private GeneratorContext generatorContext;
 	@Nullable
-	private WorldPreset preset;
+	private Preset preset;
 	
 	private long seed;
 	
@@ -92,7 +93,7 @@ class MixinRandomState {
 	}
 
 	public void reterraforged$RTFRandomState$initialize(RegistryAccess registries) {
-		RegistryLookup<WorldPreset> presets = registries.lookupOrThrow(RTFRegistries.PRESET);
+		RegistryLookup<Preset> presets = registries.lookupOrThrow(RTFRegistries.PRESET);
 		RegistryLookup<Noise> noises = registries.lookupOrThrow(RTFRegistries.NOISE);
 		RegistryLookup<DensityFunction> functions = registries.lookupOrThrow(Registries.DENSITY_FUNCTION);
 
@@ -106,7 +107,7 @@ class MixinRandomState {
 			});
 		}
 		
-		presets.get(WorldPreset.KEY).ifPresent((presetHolder) -> {
+		presets.get(PresetData.PRESET).ifPresent((presetHolder) -> {
 			this.preset = presetHolder.value();
 
 			if(this.hasContext) {
@@ -119,7 +120,7 @@ class MixinRandomState {
 	}
 	
 	@Nullable
-	public WorldPreset reterraforged$RTFRandomState$preset() {
+	public Preset reterraforged$RTFRandomState$preset() {
 		return this.preset;
 	}
 	

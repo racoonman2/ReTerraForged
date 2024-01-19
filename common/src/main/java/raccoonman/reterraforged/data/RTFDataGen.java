@@ -22,7 +22,7 @@ import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.client.data.RTFLanguageProvider;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.data.worldgen.preset.PresetConfiguredFeatures;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.tags.PresetBiomeTagsProvider;
 import raccoonman.reterraforged.data.worldgen.preset.tags.PresetBlockTagsProvider;
 import raccoonman.reterraforged.data.worldgen.preset.tags.PresetDensityFunctionTagsProvider;
@@ -65,7 +65,7 @@ public class RTFDataGen {
 	}
 	
 	@Deprecated
-	public static DataGenerator makePreset(WorldPreset preset, RegistryAccess registryAccess, Path dataGenPath, Path dataGenOutputPath, String presetName) {
+	public static DataGenerator makePreset(Preset preset, RegistryAccess registryAccess, Path dataGenPath, Path dataGenOutputPath, String presetName) {
 		DataGenerator dataGenerator = new DataGenerator(dataGenPath, SharedConstants.getCurrentVersion(), true);
 		PackGenerator packGenerator = dataGenerator.new PackGenerator(true, presetName, new PackOutput(dataGenOutputPath));
 		CompletableFuture<HolderLookup.Provider> lookup = CompletableFuture.supplyAsync(() -> preset.buildPatch(registryAccess));

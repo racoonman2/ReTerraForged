@@ -17,16 +17,21 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.SurfaceRules.Context;
+import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
+import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.surface.RTFSurfaceSystem;
+import raccoonman.reterraforged.world.worldgen.surface.rule.StrataRule.Strata;
+import raccoonman.reterraforged.world.worldgen.tile.Tile;
 
 public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Strata> strata, int iterations) implements SurfaceRules.RuleSource {
 	public static final Codec<StrataRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -43,7 +48,12 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
 	@Override
 	public Rule apply(Context ctx) {
 		if(ctx.system instanceof RTFSurfaceSystem rtfSurfaceSystem && (Object) ctx.randomState instanceof RTFRandomState rtfRandomState) {
-			return new Rule(ctx, rtfRandomState.seed(this.selector.value()), rtfSurfaceSystem.getOrCreateStrata(this.name, this::generateStrata));
+			GeneratorContext generatorContext = rtfRandomState.generatorContext();
+			
+			ChunkPos chunkPos = ctx.chunk.getPos();
+			int chunkX = chunkPos.x;
+			int chunkZ = chunkPos.z;
+			return new Rule(generatorContext.cache.provideAtChunk(chunkX, chunkZ).getChunkReader(chunkX, chunkZ), generatorContext.levels, ctx, rtfRandomState.seed(this.selector.value()), rtfSurfaceSystem.getOrCreateStrata(this.name, this::generateStrata));
 		} else {
 			throw new IllegalStateException();
 		}
@@ -111,14 +121,19 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
 	}
 	
 	private class Rule implements SurfaceRules.SurfaceRule {
+		private Tile.Chunk chunk;
+		private Levels levels;
 		private Context surfaceContext;
 		private Noise selector;
 		private List<List<Layer>> strata;
 		private List<Layer> layers;
 		private float[] depthBuffer;
 		private long lastUpdateXZ;
+		private int height;
 		
-		public Rule(Context surfaceContext, Noise selector, List<List<Layer>> strata) {
+		public Rule(Tile.Chunk chunk, Levels levels, Context surfaceContext, Noise selector, List<List<Layer>> strata) {
+			this.chunk = chunk;
+			this.levels = levels;
 			this.surfaceContext = surfaceContext;
 			this.selector = selector;
 			this.strata = strata;
@@ -132,7 +147,7 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
         		this.initBuffer(x, z);
         		this.lastUpdateXZ = this.surfaceContext.lastUpdateXZ;
         	}
-        	
+
         	Layer last = null;
         	for(int i = 0; i < this.layers.size(); i++) {
         		Layer layer = last = this.layers.get(i);
@@ -154,7 +169,7 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
 	        
             int localX = this.surfaceContext.blockX & 0xF;
             int localZ = this.surfaceContext.blockZ & 0xF;
-            int height = this.surfaceContext.chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, localX, localZ);
+            this.height = this.levels.scale(this.chunk.getCell(localX, localZ).height);// this.surfaceContext.chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, localX, localZ);
 
             float sum = 0.0F;
             for(int i = 0; i < layerCount; i++) {
@@ -164,9 +179,9 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
             	this.depthBuffer[i] = depth;
             }
             
-            int y = height;
+            int y = this.height;
             for(int i = 0; i < layerCount; i++) {
-            	this.depthBuffer[i] = y -= Math.round((this.depthBuffer[i] / sum) * height);
+            	this.depthBuffer[i] = y -= Math.round((this.depthBuffer[i] / sum) * this.height);
             }
 		}
 		

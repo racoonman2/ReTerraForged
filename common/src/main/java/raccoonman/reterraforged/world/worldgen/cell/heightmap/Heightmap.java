@@ -5,11 +5,10 @@ import raccoonman.reterraforged.data.worldgen.preset.PresetNoiseData;
 import raccoonman.reterraforged.data.worldgen.preset.PresetTerrainTypeNoise;
 import raccoonman.reterraforged.data.worldgen.preset.settings.MiscellaneousSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.TerrainSettings;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldPreset;
+import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
 import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
-import raccoonman.reterraforged.world.worldgen.biome.Erosion;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.cell.climate.Climate;
@@ -19,7 +18,6 @@ import raccoonman.reterraforged.world.worldgen.cell.continent.ContinentLerper3;
 import raccoonman.reterraforged.world.worldgen.cell.rivermap.Rivermap;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.Blender;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
-import raccoonman.reterraforged.world.worldgen.cell.terrain.populator.IslandPopulator;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.populator.Populators;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.populator.VolcanoPopulator;
 import raccoonman.reterraforged.world.worldgen.cell.terrain.provider.TerrainProvider;
@@ -50,39 +48,39 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 	}
 	
 	public void applyRivers(Cell cell, float x, float z, Rivermap rivermap) {
-        rivermap.apply(cell, x, z);
+//        rivermap.apply(cell, x, z);
         VolcanoPopulator.modifyVolcanoType(cell, this.levels);
 	}
 	
 	public void applyClimate(Cell cell, float x, float z) {
 		float riverValleyThreshold = 0.675F;
-        if(cell.riverMask < riverValleyThreshold) {
-        	cell.erosion = 0.445F;
-        	cell.weirdness = 0.34F;
-        }
-        if(cell.terrain.isWetland()) {
-        	cell.erosion = Erosion.LEVEL_6.mid();
-        }
-        if(cell.terrain.isRiver()) {
-            cell.erosion = -0.05F;
-            cell.weirdness = -0.03F;
-        }
-        
-        if(cell.terrain.isLake() && cell.height < this.levels.water) {
-            cell.erosion = Erosion.LEVEL_4.mid();
-            cell.weirdness = -0.03F;
-        }
+//        if(cell.riverMask < riverValleyThreshold) {
+//        	cell.erosion = 0.445F;
+//        	cell.weirdness = 0.34F;
+//        }
+//        if(cell.terrain.isWetland()) {
+//        	cell.erosion = Erosion.LEVEL_6.mid();
+//        }
+//        if(cell.terrain.isRiver()) {
+//            cell.erosion = -0.05F;
+//            cell.weirdness = -0.03F;
+//        }
+//        
+//        if(cell.terrain.isLake() && cell.height < this.levels.water) {
+//            cell.erosion = Erosion.LEVEL_4.mid();
+//            cell.weirdness = -0.03F;
+//        }
         this.climate.apply(cell, x, z);
-
-        if(cell.riverMask >= riverValleyThreshold && cell.macroBiomeId > 0.5F) { 
+//
+//        if(cell.riverMask >= riverValleyThreshold && cell.macroBiomeId > 0.5F) { 
         	cell.weirdness = -cell.weirdness;
-        }
+//        }
 	}
 	
 	public static Heightmap make(GeneratorContext ctx) {
     	HolderGetter<Noise> noiseLookup = ctx.noiseLookup;
     	
-        WorldPreset preset = ctx.preset;
+        Preset preset = ctx.preset;
         WorldSettings world = ctx.preset.world();
         ControlPoints controlPoints = world.controlPoints;
 
@@ -128,19 +126,11 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         CellPopulator shallowOcean = Populators.makeShallowOcean(ctx.levels);
         CellPopulator coast = Populators.makeCoast(ctx.levels);
         
-        //pass coast/ocean spline to makeIslandPopulator instead of deepOcean
-//        CellPopulator islandsOceans = new ContinentLerper3(coast, shallowOcean, deepOcean, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast);
         CellPopulator oceans = new ContinentLerper3(deepOcean, shallowOcean, coast, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast);
         CellPopulator terrain = new ContinentLerper2(oceans, land, controlPoints.shallowOcean, controlPoints.inland);
-        
-//        terrain = Populators.makeSteppe(ctx.seed, ground, terrainSettings.steppe);
         
         Noise beachNoise = Noises.perlin2(ctx.seed.next(), 20, 1);
         beachNoise = Noises.mul(beachNoise, ctx.levels.scale(5));
         return new Heightmap(terrain, region, continent, climate, levels, controlPoints, terrainFrequency, beachNoise);
-	}
-	
-	private static CellPopulator makeIslandPopulator(GeneratorContext ctx, ControlPoints controlPoints, CellPopulator oceans) {
-        return new IslandPopulator(ctx.levels, oceans, controlPoints.islandCoast, controlPoints.islandInland);
 	}
 }
