@@ -11,10 +11,10 @@ import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
-import raccoonman.reterraforged.data.worldgen.preset.settings.ContinentType;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
-import raccoonman.reterraforged.data.worldgen.preset.settings.SpawnType;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
+import raccoonman.reterraforged.data.preset.Preset;
+import raccoonman.reterraforged.data.preset.WorldSettings;
+import raccoonman.reterraforged.world.worldgen.biome.spawn.SpawnType;
+import raccoonman.reterraforged.world.worldgen.continent.ContinentType;
 import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 
 public class WorldSettingsPage extends PresetEditorPage {

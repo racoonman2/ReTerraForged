@@ -37,7 +37,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public List<String> getMixins() {
-		return TBIntegration.COMPAT_MIXINS.stream().map((str) -> {
+		return TBIntegration.MIXINS.stream().map((str) -> {
 			return str.replace("raccoonman.reterraforged.mixin.", "");
 		}).toList();
 	}

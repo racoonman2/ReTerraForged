@@ -11,7 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.Climate.ParameterPoint;
 import net.minecraft.world.level.biome.Climate.Sampler;
-import raccoonman.reterraforged.world.worldgen.cell.biome.spawn.SpawnFinderFix;
+import raccoonman.reterraforged.world.worldgen.biome.spawn.SpawnFinderFix;
 
 // FIXME the mixin that we should actually be using just refuses to work for some reason
 

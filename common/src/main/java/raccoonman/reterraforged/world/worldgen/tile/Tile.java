@@ -91,7 +91,7 @@ public class Tile implements SafeCloseable, Filterable, CellLookup {
 		return this.blockSize;
 	}
 
-	public Size getChunksSize() {
+	public Size getChunkSize() {
 		return this.chunkSize;
 	}
 
@@ -128,7 +128,6 @@ public class Tile implements SafeCloseable, Filterable, CellLookup {
         return chunk;
     }
 	
-    @Deprecated
 	public class Chunk {
         private int chunkX;
         private int chunkZ;
@@ -137,6 +136,8 @@ public class Tile implements SafeCloseable, Filterable, CellLookup {
         private int regionBlockX;
         private int regionBlockZ;
 		
+        private float generationHeight;
+        
 		public Chunk(int regionChunkX, int regionChunkZ) {
             this.regionBlockX = regionChunkX << 4;
             this.regionBlockZ = regionChunkZ << 4;
@@ -144,6 +145,18 @@ public class Tile implements SafeCloseable, Filterable, CellLookup {
             this.chunkZ = Tile.this.chunkZ + regionChunkZ - Tile.this.border;
             this.blockX = this.chunkX << 4;
             this.blockZ = this.chunkZ << 4;
+            
+            this.generationHeight = Float.MIN_VALUE;
+		}
+		
+		protected void updateGenerationHeight(Cell cell) {
+            if(this.generationHeight < cell.height) {
+            	this.generationHeight = cell.height;
+            }
+		}
+		
+		public float getGenerationHeight() {
+			return this.generationHeight;
 		}
 		
         public int getChunkX() {
@@ -167,6 +180,10 @@ public class Tile implements SafeCloseable, Filterable, CellLookup {
             int relZ = this.regionBlockZ + (blockZ & 0xF);
             int index = Tile.this.blockSize.indexOf(relX, relZ);
             return Tile.this.cache[index];
+        }
+        
+        public static int clampToNearestCell(int height, int cellHeight) {
+        	return (height / cellHeight + 1) * cellHeight;
         }
 	}
 }

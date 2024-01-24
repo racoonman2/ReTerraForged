@@ -32,7 +32,7 @@ public class MixinMinecraftServer {
 		at = @At("TAIL")
 	)
 	public void MinecraftServer(Thread thread, LevelStorageSource.LevelStorageAccess arg2, PackRepository arg22, WorldStem arg3, Proxy proxy, DataFixer dataFixer, Services arg4, ChunkProgressListenerFactory arg5, CallbackInfo callback) {
-		this.templateManager = new FeatureTemplateManager(this.getResourceManager());
+		this.templateManager = new FeatureTemplateManager((MinecraftServer) (Object) this, this.getResourceManager());
 	}
 	
 	public FeatureTemplateManager reterraforged$RTFMinecraftServer$getFeatureTemplateManager() {

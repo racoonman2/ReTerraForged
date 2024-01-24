@@ -3,9 +3,9 @@ package raccoonman.reterraforged.world.worldgen.cell;
 import raccoonman.reterraforged.concurrent.Resource;
 import raccoonman.reterraforged.concurrent.SimpleResource;
 import raccoonman.reterraforged.concurrent.pool.ThreadLocalPool;
-import raccoonman.reterraforged.world.worldgen.cell.biome.type.BiomeType;
-import raccoonman.reterraforged.world.worldgen.cell.terrain.Terrain;
-import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
+import raccoonman.reterraforged.world.worldgen.biome.type.BiomeType;
+import raccoonman.reterraforged.world.worldgen.terrain.Terrain;
+import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 
 public class Cell {
     private static final Cell DEFAULTS = new Cell();
@@ -21,7 +21,7 @@ public class Cell {
         return new SimpleResource<>(new Cell(), Cell::reset);
     });
     public float height;
-    public float heightErosion;
+    public float localErosion;
     public float sediment;
     public float gradient;
     @Deprecated
@@ -68,7 +68,7 @@ public class Cell {
     
     public void copyFrom(Cell other) {
         this.height = other.height;
-        this.heightErosion = other.heightErosion;
+        this.localErosion = other.localErosion;
         this.sediment = other.sediment;
         this.gradient = other.gradient;
         this.regionMoisture = other.regionMoisture;

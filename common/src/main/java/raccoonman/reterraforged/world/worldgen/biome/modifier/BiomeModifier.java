@@ -7,7 +7,7 @@ import com.mojang.serialization.Codec;
 import raccoonman.reterraforged.registries.RTFBuiltInRegistries;
 
 public interface BiomeModifier {
-    public static final Codec<BiomeModifier> DIRECT_CODEC = RTFBuiltInRegistries.BIOME_MODIFIER_TYPE.byNameCodec().dispatch(BiomeModifier::codec, Function.identity());
+    public static final Codec<BiomeModifier> CODEC = RTFBuiltInRegistries.BIOME_MODIFIER_TYPE.byNameCodec().dispatch(BiomeModifier::codec, Function.identity());
     
 	Codec<? extends BiomeModifier> codec();
 }

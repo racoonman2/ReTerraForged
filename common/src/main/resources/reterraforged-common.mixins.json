@@ -18,6 +18,7 @@
   	"MixinClimateSampler",
   	"MixinChunkStatus",
   	"MixinServerPacksSource",
+  	"MixinNoiseBasedChunkGenerator",
   	"terrablender.MixinParameterList",
   	"terrablender.MixinClimateSampler",
   	"terrablender.MixinTargetPoint",

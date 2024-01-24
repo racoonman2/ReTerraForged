@@ -21,11 +21,10 @@ import net.minecraft.world.level.block.Blocks;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.client.data.RTFLanguageProvider;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
-import raccoonman.reterraforged.data.worldgen.preset.PresetConfiguredFeatures;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
-import raccoonman.reterraforged.data.worldgen.preset.tags.PresetBiomeTagsProvider;
-import raccoonman.reterraforged.data.worldgen.preset.tags.PresetBlockTagsProvider;
-import raccoonman.reterraforged.data.worldgen.preset.tags.PresetDensityFunctionTagsProvider;
+import raccoonman.reterraforged.data.export.preset.PresetConfiguredFeatures;
+import raccoonman.reterraforged.data.export.preset.tags.PresetBiomeTagsProvider;
+import raccoonman.reterraforged.data.export.preset.tags.PresetBlockTagsProvider;
+import raccoonman.reterraforged.data.preset.Preset;
 import raccoonman.reterraforged.platform.DataGenUtil;
 import raccoonman.reterraforged.world.worldgen.feature.RTFFeatures;
 import raccoonman.reterraforged.world.worldgen.feature.SwampSurfaceFeature;
@@ -41,9 +40,6 @@ public class RTFDataGen {
 	}
 
 	public static void generateDataPacks(DataPackFactory builtInPackFactory) {
-//		DataGenerator.PackGenerator defaultPack = builtInPackFactory.createPack(RTFCommon.location("default"));
-//		defaultPack.addProvider((PackOutput output) -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(RTFTranslationKeys.METADATA_DESCRIPTION)));
-//		
 		generateMudSwamps(builtInPackFactory.createPack(RTFCommon.location("mud_swamps")));
 	}
 	
@@ -65,16 +61,13 @@ public class RTFDataGen {
 	}
 	
 	@Deprecated
-	public static DataGenerator makePreset(Preset preset, RegistryAccess registryAccess, Path dataGenPath, Path dataGenOutputPath, String presetName) {
+	public static DataGenerator makePreset(Preset preset, RegistryAccess registryAccess, Path dataGenPath, Path dataGenOutputPath) {
 		DataGenerator dataGenerator = new DataGenerator(dataGenPath, SharedConstants.getCurrentVersion(), true);
-		PackGenerator packGenerator = dataGenerator.new PackGenerator(true, presetName, new PackOutput(dataGenOutputPath));
+		PackGenerator packGenerator = dataGenerator.new PackGenerator(true, "preset", new PackOutput(dataGenOutputPath));
 		CompletableFuture<HolderLookup.Provider> lookup = CompletableFuture.supplyAsync(() -> preset.buildPatch(registryAccess));
 		
 		packGenerator.addProvider((output) -> {
 			return DataGenUtil.createRegistryProvider(output, lookup);
-		});
-		packGenerator.addProvider((output) -> {
-			return new PresetDensityFunctionTagsProvider(output, lookup);
 		});
 		packGenerator.addProvider((output) -> {
 			return new PresetBlockTagsProvider(output, lookup);

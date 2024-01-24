@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import raccoonman.reterraforged.RTFCommon;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.preset.Preset;
 import raccoonman.reterraforged.world.worldgen.biome.modifier.BiomeModifier;
 import raccoonman.reterraforged.world.worldgen.feature.chance.ChanceModifier;
 import raccoonman.reterraforged.world.worldgen.feature.template.decorator.TemplateDecorator;

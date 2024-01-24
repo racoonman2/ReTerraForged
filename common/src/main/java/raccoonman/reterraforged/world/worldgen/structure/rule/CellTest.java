@@ -14,9 +14,9 @@ import net.minecraft.world.level.levelgen.RandomState;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
-import raccoonman.reterraforged.world.worldgen.cell.heightmap.WorldLookup;
-import raccoonman.reterraforged.world.worldgen.cell.terrain.Terrain;
-import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
+import raccoonman.reterraforged.world.worldgen.heightmap.WorldLookup;
+import raccoonman.reterraforged.world.worldgen.terrain.Terrain;
+import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 
 record CellTest(float cutoff, Set<Terrain> terrainTypeBlacklist) implements StructureRule {
 	public static final Codec<CellTest> CODEC = RecordCodecBuilder.create(instance -> instance.group(

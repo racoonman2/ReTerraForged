@@ -25,7 +25,7 @@ import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.SurfaceRules.Context;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
-import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
+import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
@@ -53,7 +53,7 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
 			ChunkPos chunkPos = ctx.chunk.getPos();
 			int chunkX = chunkPos.x;
 			int chunkZ = chunkPos.z;
-			return new Rule(generatorContext.cache.provideAtChunk(chunkX, chunkZ).getChunkReader(chunkX, chunkZ), generatorContext.levels, ctx, rtfRandomState.seed(this.selector.value()), rtfSurfaceSystem.getOrCreateStrata(this.name, this::generateStrata));
+			return new Rule(generatorContext.cache.provideAtChunk(chunkX, chunkZ).getChunkReader(chunkX, chunkZ), generatorContext.levels, ctx, rtfRandomState.wrap(this.selector.value()), rtfSurfaceSystem.getOrCreateStrata(this.name, this::generateStrata));
 		} else {
 			throw new IllegalStateException();
 		}
@@ -129,7 +129,7 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
 		private List<Layer> layers;
 		private float[] depthBuffer;
 		private long lastUpdateXZ;
-		private int height;
+		private int surfaceY;
 		
 		public Rule(Tile.Chunk chunk, Levels levels, Context surfaceContext, Noise selector, List<List<Layer>> strata) {
 			this.chunk = chunk;
@@ -147,7 +147,7 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
         		this.initBuffer(x, z);
         		this.lastUpdateXZ = this.surfaceContext.lastUpdateXZ;
         	}
-
+        	
         	Layer last = null;
         	for(int i = 0; i < this.layers.size(); i++) {
         		Layer layer = last = this.layers.get(i);
@@ -169,8 +169,9 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
 	        
             int localX = this.surfaceContext.blockX & 0xF;
             int localZ = this.surfaceContext.blockZ & 0xF;
-            this.height = this.levels.scale(this.chunk.getCell(localX, localZ).height);// this.surfaceContext.chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, localX, localZ);
-
+            this.surfaceY = this.levels.scale(this.chunk.getCell(localX, localZ).height);
+//            this.surfaceY = this.surfaceContext.chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, localX, localZ);
+            
             float sum = 0.0F;
             for(int i = 0; i < layerCount; i++) {
             	Layer layer = this.layers.get(i);
@@ -179,9 +180,9 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
             	this.depthBuffer[i] = depth;
             }
             
-            int y = this.height;
+            int y = this.surfaceY;
             for(int i = 0; i < layerCount; i++) {
-            	this.depthBuffer[i] = y -= Math.round((this.depthBuffer[i] / sum) * this.height);
+            	this.depthBuffer[i] = y -= Math.round((this.depthBuffer[i] / sum) * this.surfaceY);
             }
 		}
 		

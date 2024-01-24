@@ -1,5 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.biome;
 
+@Deprecated
 public enum Weirdness implements BiomeParameter {
     MID_SLICE_NORMAL_ASCENDING(-1.0F, -0.93333334F),
     HIGH_SLICE_NORMAL_ASCENDING(-0.93333334F, -0.7666667F),

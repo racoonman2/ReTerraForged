@@ -39,8 +39,8 @@ import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.Pr
 import raccoonman.reterraforged.client.gui.widget.Label;
 import raccoonman.reterraforged.client.gui.widget.WidgetList;
 import raccoonman.reterraforged.client.gui.widget.WidgetList.Entry;
-import raccoonman.reterraforged.data.worldgen.preset.settings.BuiltinPresets;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.preset.BuiltinPresets;
+import raccoonman.reterraforged.data.preset.Preset;
 import raccoonman.reterraforged.platform.ConfigUtil;
 
 class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, AbstractWidget> {
@@ -216,7 +216,7 @@ class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abstr
 			) {
 				try(Reader reader = Files.newBufferedReader(presetPath)) {
 					String base = FileNameUtils.getBaseName(presetPath.toString());
-					DataResult<Preset> result = Preset.DIRECT_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader));
+					DataResult<Preset> result = Preset.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader));
 					Optional<PartialResult<Preset>> error = result.error();
 					if(error.isPresent()) {
 						RTFCommon.LOGGER.error(error.get().message());
@@ -274,7 +274,7 @@ class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, Abstr
 					Writer writer = Files.newBufferedWriter(this.getPath());
 					JsonWriter jsonWriter = new JsonWriter(writer);
 				) {
-					JsonElement element = Preset.DIRECT_CODEC.encodeStart(JsonOps.INSTANCE, this.preset).result().orElseThrow();
+					JsonElement element = Preset.CODEC.encodeStart(JsonOps.INSTANCE, this.preset).result().orElseThrow();
 					jsonWriter.setSerializeNulls(false);
 					jsonWriter.setIndent("  ");
 					GsonHelper.writeValue(jsonWriter, element, null);

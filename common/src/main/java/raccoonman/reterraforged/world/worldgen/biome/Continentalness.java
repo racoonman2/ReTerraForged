@@ -1,5 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.biome;
 
+@Deprecated
 public enum Continentalness implements BiomeParameter {
 	MUSHROOM_FIELDS(-1.2F, -1.05F),
 	DEEP_OCEAN(-1.05F, -0.455F),

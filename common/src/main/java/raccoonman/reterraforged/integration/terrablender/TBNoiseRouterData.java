@@ -7,9 +7,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
 import raccoonman.reterraforged.world.worldgen.densityfunction.RTFDensityFunctions;
+import terrablender.core.TerraBlender;
 
 public class TBNoiseRouterData {
-	public static final ResourceKey<DensityFunction> UNIQUENESS =ResourceKey.create(Registries.DENSITY_FUNCTION, new ResourceLocation("terrablender:uniqueness"));
+	public static final ResourceKey<DensityFunction> UNIQUENESS = ResourceKey.create(Registries.DENSITY_FUNCTION, new ResourceLocation(TerraBlender.MOD_ID, "uniqueness"));
 	
 	public static void bootstrap(BootstapContext<DensityFunction> ctx) {
 		ctx.register(UNIQUENESS, RTFDensityFunctions.cell(CellSampler.Field.BIOME_REGION));

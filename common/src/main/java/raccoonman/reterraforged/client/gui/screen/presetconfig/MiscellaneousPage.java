@@ -8,8 +8,8 @@ import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.client.gui.screen.page.LinkedPageScreen.Page;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.PresetEntry;
 import raccoonman.reterraforged.client.gui.widget.Slider;
-import raccoonman.reterraforged.data.worldgen.preset.settings.MiscellaneousSettings;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
+import raccoonman.reterraforged.data.preset.MiscellaneousSettings;
+import raccoonman.reterraforged.data.preset.Preset;
 
 public class MiscellaneousPage extends PresetEditorPage {
 	private CycleButton<Boolean> smoothLayerDecorator;

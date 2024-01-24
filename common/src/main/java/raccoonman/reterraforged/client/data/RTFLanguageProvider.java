@@ -5,9 +5,9 @@ import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.client.gui.Tooltips;
 
 // TODO add some more languages
-public final class RTFLanguageProvider {
+public class RTFLanguageProvider {
 	
-	public static final class EnglishUS extends LanguageProvider {
+	public static class EnglishUS extends LanguageProvider {
 
 		public EnglishUS(PackOutput output) {
 			super(output, RTFCommon.MOD_ID, "en_us");

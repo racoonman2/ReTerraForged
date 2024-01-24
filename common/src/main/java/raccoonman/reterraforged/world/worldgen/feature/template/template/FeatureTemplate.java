@@ -33,13 +33,14 @@ import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -61,7 +62,7 @@ public class FeatureTemplate {
     public static final PasteType UNCHECKED = FeatureTemplate::getUnCheckedPaste;
 
     private static final int PASTE_FLAG = 3 | 16;
-    private static final Direction[] directions = Direction.values();
+    private static final Direction[] DIRECTIONS = Direction.values();
     private static final ThreadLocal<PasteBuffer> PASTE_BUFFER = ThreadLocal.withInitial(PasteBuffer::new);
     private static final ThreadLocal<TemplateBuffer> TEMPLATE_BUFFER = ThreadLocal.withInitial(TemplateBuffer::new);
     private static final ThreadLocal<TemplateRegion> TEMPLATE_REGION = ThreadLocal.withInitial(TemplateRegion::new);
@@ -101,7 +102,7 @@ public class FeatureTemplate {
         if (config.checkBounds()) {
             ChunkAccess chunk = world.getChunk(origin);
             if (StructureUtils.hasOvergroundStructure(world.holderLookup(Registries.STRUCTURE), chunk)) {
-                return pasteChecked(world, ctx, origin, mirror, rotation, placement, config);
+                return this.pasteChecked(world, ctx, origin, mirror, rotation, placement, config);
             }
         }
         return this.pasteUnChecked(world, ctx, origin, mirror, rotation, placement, config);
@@ -258,7 +259,7 @@ public class FeatureTemplate {
                 BlockInfo block = blocks[index];
                 addPos(pos1, origin, block.pos());
 
-                for (Direction direction : directions) {
+                for (Direction direction : DIRECTIONS) {
                     updatePostPlacement(world, setter, pos1, pos2, direction);
                 }
             }
@@ -304,13 +305,13 @@ public class FeatureTemplate {
         pos.setZ(a.getZ() + b.getZ());
     }
 
-    public static Optional<FeatureTemplate> load(InputStream data) {
+    public static Optional<FeatureTemplate> load(HolderLookup<Block> blockLookup, InputStream data) {
         try {
             CompoundTag root = NbtIo.readCompressed(data);
             if (!root.contains("palette") || !root.contains("blocks")) {
                 return Optional.empty();
             }
-            BlockState[] palette = readPalette(root.getList("palette", 10));
+            BlockState[] palette = readPalette(blockLookup, root.getList("palette", 10));
             BlockInfo[] blockInfos = readBlocks(root.getList("blocks", 10), palette);
             List<BlockInfo> blocks = relativize(blockInfos);
             return Optional.of(new FeatureTemplate(blocks));
@@ -320,11 +321,11 @@ public class FeatureTemplate {
         }
     }
 
-    private static BlockState[] readPalette(ListTag list) {
+    private static BlockState[] readPalette(HolderLookup<Block> blockLookup, ListTag list) {
         BlockState[] palette = new BlockState[list.size()];
         for (int i = 0; i < list.size(); i++) {
             try {
-                palette[i] = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), list.getCompound(i));
+                palette[i] = NbtUtils.readBlockState(blockLookup, list.getCompound(i));
             } catch (Throwable t) {
                 palette[i] = Blocks.AIR.defaultBlockState();
             }

@@ -23,7 +23,7 @@ public class MixinMinecraftServer {
 		at = @At("TAIL")
 	)
 	public void MinecraftServer(CallbackInfo callback) {
-		this.templateManager = new FeatureTemplateManager(this.getResourceManager());
+		this.templateManager = new FeatureTemplateManager((MinecraftServer) (Object) this, this.getResourceManager());
 	}
 	
 	public FeatureTemplateManager reterraforged$RTFMinecraftServer$getFeatureTemplateManager() {

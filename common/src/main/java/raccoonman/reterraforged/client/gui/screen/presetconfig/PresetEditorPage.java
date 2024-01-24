@@ -33,14 +33,14 @@ import raccoonman.reterraforged.client.gui.widget.Slider;
 import raccoonman.reterraforged.client.gui.widget.ValueButton;
 import raccoonman.reterraforged.concurrent.cache.CacheManager;
 import raccoonman.reterraforged.config.PerformanceConfig;
-import raccoonman.reterraforged.data.worldgen.preset.PresetData;
-import raccoonman.reterraforged.data.worldgen.preset.settings.Preset;
-import raccoonman.reterraforged.data.worldgen.preset.settings.SpawnType;
-import raccoonman.reterraforged.data.worldgen.preset.settings.WorldSettings;
+import raccoonman.reterraforged.data.export.preset.PresetData;
+import raccoonman.reterraforged.data.preset.Preset;
+import raccoonman.reterraforged.data.preset.WorldSettings;
 import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
+import raccoonman.reterraforged.world.worldgen.biome.spawn.SpawnType;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
-import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
+import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.tile.Tile;
@@ -153,7 +153,6 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	        RegistryAccess.Frozen registries = settings.worldgenLoadContext();
 	        HolderLookup.Provider provider = PresetEditorPage.this.preset.getPreset().buildPatch(registries);
 	        HolderGetter<Preset> presets = provider.lookupOrThrow(RTFRegistries.PRESET);
-	        HolderGetter<Noise> noises = provider.lookupOrThrow(RTFRegistries.NOISE);
 	        Preset preset = presets.getOrThrow(PresetData.PRESET).value();
 	        WorldSettings world = preset.world();
 	        WorldSettings.Properties properties = world.properties;
@@ -166,7 +165,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 			PerformanceConfig config = PerformanceConfig.read(PerformanceConfig.DEFAULT_FILE_PATH)
 				.resultOrPartial(RTFCommon.LOGGER::error)
 				.orElseGet(PerformanceConfig::makeDefault);
-	        GeneratorContext generatorContext = GeneratorContext.makeUncached(preset, noises, (int) settings.options().seed(), FACTOR, 0, config.batchCount());
+	        GeneratorContext generatorContext = GeneratorContext.makeUncached(preset, (int) settings.options().seed(), FACTOR, 0, config.batchCount());
 	        
 	        this.centerX = 0;
 	        this.centerZ = 0;

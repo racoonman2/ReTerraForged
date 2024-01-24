@@ -2,10 +2,10 @@ package raccoonman.reterraforged.world.worldgen.tile.filter;
 
 import java.util.function.IntFunction;
 
-import raccoonman.reterraforged.data.worldgen.preset.settings.FilterSettings;
+import raccoonman.reterraforged.data.preset.FilterSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
-import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
+import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.tile.Size;
 import raccoonman.reterraforged.world.worldgen.util.FastRandom;
@@ -185,7 +185,7 @@ public class Erosion implements Filter {
         if (!cell.erosionMask) {
             float change = this.modifier.modify(cell, amount);
             cell.height -= change;
-            cell.heightErosion -= change;
+            cell.localErosion -= change;
         }
     }
     
@@ -193,8 +193,7 @@ public class Erosion implements Filter {
         return new Factory(context.seed.root(), context.preset.filters(), context.levels);
     }
     
-    private static class TerrainPos
-    {
+    private static class TerrainPos {
         private float height;
         private float gradientX;
         private float gradientY;

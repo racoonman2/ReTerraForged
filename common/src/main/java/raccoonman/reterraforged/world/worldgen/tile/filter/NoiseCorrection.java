@@ -2,9 +2,9 @@ package raccoonman.reterraforged.world.worldgen.tile.filter;
 
 import net.minecraft.core.QuartPos;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
-import raccoonman.reterraforged.world.worldgen.cell.heightmap.Levels;
-import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainCategory;
-import raccoonman.reterraforged.world.worldgen.cell.terrain.TerrainType;
+import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
+import raccoonman.reterraforged.world.worldgen.terrain.TerrainCategory;
+import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.tile.Size;
 
 public record NoiseCorrection(Levels levels) implements Filter {

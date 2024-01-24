@@ -20,4 +20,8 @@ public interface TileFactory {
 	default void dropAtChunk(int chunkX, int chunkZ) {
 		this.drop(this.chunkToTile(chunkX), this.chunkToTile(chunkZ));
 	}
+	
+	default Tile.Chunk provideChunk(int chunkX, int chunkZ) {
+		return this.provideAtChunk(chunkX, chunkZ).getChunkReader(chunkX, chunkZ);
+	}
 }

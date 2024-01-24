@@ -2,7 +2,7 @@ package raccoonman.reterraforged.client.data;
 
 import raccoonman.reterraforged.RTFCommon;
 
-public final class RTFTranslationKeys {
+public class RTFTranslationKeys {
 	public static final String METADATA_DESCRIPTION = resolve("metadata.description");
 	public static final String PRESET_METADATA_DESCRIPTION = resolve("preset.metadata.description");
 	public static final String MUD_SWAMPS_METADATA_DESCRIPTION = resolve("mudSwamps.metadata.description");
