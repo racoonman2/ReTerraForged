@@ -1,6 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.terrain.populator;
 
-import raccoonman.reterraforged.data.preset.TerrainSettings;
+import raccoonman.reterraforged.data.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;

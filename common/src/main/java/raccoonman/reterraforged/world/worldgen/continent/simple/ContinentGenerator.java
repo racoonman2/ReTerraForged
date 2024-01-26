@@ -1,7 +1,7 @@
 package raccoonman.reterraforged.world.worldgen.continent.simple;
 
-import raccoonman.reterraforged.data.preset.WorldSettings;
-import raccoonman.reterraforged.data.preset.WorldSettings.ControlPoints;
+import raccoonman.reterraforged.data.preset.settings.WorldSettings;
+import raccoonman.reterraforged.data.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.continent.SimpleContinent;

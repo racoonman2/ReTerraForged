@@ -37,7 +37,8 @@ public class WorldLookup {
 		Tile tile = load ? this.cache.provideAtChunk(chunkX, chunkZ) : this.cache.provideAtChunkIfPresent(chunkX, chunkZ);
 		if(tile != null) {
 			Tile.Chunk chunk = tile.getChunkReader(chunkX, chunkZ);
-			return Math.min(genHeight, ((-minY + this.levels.scale(Math.max(this.levels.ground, chunk.getGenerationHeight()))) / cellHeight + 1) * cellHeight);
+			int generationHeight = this.levels.scale(Math.max(this.levels.ground, chunk.getGenerationHeight()));
+			return Math.min(genHeight, ((-minY + generationHeight) / cellHeight + 1) * cellHeight);
 		} else {
 			return genHeight;
 		}

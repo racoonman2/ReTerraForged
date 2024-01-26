@@ -22,7 +22,9 @@ public class Cell {
     });
     public float height;
     public float localErosion;
+    @Deprecated
     public float sediment;
+    public float sediment2;
     public float gradient;
     @Deprecated
     public float regionMoisture;
@@ -70,6 +72,7 @@ public class Cell {
         this.height = other.height;
         this.localErosion = other.localErosion;
         this.sediment = other.sediment;
+        this.sediment2 = other.sediment2;
         this.gradient = other.gradient;
         this.regionMoisture = other.regionMoisture;
         this.regionTemperature = other.regionTemperature;

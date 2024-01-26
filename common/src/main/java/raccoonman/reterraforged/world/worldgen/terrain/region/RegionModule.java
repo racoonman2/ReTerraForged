@@ -62,12 +62,12 @@ public class RegionModule implements CellPopulator {
                 }
             }
         }
-        cell.terrainRegionId = this.cellValue(this.seed, cellX, cellY);
+        cell.terrainRegionId = cellValue(this.seed, cellX, cellY);
         cell.terrainRegionEdge = this.edgeValue(edgeDistance, edgeDistance2);
         cell.terrainCenter = EdgeFunction.DISTANCE_2_DIV.apply(edgeDistance, edgeDistance2);
     }
     
-    private float cellValue(int seed, int cellX, int cellY) {
+    private static float cellValue(int seed, int cellX, int cellY) {
         float value = NoiseUtil.valCoord2D(seed, cellX, cellY);
         return NoiseUtil.map(value, -1.0F, 1.0F, 2.0F);
     }

@@ -1,6 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.tile.filter;
 
-import raccoonman.reterraforged.data.preset.FilterSettings;
+import raccoonman.reterraforged.data.preset.settings.FilterSettings;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;

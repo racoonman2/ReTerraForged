@@ -1,8 +1,8 @@
 package raccoonman.reterraforged.world.worldgen.climate;
 
-import raccoonman.reterraforged.data.preset.ClimateSettings;
-import raccoonman.reterraforged.data.preset.Preset;
-import raccoonman.reterraforged.data.preset.WorldSettings;
+import raccoonman.reterraforged.data.preset.settings.ClimateSettings;
+import raccoonman.reterraforged.data.preset.settings.Preset;
+import raccoonman.reterraforged.data.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.continent.Continent;
@@ -12,7 +12,7 @@ import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 
-public record Climate(int randomSeed, Noise offsetX, Noise offsetZ, int offsetDistance, Levels levels, ClimateModule biomeNoise) {
+public record Climate(int randomSeed, Noise offsetX, Noise offsetZ, int offsetDistance, Levels levels, BiomeNoise biomeNoise) {
 
 	public void apply(Cell cell, float x, float z) {
 		this.biomeNoise.apply(cell, x, z, x, z, true);
@@ -40,7 +40,7 @@ public record Climate(int randomSeed, Noise offsetX, Noise offsetZ, int offsetDi
 		WorldSettings worldSettings = preset.world();
 		ClimateSettings climateSettings = preset.climate();
 		
-		ClimateModule biomeNoise = new ClimateModule(context.seed, continent, worldSettings.controlPoints, climateSettings, context.levels);
+		BiomeNoise biomeNoise = new BiomeNoise(context.seed, continent, worldSettings.controlPoints, climateSettings, context.levels);
 		Levels levels = context.levels;
 		int randSeed = context.seed.next();
 		

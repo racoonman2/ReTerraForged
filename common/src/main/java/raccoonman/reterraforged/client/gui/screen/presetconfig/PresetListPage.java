@@ -39,8 +39,8 @@ import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetListPage.Pr
 import raccoonman.reterraforged.client.gui.widget.Label;
 import raccoonman.reterraforged.client.gui.widget.WidgetList;
 import raccoonman.reterraforged.client.gui.widget.WidgetList.Entry;
-import raccoonman.reterraforged.data.preset.BuiltinPresets;
-import raccoonman.reterraforged.data.preset.Preset;
+import raccoonman.reterraforged.data.preset.settings.BuiltinPresets;
+import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.platform.ConfigUtil;
 
 class PresetListPage extends BisectedPage<PresetConfigScreen, PresetEntry, AbstractWidget> {

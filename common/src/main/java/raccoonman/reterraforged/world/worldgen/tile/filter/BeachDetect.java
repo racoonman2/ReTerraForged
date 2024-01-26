@@ -1,6 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.tile.filter;
 
-import raccoonman.reterraforged.data.preset.WorldSettings.ControlPoints;
+import raccoonman.reterraforged.data.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;

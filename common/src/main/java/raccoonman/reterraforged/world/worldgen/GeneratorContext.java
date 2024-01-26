@@ -2,7 +2,7 @@ package raccoonman.reterraforged.world.worldgen;
 
 import org.jetbrains.annotations.Nullable;
 
-import raccoonman.reterraforged.data.preset.Preset;
+import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.world.worldgen.heightmap.Heightmap;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.heightmap.WorldLookup;

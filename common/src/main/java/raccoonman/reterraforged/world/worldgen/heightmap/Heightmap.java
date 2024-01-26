@@ -1,10 +1,10 @@
 package raccoonman.reterraforged.world.worldgen.heightmap;
 
-import raccoonman.reterraforged.data.preset.MiscellaneousSettings;
-import raccoonman.reterraforged.data.preset.Preset;
-import raccoonman.reterraforged.data.preset.TerrainSettings;
-import raccoonman.reterraforged.data.preset.WorldSettings;
-import raccoonman.reterraforged.data.preset.WorldSettings.ControlPoints;
+import raccoonman.reterraforged.data.preset.settings.MiscellaneousSettings;
+import raccoonman.reterraforged.data.preset.settings.Preset;
+import raccoonman.reterraforged.data.preset.settings.TerrainSettings;
+import raccoonman.reterraforged.data.preset.settings.WorldSettings;
+import raccoonman.reterraforged.data.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.biome.Erosion;
 import raccoonman.reterraforged.world.worldgen.biome.Weirdness;
@@ -48,18 +48,19 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 	}
 	
 	public void applyRivers(Cell cell, float x, float z, Rivermap rivermap) {
-        rivermap.apply(cell, x, z);
+//        rivermap.apply(cell, x, z);
         VolcanoPopulator.modifyVolcanoType(cell, this.levels);
 	}
 	
 	public void applyClimate(Cell cell, float x, float z) {
-    	cell.weirdness = -cell.weirdness;
+//    	cell.weirdness = -cell.weirdness;
     	
 		float riverValleyThreshold = 0.675F;
         if(cell.riverMask < riverValleyThreshold) {
-        	cell.weirdness = NoiseUtil.lerp(cell.weirdness, Weirdness.LOW_SLICE_NORMAL_DESCENDING.mid(), 1.0F - cell.riverMask);
+        	cell.weirdness = NoiseUtil.lerp(cell.weirdness, -Weirdness.LOW_SLICE_NORMAL_DESCENDING.mid(), 1.0F - cell.riverMask);
         	cell.erosion = NoiseUtil.lerp(cell.erosion, Erosion.LEVEL_3.mid(), 1.0F - cell.riverMask);
         }
+
 //        if(cell.terrain.isWetland()) {
 //        	cell.erosion = Erosion.LEVEL_6.mid();
 //        }
@@ -127,7 +128,7 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         
         CellPopulator oceans = new ContinentLerper3(deepOcean, shallowOcean, coast, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast);
         CellPopulator terrain = new ContinentLerper2(oceans, land, controlPoints.shallowOcean, controlPoints.inland);
-        
+
         Noise beachNoise = Noises.perlin2(ctx.seed.next(), 20, 1);
         beachNoise = Noises.mul(beachNoise, ctx.levels.scale(5));
         return new Heightmap(terrain, region, continent, climate, levels, controlPoints, terrainFrequency, beachNoise);

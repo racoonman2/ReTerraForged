@@ -11,7 +11,7 @@ import net.minecraft.core.QuartPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.StringRepresentable;
-import raccoonman.reterraforged.data.preset.WorldSettings.ControlPoints;
+import raccoonman.reterraforged.data.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.biome.Continentalness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
@@ -131,6 +131,10 @@ public record CellSampler(Supplier<GeneratorContext> generatorContext, Field fie
 			public float read(Cell cell, Heightmap heightmap) {
 				Levels levels = heightmap.levels();
 				ControlPoints controlPoints = heightmap.controlPoints();
+				
+				if(Boolean.TRUE) {
+					return 0.4F;
+				}
 				
 				float deepOcean = controlPoints.deepOcean;
 				float shallowOcean = controlPoints.shallowOcean;

@@ -2,7 +2,7 @@ package raccoonman.reterraforged.world.worldgen.tile.filter;
 
 import java.util.function.IntFunction;
 
-import raccoonman.reterraforged.data.preset.FilterSettings;
+import raccoonman.reterraforged.data.preset.settings.FilterSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.tile.Tile;
 

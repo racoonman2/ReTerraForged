@@ -22,7 +22,7 @@ import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.RandomState;
-import raccoonman.reterraforged.data.preset.Preset;
+import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
@@ -101,8 +101,8 @@ class MixinNoiseChunk {
 		require = 1,
 		method = "<init>"
 	)
-	private int redirectHeight(NoiseSettings settings) {
-		return this.generationHeight;
+	private int NoiseChunk(NoiseSettings settings) {
+		return this.generationHeight + this.cellHeight;
 	}
 
 	@ModifyVariable(
@@ -145,21 +145,24 @@ class MixinNoiseChunk {
 		}
 	}
 	
-	@Overwrite
-	private int computePreliminarySurfaceLevel(long l) {
-        int blockX = ColumnPos.getX(l);
-        int blockZ = ColumnPos.getZ(l);
-        int k = this.noiseSettings.minY();
-        int generationHeight = this.noiseSettings.height();
-        if((Object) this.randomState instanceof RTFRandomState rtfRandomState) {
-        	generationHeight = rtfRandomState.generatorContext().lookup.getGenerationHeight(this.chunkX, this.chunkZ, this.noiseSettings, false);
+	@Redirect(
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/world/level/levelgen/NoiseSettings;height()I"
+		),
+		require = 1,
+		method = "computePreliminarySurfaceLevel"
+	)
+	private int computePreliminarySurfaceLevel(NoiseSettings settings, long packedPos) {
+        int blockX = ColumnPos.getX(packedPos);
+        int blockZ = ColumnPos.getZ(packedPos);
+        int generationHeight;
+		GeneratorContext generatorContext;
+        if((Object) this.randomState instanceof RTFRandomState rtfRandomState && (generatorContext = rtfRandomState.generatorContext()) != null) {
+        	generationHeight = generatorContext.lookup.getGenerationHeight(SectionPos.blockToSectionCoord(blockX), SectionPos.blockToSectionCoord(blockZ), this.noiseSettings, false);
+        } else {
+        	generationHeight = this.noiseSettings.height();
         }
-        
-        for (int m = k + generationHeight; m >= k; m -= this.cellHeight) {
-            DensityFunction.SinglePointContext singlePointContext = new DensityFunction.SinglePointContext(blockX, m, blockZ);
-            if (!(this.initialDensityNoJaggedness.compute(singlePointContext) > 0.390625)) continue;
-            return m;
-        }
-        return Integer.MAX_VALUE;
-    }
+        return generationHeight;
+	}
 }

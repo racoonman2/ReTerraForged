@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
 
-import raccoonman.reterraforged.data.preset.MiscellaneousSettings;
-import raccoonman.reterraforged.data.preset.TerrainSettings;
+import raccoonman.reterraforged.data.preset.settings.MiscellaneousSettings;
+import raccoonman.reterraforged.data.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.heightmap.RegionConfig;

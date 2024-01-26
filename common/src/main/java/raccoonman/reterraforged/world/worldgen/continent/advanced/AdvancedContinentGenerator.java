@@ -1,7 +1,7 @@
 package raccoonman.reterraforged.world.worldgen.continent.advanced;
 
 import raccoonman.reterraforged.concurrent.Resource;
-import raccoonman.reterraforged.data.preset.WorldSettings;
+import raccoonman.reterraforged.data.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.biome.Continentalness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;

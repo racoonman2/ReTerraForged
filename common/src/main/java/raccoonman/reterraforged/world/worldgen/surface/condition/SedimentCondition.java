@@ -18,7 +18,7 @@ class SedimentCondition extends ThresholdCondition {
 
 	@Override
 	protected float sample(Cell cell) {
-		return cell.sediment;
+		return cell.sediment2;
 	}
 	
 	public record Source(float threshold, Holder<Noise> variance) implements SurfaceRules.ConditionSource {
