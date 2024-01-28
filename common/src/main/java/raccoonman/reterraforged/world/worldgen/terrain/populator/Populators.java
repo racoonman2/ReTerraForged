@@ -262,12 +262,12 @@ public class Populators {
 		Noise slope = Noises.constant(0.5F);
 		
 		Noise blend = Noises.blend(erosion, plains, hills, 0.6F, 0.6F);
+		blend = Noises.cache2d(blend);
 		Noise height = Noises.advancedTerrace(blend, modulation, mask, slope, 0.0F, 0.3F, 6, 1);
 		height = Noises.boost(height);
-		height = Noises.cache2d(height);
 		height = Noises.mul(height, 0.5F);
 
-		return TerrainPopulator.make(TerrainType.TORRIDONIAN, ground, height, Noises.constant(0.54F), Noises.add(Noises.mul(blend, 0.8F), 0.35F), settings);
+		return TerrainPopulator.make(TerrainType.TORRIDONIAN, ground, height, Noises.constant(0.54F), Noises.add(Noises.mul(blend, 0.575F), 0.35F), settings);
 	}
 
     private static final int MOUNTAINS_H = 610;
@@ -352,10 +352,9 @@ public class Populators {
     	Noise height = Noises.advancedTerrace(weirdness, modulation, mask, slope, 0.20000000298023224F, 0.44999998807907104F, 24, 1);
     	
     	if(makeFancy) {
-        	weirdness = makeFancy(seed.split(), weirdness);
         	height = makeFancy(seed, height);
     	}
-		return TerrainPopulator.make(TerrainType.MOUNTAINS_3, ground, Noises.mul(height, (legacyScaling ? 0.645F : MOUNTAINS3_V) * verticalScale), Erosion.LEVEL_1.source(), Noises.add(Noises.mul(weirdness, 1.5F), 0.2F), terrainSettings);
+		return TerrainPopulator.make(TerrainType.MOUNTAINS_3, ground, Noises.mul(height, (legacyScaling ? 0.645F : MOUNTAINS3_V) * verticalScale), Erosion.LEVEL_1.source(), Weirdness.MID_SLICE_VARIANT_ASCENDING.source(), terrainSettings);
     }
 
 	public static Noise makeFancy(@Deprecated Seed seed, Noise input) {

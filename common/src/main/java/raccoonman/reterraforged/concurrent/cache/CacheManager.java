@@ -9,13 +9,8 @@ import java.util.function.IntFunction;
 import raccoonman.reterraforged.concurrent.cache.map.LongMap;
 import raccoonman.reterraforged.concurrent.cache.map.StampedBoundLongMap;
 
-@Deprecated
 public class CacheManager {
 	private static final List<Cache<?>> CACHES = Collections.synchronizedList(new LinkedList<>());
-	
-    public static <V extends ExpiringEntry> Cache<V> createCache(long expireTime, long pollInterval, TimeUnit unit) {
-    	return createCache(256, expireTime, pollInterval, unit);
-    }
 	
 	public static <V extends ExpiringEntry> Cache<V> createCache(int capacity, long expireTime, long pollInterval, TimeUnit unit) {
 		return createCache(capacity, expireTime, pollInterval, unit, StampedBoundLongMap::new);

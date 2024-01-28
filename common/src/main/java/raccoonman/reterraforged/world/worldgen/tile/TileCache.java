@@ -31,7 +31,7 @@ public class TileCache implements TileFactory {
 	public Tile provideIfPresent(int tileX, int tileZ) {
 		@Nullable
 		CacheEntry<Entry> entry = this.cache.get(PosUtil.pack(tileX, tileZ));
-		return entry != null ? entry.get().tile : null;
+		return entry != null && entry.isDone() ? entry.get().tile : null;
 	}
 
 	@Nullable

@@ -1,62 +1,22 @@
 package raccoonman.reterraforged.world.worldgen.surface.rule;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.KeyDispatchDataCodec;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.SurfaceRules.Context;
-import raccoonman.reterraforged.world.worldgen.GeneratorContext;
-import raccoonman.reterraforged.world.worldgen.RTFRandomState;
-import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
-import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
-import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
-import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
-import raccoonman.reterraforged.world.worldgen.surface.RTFSurfaceSystem;
-import raccoonman.reterraforged.world.worldgen.surface.rule.StrataRule.Strata;
-import raccoonman.reterraforged.world.worldgen.tile.Tile;
 
-public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Strata> strata, int iterations) implements SurfaceRules.RuleSource {
+public record StrataRule(Layer layer) implements SurfaceRules.RuleSource {
 	public static final Codec<StrataRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		ResourceLocation.CODEC.fieldOf("name").forGetter(StrataRule::name),
-		Noise.CODEC.fieldOf("selector").forGetter(StrataRule::selector),
-		Strata.CODEC.listOf().fieldOf("strata").forGetter(StrataRule::strata),
-		Codec.INT.fieldOf("iterations").forGetter(StrataRule::iterations)
+		Layer.CODEC.fieldOf("layer").forGetter(StrataRule::layer)
 	).apply(instance, StrataRule::new));
-	
-	public StrataRule {
-		strata = ImmutableList.copyOf(strata);
-	}
-	
+
 	@Override
 	public Rule apply(Context ctx) {
-		if(ctx.system instanceof RTFSurfaceSystem rtfSurfaceSystem && (Object) ctx.randomState instanceof RTFRandomState rtfRandomState) {
-			GeneratorContext generatorContext = rtfRandomState.generatorContext();
-			
-			ChunkPos chunkPos = ctx.chunk.getPos();
-			int chunkX = chunkPos.x;
-			int chunkZ = chunkPos.z;
-			return new Rule(generatorContext.cache.provideAtChunk(chunkX, chunkZ).getChunkReader(chunkX, chunkZ), generatorContext.levels, ctx, rtfRandomState.wrap(this.selector.value()), rtfSurfaceSystem.getOrCreateStrata(this.name, this::generateStrata));
-		} else {
-			throw new IllegalStateException();
-		}
+		return new Rule(ctx);
 	}
 
 	@Override
@@ -64,133 +24,34 @@ public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Str
 		return new KeyDispatchDataCodec<>(CODEC);
 	}
 	
-	private List<List<Layer>> generateStrata(RandomSource random) {
-        List<List<Layer>> layers = new ArrayList<>();
-		for(int i = 0; i < this.iterations; i++) {
-			List<Layer> layer = new ArrayList<>();
-			for(Strata strata : this.strata) {
-				layer.addAll(strata.generateLayers(random));
-			}
-			layers.add(layer);
-		}
-        return layers;
-	}
-	
-	public record Strata(TagKey<Block> materials, Holder<Noise> noise, int attempts, int minLayers, int maxLayers, float minDepth, float maxDepth) {
-		public static final Codec<Strata> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			TagKey.hashedCodec(Registries.BLOCK).fieldOf("materials").forGetter(Strata::materials),
-			Noise.CODEC.fieldOf("noise").forGetter(Strata::noise),
-			Codec.INT.fieldOf("attempts").forGetter(Strata::attempts),
-			Codec.INT.fieldOf("min_layers").forGetter(Strata::minLayers),
-			Codec.INT.fieldOf("max_layers").forGetter(Strata::maxLayers),
-			Codec.FLOAT.fieldOf("min_depth").forGetter(Strata::minDepth),
-			Codec.FLOAT.fieldOf("max_depth").forGetter(Strata::maxDepth)			
-		).apply(instance, Strata::new));
+	public enum Layer implements StringRepresentable {
+		SURFACE("surface"),
+		UNDERGROUND("underground");
+
+		public static final Codec<Layer> CODEC = StringRepresentable.fromEnum(Layer::values);
 		
-		public List<Layer> generateLayers(RandomSource random) {
-			int lastIndex = -1;
-	        int layers = this.minLayers + NoiseUtil.round(random.nextFloat() * (this.maxLayers - this.minLayers));
-	        List<Layer> result = new ArrayList<>();
-	        List<Holder<Block>> materials = Lists.newArrayList(BuiltInRegistries.BLOCK.getTagOrEmpty(this.materials));
-	        
-	        int seed = random.nextInt();
-	        for (int i = 0; i < layers; i++) {
-	            int attempts = this.attempts;
-	            int index = random.nextInt(materials.size());
-	            while (--attempts >= 0 && index == lastIndex) {
-	                index = random.nextInt(materials.size());
-	            }
-	            if (index != lastIndex) {
-	                lastIndex = index;
-	                BlockState material = materials.get(index).value().defaultBlockState();
-	                float depth = this.minDepth + random.nextFloat() * (this.maxDepth - this.minDepth);
-	                result.add(new Layer(material, Noises.shiftSeed(Noises.mul(this.noise.value(), depth), random.nextInt()), seed));
-	            }
-	        }
-	        return result;
+		private String name;
+		
+		private Layer(String name) {
+			this.name = name;
+		}
+		
+		@Override
+		public String getSerializedName() {
+			return this.name;
 		}
 	}
 	
-	// this has to be public so that SurfaceSystemExtension can access it
-	// should be private otherwise
-	public record Layer(BlockState material, Noise depth, int seed) {
-	
-		public float computeDepth(float x, float z) {
-			return this.depth.compute(x, z, this.seed);
-		}
-	}
-	
-	private class Rule implements SurfaceRules.SurfaceRule {
-		private Tile.Chunk chunk;
-		private Levels levels;
-		private Context surfaceContext;
-		private Noise selector;
-		private List<List<Layer>> strata;
-		private List<Layer> layers;
-		private float[] depthBuffer;
-		private long lastUpdateXZ;
-		private int surfaceY;
+	public class Rule implements SurfaceRules.SurfaceRule {
+		private Context context;
 		
-		public Rule(Tile.Chunk chunk, Levels levels, Context surfaceContext, Noise selector, List<List<Layer>> strata) {
-			this.chunk = chunk;
-			this.levels = levels;
-			this.surfaceContext = surfaceContext;
-			this.selector = selector;
-			this.strata = strata;
-			this.lastUpdateXZ = Long.MIN_VALUE;
+		public Rule(Context context) {
+			this.context = context;
 		}
-		
-        @Nullable
+
 		@Override
 		public BlockState tryApply(int x, int y, int z) {
-        	if(this.lastUpdateXZ != this.surfaceContext.lastUpdateXZ) {
-        		this.initBuffer(x, z);
-        		this.lastUpdateXZ = this.surfaceContext.lastUpdateXZ;
-        	}
-        	
-        	Layer last = null;
-        	for(int i = 0; i < this.layers.size(); i++) {
-        		Layer layer = last = this.layers.get(i);
-        		if(y > this.depthBuffer[i]) {
-        			return layer.material();
-        		}
-        	}
-        	
-        	return last != null ? last.material() : null;
+			return null;
 		}
-		
-		private void initBuffer(int x, int z) {
-        	this.layers = this.selectLayers(x, z);
-			int layerCount = this.layers.size();
-			
-	        if (this.depthBuffer == null || this.depthBuffer.length < layerCount) {
-	            this.depthBuffer = new float[layerCount];
-	        }
-	        
-            int localX = this.surfaceContext.blockX & 0xF;
-            int localZ = this.surfaceContext.blockZ & 0xF;
-            this.surfaceY = this.levels.scale(this.chunk.getCell(localX, localZ).height);
-//            this.surfaceY = this.surfaceContext.chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, localX, localZ);
-            
-            float sum = 0.0F;
-            for(int i = 0; i < layerCount; i++) {
-            	Layer layer = this.layers.get(i);
-            	float depth = layer.computeDepth(x, z);
-            	sum += depth;
-            	this.depthBuffer[i] = depth;
-            }
-            
-            int y = this.surfaceY;
-            for(int i = 0; i < layerCount; i++) {
-            	this.depthBuffer[i] = y -= Math.round((this.depthBuffer[i] / sum) * this.surfaceY);
-            }
-		}
-		
-		private List<Layer> selectLayers(int x, int z) {
-			float selector = this.selector.compute(x, z, 0);
-	        int index = (int) (selector * this.strata.size());
-	        index = Math.min(this.strata.size() - 1, index);
-	        return this.strata.get(index);
-	    }
 	}
 }

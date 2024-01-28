@@ -46,22 +46,23 @@ public class PresetNoiseRouterData {
         ctx.register(NoiseRouterData.CONTINENTS, RTFDensityFunctions.cell(CellSampler.Field.CONTINENT));
         ctx.register(NoiseRouterData.EROSION, RTFDensityFunctions.cell(CellSampler.Field.EROSION));
         ctx.register(NoiseRouterData.RIDGES, RTFDensityFunctions.cell(CellSampler.Field.WEIRDNESS));
-
+        
         DensityFunction height = NoiseRouterData.registerAndWrap(ctx, HEIGHT, RTFDensityFunctions.cell(CellSampler.Field.HEIGHT));
         DensityFunction offset = NoiseRouterData.registerAndWrap(ctx, NoiseRouterData.OFFSET, DensityFunctions.add(DensityFunctions.constant(NoiseRouterData.GLOBAL_OFFSET - 0.5F), DensityFunctions.mul(RTFDensityFunctions.clampToNearestUnit(height, properties.terrainScaler()), DensityFunctions.constant(2.0D))));
+
         ctx.register(NoiseRouterData.DEPTH, DensityFunctions.add(DensityFunctions.yClampedGradient(-worldDepth, worldHeight, yGradientRange(-worldDepth), yGradientRange(worldHeight)), offset));
         ctx.register(NoiseRouterData.BASE_3D_NOISE_OVERWORLD, DensityFunctions.zero());
         ctx.register(NoiseRouterData.JAGGEDNESS, jaggednessPerformanceHack());
                 
         ctx.register(NoiseRouterData.NOODLE, noodle(-worldDepth, worldHeight, 1.0F - caveSettings.noodleCaveChance, densityFunctions, noiseParams));
-        ctx.register(NoiseRouterData.ENTRANCES, ChanceDensity(caveSettings.entranceCaveChance, NoiseRouterData.entrances(densityFunctions, noiseParams)));
-        ctx.register(NoiseRouterData.SPAGHETTI_2D, ChanceDensity(caveSettings.spaghettiCaveChance, spaghetti2D(-worldDepth, worldHeight, densityFunctions, noiseParams)));
+        ctx.register(NoiseRouterData.ENTRANCES, chanceDensity(caveSettings.entranceCaveChance, NoiseRouterData.entrances(densityFunctions, noiseParams)));
+        ctx.register(NoiseRouterData.SPAGHETTI_2D, chanceDensity(caveSettings.spaghettiCaveChance, spaghetti2D(-worldDepth, worldHeight, densityFunctions, noiseParams)));
         
         ctx.register(GRADIENT, RTFDensityFunctions.cell(CellSampler.Field.GRADIENT));
         ctx.register(LOCAL_EROSION, RTFDensityFunctions.cell(CellSampler.Field.LOCAL_EROSION));
         ctx.register(SEDIMENT, RTFDensityFunctions.cell(CellSampler.Field.SEDIMENT));
     }
-    
+
     protected static NoiseRouter overworld(Preset preset, HolderGetter<DensityFunction> densityFunctions, HolderGetter<NormalNoise.NoiseParameters> noiseParams, HolderGetter<Noise> noises) {
     	WorldSettings worldSettings = preset.world();
     	WorldSettings.Properties properties = worldSettings.properties;
@@ -100,7 +101,7 @@ public class PresetNoiseRouterData {
         DensityFunction spaghettiRoughnessFunction = NoiseRouterData.getFunction(densityFunctions, NoiseRouterData.SPAGHETTI_ROUGHNESS_FUNCTION);
         DensityFunction caveLayerNoise = DensityFunctions.noise(noiseParams.getOrThrow(Noises.CAVE_LAYER), 8.0);
         DensityFunction caveLayer = DensityFunctions.mul(DensityFunctions.constant(4.0), caveLayerNoise.square());
-        DensityFunction caveCheese = ChanceDensity(cheeseCaveChance, DensityFunctions.noise(noiseParams.getOrThrow(Noises.CAVE_CHEESE), 0.6666666666666666));
+        DensityFunction caveCheese = chanceDensity(cheeseCaveChance, DensityFunctions.noise(noiseParams.getOrThrow(Noises.CAVE_CHEESE), 0.6666666666666666));
         DensityFunction slopedCaves = DensityFunctions.add(DensityFunctions.add(DensityFunctions.constant(0.27), caveCheese).clamp(-1.0, 1.0), DensityFunctions.add(DensityFunctions.constant(1.5), DensityFunctions.mul(DensityFunctions.constant(-0.64), slopedCheese)).clamp(0.0, 0.5));
         DensityFunction slopedCaveLayered = DensityFunctions.add(caveLayer, slopedCaves);
         DensityFunction underground = DensityFunctions.min(DensityFunctions.min(slopedCaveLayered, NoiseRouterData.getFunction(densityFunctions, NoiseRouterData.ENTRANCES)), DensityFunctions.add(spaghetti2d, spaghettiRoughnessFunction));
@@ -150,11 +151,11 @@ public class PresetNoiseRouterData {
     	return DensityFunctions.add(DensityFunctions.zero(), DensityFunctions.zero());
     }
 
-    private static DensityFunction ChanceDensity(float Chance, DensityFunction function) {
-    	if(Chance == 0.0F) {
+    private static DensityFunction chanceDensity(float chance, DensityFunction function) {
+    	if(chance == 0.0F) {
     		return DensityFunctions.constant(1.0F);
     	}
-    	return DensityFunctions.add(DensityFunctions.constant(1.0F - Chance), function);
+    	return DensityFunctions.add(DensityFunctions.constant(1.0F - chance), function);
     }
     
     private static float yGradientRange(float range) {

@@ -43,13 +43,12 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         cell.terrain = TerrainType.PLAINS;
         cell.beachNoise = this.beachNoise.compute(x, z, 0);
         this.continent.apply(cell, x, z);
-        cell.continentEdge = 1.0F;
         this.region.apply(cell, x, z);
         this.terrain.apply(cell, x * this.terrainFrequency, z * this.terrainFrequency);
 	}
 	
 	public void applyRivers(Cell cell, float x, float z, Rivermap rivermap) {
-//        rivermap.apply(cell, x, z);
+        rivermap.apply(cell, x, z);
         VolcanoPopulator.modifyVolcanoType(cell, this.levels);
 	}
 	
@@ -114,7 +113,7 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 
         CellPopulator terrainRegions = new RegionSelector(TerrainProvider.generateTerrain(ctx.seed, terrainSettings, miscellaneousSettings, regionConfig, levels, ground));
         CellPopulator terrainRegionBorders = Populators.makeBorder(ctx.seed, ground, terrainSettings.plains, terrainSettings.steppe, globalVerticalScale);
-        terrainRegions = Populators.makeTorridonian(new Seed(0), ground, terrainSettings.torridonian);
+//        terrainRegions = Populators.makeTorridonian(new Seed(0), ground, terrainSettings.torridonian);
         
         CellPopulator terrainBlend = new RegionLerper(terrainRegionBorders, terrainRegions);
         CellPopulator mountains = Populators.makeMountainChain(mountainSeed, ground, terrainSettings.mountains, miscellaneousSettings, terrainSettings.general.legacyWorldGen ? globalVerticalScale : globalVerticalScale * terrainSettings.mountains.verticalScale, general.fancyMountains, general.legacyWorldGen);

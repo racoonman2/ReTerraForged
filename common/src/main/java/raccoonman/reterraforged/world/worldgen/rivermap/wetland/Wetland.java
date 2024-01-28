@@ -15,7 +15,7 @@ public class Wetland {
     private Vec2f a;
     private Vec2f b;
     private float radius;
-    private float radius2;
+    private float radiusSq;
     private float bed;
     private float banks;
     private float moundMin;
@@ -29,7 +29,7 @@ public class Wetland {
         this.a = a;
         this.b = b;
         this.radius = radius;
-        this.radius2 = radius * radius;
+        this.radiusSq = radius * radius;
         this.bed = levels.water(-1) - 0.5F / levels.worldHeight;
         this.banks = levels.ground(3);
         this.moundMin = levels.water(1);
@@ -57,15 +57,17 @@ public class Wetland {
             return;
         }
         float t = Line.distanceOnLine(rx, rz, this.a.x(), this.a.y(), this.b.x(), this.b.y());
-        float d2 = getDistance2(rx, rz, this.a.x(), this.a.y(), this.b.x(), this.b.y(), t);
-        if (d2 > this.radius2) {
+        float d2 = getDistanceSq(rx, rz, this.a.x(), this.a.y(), this.b.x(), this.b.y(), t);
+        if (d2 > this.radiusSq) {
             return;
         }
-        float dist = 1.0F - d2 / this.radius2;
+        float dist = 1.0F - d2 / this.radiusSq;
         if (dist <= 0.0F) {
             return;
         }
         float valleyAlpha = NoiseUtil.map(dist, 0.0F, 0.65F, 0.65F);
+        float erosionAlpha = NoiseUtil.map(Math.max(dist, 0.0F), 0.0F, 0.65F, 0.65F, false);
+        cell.erosion = NoiseUtil.lerp(cell.erosion, 0.55025F, erosionAlpha);
         if (cell.height > this.banks) {
             cell.height = NoiseUtil.lerp(cell.height, this.banks, valleyAlpha);
         }
@@ -84,7 +86,6 @@ public class Wetland {
             float mounds = this.moundMin + this.moundHeight.compute(x, z, 0) * this.moundVariance;
             cell.height = NoiseUtil.lerp(cell.height, mounds, shapeAlpha);
         }
-        cell.erosion = NoiseUtil.lerp(cell.erosion, Erosion.LEVEL_6.mid(), valleyAlpha);
         cell.riverMask = Math.min(cell.riverMask, 1.0F - valleyAlpha);
     }
     
@@ -93,7 +94,7 @@ public class Wetland {
         builder.record(Math.max(this.a.x(), this.b.x()) + this.radius, Math.max(this.a.y(), this.b.y()) + this.radius);
     }
     
-    private static float getDistance2(float x, float y, float ax, float ay, float bx, float by, float t) {
+    private static float getDistanceSq(float x, float y, float ax, float ay, float bx, float by, float t) {
         if (t <= 0.0f) {
             return Line.distSq(x, y, ax, ay);
         }
