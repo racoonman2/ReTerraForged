@@ -6,8 +6,10 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.resources.ResourceLocation;
 import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.platform.RegistryUtil;
+import raccoonman.reterraforged.registries.RTFArgumentTypeInfos;
 import raccoonman.reterraforged.registries.RTFBuiltInRegistries;
 import raccoonman.reterraforged.registries.RTFRegistries;
+import raccoonman.reterraforged.server.commands.RTFCommands;
 import raccoonman.reterraforged.world.worldgen.biome.modifier.BiomeModifier;
 import raccoonman.reterraforged.world.worldgen.biome.modifier.BiomeModifiers;
 import raccoonman.reterraforged.world.worldgen.densityfunction.RTFDensityFunctions;
@@ -26,8 +28,6 @@ import raccoonman.reterraforged.world.worldgen.structure.rule.StructureRule;
 import raccoonman.reterraforged.world.worldgen.structure.rule.StructureRules;
 import raccoonman.reterraforged.world.worldgen.surface.condition.RTFSurfaceConditions;
 import raccoonman.reterraforged.world.worldgen.surface.rule.RTFSurfaceRules;
-import terrablender.api.SurfaceRuleManager;
-import terrablender.core.TerraBlender;
 
 public class RTFCommon {
 	public static final String MOD_ID = "reterraforged";
@@ -52,6 +52,9 @@ public class RTFCommon {
 		BiomeModifiers.bootstrap();
 		StructureRules.bootstrap();
 
+		RTFCommands.bootstrap();
+		RTFArgumentTypeInfos.bootstrap();
+		
 		RegistryUtil.createDataRegistry(RTFRegistries.NOISE, Noise.DIRECT_CODEC);
 		RegistryUtil.createDataRegistry(RTFRegistries.BIOME_MODIFIER, BiomeModifier.CODEC);
 		RegistryUtil.createDataRegistry(RTFRegistries.STRUCTURE_RULE, StructureRule.CODEC);

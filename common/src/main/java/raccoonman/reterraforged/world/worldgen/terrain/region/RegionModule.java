@@ -9,7 +9,8 @@ import raccoonman.reterraforged.world.worldgen.noise.domain.Domain;
 import raccoonman.reterraforged.world.worldgen.noise.domain.Domains;
 import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.EdgeFunction;
-import raccoonman.reterraforged.world.worldgen.noise.module.Noises;	
+import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
+import raccoonman.reterraforged.world.worldgen.util.PosUtil;	
 
 public class RegionModule implements CellPopulator {
     private int seed;
@@ -38,13 +39,15 @@ public class RegionModule implements CellPopulator {
         py *= this.frequency;
         int cellX = 0;
         int cellY = 0;
+        float centerX = 0.0F;
+        float centerY = 0.0F;
         int xi = NoiseUtil.floor(px);
         int yi = NoiseUtil.floor(py);
         float edgeDistance = Float.MAX_VALUE;
         float edgeDistance2 = Float.MAX_VALUE;
         DistanceFunction dist = DistanceFunction.NATURAL;
-        for (int dy = -1; dy <= 1; ++dy) {
-            for (int dx = -1; dx <= 1; ++dx) {
+        for (int dy = -1; dy <= 1; dy++) {
+            for (int dx = -1; dx <= 1; dx++) {
                 int cx = xi + dx;
                 int cy = yi + dy;
                 Vec2f vec = NoiseUtil.cell(this.seed, cx, cy);
@@ -54,17 +57,18 @@ public class RegionModule implements CellPopulator {
                 if (distance < edgeDistance) {
                     edgeDistance2 = edgeDistance;
                     edgeDistance = distance;
+                    centerX = vecX;
+                    centerY = vecY;
                     cellX = cx;
                     cellY = cy;
-                }
-                else if (distance < edgeDistance2) {
+                } else if (distance < edgeDistance2) {
                     edgeDistance2 = distance;
                 }
             }
         }
         cell.terrainRegionId = cellValue(this.seed, cellX, cellY);
         cell.terrainRegionEdge = this.edgeValue(edgeDistance, edgeDistance2);
-        cell.terrainCenter = EdgeFunction.DISTANCE_2_DIV.apply(edgeDistance, edgeDistance2);
+        cell.terrainRegionCenter = PosUtil.pack(centerX / this.frequency, centerY / this.frequency);
     }
     
     private static float cellValue(int seed, int cellX, int cellY) {

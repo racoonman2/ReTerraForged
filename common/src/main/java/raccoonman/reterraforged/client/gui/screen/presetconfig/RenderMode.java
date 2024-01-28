@@ -185,6 +185,19 @@ public enum RenderMode {
 			return cell.weirdness;
 		}
     },
+	CONTINENTALNESS {
+    	
+        @Override
+        public int getColor(Cell cell, Levels levels, float scale, float bias) {
+        	float continentalness = this.getNoiseValue(cell);
+        	return rgba(continentalness, continentalness, continentalness);
+        }
+
+		@Override
+		public float getNoiseValue(Cell cell) {
+			return cell.continentalness;
+		}
+    },
 	PEAKS_AND_VALLEYS {
     	
         @Override

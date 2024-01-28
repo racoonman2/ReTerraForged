@@ -104,6 +104,7 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
         }
         cell.continentId = AbstractContinent.getCellValue(this.seed, cellX, cellY);
         cell.continentEdge = this.getDistanceValue(x, y, cellX, cellY, nearest);
+        cell.continentalness = this.getContinenalness(x, y, cellX, cellY, nearest) * 2.0F;
     }
     
     @Override
@@ -171,10 +172,43 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
         }
         return distance;
     }
+
+    @Deprecated
+    protected float getContinenalness(float x, float y, int cellX, int cellY, float continentalness) {
+        continentalness = this.getVariedContinentalness(cellX, cellY, continentalness);
+        continentalness = NoiseUtil.sqrt(continentalness);
+//        distance = NoiseUtil.map(distance, 0.05F, 0.5F, 0.2F);
+//        distance = this.getCoastalContinentalness(x, y, distance, true);
+//        if (distance < this.controlPoints.inland && distance >= this.controlPoints.shallowOcean) {
+//            distance = this.getCoastalContinentalness(x, y, distance, true);
+//        }
+        return continentalness;
+    }
+    
+    protected float getVariedContinentalness(int cellX, int cellY, float continentalness) {
+        if (this.variance > 0.0F && !this.isDefaultContinent(cellX, cellY)) {
+            float sizeValue = AbstractContinent.getCellValue(this.varianceSeed, cellX, cellY);
+            float sizeModifier = NoiseUtil.map(sizeValue, 0.0F, this.variance, this.variance);
+            continentalness *= sizeModifier;
+        }
+        return continentalness;
+    }
+    
+    protected float getCoastalContinentalness(float x, float y, float continentalness, boolean cliffs) {
+        if (continentalness > this.controlPoints.shallowOcean && continentalness < this.controlPoints.inland) {
+            float alpha = continentalness / this.controlPoints.inland;
+            float cliff = cliffs ? this.cliffNoise.compute(x, y, 0) : 1.0F;
+            continentalness = NoiseUtil.lerp(continentalness * cliff, continentalness, alpha);
+            if (continentalness < this.controlPoints.shallowOcean) {
+                continentalness = this.controlPoints.shallowOcean * this.bayNoise.compute(x, y, 0);
+            }
+        }
+        return continentalness;
+    }
     
     protected int getCorrectedContinentCenter(float point, float average) {
-        point = NoiseUtil.lerp(point, average, 0.35f) / this.frequency;
-        return (int)point;
+        point = NoiseUtil.lerp(point, average, 0.35F) / this.frequency;
+        return (int) point;
     }
     
     protected static float midPoint(float a, float b) {

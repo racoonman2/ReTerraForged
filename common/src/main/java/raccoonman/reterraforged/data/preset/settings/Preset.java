@@ -26,7 +26,7 @@ import raccoonman.reterraforged.integration.terrablender.TBNoiseRouterData;
 import raccoonman.reterraforged.registries.RTFRegistries;
 
 public record Preset(PresetVersion version, WorldSettings world, SurfaceSettings surface, CaveSettings caves, ClimateSettings climate, TerrainSettings terrain, RiverSettings rivers, FilterSettings filters, MiscellaneousSettings miscellaneous) {
-	public static final Codec<Preset> CODEC = PresetVersion.CODEC.dispatch("version", Preset::version, PresetVersion::codec);
+	public static final Codec<Preset> CODEC = PresetVersion.RETERRAFORGED.codec();//PresetVersion.CODEC.optionalFieldOf("version", PresetVersion.TERRAFORGED).codec().dispatch("version", Preset::version, PresetVersion::codec);
 	
 	public Preset copy() {
 		return new Preset(this.version, this.world.copy(), this.surface.copy(), this.caves.copy(), this.climate.copy(), this.terrain.copy(), this.rivers.copy(), this.filters.copy(), /* this.structures.copy(), */this.miscellaneous.copy());

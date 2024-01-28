@@ -68,4 +68,4 @@ accessible field net/minecraft/world/level/levelgen/structure/placement/Structur
 accessible field net/minecraft/world/level/levelgen/structure/placement/StructurePlacement frequency F
 accessible field net/minecraft/world/level/levelgen/structure/placement/StructurePlacement salt I
 accessible field net/minecraft/world/level/levelgen/structure/placement/StructurePlacement exclusionZone Ljava/util/Optional;
-
+accessible method net/minecraft/commands/synchronization/ArgumentTypeInfos register (Lnet/minecraft/core/Registry;Ljava/lang/String;Ljava/lang/Class;Lnet/minecraft/commands/synchronization/ArgumentTypeInfo;)Lnet/minecraft/commands/synchronization/ArgumentTypeInfo;

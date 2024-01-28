@@ -22,7 +22,6 @@ import raccoonman.reterraforged.world.worldgen.util.Seed;
 
 public class TerrainProvider {
 	
-	//TODO reset all this to 1.16 and work from there
 	@Deprecated
     public static List<CellPopulator> generateTerrain(Seed seed, TerrainSettings terrainSettings, MiscellaneousSettings miscellaneousSettings, RegionConfig config, Levels levels, Noise ground) {
     	TerrainSettings.General general = terrainSettings.general;

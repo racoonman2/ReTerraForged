@@ -13,13 +13,13 @@ import raccoonman.reterraforged.data.preset.settings.Preset;
 
 public class CaveSettingsPage extends PresetEditorPage {
 	private Slider surfaceDensityThreshold;
-	private Slider entranceCaveProbability;
-	private Slider cheeseCaveProbability;
-	private Slider spaghettiProbability;
-	private Slider noodleCaveProbability;
-	private Slider carverCaveProbability;
-	private Slider deepCarverCaveProbability;
-	private Slider ravineProbability;
+	private Slider entranceCaveChance;
+	private Slider cheeseCaveChance;
+	private Slider spaghettiChance;
+	private Slider noodleCaveChance;
+	private Slider carverCaveChance;
+	private Slider deepCarverCaveChance;
+	private Slider ravineChance;
 	private CycleButton<Boolean> largeOreVeins;
 	private CycleButton<Boolean> legacyCarverDistribution;
 	
@@ -43,32 +43,32 @@ public class CaveSettingsPage extends PresetEditorPage {
 			caves.surfaceDensityThreshold = (float) slider.scaleValue(value);
 			return value;
 		});
-		this.entranceCaveProbability = PresetWidgets.createFloatSlider(caves.entranceCaveProbability, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY, (slider, value) -> {
-			caves.entranceCaveProbability = (float) slider.scaleValue(value);
+		this.entranceCaveChance = PresetWidgets.createFloatSlider(caves.entranceCaveChance, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_CHANCE, (slider, value) -> {
+			caves.entranceCaveChance = (float) slider.scaleValue(value);
 			return value;
 		});
-		this.cheeseCaveProbability = PresetWidgets.createFloatSlider(caves.cheeseCaveProbability, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_PROBABILITY, (slider, value) -> {
-			caves.cheeseCaveProbability = (float) slider.scaleValue(value);
+		this.cheeseCaveChance = PresetWidgets.createFloatSlider(caves.cheeseCaveChance, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_CHANCE, (slider, value) -> {
+			caves.cheeseCaveChance = (float) slider.scaleValue(value);
 			return value;
 		});
-		this.spaghettiProbability = PresetWidgets.createFloatSlider(caves.spaghettiCaveProbability, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_SPAGHETTI_CAVE_PROBABILITY, (slider, value) -> {
-			caves.spaghettiCaveProbability = (float) slider.scaleValue(value);
+		this.spaghettiChance = PresetWidgets.createFloatSlider(caves.spaghettiCaveChance, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_SPAGHETTI_CAVE_CHANCE, (slider, value) -> {
+			caves.spaghettiCaveChance = (float) slider.scaleValue(value);
 			return value;
 		});
-		this.noodleCaveProbability = PresetWidgets.createFloatSlider(caves.noodleCaveProbability, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_NOODLE_CAVE_PROBABILITY, (slider, value) -> {
-			caves.noodleCaveProbability = (float) slider.scaleValue(value);
+		this.noodleCaveChance = PresetWidgets.createFloatSlider(caves.noodleCaveChance, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_NOODLE_CAVE_CHANCE, (slider, value) -> {
+			caves.noodleCaveChance = (float) slider.scaleValue(value);
 			return value;
 		});
-		this.carverCaveProbability = PresetWidgets.createFloatSlider(caves.caveCarverProbability, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_CAVE_CARVER_PROBABILITY, (slider, value) -> {
-			caves.caveCarverProbability = (float) slider.scaleValue(value);
+		this.carverCaveChance = PresetWidgets.createFloatSlider(caves.caveCarverChance, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_CAVE_CARVER_CHANCE, (slider, value) -> {
+			caves.caveCarverChance = (float) slider.scaleValue(value);
 			return value;
 		});
-		this.deepCarverCaveProbability = PresetWidgets.createFloatSlider(caves.deepCaveCarverProbability, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_DEEP_CAVE_CARVER_PROBABILITY, (slider, value) -> {
-			caves.deepCaveCarverProbability = (float) slider.scaleValue(value);
+		this.deepCarverCaveChance = PresetWidgets.createFloatSlider(caves.deepCaveCarverChance, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_DEEP_CAVE_CARVER_CHANCE, (slider, value) -> {
+			caves.deepCaveCarverChance = (float) slider.scaleValue(value);
 			return value;
 		});
-		this.ravineProbability = PresetWidgets.createFloatSlider(caves.ravineCarverProbability, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_RAVINE_CARVER_PROBABILITY, (slider, value) -> {
-			caves.ravineCarverProbability = (float) slider.scaleValue(value);
+		this.ravineChance = PresetWidgets.createFloatSlider(caves.ravineCarverChance, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_RAVINE_CARVER_CHANCE, (slider, value) -> {
+			caves.ravineCarverChance = (float) slider.scaleValue(value);
 			return value;
 		});
 		this.largeOreVeins = PresetWidgets.createToggle(caves.largeOreVeins, RTFTranslationKeys.GUI_BUTTON_LARGE_ORE_VEINS, (button, value) -> {
@@ -80,15 +80,15 @@ public class CaveSettingsPage extends PresetEditorPage {
 
 		this.left.addWidget(PresetWidgets.createLabel(RTFTranslationKeys.GUI_LABEL_NOISE_CAVES));
 		this.left.addWidget(this.surfaceDensityThreshold);
-		this.left.addWidget(this.entranceCaveProbability);
-		this.left.addWidget(this.cheeseCaveProbability);
-		this.left.addWidget(this.spaghettiProbability);
-		this.left.addWidget(this.noodleCaveProbability);
+		this.left.addWidget(this.entranceCaveChance);
+		this.left.addWidget(this.cheeseCaveChance);
+		this.left.addWidget(this.spaghettiChance);
+		this.left.addWidget(this.noodleCaveChance);
 
 		this.left.addWidget(PresetWidgets.createLabel(RTFTranslationKeys.GUI_LABEL_CARVERS));
-		this.left.addWidget(this.carverCaveProbability);
-		this.left.addWidget(this.deepCarverCaveProbability);
-		this.left.addWidget(this.ravineProbability);
+		this.left.addWidget(this.carverCaveChance);
+		this.left.addWidget(this.deepCarverCaveChance);
+		this.left.addWidget(this.ravineChance);
 		this.left.addWidget(this.largeOreVeins);
 		this.left.addWidget(this.legacyCarverDistribution);
 	}

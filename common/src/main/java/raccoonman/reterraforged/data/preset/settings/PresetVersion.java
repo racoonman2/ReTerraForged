@@ -12,7 +12,6 @@ public enum PresetVersion implements StringRepresentable {
 		@Override
 		public Codec<Preset> codec() {
 			return RecordCodecBuilder.create(instance -> instance.group(
-				PresetVersion.CODEC.optionalFieldOf("version", PresetVersion.TERRAFORGED).forGetter(Preset::version),
 				WorldSettings.CODEC.fieldOf("world").forGetter(Preset::world),
 				SurfaceSettings.CODEC.optionalFieldOf("surface", new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F))).forGetter(Preset::surface),
 				CaveSettings.CODEC.optionalFieldOf("caves", new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false)).forGetter(Preset::caves),
@@ -21,7 +20,9 @@ public enum PresetVersion implements StringRepresentable {
 				RiverSettings.CODEC.fieldOf("rivers").forGetter(Preset::rivers),
 				FilterSettings.CODEC.fieldOf("filters").forGetter(Preset::filters),
 				MiscellaneousSettings.CODEC.fieldOf("miscellaneous").forGetter(Preset::miscellaneous)
-			).apply(instance, Preset::new));
+			).apply(instance, (world, surface, caves, climate, terrain, rivers, filters, miscellaneous) -> {
+				return new Preset(this, world, surface, caves, climate, terrain, rivers, filters, miscellaneous);
+			}));
 		}
 	},
 	RETERRAFORGED("reterraforged") {
@@ -29,7 +30,6 @@ public enum PresetVersion implements StringRepresentable {
 		@Override
 		public Codec<Preset> codec() {
 			return RecordCodecBuilder.create(instance -> instance.group(
-				PresetVersion.CODEC.optionalFieldOf("version", PresetVersion.TERRAFORGED).forGetter(Preset::version),
 				WorldSettings.CODEC.fieldOf("world").forGetter(Preset::world),
 				SurfaceSettings.CODEC.optionalFieldOf("surface", new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F))).forGetter(Preset::surface),
 				CaveSettings.CODEC.optionalFieldOf("caves", new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false)).forGetter(Preset::caves),
@@ -38,7 +38,9 @@ public enum PresetVersion implements StringRepresentable {
 				RiverSettings.CODEC.fieldOf("rivers").forGetter(Preset::rivers),
 				FilterSettings.CODEC.fieldOf("filters").forGetter(Preset::filters),
 				MiscellaneousSettings.CODEC.fieldOf("miscellaneous").forGetter(Preset::miscellaneous)
-			).apply(instance, Preset::new));
+			).apply(instance, (world, surface, caves, climate, terrain, rivers, filters, miscellaneous) -> {
+				return new Preset(this, world, surface, caves, climate, terrain, rivers, filters, miscellaneous);
+			}));
 		}
 	};
 	

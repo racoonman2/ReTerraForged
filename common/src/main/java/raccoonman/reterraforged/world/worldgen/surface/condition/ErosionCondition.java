@@ -18,7 +18,7 @@ class ErosionCondition extends ThresholdCondition {
 
 	@Override
 	protected float sample(Cell cell) {
-		return cell.localErosion;
+		return cell.localErosion2;
 	}
 	
 	public record Source(float threshold, Holder<Noise> variance) implements SurfaceRules.ConditionSource {

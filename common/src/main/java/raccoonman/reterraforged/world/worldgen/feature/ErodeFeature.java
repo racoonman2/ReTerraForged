@@ -38,6 +38,7 @@ import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.tile.Tile;
 
+@Deprecated(forRemoval = true)
 public class ErodeFeature extends Feature<Config> {
 
 	public ErodeFeature(Codec<Config> codec) {

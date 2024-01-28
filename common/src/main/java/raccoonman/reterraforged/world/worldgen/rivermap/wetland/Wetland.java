@@ -1,5 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.rivermap.wetland;
 
+import raccoonman.reterraforged.world.worldgen.biome.Erosion;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
@@ -83,6 +84,7 @@ public class Wetland {
             float mounds = this.moundMin + this.moundHeight.compute(x, z, 0) * this.moundVariance;
             cell.height = NoiseUtil.lerp(cell.height, mounds, shapeAlpha);
         }
+        cell.erosion = NoiseUtil.lerp(cell.erosion, Erosion.LEVEL_6.mid(), valleyAlpha);
         cell.riverMask = Math.min(cell.riverMask, 1.0F - valleyAlpha);
     }
     

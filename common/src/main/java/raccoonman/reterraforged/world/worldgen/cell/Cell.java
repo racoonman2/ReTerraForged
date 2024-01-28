@@ -21,7 +21,9 @@ public class Cell {
         return new SimpleResource<>(new Cell(), Cell::reset);
     });
     public float height;
+    @Deprecated
     public float localErosion;
+    public float localErosion2;
     @Deprecated
     public float sediment;
     public float sediment2;
@@ -37,7 +39,7 @@ public class Cell {
     public float continentalness;
     public float terrainRegionId;
     public float terrainRegionEdge;
-    public float terrainCenter;
+    public long terrainRegionCenter;
     public float biomeRegionId;
     public float biomeRegionEdge;
     public float macroBiomeId;
@@ -71,6 +73,7 @@ public class Cell {
     public void copyFrom(Cell other) {
         this.height = other.height;
         this.localErosion = other.localErosion;
+        this.localErosion2 = other.localErosion2;
         this.sediment = other.sediment;
         this.sediment2 = other.sediment2;
         this.gradient = other.gradient;
@@ -81,7 +84,7 @@ public class Cell {
         this.continentalness = other.continentalness;
         this.terrainRegionId = other.terrainRegionId;
         this.terrainRegionEdge = other.terrainRegionEdge;
-        this.terrainCenter = other.terrainCenter;
+        this.terrainRegionCenter = other.terrainRegionCenter;
         this.biomeRegionId = other.biomeRegionId;
         this.biomeRegionEdge = other.biomeRegionEdge;
         this.macroBiomeId = other.macroBiomeId;

@@ -92,13 +92,13 @@ public class RTFTranslationKeys {
 	public static final String GUI_SLIDER_HEIGHT_MODIFIER = resolve("gui.slider.heightModifier");
 	public static final String GUI_SLIDER_SLOPE_MODIFIER = resolve("gui.slider.slopeModifier");
 	public static final String GUI_SLIDER_SURFACE_DENSITY_THRESHOLD = resolve("gui.slider.surfaceDensityThreshold");
-	public static final String GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY = resolve("gui.slider.entranceCaveProbability");
-	public static final String GUI_SLIDER_CHEESE_CAVE_PROBABILITY = resolve("gui.slider.cheeseCaveProbability");
-	public static final String GUI_SLIDER_SPAGHETTI_CAVE_PROBABILITY = resolve("gui.slider.spaghettiCaveProbability");
-	public static final String GUI_SLIDER_NOODLE_CAVE_PROBABILITY = resolve("gui.slider.noodleCaveProbability");
-	public static final String GUI_SLIDER_CAVE_CARVER_PROBABILITY = resolve("gui.slider.carverCaveProbability");
-	public static final String GUI_SLIDER_DEEP_CAVE_CARVER_PROBABILITY = resolve("gui.slider.deepCarverCaveProbability");
-	public static final String GUI_SLIDER_RAVINE_CARVER_PROBABILITY = resolve("gui.slider.ravineProbability");
+	public static final String GUI_SLIDER_ENTRANCE_CAVE_CHANCE = resolve("gui.slider.entranceCaveProbability");
+	public static final String GUI_SLIDER_CHEESE_CAVE_CHANCE = resolve("gui.slider.cheeseCaveProbability");
+	public static final String GUI_SLIDER_SPAGHETTI_CAVE_CHANCE = resolve("gui.slider.spaghettiCaveProbability");
+	public static final String GUI_SLIDER_NOODLE_CAVE_CHANCE = resolve("gui.slider.noodleCaveProbability");
+	public static final String GUI_SLIDER_CAVE_CARVER_CHANCE = resolve("gui.slider.carverCaveProbability");
+	public static final String GUI_SLIDER_DEEP_CAVE_CARVER_CHANCE = resolve("gui.slider.deepCarverCaveProbability");
+	public static final String GUI_SLIDER_RAVINE_CARVER_CHANCE = resolve("gui.slider.ravineProbability");
 	public static final String GUI_SLIDER_TEMPERATURE_SCALE = resolve("gui.slider.temperatureScale");
 	public static final String GUI_SLIDER_TEMPERATURE_FALLOFF = resolve("gui.slider.temperatureFalloff");
 	public static final String GUI_SLIDER_TEMPERATURE_MIN = resolve("gui.slider.temperatureMin");
@@ -188,6 +188,10 @@ public class RTFTranslationKeys {
 	public static final String GUI_LABEL_WETLANDS = resolve("gui.label.wetlands");
 	public static final String GUI_LABEL_EROSION = resolve("gui.label.erosion");
 	public static final String GUI_LABEL_SMOOTHING = resolve("gui.label.smoothing");
+
+	public static final String TERRAIN_FOUND = resolve("commands.locate.terrain.found");
+	public static final String TERRAIN_NOT_FOUND = resolve("commands.locate.terrain.not_found");
+	public static final String TERRAIN_ARGUMENT_INVALID = resolve("argument.terrain.invalid");
 	
 	private static String resolve(String key) {
 		return RTFCommon.MOD_ID + "." + key;

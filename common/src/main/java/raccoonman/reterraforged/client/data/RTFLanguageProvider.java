@@ -104,13 +104,13 @@ public class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_SLIDER_HEIGHT_MODIFIER, "Height Modifier");
 			this.add(RTFTranslationKeys.GUI_SLIDER_SLOPE_MODIFIER, "Slope Modifier");
 			this.add(RTFTranslationKeys.GUI_SLIDER_SURFACE_DENSITY_THRESHOLD, "Surface Density Threshold");
-			this.add(RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY, "Entrance Cave Chance");
-			this.add(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_PROBABILITY, "Cheese Cave Chance");
-			this.add(RTFTranslationKeys.GUI_SLIDER_SPAGHETTI_CAVE_PROBABILITY, "Spaghetti Cave Chance");
-			this.add(RTFTranslationKeys.GUI_SLIDER_NOODLE_CAVE_PROBABILITY, "Noodle Cave Chance");
-			this.add(RTFTranslationKeys.GUI_SLIDER_CAVE_CARVER_PROBABILITY, "Cave Carver Chance");
-			this.add(RTFTranslationKeys.GUI_SLIDER_DEEP_CAVE_CARVER_PROBABILITY, "Deep Cave Carver Chance");
-			this.add(RTFTranslationKeys.GUI_SLIDER_RAVINE_CARVER_PROBABILITY, "Ravine Carver Probability");
+			this.add(RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_CHANCE, "Entrance Cave Chance");
+			this.add(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_CHANCE, "Cheese Cave Chance");
+			this.add(RTFTranslationKeys.GUI_SLIDER_SPAGHETTI_CAVE_CHANCE, "Spaghetti Cave Chance");
+			this.add(RTFTranslationKeys.GUI_SLIDER_NOODLE_CAVE_CHANCE, "Noodle Cave Chance");
+			this.add(RTFTranslationKeys.GUI_SLIDER_CAVE_CARVER_CHANCE, "Cave Carver Chance");
+			this.add(RTFTranslationKeys.GUI_SLIDER_DEEP_CAVE_CARVER_CHANCE, "Deep Cave Carver Chance");
+			this.add(RTFTranslationKeys.GUI_SLIDER_RAVINE_CARVER_CHANCE, "Ravine Carver Chance");
 			this.add(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_SCALE, "Scale");
 			this.add(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_FALLOFF, "Falloff");
 			this.add(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_MIN, "Min");
@@ -201,7 +201,11 @@ public class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_LABEL_WETLANDS, "Wetlands");
 			this.add(RTFTranslationKeys.GUI_LABEL_EROSION, "Erosion");
 			this.add(RTFTranslationKeys.GUI_LABEL_SMOOTHING, "Smoothing");
-			
+
+			this.add(RTFTranslationKeys.TERRAIN_FOUND, "The nearest %s is at %s");
+			this.add(RTFTranslationKeys.TERRAIN_NOT_FOUND, "Could not find a \"%s\" within reasonable distance");
+			this.add(RTFTranslationKeys.TERRAIN_ARGUMENT_INVALID, "Could not find a terrain type with the name \"%s\"");
+
 			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_CREATE), "Failed to create preset");
 			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_COPY), "Failed to copy preset");
 			this.add(Tooltips.failTranslationKey(RTFTranslationKeys.GUI_BUTTON_DELETE), "Failed to delete preset");
@@ -260,13 +264,13 @@ public class RTFLanguageProvider {
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_HEIGHT_MODIFIER), "Controls the height modifier");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SLOPE_MODIFIER), "Controls the slope modifier");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SURFACE_DENSITY_THRESHOLD), "Controls the surface depth at which cheese caves start to generate");
-			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_PROBABILITY), "Controls the probability that an entrance cave will generate");
-			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_PROBABILITY), "Controls probability that a cheese cave will generate");
-			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SPAGHETTI_CAVE_PROBABILITY), "Controls the probability that a spaghetti cave will generate");
-			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_NOODLE_CAVE_PROBABILITY), "Controls probability that a noodle cave will generate");
-			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CAVE_CARVER_PROBABILITY), "Controls the probability that a cave carver will generate");
-			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_DEEP_CAVE_CARVER_PROBABILITY), "Controls the probability that a deep cave carver will generate");
-			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RAVINE_CARVER_PROBABILITY), "Controls the probability that a ravine carver will generate");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_ENTRANCE_CAVE_CHANCE), "Controls the probability that an entrance cave will generate");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CHEESE_CAVE_CHANCE), "Controls probability that a cheese cave will generate");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SPAGHETTI_CAVE_CHANCE), "Controls the probability that a spaghetti cave will generate");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_NOODLE_CAVE_CHANCE), "Controls probability that a noodle cave will generate");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_CAVE_CARVER_CHANCE), "Controls the probability that a cave carver will generate");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_DEEP_CAVE_CARVER_CHANCE), "Controls the probability that a deep cave carver will generate");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_RAVINE_CARVER_CHANCE), "Controls the probability that a ravine carver will generate");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_SCALE), "The horizontal scale");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_FALLOFF), "How quickly values transition from an extremity");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_TEMPERATURE_MIN), "The lower limit of the range");

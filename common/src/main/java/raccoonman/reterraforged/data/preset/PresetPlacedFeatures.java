@@ -6,14 +6,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
-import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.features.MiscOverworldFeatures;
 import net.minecraft.data.worldgen.features.OreFeatures;
-import net.minecraft.data.worldgen.features.TreeFeatures;
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.data.worldgen.placement.OrePlacements;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
-import net.minecraft.data.worldgen.placement.VillagePlacements;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.LevelStem;
@@ -32,11 +29,9 @@ import net.minecraft.world.level.levelgen.placement.RarityFilter;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.data.preset.settings.MiscellaneousSettings;
 import raccoonman.reterraforged.data.preset.settings.Preset;
-import raccoonman.reterraforged.world.worldgen.feature.RTFFeatures;
 import raccoonman.reterraforged.world.worldgen.feature.placement.RTFPlacementModifiers;
 
 public class PresetPlacedFeatures {
-	public static final ResourceKey<PlacedFeature> ERODE = createKey("erode");
 	public static final ResourceKey<PlacedFeature> ERODE_SNOW = createKey("erode_snow");
 	public static final ResourceKey<PlacedFeature> SWAMP_SURFACE = createKey("swamp_surface");
 
@@ -73,6 +68,7 @@ public class PresetPlacedFeatures {
 	public static final ResourceKey<PlacedFeature> TAIGA_SCRUB_BUSH = createKey("shrubs/taiga_scrub_bush");
 
 	public static final ResourceKey<PlacedFeature> FOREST_GRASS = createKey("forest_grass");
+	public static final ResourceKey<PlacedFeature> COLD_GRASS = createKey("cold_grass");
 	public static final ResourceKey<PlacedFeature> BIRCH_FOREST_GRASS = createKey("birch_forest_grass");
 	
 	public static final ResourceKey<PlacedFeature> PLAINS_TREES = createKey("plains_trees");
@@ -101,10 +97,6 @@ public class PresetPlacedFeatures {
 
 		PlacementModifier blacklistOverworld = RTFPlacementModifiers.blacklistDimensions(LevelStem.OVERWORLD);
 		
-		if(miscellaneous.erosionDecorator) {
-			PlacementUtils.register(ctx, ERODE, features.getOrThrow(PresetConfiguredFeatures.ERODE));
-		}
-
 		if(miscellaneous.naturalSnowDecorator || miscellaneous.smoothLayerDecorator) {
 			PlacementUtils.register(ctx, ERODE_SNOW, features.getOrThrow(PresetConfiguredFeatures.ERODE_SNOW));
 		}
@@ -173,6 +165,7 @@ public class PresetPlacedFeatures {
         	PlacementUtils.register(ctx, TAIGA_SCRUB_BUSH, features.getOrThrow(PresetConfiguredFeatures.TAIGA_SCRUB_BUSH), RTFPlacementModifiers.countExtra(0, 0.1F, 1), HeightmapPlacement.onHeightmap(Types.WORLD_SURFACE), PlacementUtils.filteredByBlockSurvival(Blocks.SPRUCE_SAPLING), BiomeFilter.biome());
             
             PlacementUtils.register(ctx, FOREST_GRASS, features.getOrThrow(PresetConfiguredFeatures.FOREST_GRASS), worldSurfaceSquaredWithCount(7));
+            PlacementUtils.register(ctx, COLD_GRASS, features.getOrThrow(PresetConfiguredFeatures.COLD_GRASS), worldSurfaceSquaredWithCount(7));
             PlacementUtils.register(ctx, BIRCH_FOREST_GRASS, features.getOrThrow(PresetConfiguredFeatures.BIRCH_FOREST_GRASS), worldSurfaceSquaredWithCount(7));
             
             PlacementUtils.register(ctx, PLAINS_TREES, features.getOrThrow(PresetConfiguredFeatures.PLAINS_TREES), PlacementUtils.HEIGHTMAP, RTFPlacementModifiers.countExtra(0, 0.02F, 1), BiomeFilter.biome());

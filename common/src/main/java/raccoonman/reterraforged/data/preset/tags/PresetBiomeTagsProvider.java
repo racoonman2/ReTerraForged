@@ -26,7 +26,7 @@ public class PresetBiomeTagsProvider extends TagsProvider<Biome> {
 	protected void addTags(HolderLookup.Provider provider) {
 		MiscellaneousSettings miscellaneous = this.preset.miscellaneous();
 
-		this.tag(RTFBiomeTags.HAS_SWAMP_GENERATION).add(Biomes.SWAMP);
+		this.tag(RTFBiomeTags.HAS_SWAMP_SURFACE).add(Biomes.SWAMP);
 		
 		if(miscellaneous.customBiomeFeatures)	{
 			this.tag(RTFBiomeTags.HAS_SWAMP_TREES).add(Biomes.SWAMP);
@@ -56,6 +56,7 @@ public class PresetBiomeTagsProvider extends TagsProvider<Biome> {
 			this.tag(RTFBiomeTags.HAS_COLD_TAIGA_SCRUB_BUSHES).add(Biomes.SNOWY_PLAINS, Biomes.TAIGA, Biomes.WINDSWEPT_FOREST, Biomes.WINDSWEPT_GRAVELLY_HILLS);
 			
 			this.tag(RTFBiomeTags.HAS_FOREST_GRASS).add(Biomes.FOREST, Biomes.DARK_FOREST);
+			this.tag(RTFBiomeTags.HAS_COLD_GRASS).add(Biomes.WINDSWEPT_FOREST, Biomes.WINDSWEPT_GRAVELLY_HILLS, Biomes.WINDSWEPT_HILLS, Biomes.TAIGA);
 			this.tag(RTFBiomeTags.HAS_BIRCH_FOREST_GRASS).add(Biomes.BIRCH_FOREST, Biomes.OLD_GROWTH_BIRCH_FOREST);
 		}
 	}

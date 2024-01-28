@@ -6,7 +6,7 @@ import net.minecraft.world.level.biome.Biome;
 import raccoonman.reterraforged.RTFCommon;
 
 public class RTFBiomeTags {
-	public static final TagKey<Biome> HAS_SWAMP_GENERATION = resolve("features/has_swamp_generation");
+	public static final TagKey<Biome> HAS_SWAMP_SURFACE = resolve("features/has_swamp_surface");
 	public static final TagKey<Biome> HAS_SWAMP_TREES = resolve("features/has_swamp_trees");
 	public static final TagKey<Biome> HAS_PLAINS_TREES = resolve("features/has_plains_trees");
 	public static final TagKey<Biome> HAS_FOREST_TREES = resolve("features/has_forest_trees");
@@ -35,6 +35,7 @@ public class RTFBiomeTags {
 	public static final TagKey<Biome> HAS_COLD_TAIGA_SCRUB_BUSHES = resolve("features/has_cold_taiga_scrub_bushes");
 
 	public static final TagKey<Biome> HAS_FOREST_GRASS = resolve("features/has_forest_grass");
+	public static final TagKey<Biome> HAS_COLD_GRASS = resolve("features/has_cold_grass");
 	public static final TagKey<Biome> HAS_BIRCH_FOREST_GRASS = resolve("features/has_birch_forest_grass");
 	
     private static TagKey<Biome> resolve(String path) {

@@ -23,8 +23,7 @@ import raccoonman.reterraforged.world.worldgen.biome.modifier.Filter;
 import raccoonman.reterraforged.world.worldgen.biome.modifier.Order;
 
 public class PresetBiomeModifierData {
-	public static final ResourceKey<BiomeModifier> ERODE = createKey("raw_generation/erode");
-	public static final ResourceKey<BiomeModifier> SWAMP_GENERATION = createKey("raw_generation/swamp_surface");
+	public static final ResourceKey<BiomeModifier> SWAMP_SURFACE = createKey("raw_generation/swamp_surface");
 	public static final ResourceKey<BiomeModifier> ERODE_SNOW = createKey("modification/erode_snow");
 	
 	public static final ResourceKey<BiomeModifier> PLAINS_TREES = createKey("vegetation/trees/plains");
@@ -54,6 +53,7 @@ public class PresetBiomeModifierData {
 	public static final ResourceKey<BiomeModifier> ADD_TAIGA_SCRUB_BUSH = createKey("vegetation/bushes/taiga_scrub");
 	
 	public static final ResourceKey<BiomeModifier> FOREST_GRASS = createKey("vegetation/grass/forest");
+	public static final ResourceKey<BiomeModifier> COLD_GRASS = createKey("vegetation/grass/cold");
 	public static final ResourceKey<BiomeModifier> BIRCH_FOREST_GRASS = createKey("vegetation/grass/birch_forest");
 	
 	public static void bootstrap(Preset preset, BootstapContext<BiomeModifier> ctx) {
@@ -61,13 +61,9 @@ public class PresetBiomeModifierData {
 		HolderGetter<PlacedFeature> placedFeatures = ctx.lookup(Registries.PLACED_FEATURE);
 		HolderGetter<Biome> biomes = ctx.lookup(Registries.BIOME);
 
-		HolderSet<Biome> hasSwampGeneration = biomes.getOrThrow(RTFBiomeTags.HAS_SWAMP_GENERATION);
+		HolderSet<Biome> hasSwampSurface = biomes.getOrThrow(RTFBiomeTags.HAS_SWAMP_SURFACE);
 		
-		if(miscellaneous.erosionDecorator) {
-//			ctx.register(ERODE, prepend(GenerationStep.Decoration.RAW_GENERATION, placedFeatures.getOrThrow(PresetPlacedFeatures.ERODE)));
-		}
-		
-		ctx.register(SWAMP_GENERATION, prepend(GenerationStep.Decoration.RAW_GENERATION, Filter.Behavior.WHITELIST, hasSwampGeneration, placedFeatures.getOrThrow(PresetPlacedFeatures.SWAMP_SURFACE)));
+		ctx.register(SWAMP_SURFACE, prepend(GenerationStep.Decoration.RAW_GENERATION, Filter.Behavior.WHITELIST, hasSwampSurface, placedFeatures.getOrThrow(PresetPlacedFeatures.SWAMP_SURFACE)));
 		
 		if(miscellaneous.naturalSnowDecorator || miscellaneous.smoothLayerDecorator) {
 			ctx.register(ERODE_SNOW, append(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, placedFeatures.getOrThrow(PresetPlacedFeatures.ERODE_SNOW)));
@@ -191,9 +187,11 @@ public class PresetBiomeModifierData {
 			ctx.register(ADD_TAIGA_SCRUB_BUSH, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasColdTaigaScrubBushes, placedFeatures.getOrThrow(PresetPlacedFeatures.TAIGA_SCRUB_BUSH)));
 			
 			HolderSet<Biome> hasForestGrass = biomes.getOrThrow(RTFBiomeTags.HAS_FOREST_GRASS);
+			HolderSet<Biome> hasColdGrass = biomes.getOrThrow(RTFBiomeTags.HAS_COLD_GRASS);
 			HolderSet<Biome> hasBirchForestGrass = biomes.getOrThrow(RTFBiomeTags.HAS_BIRCH_FOREST_GRASS);
 			
 			ctx.register(FOREST_GRASS, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasForestGrass, placedFeatures.getOrThrow(PresetPlacedFeatures.FOREST_GRASS)));
+			ctx.register(COLD_GRASS, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasColdGrass, placedFeatures.getOrThrow(PresetPlacedFeatures.COLD_GRASS)));
 			ctx.register(BIRCH_FOREST_GRASS, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasBirchForestGrass, placedFeatures.getOrThrow(PresetPlacedFeatures.BIRCH_FOREST_GRASS)));
 		}
 	}

@@ -58,7 +58,7 @@ public record CellSampler(Supplier<GeneratorContext> generatorContext, Field fie
 			
 			long packedPos = PosUtil.pack(blockX, blockZ);
 			if(this.lastPos != packedPos) {
-				lookup.applyCell(this.cell.reset(), blockX, blockZ);
+				lookup.apply(this.cell.reset(), blockX, blockZ);
 				this.lastPos = packedPos;
 			}
 			return this.cell;
@@ -132,10 +132,6 @@ public record CellSampler(Supplier<GeneratorContext> generatorContext, Field fie
 				Levels levels = heightmap.levels();
 				ControlPoints controlPoints = heightmap.controlPoints();
 				
-				if(Boolean.TRUE) {
-					return 0.4F;
-				}
-				
 				float deepOcean = controlPoints.deepOcean;
 				float shallowOcean = controlPoints.shallowOcean;
 				float beach = controlPoints.beach;
@@ -160,7 +156,7 @@ public record CellSampler(Supplier<GeneratorContext> generatorContext, Field fie
 					return NoiseUtil.lerp(Continentalness.COAST.min(), Continentalness.COAST.max(), alpha);
 				}
 
-				return NoiseUtil.lerp(Continentalness.NEAR_INLAND.min(), Continentalness.FAR_INLAND.max(), cell.continentEdge * 0.75F);
+				return NoiseUtil.lerp(Continentalness.NEAR_INLAND.min(), 0.6F, cell.continentEdge * 0.75F);
 			}
 		},
 		EROSION("erosion") {

@@ -40,9 +40,10 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 	}
 	
 	public void applyTerrain(Cell cell, float x, float z) {
-        cell.terrain = TerrainType.FLATS;
+        cell.terrain = TerrainType.PLAINS;
         cell.beachNoise = this.beachNoise.compute(x, z, 0);
         this.continent.apply(cell, x, z);
+        cell.continentEdge = 1.0F;
         this.region.apply(cell, x, z);
         this.terrain.apply(cell, x * this.terrainFrequency, z * this.terrainFrequency);
 	}
@@ -53,21 +54,19 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 	}
 	
 	public void applyClimate(Cell cell, float x, float z) {
-//    	cell.weirdness = -cell.weirdness;
+    	cell.weirdness = -cell.weirdness;
     	
 		float riverValleyThreshold = 0.675F;
-        if(cell.riverMask < riverValleyThreshold) {
-        	cell.weirdness = NoiseUtil.lerp(cell.weirdness, -Weirdness.LOW_SLICE_NORMAL_DESCENDING.mid(), 1.0F - cell.riverMask);
-        	cell.erosion = NoiseUtil.lerp(cell.erosion, Erosion.LEVEL_3.mid(), 1.0F - cell.riverMask);
-        }
-
-//        if(cell.terrain.isWetland()) {
-//        	cell.erosion = Erosion.LEVEL_6.mid();
+//        if(cell.riverMask < riverValleyThreshold) {
+//        	cell.erosion = 0.4F;
+//        	cell.weirdness = 0.1F; NoiseUtil.lerp(cell.weirdness, Weirdness.LOW_SLICE_NORMAL_DESCENDING.mid(), 1.0F - cell.riverMask);
+////        	cell.erosion = NoiseUtil.lerp(cell.erosion, Erosion.LEVEL_3.mid(), 1.0F - cell.riverMask);
 //        }
-        if(cell.terrain.isRiver()) {
-        	cell.weirdness = 0.0F;
-        }
-//        
+//
+//        if(cell.terrain.isRiver()) {
+//        	cell.weirdness = 0.0F;
+//        }
+////        
 //        if(cell.terrain.isLake() && cell.height < this.levels.water) {
 //            cell.erosion = Erosion.LEVEL_4.mid();
 //            cell.weirdness = -0.03F;
@@ -81,7 +80,6 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 	public static Heightmap make(GeneratorContext ctx) {
         Preset preset = ctx.preset;
         WorldSettings worldSettings = ctx.preset.world();
-		WorldSettings.Properties properties = worldSettings.properties;
         ControlPoints controlPoints = worldSettings.controlPoints;
 
         TerrainSettings terrainSettings = preset.terrain();
@@ -116,6 +114,8 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 
         CellPopulator terrainRegions = new RegionSelector(TerrainProvider.generateTerrain(ctx.seed, terrainSettings, miscellaneousSettings, regionConfig, levels, ground));
         CellPopulator terrainRegionBorders = Populators.makeBorder(ctx.seed, ground, terrainSettings.plains, terrainSettings.steppe, globalVerticalScale);
+        terrainRegions = Populators.makeTorridonian(new Seed(0), ground, terrainSettings.torridonian);
+        
         CellPopulator terrainBlend = new RegionLerper(terrainRegionBorders, terrainRegions);
         CellPopulator mountains = Populators.makeMountainChain(mountainSeed, ground, terrainSettings.mountains, miscellaneousSettings, terrainSettings.general.legacyWorldGen ? globalVerticalScale : globalVerticalScale * terrainSettings.mountains.verticalScale, general.fancyMountains, general.legacyWorldGen);
         Continent continent = worldSettings.continent.continentType.create(ctx.seed, ctx);

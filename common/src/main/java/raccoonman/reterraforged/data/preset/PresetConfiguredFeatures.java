@@ -60,7 +60,6 @@ import raccoonman.reterraforged.world.worldgen.feature.template.placement.Templa
 import raccoonman.reterraforged.world.worldgen.feature.template.template.TemplateContext;
 
 public class PresetConfiguredFeatures {
-	public static final ResourceKey<ConfiguredFeature<?, ?>> ERODE = createKey("erode");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> ERODE_SNOW = createKey("erode_snow");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> SWAMP_SURFACE = createKey("swamp_surface");
 
@@ -97,6 +96,7 @@ public class PresetConfiguredFeatures {
 	public static final ResourceKey<ConfiguredFeature<?, ?>> TAIGA_SCRUB_BUSH = createKey("shrubs/taiga_scrub_bush");
 
 	public static final ResourceKey<ConfiguredFeature<?, ?>> FOREST_GRASS = createKey("forest_grass");
+	public static final ResourceKey<ConfiguredFeature<?, ?>> COLD_GRASS = createKey("cold_grass");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> BIRCH_FOREST_GRASS = createKey("birch_forest_grass");
 	
 	public static final ResourceKey<ConfiguredFeature<?, ?>> PLAINS_TREES = createKey("plains_trees");
@@ -121,12 +121,8 @@ public class PresetConfiguredFeatures {
 		SurfaceSettings surface = preset.surface();
 		SurfaceSettings.Erosion erosion = surface.erosion();
 		
-		ErodeFeature.Config erodeConfig = new ErodeFeature.Config(miscellaneous.rockTag(), erosion.rockVariance, erosion.rockMin, erosion.dirtVariance, erosion.dirtMin, erosion.rockSteepness, erosion.dirtSteepness, erosion.screeSteepness, erosion.heightModifier / 255F, erosion.slopeModifier / 255F, 256, 3F / 255F, 0.55F);
-		if(miscellaneous.erosionDecorator) {
-			FeatureUtils.register(ctx, ERODE, RTFFeatures.ERODE, erodeConfig);
-		}
-		
 		if(miscellaneous.naturalSnowDecorator || miscellaneous.smoothLayerDecorator) {
+			ErodeFeature.Config erodeConfig = new ErodeFeature.Config(miscellaneous.rockTag(), erosion.rockVariance, erosion.rockMin, erosion.dirtVariance, erosion.dirtMin, erosion.rockSteepness, erosion.dirtSteepness, erosion.screeSteepness, erosion.heightModifier / 255F, erosion.slopeModifier / 255F, 256, 3F / 255F, 0.55F);
 			FeatureUtils.register(ctx, ERODE_SNOW, RTFFeatures.ERODE_SNOW, new ErodeSnowFeature.Config(erosion.snowSteepness, (float) erosion.snowHeight / 255.0F, miscellaneous.naturalSnowDecorator, miscellaneous.smoothLayerDecorator, erodeConfig));
 		}
 		
@@ -288,6 +284,15 @@ public class PresetConfiguredFeatures {
 					makeWeighted(0.4F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.TALL_GRASS, 56))),
 					makeWeighted(0.2F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.LARGE_FERN, 48))),
 					makeWeighted(0.2F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.FERN, 24)))
+				)
+			));
+			FeatureUtils.register(ctx, COLD_GRASS, Feature.RANDOM_SELECTOR, makeRandom(
+				makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.GRASS, 48)),
+				List.of(
+					makeWeighted(0.55F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.GRASS, 56))),
+					makeWeighted(0.2F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.TALL_GRASS, 24))),
+					makeWeighted(0.3F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.LARGE_FERN, 24))),
+					makeWeighted(0.5F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.FERN, 36)))
 				)
 			));
 			FeatureUtils.register(ctx, BIRCH_FOREST_GRASS, Feature.RANDOM_SELECTOR, makeRandom(

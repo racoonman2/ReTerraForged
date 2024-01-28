@@ -3,7 +3,6 @@ package raccoonman.reterraforged.mixin;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,14 +35,11 @@ class MixinNoiseChunk {
 	private int generationHeight;
 	private Tile.Chunk chunk;
 	private Cache2d cache2d;
+    private NoiseGeneratorSettings generatorSettings;
 	
 	@Shadow
     @Final
     private DensityFunction initialDensityNoJaggedness;
-    
-	@Shadow
-    @Final
-    private NoiseSettings noiseSettings;
     
 	@Shadow
     @Final
@@ -71,15 +67,16 @@ class MixinNoiseChunk {
 		),
 		method = "<init>"
 	)
-	private NoiseRouter NoiseChunk(RandomState randomState1, int cellCountXZ, RandomState randomState2, int minBlockX, int minBlockZ, NoiseSettings noiseSettings) {
+	private NoiseRouter NoiseChunk(RandomState randomState1, int cellCountXZ, RandomState randomState2, int minBlockX, int minBlockZ, NoiseSettings noiseSettings, DensityFunctions.BeardifierOrMarker beardifierOrMarker, NoiseGeneratorSettings noiseGeneratorSettings) {
 		this.randomState = randomState1;
 		this.chunkX = SectionPos.blockToSectionCoord(minBlockX);
 		this.chunkZ = SectionPos.blockToSectionCoord(minBlockZ);
+		this.generatorSettings = noiseGeneratorSettings;
 		GeneratorContext generatorContext;
 		if((Object) this.randomState instanceof RTFRandomState rtfRandomState && (generatorContext = rtfRandomState.generatorContext()) != null) {
 			boolean cache = CellSampler.isCachedNoiseChunk(cellCountXZ);
-			
-			this.generationHeight = generatorContext.lookup.getGenerationHeight(this.chunkX, this.chunkZ, noiseSettings, cache);
+
+			this.generationHeight = generatorContext.lookup.getGenerationHeight(this.chunkX, this.chunkZ, noiseGeneratorSettings, cache);
 			this.cellCountY = Math.min(this.cellCountY, this.generationHeight / this.cellHeight);
 			this.cache2d = new CellSampler.Cache2d();
 			
@@ -92,19 +89,6 @@ class MixinNoiseChunk {
 		return this.randomState.router();
 	}
 	
-	@Redirect(
-		at = @At(
-			value = "INVOKE",
-			target = "Lnet/minecraft/world/level/levelgen/NoiseSettings;height()I",
-			ordinal = 1
-		),
-		require = 1,
-		method = "<init>"
-	)
-	private int NoiseChunk(NoiseSettings settings) {
-		return this.generationHeight + this.cellHeight;
-	}
-
 	@ModifyVariable(
 		method = "<init>",
 		at = @At("HEAD"),
@@ -144,7 +128,6 @@ class MixinNoiseChunk {
 			callback.setReturnValue(mapped.new CacheChunk(this.chunk, this.cache2d, this.chunkX, this.chunkZ));
 		}
 	}
-	
 	@Redirect(
 		at = @At(
 			value = "INVOKE",
@@ -159,9 +142,9 @@ class MixinNoiseChunk {
         int generationHeight;
 		GeneratorContext generatorContext;
         if((Object) this.randomState instanceof RTFRandomState rtfRandomState && (generatorContext = rtfRandomState.generatorContext()) != null) {
-        	generationHeight = generatorContext.lookup.getGenerationHeight(SectionPos.blockToSectionCoord(blockX), SectionPos.blockToSectionCoord(blockZ), this.noiseSettings, false);
+        	generationHeight = generatorContext.lookup.getGenerationHeight(SectionPos.blockToSectionCoord(blockX), SectionPos.blockToSectionCoord(blockZ), this.generatorSettings, false);
         } else {
-        	generationHeight = this.noiseSettings.height();
+        	generationHeight = this.generatorSettings.noiseSettings().height();
         }
         return generationHeight;
 	}

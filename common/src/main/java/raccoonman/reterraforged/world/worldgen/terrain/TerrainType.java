@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 
 public class TerrainType {
     private static final Object LOCK = new Object();
-    private static final List<Terrain> REGISTRY = new CopyOnWriteArrayList<>();
+    public static final List<Terrain> REGISTRY = new CopyOnWriteArrayList<>();
     public static final Terrain NONE = register("none", TerrainCategory.NONE);
     public static final Terrain DEEP_OCEAN = register("deep_ocean", TerrainCategory.DEEP_OCEAN);
     public static final Terrain SHALLOW_OCEAN = register("ocean", TerrainCategory.SHALLOW_OCEAN);
@@ -17,10 +17,15 @@ public class TerrainType {
     public static final Terrain RIVER = register("river", TerrainCategory.RIVER);
     public static final Terrain LAKE = register("lake", TerrainCategory.LAKE);
     public static final Terrain WETLAND = registerWetlands("wetland", TerrainCategory.WETLAND);
-    public static final Terrain FLATS = register("flats", TerrainCategory.FLATLAND);
+    public static final Terrain PLAINS = register("plains", TerrainCategory.FLATLAND);
+    public static final Terrain STEPPE = register("steppe", TerrainCategory.FLATLAND);
+    public static final Terrain BORDER = register("border", TerrainCategory.FLATLAND);
     public static final Terrain BADLANDS = registerBadlands("badlands", TerrainCategory.FLATLAND);
     public static final Terrain PLATEAU = register("plateau", TerrainCategory.LOWLAND);
-    public static final Terrain HILLS = register("hills", TerrainCategory.LOWLAND);
+    public static final Terrain HILLS_1 = register("hills_1", TerrainCategory.LOWLAND);
+    public static final Terrain HILLS_2 = register("hills_2", TerrainCategory.LOWLAND);
+    public static final Terrain DALES = register("dales", TerrainCategory.LOWLAND);
+    public static final Terrain TORRIDONIAN = register("torridonian", TerrainCategory.LOWLAND);
     public static final Terrain MOUNTAINS_1 = registerMountain("mountains_1", TerrainCategory.HIGHLAND);
     public static final Terrain MOUNTAINS_2 = registerMountain("mountains_2", TerrainCategory.HIGHLAND);
     public static final Terrain MOUNTAINS_3 = registerMountain("mountains_3", TerrainCategory.HIGHLAND);

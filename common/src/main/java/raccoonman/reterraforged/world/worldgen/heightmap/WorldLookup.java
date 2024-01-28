@@ -2,6 +2,7 @@ package raccoonman.reterraforged.world.worldgen.heightmap;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
@@ -28,7 +29,9 @@ public class WorldLookup {
 		return this.heightmap;
 	}
 	
-	public int getGenerationHeight(int chunkX, int chunkZ, NoiseSettings noiseSettings, boolean load) {
+	public int getGenerationHeight(int chunkX, int chunkZ, NoiseGeneratorSettings generatorSettings, boolean load) {
+		NoiseSettings noiseSettings = generatorSettings.noiseSettings();
+		
 		int minY = noiseSettings.minY();
 		int genHeight = noiseSettings.height();
 		int cellHeight = noiseSettings.getCellHeight();
@@ -37,18 +40,18 @@ public class WorldLookup {
 		Tile tile = load ? this.cache.provideAtChunk(chunkX, chunkZ) : this.cache.provideAtChunkIfPresent(chunkX, chunkZ);
 		if(tile != null) {
 			Tile.Chunk chunk = tile.getChunkReader(chunkX, chunkZ);
-			int generationHeight = this.levels.scale(Math.max(this.levels.ground, chunk.getGenerationHeight()));
+			int generationHeight = Math.max(generatorSettings.seaLevel(), this.levels.scale(chunk.getGenerationHeight()));
 			return Math.min(genHeight, ((-minY + generationHeight) / cellHeight + 1) * cellHeight);
 		} else {
 			return genHeight;
 		}
 	}
 
-	public boolean applyCell(Cell cell, int x, int z) {
-		return this.applyCell(cell, x, z, false);
+	public boolean apply(Cell cell, int x, int z) {
+		return this.apply(cell, x, z, false);
 	}
 
-	public boolean applyCell(Cell cell, int x, int z, boolean load) {
+	public boolean apply(Cell cell, int x, int z, boolean load) {
 		if (load && this.computeAccurate(cell, x, z)) {
 			return true;
 		}
