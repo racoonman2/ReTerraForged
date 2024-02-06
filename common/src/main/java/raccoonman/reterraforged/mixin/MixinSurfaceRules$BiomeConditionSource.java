@@ -19,6 +19,7 @@ import raccoonman.reterraforged.world.worldgen.surface.RTFSurfaceContext;
 import raccoonman.reterraforged.world.worldgen.surface.SurfaceRegion;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;
 
+// cool hack to fix performance issues caused by BiomeConditionSource
 @Mixin(targets = "net.minecraft.world.level.levelgen.SurfaceRules$BiomeConditionSource")
 public class MixinSurfaceRules$BiomeConditionSource {
 	@Final
@@ -34,24 +35,21 @@ public class MixinSurfaceRules$BiomeConditionSource {
     	}
     }
     
-    class BiomeCondition implements SurfaceRules.Condition {
+    class BiomeCondition extends SurfaceRules.LazyYCondition {
     	private boolean notNearby;
     	private SurfaceRules.Context ctx;
     	private WorldGenRegion region;
     	
-    	private boolean skip;
-    	private boolean lastResult;
-    	private int lastBlockY;
-    	private long lastBlockXZ;
     	private int lastQuartY;
+    	private boolean skip;
     	
     	public BiomeCondition(boolean notNearby, SurfaceRules.Context ctx, WorldGenRegion region) {
+    		super(ctx);
     		this.notNearby = notNearby;
     		this.ctx = ctx;
     		this.region = region;
-
-    		this.lastBlockY = Integer.MAX_VALUE;
-    		this.lastQuartY = Integer.MAX_VALUE;
+    		
+    		this.lastQuartY = Integer.MIN_VALUE;
     	}
     	
     	private boolean skip() {
@@ -84,28 +82,22 @@ public class MixinSurfaceRules$BiomeConditionSource {
     	}
     	
 		@Override
-		public boolean test() {
+		public boolean compute() {
 			if(this.notNearby) {
 				return false;
 			}
-
-			int quartY = QuartPos.fromBlock(this.ctx.blockY);
-			long blockXZ = PosUtil.pack(this.ctx.blockX, this.ctx.blockZ);
-			if(quartY != this.lastQuartY || this.lastBlockXZ != blockXZ) {
-				this.lastQuartY = quartY;
-				this.lastBlockXZ = blockXZ;
+			
+			int quartY = QuartPos.fromBlock(this.context.blockY);
+			if(this.lastQuartY != quartY) {
 				this.skip = this.skip();
+				this.lastQuartY = quartY;
 			}
-
+			
 			if(this.skip) {
 				return false;
 			}
-
-			if(this.lastBlockY != this.ctx.blockY) {
-				this.lastBlockY = this.ctx.blockY;
-				this.lastResult = this.ctx.biome.get().is(MixinSurfaceRules$BiomeConditionSource.this.biomeNameTest);
-			}
-			return this.lastResult;
+			
+			return this.ctx.biome.get().is(MixinSurfaceRules$BiomeConditionSource.this.biomeNameTest);
 		}
     }
 }
