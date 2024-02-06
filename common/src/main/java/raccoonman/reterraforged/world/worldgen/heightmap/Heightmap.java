@@ -6,15 +6,12 @@ import raccoonman.reterraforged.data.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.data.preset.settings.WorldSettings;
 import raccoonman.reterraforged.data.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
-import raccoonman.reterraforged.world.worldgen.biome.Erosion;
-import raccoonman.reterraforged.world.worldgen.biome.Weirdness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.climate.Climate;
 import raccoonman.reterraforged.world.worldgen.continent.Continent;
 import raccoonman.reterraforged.world.worldgen.continent.ContinentLerper2;
 import raccoonman.reterraforged.world.worldgen.continent.ContinentLerper3;
-import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.EdgeFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.Interpolation;
@@ -42,13 +39,14 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 	public void applyTerrain(Cell cell, float x, float z) {
         cell.terrain = TerrainType.PLAINS;
         cell.beachNoise = this.beachNoise.compute(x, z, 0);
+
         this.continent.apply(cell, x, z);
         this.region.apply(cell, x, z);
         this.terrain.apply(cell, x * this.terrainFrequency, z * this.terrainFrequency);
 	}
 	
 	public void applyRivers(Cell cell, float x, float z, Rivermap rivermap) {
-        rivermap.apply(cell, x, z);
+//        rivermap.apply(cell, x, z);
         VolcanoPopulator.modifyVolcanoType(cell, this.levels);
 	}
 	
@@ -85,8 +83,6 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         TerrainSettings.General general = terrainSettings.general;
         float globalVerticalScale = general.globalVerticalScale;
         
-        MiscellaneousSettings miscellaneousSettings = preset.miscellaneous();
-        
         Seed regionWarp = ctx.seed.offset(8934);
         int regionWarpScale = 400;
         int regionWarpStrength = 200;
@@ -111,12 +107,12 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 
 		Noise ground = Noises.constant(levels.ground);
 
-        CellPopulator terrainRegions = new RegionSelector(TerrainProvider.generateTerrain(ctx.seed, terrainSettings, miscellaneousSettings, regionConfig, levels, ground));
+        CellPopulator terrainRegions = new RegionSelector(TerrainProvider.generateTerrain(ctx.seed, terrainSettings, regionConfig, levels, ground));
+//        terrainRegions = Populators.makeMountainCliffs(TerrainType.MOUNTAIN_CLIFFS, new Seed(0), ground, terrainSettings.mountains, globalVerticalScale);
         CellPopulator terrainRegionBorders = Populators.makeBorder(ctx.seed, ground, terrainSettings.plains, terrainSettings.steppe, globalVerticalScale);
-//        terrainRegions = Populators.makeTorridonian(new Seed(0), ground, terrainSettings.torridonian);
         
         CellPopulator terrainBlend = new RegionLerper(terrainRegionBorders, terrainRegions);
-        CellPopulator mountains = Populators.makeMountainChain(mountainSeed, ground, terrainSettings.mountains, miscellaneousSettings, terrainSettings.general.legacyWorldGen ? globalVerticalScale : globalVerticalScale * terrainSettings.mountains.verticalScale, general.fancyMountains, general.legacyWorldGen);
+        CellPopulator mountains = Populators.makeMountainChain(mountainSeed, ground, terrainSettings.mountains, terrainSettings.general.legacyWorldGen ? globalVerticalScale : globalVerticalScale * terrainSettings.mountains.verticalScale, general.fancyMountains, general.legacyWorldGen);
         Continent continent = worldSettings.continent.continentType.create(ctx.seed, ctx);
         Climate climate = Climate.make(continent, ctx);
         CellPopulator land = new Blender(mountainShape, terrainBlend, mountains, 0.3F, 0.8F, 0.575F);
@@ -127,7 +123,7 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         
         CellPopulator oceans = new ContinentLerper3(deepOcean, shallowOcean, coast, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast);
         CellPopulator terrain = new ContinentLerper2(oceans, land, controlPoints.shallowOcean, controlPoints.inland);
-
+       
         Noise beachNoise = Noises.perlin2(ctx.seed.next(), 20, 1);
         beachNoise = Noises.mul(beachNoise, ctx.levels.scale(5));
         return new Heightmap(terrain, region, continent, climate, levels, controlPoints, terrainFrequency, beachNoise);

@@ -20,28 +20,27 @@ import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.SurfaceSystem;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.world.worldgen.surface.RTFSurfaceSystem;
-import raccoonman.reterraforged.world.worldgen.surface.rule.StrataRule;
+import raccoonman.reterraforged.world.worldgen.surface.rule.StrataRule.Strata;
 
 @Mixin(SurfaceSystem.class)
 @Implements(@Interface(iface = RTFSurfaceSystem.class, prefix = RTFCommon.MOD_ID + "$RTFSurfaceSystem$"))
 class MixinSurfaceSystem {
-	private static final ResourceLocation GEOLOGY_RANDOM = RTFCommon.location("geology");
-	private RandomState randomState;
-	private Map<ResourceLocation, List<List<StrataRule.Layer>>> strata;
+	private static final ResourceLocation STRATA_RANDOM = RTFCommon.location("strata");
+	private RandomSource strataRandom;
+	private Map<ResourceLocation, List<Strata>> strata;
 	
 	@Inject(
 		at = @At("TAIL"),
 		method = "<init>"
 	)
     public void SurfaceSystem(RandomState randomState, BlockState blockState, int i, PositionalRandomFactory positionalRandomFactory, CallbackInfo callback) {
-    	this.randomState = randomState;
+    	this.strataRandom = randomState.random.fromHashOf(STRATA_RANDOM);
     	this.strata = new ConcurrentHashMap<>();
 	}
-	
-	public List<List<StrataRule.Layer>> reterraforged$RTFSurfaceSystem$getOrCreateStrata(ResourceLocation name, Function<RandomSource, List<List<StrataRule.Layer>>> strata) {
-		return this.strata.computeIfAbsent(name, (k) -> {
-			PositionalRandomFactory factory = this.randomState.getOrCreateRandomFactory(GEOLOGY_RANDOM);
-			return strata.apply(factory.fromHashOf(k));
+
+	public List<Strata> reterraforged$RTFSurfaceSystem$getOrCreateStrata(ResourceLocation cacheId, Function<RandomSource, List<Strata>> factory) {
+		return this.strata.computeIfAbsent(cacheId, (k) -> {
+			return factory.apply(this.strataRandom.fork());
 		});
 	}
 }

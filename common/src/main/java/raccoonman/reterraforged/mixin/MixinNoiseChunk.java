@@ -14,6 +14,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Aquifer;
+import net.minecraft.world.level.levelgen.Beardifier;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.NoiseChunk;
@@ -76,7 +77,13 @@ class MixinNoiseChunk {
 		if((Object) this.randomState instanceof RTFRandomState rtfRandomState && (generatorContext = rtfRandomState.generatorContext()) != null) {
 			boolean cache = CellSampler.isCachedNoiseChunk(cellCountXZ);
 
-			this.generationHeight = generatorContext.lookup.getGenerationHeight(this.chunkX, this.chunkZ, noiseGeneratorSettings, cache);
+//			if(beardifierOrMarker instanceof Beardifier beardifier && (beardifier.pieceIterator.hasNext() || beardifier.junctionIterator.hasNext())) {
+//				this.generationHeight = noiseSettings.height();
+//				System.out.println(this.generationHeight);
+//			} else {
+				this.generationHeight = generatorContext.lookup.getGenerationHeight(this.chunkX, this.chunkZ, noiseGeneratorSettings, cache);
+//			}
+			
 			this.cellCountY = Math.min(this.cellCountY, this.generationHeight / this.cellHeight);
 			this.cache2d = new CellSampler.Cache2d();
 			
@@ -102,7 +109,9 @@ class MixinNoiseChunk {
 		if((Object) randomState instanceof RTFRandomState rtfRandomState) {
 			@Nullable
 			Preset preset = rtfRandomState.preset();
-			if(preset != null && rtfRandomState.generatorContext() != null) {
+			@Nullable
+			GeneratorContext generatorContext;
+			if(preset != null && (generatorContext = rtfRandomState.generatorContext()) != null) {
 				int lavaLevel = preset.world().properties.lavaLevel;
 		        Aquifer.FluidStatus lava = new Aquifer.FluidStatus(lavaLevel, Blocks.LAVA.defaultBlockState());
 		        int seaLevel = noiseGeneratorSettings.seaLevel();

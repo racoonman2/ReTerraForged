@@ -1,6 +1,6 @@
-package raccoonman.reterraforged.world.worldgen.rivermap.wetland;
+package raccoonman.reterraforged.world.worldgen.terrain.populator;
 
-import raccoonman.reterraforged.world.worldgen.biome.Erosion;
+import raccoonman.reterraforged.world.worldgen.biome.Weirdness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
@@ -11,7 +11,7 @@ import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.util.Boundsf;
 
-public class Wetland {
+public class WetlandPopulator {
     private Vec2f a;
     private Vec2f b;
     private float radius;
@@ -25,7 +25,7 @@ public class Wetland {
     private Noise moundHeight;
     private Noise terrainEdge;
     
-    public Wetland(int seed, Vec2f a, Vec2f b, float radius, Levels levels) {
+    public WetlandPopulator(int seed, Vec2f a, Vec2f b, float radius, Levels levels) {
         this.a = a;
         this.b = b;
         this.radius = radius;
@@ -68,9 +68,11 @@ public class Wetland {
         float valleyAlpha = NoiseUtil.map(dist, 0.0F, 0.65F, 0.65F);
         float erosionAlpha = NoiseUtil.map(Math.max(dist, 0.0F), 0.0F, 0.65F, 0.65F, false);
         cell.erosion = NoiseUtil.lerp(cell.erosion, 0.55025F, erosionAlpha);
+        cell.weirdness = Weirdness.LOW_SLICE_NORMAL_DESCENDING.midpoint();
         if (cell.height > this.banks) {
             cell.height = NoiseUtil.lerp(cell.height, this.banks, valleyAlpha);
         }
+
         float poolsAlpha = NoiseUtil.map(dist, 0.65F, 0.7F, 0.050000012F);
         if (cell.height > this.bed && cell.height <= this.banks) {
             cell.height = NoiseUtil.lerp(cell.height, this.bed, poolsAlpha);

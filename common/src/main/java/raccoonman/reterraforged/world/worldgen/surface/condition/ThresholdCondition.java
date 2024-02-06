@@ -5,10 +5,10 @@ import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 
 abstract class ThresholdCondition extends CellCondition {
-	private float threshold;
+	private Noise threshold;
 	private Noise variance;
 	
-	public ThresholdCondition(Context context, float threshold, Noise variance) {
+	public ThresholdCondition(Context context, Noise threshold, Noise variance) {
 		super(context);
 		
 		this.threshold = threshold;
@@ -17,7 +17,7 @@ abstract class ThresholdCondition extends CellCondition {
 
 	@Override
 	public boolean test(Cell cell, int x, int z) {
-		return this.sample(cell) + this.variance.compute(x, z, 0) > this.threshold;
+		return this.sample(cell) + this.variance.compute(x, z, 0) > this.threshold.compute(x, z, 0);
 	}
 	
 	protected abstract float sample(Cell cell);

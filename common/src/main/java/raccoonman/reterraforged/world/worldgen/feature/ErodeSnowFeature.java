@@ -63,14 +63,13 @@ public class ErodeSnowFeature extends Feature<Config> {
 			Noise rand = Noises.white(heightmap.climate().randomSeed(), 1);
 			BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 			Config config = placeContext.config();
-			ErodeFeature.Config erodeConfig = config.erodeConfig();
 			
 			for(int x = 0; x < 16; x++) {
 				for(int z = 0; z < 16; z++) {
 		        	Cell cell = tileChunk.getCell(x, z);
 					int scaledY = levels.scale(cell.height);
 			        int surfaceY = chunk.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
-			        if(scaledY == surfaceY && scaledY >= generator.getSeaLevel()) {
+			        if(scaledY == surfaceY && scaledY >= generator.getSeaLevel() - 1) {
 		        		int worldX = chunkPos.getBlockX(x);
 		        		int worldZ = chunkPos.getBlockZ(z);
 				        pos.set(worldX, surfaceY, worldZ);
@@ -78,8 +77,8 @@ public class ErodeSnowFeature extends Feature<Config> {
 				        if(config.erode) {
 //				        	if(level.getBiome(pos).value().getTemperature(pos) <= 0.25F) {
 					            float var = -ColumnDecorator.sampleNoise(worldX, worldZ, 16, 0);
-					            float hNoise = rand.compute(worldX, worldZ, 4) * erodeConfig.heightModifier();
-					            float sNoise = rand.compute(worldX, worldZ, 5) * erodeConfig.slopeModifier();
+					            float hNoise = rand.compute(worldX, worldZ, 4) * config.heightModifier();
+					            float sNoise = rand.compute(worldX, worldZ, 5) * config.slopeModifier();
 					            float vModifier = cell.terrain == TerrainType.VOLCANO ? 0.15F : 0F;
 					            float height = cell.height;// + var + hNoise + vModifier;
 					            float steepness = cell.gradient;// + var + sNoise + vModifier;
@@ -123,7 +122,6 @@ public class ErodeSnowFeature extends Feature<Config> {
 	}
 
     private static boolean snowErosion(Config config, float x, float z, float steepness, float height) {
-    	ErodeFeature.Config erodeConfig = config.erodeConfig();
         return /*steepness > erodeConfig.rockSteepness() ||*/ (steepness * 0.55F > config.steepness());// && height > config.height() || (steepness > erodeConfig.dirtSteepness() && height > ColumnDecorator.sampleNoise(x, z, erodeConfig.dirtVar(), erodeConfig.dirtMin()));
     }
 
@@ -198,13 +196,14 @@ public class ErodeSnowFeature extends Feature<Config> {
         return property.getPossibleValues().stream().max(Integer::compareTo).orElse(0);
     }
 
-	public record Config(float steepness, float height, boolean erode, boolean smooth, ErodeFeature.Config erodeConfig) implements FeatureConfiguration {
+	public record Config(float steepness, float height, boolean erode, boolean smooth, float slopeModifier, float heightModifier) implements FeatureConfiguration {
 		public static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.FLOAT.fieldOf("steepness").forGetter(Config::steepness),
 			Codec.FLOAT.fieldOf("height").forGetter(Config::height),
 			Codec.BOOL.fieldOf("erode").forGetter(Config::erode),
 			Codec.BOOL.fieldOf("smooth").forGetter(Config::smooth),
-			ErodeFeature.Config.CODEC.fieldOf("erode_config").forGetter(Config::erodeConfig)
+			Codec.FLOAT.fieldOf("slope_modifier").forGetter(Config::slopeModifier),
+			Codec.FLOAT.fieldOf("height_modifier").forGetter(Config::heightModifier)
 		).apply(instance, Config::new));
 	}
 }

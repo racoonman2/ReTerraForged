@@ -67,8 +67,6 @@ public class RiverSettings {
     public static class Lake {
     	public static final Codec<Lake> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.FLOAT.fieldOf("chance").forGetter((o) -> o.chance),
-    		Codec.FLOAT.fieldOf("minStartDistance").forGetter((o) -> o.minStartDistance),
-    		Codec.FLOAT.fieldOf("maxStartDistance").forGetter((o) -> o.maxStartDistance),
     		Codec.INT.fieldOf("depth").forGetter((o) -> o.depth),
     		Codec.INT.fieldOf("sizeMin").forGetter((o) -> o.sizeMin),
     		Codec.INT.fieldOf("sizeMax").forGetter((o) -> o.sizeMax),
@@ -77,18 +75,14 @@ public class RiverSettings {
     	).apply(instance, Lake::new));
 
         public float chance;
-        public float minStartDistance;
-        public float maxStartDistance;
         public int depth;
         public int sizeMin;
         public int sizeMax;
         public int minBankHeight;
         public int maxBankHeight;
         
-        public Lake(float chance, float minStartDistance, float maxStartDistance, int depth, int sizeMin, int sizeMax, int minBankHeight, int maxBankHeight) {
+        public Lake(float chance, int depth, int sizeMin, int sizeMax, int minBankHeight, int maxBankHeight) {
         	this.chance = chance;
-        	this.minStartDistance = minStartDistance;
-        	this.maxStartDistance = maxStartDistance;
         	this.depth = depth;
         	this.sizeMin= sizeMin;
         	this.sizeMax = sizeMax;
@@ -97,7 +91,7 @@ public class RiverSettings {
         }
         
         public Lake copy() {
-        	return new Lake(this.chance, this.minStartDistance, this.maxStartDistance, this.depth, this.sizeMin, this.sizeMax, this.minBankHeight, this.maxBankHeight);
+        	return new Lake(this.chance, this.depth, this.sizeMin, this.sizeMax, this.minBankHeight, this.maxBankHeight);
         }
     }
     

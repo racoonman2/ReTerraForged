@@ -5,12 +5,13 @@ import java.util.List;
 
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.noise.module.Line;
-import raccoonman.reterraforged.world.worldgen.rivermap.lake.Lake;
-import raccoonman.reterraforged.world.worldgen.rivermap.wetland.Wetland;
+import raccoonman.reterraforged.world.worldgen.terrain.populator.LakePopulator;
+import raccoonman.reterraforged.world.worldgen.terrain.populator.RiverPopulator;
+import raccoonman.reterraforged.world.worldgen.terrain.populator.WetlandPopulator;
 import raccoonman.reterraforged.world.worldgen.util.Boundsf;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;
 
-public record Network(RiverCarver riverCarver, Lake[] lakes, Wetland[] wetlands, Network[] children, Boundsf bounds) {
+public record Network(RiverPopulator riverCarver, LakePopulator[] lakes, WetlandPopulator[] wetlands, Network[] children, Boundsf bounds) {
     
     public boolean contains(float x, float z) {
         return this.bounds.contains(x, z);
@@ -42,11 +43,11 @@ public record Network(RiverCarver riverCarver, Lake[] lakes, Wetland[] wetlands,
     }
     
     private void carveRiver(Cell cell, float px, float pz, float pt, float x, float z, float t) {
-        this.riverCarver.carve(cell, px, pz, pt, x, z, t);
+        this.riverCarver.apply(cell, px, pz, pt, x, z, t);
     }
     
     private void carveWetlands(Cell cell, float x, float z, float nx, float nz) {
-        for (Wetland wetland : this.wetlands) {
+        for (WetlandPopulator wetland : this.wetlands) {
             wetland.apply(cell, x + nx, z + nz, x, z);
         }
     }
@@ -54,12 +55,12 @@ public record Network(RiverCarver riverCarver, Lake[] lakes, Wetland[] wetlands,
     private void carveLakes(Cell cell, float x, float z, float nx, float nz) {
         float lx = x + nx;
         float lz = z + nz;
-        for (Lake lake : this.lakes) {
+        for (LakePopulator lake : this.lakes) {
             lake.apply(cell, lx, lz);
         }
     }
     
-    private static boolean overlaps(River river, RiverCarver riverCarver, float extend) {
+    private static boolean overlaps(River river, RiverPopulator riverCarver, float extend) {
         return riverCarver.river.intersects(river, extend);
     }
     
@@ -72,21 +73,21 @@ public record Network(RiverCarver riverCarver, Lake[] lakes, Wetland[] wetlands,
         return false;
     }
     
-    public static Builder builder(RiverCarver carver) {
+    public static Builder builder(RiverPopulator carver) {
         return new Builder(carver);
     }
     
     public static class Builder {
-        public RiverCarver carver;
-        public List<Lake> lakes;
-        public List<Wetland> wetlands;
+        public RiverPopulator carver;
+        public List<LakePopulator> lakes;
+        public List<WetlandPopulator> wetlands;
         public List<Builder> children;
         private float minX;
         private float minZ;
         private float maxX;
         private float maxZ;
         
-        private Builder(RiverCarver carver) {
+        private Builder(RiverPopulator carver) {
             this.lakes = new ArrayList<>();
             this.wetlands = new ArrayList<>();
             this.children = new ArrayList<>();
@@ -130,7 +131,7 @@ public record Network(RiverCarver riverCarver, Lake[] lakes, Wetland[] wetlands,
         }
         
         private Network build(Boundsf bounds) {
-            return new Network(this.carver, this.lakes.toArray(Lake[]::new), this.wetlands.toArray(Wetland[]::new), this.children.stream().map(child -> child.build(Boundsf.NONE)).toArray(Network[]::new), bounds);
+            return new Network(this.carver, this.lakes.toArray(LakePopulator[]::new), this.wetlands.toArray(WetlandPopulator[]::new), this.children.stream().map(child -> child.build(Boundsf.NONE)).toArray(Network[]::new), bounds);
         }
         
         private Boundsf.Builder recordBounds(Boundsf.Builder builder) {
@@ -139,10 +140,10 @@ public record Network(RiverCarver riverCarver, Lake[] lakes, Wetland[] wetlands,
             for (Builder child : this.children) {
                 child.recordBounds(builder);
             }
-            for (Lake lake : this.lakes) {
+            for (LakePopulator lake : this.lakes) {
                 lake.recordBounds(builder);
             }
-            for (Wetland wetland : this.wetlands) {
+            for (WetlandPopulator wetland : this.wetlands) {
                 wetland.recordBounds(builder);
             }
             return builder;

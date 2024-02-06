@@ -28,7 +28,7 @@ public enum RenderMode {
                     if (cell.height < levels.water) {
                         return RenderMode.getWaterColor();
                     } else {
-                        Color color = cell.biome.getColor();
+                        Color color = cell.biomeType.getColor();
                         float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), new float[3]);
                         return rgba(hsb[0], hsb[1], (hsb[2] * scale) + bias);
                     }
@@ -133,7 +133,7 @@ public enum RenderMode {
         public int getColor(Cell cell, Levels levels, float scale, float bias) {
             float saturation = 0.7F;
             float brightness = 0.8F;
-            return rgba(cell.terrain.getRenderHue(), saturation, brightness);
+            return rgba(NoiseUtil.valCoord2D(cell.terrain.getName().hashCode(), 0, 0), saturation, brightness);
         }
 
 		@Override
@@ -141,24 +141,6 @@ public enum RenderMode {
 			return cell.terrainRegionId;
 		}
     },
-//    CONTINENTALNESS {
-//    	
-//        @Override
-//        public int getColor(Cell cell, Levels levels, float scale, float bias) {
-//        	float continentalness = this.getNoiseValue(cell);
-//        	return rgba(continentalness, continentalness, continentalness);
-//        }
-//        
-//        @Override
-//        public boolean handlesWater() {
-//            return true;
-//        }
-//
-//		@Override
-//		public float getNoiseValue(Cell cell) {
-//			return cell.continentalness;
-//		}
-//    },
     EROSION {
     	
         @Override
@@ -218,7 +200,7 @@ public enum RenderMode {
         }
         float bands = 10.0F;
         float alpha = 0.2F;
-        float elevation = (cell.height - levels.water) / (1.0F - levels.water);
+        float elevation = (Math.min(cell.height, 1.0F) - levels.water) / (1.0F - levels.water);
         int band = NoiseUtil.round(elevation * bands);
         float scale = 1.0F - alpha;
         float bias = alpha * (band / bands);

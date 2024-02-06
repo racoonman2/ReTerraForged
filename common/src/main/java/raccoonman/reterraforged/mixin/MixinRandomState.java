@@ -25,6 +25,7 @@ import net.minecraft.world.level.levelgen.SurfaceSystem;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.concurrent.ThreadPools;
+import raccoonman.reterraforged.concurrent.cache.CacheManager;
 import raccoonman.reterraforged.config.PerformanceConfig;
 import raccoonman.reterraforged.data.preset.PresetData;
 import raccoonman.reterraforged.data.preset.settings.Preset;
@@ -106,6 +107,9 @@ class MixinRandomState {
 			this.preset = presetHolder.value();
 
 			if(this.hasContext) {
+				//TODO move this somewhere else
+				CacheManager.clear();
+				
 				PerformanceConfig config = PerformanceConfig.read(PerformanceConfig.DEFAULT_FILE_PATH)
 					.resultOrPartial(RTFCommon.LOGGER::error)
 					.orElseGet(PerformanceConfig::makeDefault);

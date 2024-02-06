@@ -1,11 +1,13 @@
 package raccoonman.reterraforged.data.preset;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -13,9 +15,11 @@ import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.placement.CaveSurface;
+import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.data.preset.settings.MiscellaneousSettings;
 import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.data.preset.settings.SurfaceSettings;
+import raccoonman.reterraforged.tags.RTFBlockTags;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.surface.condition.RTFSurfaceConditions;
@@ -50,6 +54,8 @@ public class PresetSurfaceRuleData {
     private static final SurfaceRules.RuleSource ICE = PresetSurfaceRuleData.makeStateRule(Blocks.ICE);
     private static final SurfaceRules.RuleSource WATER = PresetSurfaceRuleData.makeStateRule(Blocks.WATER);
 
+    private static final ResourceLocation STRATA_CACHE_ID = RTFCommon.location("default");
+    
     private static SurfaceRules.RuleSource makeStateRule(Block block) {
         return SurfaceRules.state(block.defaultBlockState());
     }
@@ -59,6 +65,8 @@ public class PresetSurfaceRuleData {
     	
     	SurfaceSettings surfaceSettings = preset.surface();
     	SurfaceSettings.Erosion erosion = surfaceSettings.erosion();
+
+    	int strataBufferAmount = 5;
     	
     	SurfaceRules.ConditionSource y4BelowSurface = SurfaceRules.stoneDepthCheck(3, false, CaveSurface.FLOOR);
         SurfaceRules.ConditionSource below97 = SurfaceRules.yBlockCheck(VerticalAnchor.absolute(97), 2);
@@ -75,37 +83,36 @@ public class PresetSurfaceRuleData {
         SurfaceRules.ConditionSource frozenOcean = SurfaceRules.isBiome(Biomes.FROZEN_OCEAN, Biomes.DEEP_FROZEN_OCEAN);
         SurfaceRules.ConditionSource badlands = SurfaceRules.isBiome(Biomes.BADLANDS, Biomes.ERODED_BADLANDS, Biomes.WOODED_BADLANDS);
         SurfaceRules.ConditionSource steep = SurfaceRules.steep();
-        SurfaceRules.ConditionSource erodedRock = RTFSurfaceConditions.isSteeperThan(erosion.rockSteepness);
-        SurfaceRules.ConditionSource erodedDirt = RTFSurfaceConditions.isSteeperThan(erosion.dirtSteepness);
+        SurfaceRules.ConditionSource erodedRock = RTFSurfaceConditions.steepness(erosion.rockSteepness, noise.getOrThrow(PresetSurfaceNoise.STEEPNESS_VARIANCE));
+        SurfaceRules.ConditionSource erodedRockVariance = RTFSurfaceConditions.height(noise.getOrThrow(PresetSurfaceNoise.ERODED_ROCK), noise.getOrThrow(PresetSurfaceNoise.HEIGHT_VARIANCE));
+        SurfaceRules.RuleSource erodedDirt = makeErodedDirtRule(noise, erosion);
         SurfaceRules.RuleSource grass = SurfaceRules.sequence(
+        	erodedDirt,
         	SurfaceRules.ifTrue(
         		yOnSurface,
-        		SurfaceRules.sequence(
-        			SurfaceRules.ifTrue(erodedDirt, COARSE_DIRT),
-        			GRASS_BLOCK
-        		)
+        		GRASS_BLOCK
         	), 
         	DIRT
         );
         SurfaceRules.RuleSource sand = SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.ON_CEILING, SANDSTONE), SAND);
         SurfaceRules.RuleSource gravel = SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.ON_CEILING, STONE), GRAVEL);
-        SurfaceRules.RuleSource erodedGravel = SurfaceRules.sequence(
+        SurfaceRules.RuleSource windswept = SurfaceRules.sequence(
         	SurfaceRules.ifTrue(
-        		RTFSurfaceConditions.isMoreErodedThan(8.25F),
+        		RTFSurfaceConditions.sediment(5.3F), 
         		STONE
-        	),
+            ),
         	SurfaceRules.ifTrue(
-	        	RTFSurfaceConditions.isMoreErodedThan(5.5F),
-	        	gravel
-	        ),
-        	SurfaceRules.ifTrue(
-        		RTFSurfaceConditions.isMoreSedimentThan(5.3F), 
-        		STONE
-        	),
-        	SurfaceRules.ifTrue(
-        		RTFSurfaceConditions.isMoreSedimentThan(2.4F), 
+        		RTFSurfaceConditions.sediment(2.4F), 
         		gravel
-        	)
+            ),
+        	SurfaceRules.ifTrue(
+        		RTFSurfaceConditions.erosion(8.25F),
+        		STONE
+        	),
+        	SurfaceRules.ifTrue(
+	        	RTFSurfaceConditions.erosion(5.5F),
+	        	gravel
+	        )
         );
         SurfaceRules.ConditionSource sandyBeach = SurfaceRules.isBiome(Biomes.WARM_OCEAN, Biomes.BEACH, Biomes.SNOWY_BEACH);
         SurfaceRules.ConditionSource desert = SurfaceRules.isBiome(Biomes.DESERT);
@@ -134,7 +141,7 @@ public class PresetSurfaceRuleData {
         		SurfaceRules.isBiome(Biomes.WINDSWEPT_HILLS), 
         		SurfaceRules.ifTrue(
 //        			PresetSurfaceRuleData.surfaceNoiseAbove(1.0), 
-        			RTFSurfaceConditions.isMoreSedimentThan(5.0F),
+        			RTFSurfaceConditions.sediment(5.0F),
         			STONE
         		)
         	), 
@@ -223,7 +230,7 @@ public class PresetSurfaceRuleData {
         	SurfaceRules.ifTrue(
         		SurfaceRules.isBiome(Biomes.WINDSWEPT_GRAVELLY_HILLS), 
         		SurfaceRules.sequence(
-        			erodedGravel,
+        			windswept,
         			DIRT
         			
 //        			SurfaceRules.ifTrue(
@@ -245,6 +252,7 @@ public class PresetSurfaceRuleData {
         		SurfaceRules.isBiome(Biomes.MANGROVE_SWAMP), 
         		MUD
         	),
+        	erodedDirt,
         	DIRT
         );
         SurfaceRules.RuleSource onFloor = SurfaceRules.sequence(
@@ -288,7 +296,7 @@ public class PresetSurfaceRuleData {
         		SurfaceRules.sequence(
         			SurfaceRules.ifTrue(
         				steep, 
-        				STONE
+        				DEEPSLATE
         			), 
         			SurfaceRules.ifTrue(
         				yOnSurface, 
@@ -307,7 +315,7 @@ public class PresetSurfaceRuleData {
         		)
         	),
         	SurfaceRules.ifTrue(
-        		SurfaceRules.isBiome(Biomes.FOREST),
+        		SurfaceRules.isBiome(Biomes.FOREST, Biomes.DARK_FOREST),
         		makeForestRule(noise)
         	),
         	stony, 
@@ -327,7 +335,7 @@ public class PresetSurfaceRuleData {
         	SurfaceRules.ifTrue(
         		SurfaceRules.isBiome(Biomes.WINDSWEPT_GRAVELLY_HILLS), 
         		SurfaceRules.sequence(
-            		erodedGravel,
+            		windswept,
             		GRASS_BLOCK
 //        			SurfaceRules.ifTrue(
 //        				PresetSurfaceRuleData.surfaceNoiseAbove(2.0), 
@@ -393,22 +401,25 @@ public class PresetSurfaceRuleData {
         				SurfaceRules.ifTrue(
 	        				SurfaceRules.not(erodedRock),
 	        				SurfaceRules.ifTrue(
-	        					below97, 
-	        					SurfaceRules.sequence(
-	        						SurfaceRules.ifTrue(
-	        							surfaceNoise1, 
-	        							COARSE_DIRT
-	        						), 
-	        						SurfaceRules.ifTrue(
-	        							surfaceNoise2, 
-	        							COARSE_DIRT
-	        						), 
-	        						SurfaceRules.ifTrue(
-	        							surfaceNoise3, 
-	        							COARSE_DIRT
-	        						), 
-	        						grass
-	        					)
+	        					SurfaceRules.not(erodedRockVariance),
+	        					SurfaceRules.ifTrue(
+	        						below97, 
+	        						SurfaceRules.sequence(
+	        							SurfaceRules.ifTrue(
+	        								surfaceNoise1, 
+	        								COARSE_DIRT
+			        					), 
+	        							SurfaceRules.ifTrue(
+	        								surfaceNoise2, 
+	        								COARSE_DIRT
+			        					), 
+	        							SurfaceRules.ifTrue(
+	        								surfaceNoise3, 
+	        								COARSE_DIRT
+			        					), 
+	        							grass
+			        				)
+			        			)
 	        				)
 	        			)
         			),
@@ -532,7 +543,10 @@ public class PresetSurfaceRuleData {
         				),
         				SurfaceRules.ifTrue(
         					SurfaceRules.not(erodedRock),
-            				onFloor
+        					SurfaceRules.ifTrue(
+        						SurfaceRules.not(erodedRockVariance),
+        						onFloor
+        					)
         				)
         			)
         		)
@@ -554,7 +568,10 @@ public class PresetSurfaceRuleData {
         				SurfaceRules.UNDER_FLOOR,
         				SurfaceRules.ifTrue(
         					SurfaceRules.not(erodedRock),
-            				underFloor
+            				SurfaceRules.ifTrue(
+            					SurfaceRules.not(erodedRockVariance),
+            					underFloor
+            				)
         				)
         			),
         			SurfaceRules.ifTrue(
@@ -586,15 +603,18 @@ public class PresetSurfaceRuleData {
         			),
         			SurfaceRules.ifTrue(
         				SurfaceRules.not(erodedRock),
-        				gravel
+        				SurfaceRules.ifTrue(
+        					SurfaceRules.not(erodedRockVariance),
+        					gravel
+        				)
         			)
         		)
-        	)
+        	)//,
 //        	SurfaceRules.ifTrue(
 //            	erodedRock,
 //            	SurfaceRules.ifTrue(
-//            		SurfaceRules.stoneDepthCheck(5, false, CaveSurface.FLOOR),
-//            		makeStrataRule(StrataRule.Layer.SURFACE, miscellaneousSettings, noise)
+//            		SurfaceRules.stoneDepthCheck(strataBufferAmount, false, CaveSurface.FLOOR),
+//            		makeStrataRule(strataBufferAmount, miscellaneousSettings, noise)
 //            	)
 //            )
         );
@@ -607,8 +627,8 @@ public class PresetSurfaceRuleData {
         		SurfaceRules.abovePreliminarySurface(),
         		surface
         	),
-        	SurfaceRules.ifTrue(SurfaceRules.verticalGradient("deepslate", VerticalAnchor.absolute(0), VerticalAnchor.absolute(8)), DEEPSLATE)
-//        	makeStrataRule(StrataRule.Layer.UNDERGROUND, miscellaneousSettings, noise)
+        	SurfaceRules.ifTrue(SurfaceRules.verticalGradient("deepslate", VerticalAnchor.absolute(0), VerticalAnchor.absolute(8)), DEEPSLATE)//,
+//        	makeStrataRule(1, miscellaneousSettings, noise)
         );
 //        SurfaceRuleManager.setDefaultSurfaceRules(RuleCategory.OVERWORLD, rules);
         return rules;
@@ -619,25 +639,25 @@ public class PresetSurfaceRuleData {
     	float min = levels.ground(10);
     	float level = levels.ground(40);
     	
-    	SurfaceRules.ConditionSource aboveLevel = RTFSurfaceConditions.isHigherThan(level, variance);
+    	SurfaceRules.ConditionSource aboveLevel = RTFSurfaceConditions.height(level, variance);
     	return SurfaceRules.ifTrue(
-    		RTFSurfaceConditions.isHigherThan(min), 
+    		RTFSurfaceConditions.height(min), 
     		SurfaceRules.sequence(
     			SurfaceRules.ifTrue(
-    				RTFSurfaceConditions.isSteeperThan(0.15F), 
+    				RTFSurfaceConditions.steepness(0.15F), 
     				SurfaceRules.ifTrue(
     					aboveLevel, 
     					SurfaceRules.sequence(
-    						SurfaceRules.ifTrue(RTFSurfaceConditions.isSteeperThan(0.975F), TERRACOTTA),
-    						SurfaceRules.ifTrue(RTFSurfaceConditions.isSteeperThan(0.85F), BROWN_TERRACOTTA),
-    						SurfaceRules.ifTrue(RTFSurfaceConditions.isSteeperThan(0.75F), ORANGE_TERRACOTTA),
-    						SurfaceRules.ifTrue(RTFSurfaceConditions.isSteeperThan(0.65F), TERRACOTTA), 
+    						SurfaceRules.ifTrue(RTFSurfaceConditions.steepness(0.975F), TERRACOTTA),
+    						SurfaceRules.ifTrue(RTFSurfaceConditions.steepness(0.85F), BROWN_TERRACOTTA),
+    						SurfaceRules.ifTrue(RTFSurfaceConditions.steepness(0.75F), ORANGE_TERRACOTTA),
+    						SurfaceRules.ifTrue(RTFSurfaceConditions.steepness(0.65F), TERRACOTTA), 
     						SMOOTH_SANDSTONE
     					)
     				)
     			),
         		SurfaceRules.ifTrue(
-        			RTFSurfaceConditions.isSteeperThan(0.3F), 
+        			RTFSurfaceConditions.steepness(0.3F), 
         			SMOOTH_SANDSTONE
             	)
     		)
@@ -656,20 +676,28 @@ public class PresetSurfaceRuleData {
     		)	
     	);
     }
-
-	private static SurfaceRules.RuleSource makeStrataRule(StrataRule.Layer layer, MiscellaneousSettings miscellaneousSettings, HolderGetter<Noise> noise) {
-		return layer == StrataRule.Layer.SURFACE ? DIRT : STONE;
+    
+	private static SurfaceRules.RuleSource makeStrataRule(int buffer, MiscellaneousSettings miscellaneousSettings, HolderGetter<Noise> noise) {
+		List<StrataRule.Layer> layers = new ArrayList<>();
 		
-//		Holder<Noise> depth = noise.getOrThrow(PresetStrataNoise.STRATA_DEPTH);
-//		
-//		List<Strata> strata = new ArrayList<>();
-//		strata.add(new Strata(RTFBlockTags.SOIL, depth, 3, 0, 1, 0.1F, 0.25F));
-//		strata.add(new Strata(RTFBlockTags.SEDIMENT, depth, 3, 0, 2, 0.05F, 0.15F));
-//		strata.add(new Strata(RTFBlockTags.CLAY, depth, 3, 0, 2, 0.05F, 0.1F));
-//		strata.add(new Strata(miscellaneousSettings.rockTag(), depth, 3, 10, 30, 0.1F, 1.5F));
-//		return RTFSurfaceRules.strata(RTFCommon.location("overworld_strata"), noise.getOrThrow(PresetStrataNoise.STRATA_SELECTOR), strata, 100);
+		Holder<Noise> depth = noise.getOrThrow(PresetStrataNoise.STRATA_DEPTH);
+		layers.add(new StrataRule.Layer(RTFBlockTags.SOIL, depth, 3, 0, 1, 0.1F, 0.25F));
+		layers.add(new StrataRule.Layer(RTFBlockTags.SEDIMENT, depth, 3, 0, 2, 0.05F, 0.15F));
+		layers.add(new StrataRule.Layer(RTFBlockTags.CLAY, depth, 3, 0, 2, 0.05F, 0.1F));
+		layers.add(new StrataRule.Layer(miscellaneousSettings.rockTag(), depth, 3, 10, 30, 0.1F, 1.5F));
+		return new StrataRule(STRATA_CACHE_ID, buffer, 100, noise.getOrThrow(PresetSurfaceNoise.STRATA_REGION), layers);
 	}
 
+    private static SurfaceRules.RuleSource makeErodedDirtRule(HolderGetter<Noise> noise, SurfaceSettings.Erosion settings) {
+    	return SurfaceRules.ifTrue(
+    		RTFSurfaceConditions.steepness(settings.dirtSteepness, noise.getOrThrow(PresetSurfaceNoise.STEEPNESS_VARIANCE)),
+    		SurfaceRules.ifTrue(
+    			RTFSurfaceConditions.height(noise.getOrThrow(PresetSurfaceNoise.ERODED_DIRT), noise.getOrThrow(PresetSurfaceNoise.HEIGHT_VARIANCE)),
+    			COARSE_DIRT
+    		)
+    	);
+    }
+	
     private static SurfaceRules.ConditionSource surfaceNoiseAbove(double target) {
         return SurfaceRules.noiseCondition(Noises.SURFACE, target / 8.25D, Double.MAX_VALUE);
     }

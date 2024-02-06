@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.world.worldgen.rivermap.river;
+package raccoonman.reterraforged.world.worldgen.terrain.populator;
 
 import java.util.Random;
 
@@ -9,9 +9,13 @@ import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.function.CurveFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.CurveFunctions;
 import raccoonman.reterraforged.world.worldgen.noise.module.Line;
+import raccoonman.reterraforged.world.worldgen.rivermap.river.Range;
+import raccoonman.reterraforged.world.worldgen.rivermap.river.River;
+import raccoonman.reterraforged.world.worldgen.rivermap.river.RiverConfig;
+import raccoonman.reterraforged.world.worldgen.rivermap.river.RiverWarp;
 import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 
-public class RiverCarver implements Comparable<RiverCarver> {
+public class RiverPopulator implements Comparable<RiverPopulator> {
     public boolean main;
     private boolean connecting;
     private float fade;
@@ -27,7 +31,7 @@ public class RiverCarver implements Comparable<RiverCarver> {
     public RiverConfig config;
     public CurveFunction valleyCurve;
     
-    public RiverCarver(River river, RiverWarp warp, RiverConfig config, Settings settings, Levels levels) {
+    public RiverPopulator(River river, RiverWarp warp, RiverConfig config, Settings settings, Levels levels) {
         this.fade = settings.fadeIn;
         this.fadeInv = 1.0F / settings.fadeIn;
         this.bedWidth = new Range(0.25F, (float)(config.bedWidth * config.bedWidth));
@@ -45,11 +49,11 @@ public class RiverCarver implements Comparable<RiverCarver> {
     }
 
     @Override
-    public int compareTo(RiverCarver o) {
+    public int compareTo(RiverPopulator o) {
         return Integer.compare(this.config.order, o.config.order);
     }
     
-    public void carve(Cell cell, float px, float pz, float pt, float x, float z, float t) {
+    public void apply(Cell cell, float px, float pz, float pt, float x, float z, float t) {
         float d2 = this.getDistance2(x, z, t);
         float pd2 = this.getDistance2(px, pz, pt);
         float valleyAlpha = this.getDistanceAlpha(pt, Math.min(d2, pd2), this.valleyWidth);
@@ -157,7 +161,7 @@ public class RiverCarver implements Comparable<RiverCarver> {
         return CurveFunctions.scurve(2.0F, -0.5F);
     }
     
-    public static RiverCarver create(float x1, float z1, float x2, float z2, RiverConfig config, Levels levels, Random random) {
+    public static RiverPopulator create(float x1, float z1, float x2, float z2, RiverConfig config, Levels levels, Random random) {
         River river = new River(x1, z1, x2, z2);
         RiverWarp warp = RiverWarp.create(0.35F, random);
         float valleyWidth = 275.0F * River.MAIN_VALLEY.next(random);
@@ -165,7 +169,7 @@ public class RiverCarver implements Comparable<RiverCarver> {
         settings.connecting = false;
         settings.fadeIn = config.fade;
         settings.valleySize = valleyWidth;
-        return new RiverCarver(river, warp, config, settings, levels);
+        return new RiverPopulator(river, warp, config, settings, levels);
     }
     
     private static Settings creatSettings(Random random) {

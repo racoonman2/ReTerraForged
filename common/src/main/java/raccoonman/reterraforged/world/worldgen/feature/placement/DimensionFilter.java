@@ -17,15 +17,15 @@ import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementFilter;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
-class BlacklistDimensionFilter extends PlacementFilter {
-	public static final Codec<BlacklistDimensionFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+class DimensionFilter extends PlacementFilter {
+	public static final Codec<DimensionFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		ResourceKey.codec(Registries.LEVEL_STEM).listOf().fieldOf("blacklist").forGetter((filter) -> filter.blacklist)
-	).apply(instance, BlacklistDimensionFilter::new));
+	).apply(instance, DimensionFilter::new));
 	
 	private List<ResourceKey<LevelStem>> blacklist;
 	private List<ResourceKey<Level>> levelKeys;
 	
-	public BlacklistDimensionFilter(List<ResourceKey<LevelStem>> blacklist) {
+	public DimensionFilter(List<ResourceKey<LevelStem>> blacklist) {
 		this.blacklist = blacklist;
 		this.levelKeys = this.blacklist.stream().map(Registries::levelStemToLevel).toList();
 	}
@@ -34,7 +34,7 @@ class BlacklistDimensionFilter extends PlacementFilter {
 	protected boolean shouldPlace(PlacementContext ctx, RandomSource rand, BlockPos pos) {
 		WorldGenLevel level = ctx.getLevel();
 		MinecraftServer server = level.getServer();
-		
+				
 		for(ResourceKey<Level> key : this.levelKeys) {
 			if(server.getLevel(key) == level.getLevel()) {
 				return false;
@@ -44,7 +44,7 @@ class BlacklistDimensionFilter extends PlacementFilter {
 	}	
 
 	@Override
-	public PlacementModifierType<BlacklistDimensionFilter> type() {
-		return RTFPlacementModifiers.BLACKLIST_DIMENSION;
+	public PlacementModifierType<DimensionFilter> type() {
+		return RTFPlacementModifiers.DIMENSION_FILTER;
 	}
 }

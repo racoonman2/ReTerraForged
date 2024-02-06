@@ -7,6 +7,7 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import raccoonman.reterraforged.platform.RegistryUtil;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
@@ -19,8 +20,8 @@ public class RTFSurfaceRules {
 		register("noise", NoiseRule.CODEC);
 	}
 	
-	public static StrataRule strata(Layer layer) {
-		return new StrataRule(layer);
+	public static StrataRule strata(ResourceLocation cacheId, int buffer, int iterations, Holder<Noise> selector, List<Layer> layers) {
+		return new StrataRule(cacheId, buffer, iterations, selector, layers);
 	}
 	
 	public static NoiseRule noise(Holder<Noise> noise, List<Pair<Float, SurfaceRules.RuleSource>> rules) {

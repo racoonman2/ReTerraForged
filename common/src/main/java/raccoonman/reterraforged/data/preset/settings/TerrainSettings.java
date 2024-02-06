@@ -60,6 +60,8 @@ public class TerrainSettings {
         public float globalVerticalScale;
         public float globalHorizontalScale;
         public boolean fancyMountains;
+        
+        @Deprecated(forRemoval = true)
         public boolean legacyWorldGen;
         
         public General(int terrainSeedOffset, int terrainRegionSize, float globalVerticalScale, float globalHorizontalScale, boolean fancyMountains, boolean legacyWorldGen) {

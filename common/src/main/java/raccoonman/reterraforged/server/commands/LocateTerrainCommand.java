@@ -31,7 +31,7 @@ public class LocateTerrainCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher, CommandBuildContext commandBuildContext) {
     	commandDispatcher.register(
-    		Commands.literal("reterraforged").requires((stack) -> stack.hasPermission(2)).then(
+    		Commands.literal("rtf").requires((stack) -> stack.hasPermission(2)).then(
     			Commands.literal("locate").then(
     				Commands.argument("terrain", TerrainArgument.terrain()).executes((ctx) -> {
 	    				CommandSourceStack stack = ctx.getSource();

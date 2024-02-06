@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
+import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
@@ -31,12 +32,24 @@ import net.minecraft.world.level.levelgen.blending.Blender;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
+import raccoonman.reterraforged.world.worldgen.surface.SurfaceRegion;
 
 @Mixin(NoiseBasedChunkGenerator.class)
 class MixinNoiseBasedChunkGenerator {
 	@Shadow
 	@Final
     private Holder<NoiseGeneratorSettings> settings;
+	
+	@Inject(at = @At("HEAD"), method = "buildSurface")
+    public void buildSurface$HEAD(WorldGenRegion worldGenRegion, StructureManager structureManager, RandomState randomState, ChunkAccess chunkAccess, CallbackInfo callback) {
+		SurfaceRegion.set(worldGenRegion);
+    }
+	
+
+	@Inject(at = @At("TAIL"), method = "buildSurface")
+    public void buildSurface$TAIL(WorldGenRegion worldGenRegion, StructureManager structureManager, RandomState randomState, ChunkAccess chunkAccess, CallbackInfo callback) {
+		SurfaceRegion.set(null);
+    }
 	
 	@Redirect(
 		at = @At(
@@ -86,8 +99,11 @@ class MixinNoiseBasedChunkGenerator {
 
 			list.add("");
 			list.add("Terrain Type: " + cell.terrain.getName());
-			list.add("Terrain Region: " + cell.terrainRegionEdge);
+			list.add("Biome Type: " + cell.biomeType.name());
+			list.add("Terrain Region: " + cell.terrainRegion);
+			list.add("Terrain Region Edge: " + cell.terrainRegionEdge);
 			list.add("River Distance: " + (1.0F - cell.riverMask));
+			list.add("Macro Biome: " + (cell.macroBiomeId));
 			list.add("");
     	}
     }

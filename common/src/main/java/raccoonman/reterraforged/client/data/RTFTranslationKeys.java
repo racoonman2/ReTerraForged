@@ -133,8 +133,6 @@ public class RTFTranslationKeys {
 	public static final String GUI_SLIDER_RIVER_BANK_WIDTH = resolve("gui.slider.river.bankWidth");
 	public static final String GUI_SLIDER_RIVER_FADE = resolve("gui.slider.river.fade");
 	public static final String GUI_SLIDER_LAKE_CHANCE = resolve("gui.slider.lake.chance");
-	public static final String GUI_SLIDER_LAKE_MIN_START_DISTANCE = resolve("gui.slider.lake.minStartDistance");
-	public static final String GUI_SLIDER_LAKE_MAX_START_DISTANCE = resolve("gui.slider.lake.maxStartDistance");
 	public static final String GUI_SLIDER_LAKE_DEPTH = resolve("gui.slider.lake.depth");
 	public static final String GUI_SLIDER_LAKE_SIZE_MIN = resolve("gui.slider.lake.sizeMin");
 	public static final String GUI_SLIDER_LAKE_SIZE_MAX = resolve("gui.slider.lake.sizeMax");

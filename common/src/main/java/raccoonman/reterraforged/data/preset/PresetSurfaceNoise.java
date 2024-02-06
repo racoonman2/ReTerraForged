@@ -4,12 +4,21 @@ import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import raccoonman.reterraforged.data.preset.settings.MiscellaneousSettings;
 import raccoonman.reterraforged.data.preset.settings.Preset;
+import raccoonman.reterraforged.data.preset.settings.SurfaceSettings;
 import raccoonman.reterraforged.data.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.util.Scaling;
 
 public class PresetSurfaceNoise {
+	public static final ResourceKey<Noise> RANDOM = createKey("random");
+
+	public static final ResourceKey<Noise> HEIGHT_VARIANCE = createKey("height_variance");
+	public static final ResourceKey<Noise> STEEPNESS_VARIANCE = createKey("steepness_variance");
+
+	public static final ResourceKey<Noise> ERODED_DIRT = createKey("eroded_dirt");
+	public static final ResourceKey<Noise> ERODED_ROCK = createKey("eroded_rock");
+	
 	public static final ResourceKey<Noise> DESERT = createKey("desert");
 	public static final ResourceKey<Noise> SWAMP = createKey("swamp");
 	public static final ResourceKey<Noise> FOREST = createKey("forest");
@@ -30,7 +39,7 @@ public class PresetSurfaceNoise {
 	public static final ResourceKey<Noise> ICEBERG_SHALLOW_DOWN = createKey("iceberg/shallow/down");
 	public static final ResourceKey<Noise> ICEBERG_SHALLOW_TOP = createKey("iceberg/shallow/top");
 
-	public static final ResourceKey<Noise> STRATA_SELECTOR = createKey("strata/selector");
+	public static final ResourceKey<Noise> STRATA_REGION = createKey("strata/region");
 	public static final ResourceKey<Noise> STRATA_DEPTH = createKey("strata/depth");
 	
 	public static final int GENERATOR_RESOURCE_SEED_OFFSET = 746382634;
@@ -39,9 +48,20 @@ public class PresetSurfaceNoise {
 		WorldSettings worldSettings = preset.world();
 		WorldSettings.Properties properties = worldSettings.properties;
 		
+		SurfaceSettings surfaceSettings = preset.surface();
+		SurfaceSettings.Erosion erosion = surfaceSettings.erosion();
+		
 		MiscellaneousSettings miscellaneousSettings = preset.miscellaneous();
 		
 		Scaling scaling = Scaling.make(properties.terrainScaler(), properties.seaLevel);
+
+		Noise random = PresetNoiseData.registerAndWrap(ctx, RANDOM, Noises.white(0, 1)); //TODO give this the correct seed
+
+		ctx.register(HEIGHT_VARIANCE, Noises.mul(random, erosion.heightModifier / 255.0F));
+		ctx.register(STEEPNESS_VARIANCE, Noises.mul(random, erosion.slopeModifier / 255.0F));
+
+		ctx.register(ERODED_DIRT, makeErosion(erosion.dirtVariance, erosion.dirtMin));
+		ctx.register(ERODED_ROCK, makeErosion(erosion.rockVariance, erosion.rockMin));
 		
 		ctx.register(DESERT, makeDesert(scaling));
 		ctx.register(SWAMP, makeSwamp());
@@ -50,8 +70,15 @@ public class PresetSurfaceNoise {
 		registerIceberg(ctx, ICEBERG_DEEP_SHAPE, ICEBERG_DEEP_MASK, ICEBERG_DEEP_FADE_DOWN, ICEBERG_DEEP_FADE_UP, ICEBERG_DEEP_UP, ICEBERG_DEEP_DOWN, ICEBERG_DEEP_TOP, scaling, 30, 30, 0);
 		registerIceberg(ctx, ICEBERG_SHALLOW_SHAPE, ICEBERG_SHALLOW_MASK, ICEBERG_SHALLOW_FADE_DOWN, ICEBERG_SHALLOW_FADE_UP, ICEBERG_SHALLOW_UP, ICEBERG_SHALLOW_DOWN, ICEBERG_SHALLOW_TOP, scaling, 20, 15, 6);
 
-		ctx.register(STRATA_SELECTOR, makeStrataSelector(miscellaneousSettings.strataRegionSize));
+		ctx.register(STRATA_REGION, makeStrataRegion(miscellaneousSettings.strataRegionSize));
 		ctx.register(STRATA_DEPTH, makeStrataDepth());
+	}
+	
+	private static Noise makeErosion(int scale, int bias) {
+		Noise noise = Noises.perlin(0, 100, 1);
+		noise = Noises.mul(noise, scale / 255.0F);
+		noise = Noises.add(noise, bias / 255.0F);
+		return noise;
 	}
 	
 	private static Noise makeDesert(Scaling scaling) {
@@ -108,7 +135,7 @@ public class PresetSurfaceNoise {
 		ctx.register(topKey, Noises.add(top, scaling.blocks(2)));
 	}
 	
-	private static Noise makeStrataSelector(int regionSize) {
+	private static Noise makeStrataRegion(int regionSize) {
 		Noise noise = Noises.worley(0, regionSize);
 		noise = Noises.warpPerlin(noise, 1, regionSize / 4, 2, regionSize / 2.0F);
 		noise = Noises.warpPerlin(noise, 2, 15, 2, 30);

@@ -41,8 +41,8 @@ import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.data.preset.settings.MiscellaneousSettings;
 import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.data.preset.settings.SurfaceSettings;
+import raccoonman.reterraforged.data.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.world.worldgen.feature.BushFeature;
-import raccoonman.reterraforged.world.worldgen.feature.ErodeFeature;
 import raccoonman.reterraforged.world.worldgen.feature.ErodeSnowFeature;
 import raccoonman.reterraforged.world.worldgen.feature.RTFFeatures;
 import raccoonman.reterraforged.world.worldgen.feature.SwampSurfaceFeature;
@@ -77,6 +77,8 @@ public class PresetConfiguredFeatures {
 	public static final ResourceKey<ConfiguredFeature<?, ?>> HUGE_RED_MUSHROOM = createKey("mushrooms/huge_red_mushroom");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> WILLOW_SMALL = createKey("willow/small");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> WILLOW_LARGE = createKey("willow/large");
+	public static final ResourceKey<ConfiguredFeature<?, ?>> MEADOW_NORMAL = createKey("meadow/normal");
+	public static final ResourceKey<ConfiguredFeature<?, ?>> MEADOW_VARIANT = createKey("meadow/variant");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> PINE = createKey("pine/pine");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> SPRUCE_SMALL = createKey("spruce/small");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> SPRUCE_LARGE = createKey("spruce/large");
@@ -96,8 +98,9 @@ public class PresetConfiguredFeatures {
 	public static final ResourceKey<ConfiguredFeature<?, ?>> TAIGA_SCRUB_BUSH = createKey("shrubs/taiga_scrub_bush");
 
 	public static final ResourceKey<ConfiguredFeature<?, ?>> FOREST_GRASS = createKey("forest_grass");
-	public static final ResourceKey<ConfiguredFeature<?, ?>> COLD_GRASS = createKey("cold_grass");
-	public static final ResourceKey<ConfiguredFeature<?, ?>> BIRCH_FOREST_GRASS = createKey("birch_forest_grass");
+	public static final ResourceKey<ConfiguredFeature<?, ?>> MEADOW_GRASS = createKey("meadow_grass");
+	public static final ResourceKey<ConfiguredFeature<?, ?>> FERN_GRASS = createKey("fern_grass");
+	public static final ResourceKey<ConfiguredFeature<?, ?>> BIRCH_GRASS = createKey("birch_grass");
 	
 	public static final ResourceKey<ConfiguredFeature<?, ?>> PLAINS_TREES = createKey("plains_trees");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> FOREST_TREES = createKey("forest_trees");
@@ -108,6 +111,7 @@ public class PresetConfiguredFeatures {
 	public static final ResourceKey<ConfiguredFeature<?, ?>> BADLANDS_TREES = createKey("badlands_trees");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> WOODED_BADLANDS_TREES = createKey("wooded_badlands_trees");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> SWAMP_TREES = createKey("swamp_trees");
+	public static final ResourceKey<ConfiguredFeature<?, ?>> MEADOW_TREES = createKey("meadow_trees");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> FIR_TREES = createKey("fir_trees");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> GROVE_TREES = createKey("grove_trees");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> SPRUCE_TREES = createKey("spruce_trees");
@@ -120,13 +124,16 @@ public class PresetConfiguredFeatures {
 		MiscellaneousSettings miscellaneous = preset.miscellaneous();
 		SurfaceSettings surface = preset.surface();
 		SurfaceSettings.Erosion erosion = surface.erosion();
+
+		TerrainSettings terrain = preset.terrain();
+		TerrainSettings.General general = terrain.general;
 		
 		if(miscellaneous.naturalSnowDecorator || miscellaneous.smoothLayerDecorator) {
-			ErodeFeature.Config erodeConfig = new ErodeFeature.Config(miscellaneous.rockTag(), erosion.rockVariance, erosion.rockMin, erosion.dirtVariance, erosion.dirtMin, erosion.rockSteepness, erosion.dirtSteepness, erosion.screeSteepness, erosion.heightModifier / 255F, erosion.slopeModifier / 255F, 256, 3F / 255F, 0.55F);
-			FeatureUtils.register(ctx, ERODE_SNOW, RTFFeatures.ERODE_SNOW, new ErodeSnowFeature.Config(erosion.snowSteepness, (float) erosion.snowHeight / 255.0F, miscellaneous.naturalSnowDecorator, miscellaneous.smoothLayerDecorator, erodeConfig));
+//			ErodeFeature.Config erodeConfig = new ErodeFeature.Config(miscellaneous.rockTag(), erosion.rockVariance, erosion.rockMin, erosion.dirtVariance, erosion.dirtMin, erosion.rockSteepness, erosion.dirtSteepness, erosion.screeSteepness, erosion.heightModifier / 255F, erosion.slopeModifier / 255F, 256, 3F / 255F, 0.55F);
+			FeatureUtils.register(ctx, ERODE_SNOW, RTFFeatures.ERODE_SNOW, new ErodeSnowFeature.Config(erosion.snowSteepness, (float) erosion.snowHeight / 255.0F, miscellaneous.naturalSnowDecorator, miscellaneous.smoothLayerDecorator, erosion.heightModifier / 255F, erosion.slopeModifier / 255F));
 		}
 		
-		FeatureUtils.register(ctx, SWAMP_SURFACE, RTFFeatures.SWAMP_SURFACE, new SwampSurfaceFeature.Config(Blocks.CLAY.defaultBlockState(), Blocks.GRAVEL.defaultBlockState(), Blocks.DIRT.defaultBlockState()));
+		FeatureUtils.register(ctx, SWAMP_SURFACE, RTFFeatures.SWAMP_SURFACE, new SwampSurfaceFeature.Config(Blocks.CLAY.defaultBlockState(), general.legacyWorldGen ? Blocks.GRAVEL.defaultBlockState() : Blocks.MUD.defaultBlockState(), general.legacyWorldGen ? Blocks.DIRT.defaultBlockState() : Blocks.MUD.defaultBlockState()));
 		
 		if(miscellaneous.customBiomeFeatures) {
 			HolderGetter<PlacedFeature> placedFeatures = ctx.lookup(Registries.PLACED_FEATURE);
@@ -145,6 +152,8 @@ public class PresetConfiguredFeatures {
 			Holder<PlacedFeature> hugeRedMushroom = placedFeatures.getOrThrow(PresetPlacedFeatures.HUGE_RED_MUSHROOM);
 			Holder<PlacedFeature> willowSmall = placedFeatures.getOrThrow(PresetPlacedFeatures.WILLOW_SMALL);
 			Holder<PlacedFeature> willowLarge = placedFeatures.getOrThrow(PresetPlacedFeatures.WILLOW_LARGE);
+			Holder<PlacedFeature> meadowNormal = placedFeatures.getOrThrow(PresetPlacedFeatures.MEADOW_NORMAL);
+			Holder<PlacedFeature> meadowVariant = placedFeatures.getOrThrow(PresetPlacedFeatures.MEADOW_VARIANT);
 			Holder<PlacedFeature> spruceSmall = placedFeatures.getOrThrow(PresetPlacedFeatures.SPRUCE_SMALL);
 			Holder<PlacedFeature> spruceLarge = placedFeatures.getOrThrow(PresetPlacedFeatures.SPRUCE_LARGE);
 			Holder<PlacedFeature> spruceSmallOnSnow = placedFeatures.getOrThrow(PresetPlacedFeatures.SPRUCE_SMALL_ON_SNOW);
@@ -186,6 +195,8 @@ public class PresetConfiguredFeatures {
 			FeatureUtils.register(ctx, HUGE_RED_MUSHROOM, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.RED_MUSHROOM));
 			FeatureUtils.register(ctx, WILLOW_SMALL, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.WILLOW_SMALL));
 			FeatureUtils.register(ctx, WILLOW_LARGE, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.WILLOW_LARGE));
+			FeatureUtils.register(ctx, MEADOW_NORMAL, RTFFeatures.TEMPLATE, makeTreeWithBehives(PresetTemplatePaths.MEADOW_NORMAL, PresetTemplateDecoratorLists.BEEHIVE_RARITY_0075));
+			FeatureUtils.register(ctx, MEADOW_VARIANT, RTFFeatures.TEMPLATE, makeTreeWithBehives(PresetTemplatePaths.MEADOW_VARIANT, PresetTemplateDecoratorLists.BEEHIVE_RARITY_0075));
 			TemplateFeature.Config<?> pineConfig = makeTree(PresetTemplatePaths.PINE);
 			FeatureUtils.register(ctx, PINE, RTFFeatures.TEMPLATE, pineConfig);
 			FeatureUtils.register(ctx, SPRUCE_SMALL, RTFFeatures.TEMPLATE, makeTree(PresetTemplatePaths.SPRUCE_SMALL));
@@ -251,6 +262,10 @@ public class PresetConfiguredFeatures {
 				makeWeighted(0.2F, willowSmall), 
 				makeWeighted(0.35F, willowLarge)
 			)));
+			FeatureUtils.register(ctx, MEADOW_TREES, Feature.RANDOM_SELECTOR, makeRandom(meadowNormal, List.of(
+				makeWeighted(0.2F, meadowNormal), 
+				makeWeighted(0.35F, meadowVariant)
+			)));
 			FeatureUtils.register(ctx, FIR_TREES, RTFFeatures.CHANCE, makeChance(
 				makeChanceEntry(spruceSmall, 0.1F, RTFChanceModifiers.elevation(0.55F, 0.2F)),
 				makeChanceEntry(spruceLarge, 0.25F, RTFChanceModifiers.elevation(0.3F, 0.0F))
@@ -286,7 +301,16 @@ public class PresetConfiguredFeatures {
 					makeWeighted(0.2F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.FERN, 24)))
 				)
 			));
-			FeatureUtils.register(ctx, COLD_GRASS, Feature.RANDOM_SELECTOR, makeRandom(
+			FeatureUtils.register(ctx, MEADOW_GRASS, Feature.RANDOM_SELECTOR, makeRandom(
+				makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.FERN, 15)),
+				List.of(
+					makeWeighted(0.5F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.GRASS, 15))),
+					makeWeighted(0.5F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.FERN, 36))),
+					makeWeighted(0.2F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.LARGE_FERN, 55))),
+					makeWeighted(0.4F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.TALL_GRASS, 45)))
+				)
+			));
+			FeatureUtils.register(ctx, FERN_GRASS, Feature.RANDOM_SELECTOR, makeRandom(
 				makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.GRASS, 48)),
 				List.of(
 					makeWeighted(0.55F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.GRASS, 56))),
@@ -295,7 +319,7 @@ public class PresetConfiguredFeatures {
 					makeWeighted(0.5F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.FERN, 36)))
 				)
 			));
-			FeatureUtils.register(ctx, BIRCH_FOREST_GRASS, Feature.RANDOM_SELECTOR, makeRandom(
+			FeatureUtils.register(ctx, BIRCH_GRASS, Feature.RANDOM_SELECTOR, makeRandom(
 				makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.TALL_GRASS, 48)),
 				List.of(
 					makeWeighted(0.8F, makeInlined(Feature.RANDOM_PATCH, makePatch(Blocks.TALL_GRASS, 56))),
@@ -365,6 +389,10 @@ public class PresetConfiguredFeatures {
 	
 	private static <T extends TemplateContext> TemplateFeature.Config<T> makeTree(List<ResourceLocation> templates, List<TemplateDecorator<T>> decorators, TemplatePlacement<T> placement, int baseExtension) {
 		return new TemplateFeature.Config<>(templates, placement, new PasteConfig(baseExtension, false, true, false, false), new DecoratorConfig<>(decorators, ImmutableMap.of()));
+	}
+
+	private static TemplateFeature.Config<TreeContext> makeTreeWithBehives(List<ResourceLocation> templates, List<TemplateDecorator<TreeContext>> behives) {
+		return makeTreeWithBehives(templates, behives, ImmutableMap.of());
 	}
 	
 	private static TemplateFeature.Config<TreeContext> makeTreeWithBehives(List<ResourceLocation> templates, List<TemplateDecorator<TreeContext>> behives, Map<ResourceKey<Biome>, List<TemplateDecorator<TreeContext>>> biomeOverrides) {

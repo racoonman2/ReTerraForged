@@ -123,7 +123,7 @@ public class BiomeNoise {
 				}
 			}
 		}
-		cell.biomeRegionId = this.cellValue(this.seed, cellX, cellZ);
+		cell.biomeRegionId = cellValue(this.seed, cellX, cellZ);
 		// compare this with the temperature used in the region
 		cell.regionMoisture = this.moisture.compute(centerX, centerZ, 0);
 		cell.regionTemperature = this.temperature.compute(centerX, centerZ, 0);
@@ -132,16 +132,16 @@ public class BiomeNoise {
 		int posZ = NoiseUtil.floor(centerZ / this.biomeFreq);
 		float continentEdge = this.continent.getLandValue(posX, posZ);
 		if (mask) {
-			cell.biomeRegionEdge = this.edgeValue(edgeDistance, edgeDistance2);
+			cell.biomeRegionEdge = edgeValue(edgeDistance, edgeDistance2);
 			this.modifyTerrain(cell, continentEdge);
 		}
 		cell.regionMoisture = this.modifyMoisture(cell.regionMoisture, continentEdge);
 
-		cell.biome = BiomeType.get(cell.regionTemperature, cell.regionMoisture);
+		cell.biomeType = BiomeType.get(cell.regionTemperature, cell.regionMoisture);
 		cell.regionTemperature = this.modifyTemp(cell.height, cell.regionTemperature, originalX, originalZ);
 
-        cell.temperature = cell.biome.getTemperature(cell.biomeRegionId);
-        cell.moisture = cell.biome.getMoisture(cell.biomeRegionId);
+        cell.temperature = cell.biomeType.getTemperature(cell.biomeRegionId);
+        cell.moisture = cell.biomeType.getMoisture(cell.biomeRegionId);
 	}
 
 	private float modifyTemp(float height, float temp, float x, float z) {
@@ -180,12 +180,12 @@ public class BiomeNoise {
 		}
 	}
 
-	private float cellValue(int seed, int cellX, int cellY) {
+	private static float cellValue(int seed, int cellX, int cellY) {
 		float value = NoiseUtil.valCoord2D(seed, cellX, cellY);
 		return NoiseUtil.map(value, -1.0F, 1.0F, 2.0F);
 	}
 
-	private float edgeValue(float distance, float distance2) {
+	private static float edgeValue(float distance, float distance2) {
 		EdgeFunction edge = EdgeFunction.DISTANCE_2_DIV;
 		float value = edge.apply(distance, distance2);
 		value = 1.0F - NoiseUtil.map(value, edge.min(), edge.max(), edge.range());

@@ -22,9 +22,11 @@ public class CacheManager {
 		return cache;
 	}
 	
-	public static void clear() throws Exception {
+	public static void clear() {
 		for(Cache<?> cache : CACHES) {
 			cache.close();
 		}
+		
+		CACHES.clear();
 	}
 }

@@ -69,3 +69,9 @@ accessible field net/minecraft/world/level/levelgen/structure/placement/Structur
 accessible field net/minecraft/world/level/levelgen/structure/placement/StructurePlacement salt I
 accessible field net/minecraft/world/level/levelgen/structure/placement/StructurePlacement exclusionZone Ljava/util/Optional;
 accessible method net/minecraft/commands/synchronization/ArgumentTypeInfos register (Lnet/minecraft/core/Registry;Ljava/lang/String;Ljava/lang/Class;Lnet/minecraft/commands/synchronization/ArgumentTypeInfo;)Lnet/minecraft/commands/synchronization/ArgumentTypeInfo;
+accessible field net/minecraft/world/level/levelgen/RandomState random Lnet/minecraft/world/level/levelgen/PositionalRandomFactory;
+accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context stoneDepthBelow I
+accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context stoneDepthAbove I
+mutable field net/minecraft/world/level/levelgen/SurfaceRules$Context biomeGetter Ljava/util/function/Function;
+accessible field net/minecraft/world/level/levelgen/Beardifier pieceIterator Lit/unimi/dsi/fastutil/objects/ObjectListIterator;
+accessible field net/minecraft/world/level/levelgen/Beardifier junctionIterator Lit/unimi/dsi/fastutil/objects/ObjectListIterator;

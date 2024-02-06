@@ -1,6 +1,7 @@
 package raccoonman.reterraforged.data.preset.settings;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -18,6 +19,7 @@ import raccoonman.reterraforged.data.preset.PresetData;
 import raccoonman.reterraforged.data.preset.PresetDimensionTypes;
 import raccoonman.reterraforged.data.preset.PresetNoiseData;
 import raccoonman.reterraforged.data.preset.PresetNoiseGeneratorSettings;
+import raccoonman.reterraforged.data.preset.PresetNoiseParameters;
 import raccoonman.reterraforged.data.preset.PresetNoiseRouterData;
 import raccoonman.reterraforged.data.preset.PresetPlacedFeatures;
 import raccoonman.reterraforged.data.preset.PresetStructureRuleData;
@@ -25,11 +27,21 @@ import raccoonman.reterraforged.data.preset.PresetStructureSets;
 import raccoonman.reterraforged.integration.terrablender.TBNoiseRouterData;
 import raccoonman.reterraforged.registries.RTFRegistries;
 
-public record Preset(PresetVersion version, WorldSettings world, SurfaceSettings surface, CaveSettings caves, ClimateSettings climate, TerrainSettings terrain, RiverSettings rivers, FilterSettings filters, MiscellaneousSettings miscellaneous) {
-	public static final Codec<Preset> CODEC = PresetVersion.RETERRAFORGED.codec();//PresetVersion.CODEC.optionalFieldOf("version", PresetVersion.TERRAFORGED).codec().dispatch("version", Preset::version, PresetVersion::codec);
+//TODO make this actually immutable when we rework the gui
+public record Preset(WorldSettings world, SurfaceSettings surface, CaveSettings caves, ClimateSettings climate, TerrainSettings terrain, RiverSettings rivers, FilterSettings filters, MiscellaneousSettings miscellaneous) {
+	public static final Codec<Preset> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		WorldSettings.CODEC.fieldOf("world").forGetter(Preset::world),
+		SurfaceSettings.CODEC.optionalFieldOf("surface", new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F))).forGetter(Preset::surface),
+		CaveSettings.CODEC.optionalFieldOf("caves", new CaveSettings(new CaveSettings.Pillar())).forGetter(Preset::caves),
+		ClimateSettings.CODEC.fieldOf("climate").forGetter(Preset::climate),
+		TerrainSettings.CODEC.fieldOf("terrain").forGetter(Preset::terrain),
+		RiverSettings.CODEC.fieldOf("rivers").forGetter(Preset::rivers),
+		FilterSettings.CODEC.fieldOf("filters").forGetter(Preset::filters),
+		MiscellaneousSettings.CODEC.fieldOf("miscellaneous").forGetter(Preset::miscellaneous)
+	).apply(instance, Preset::new));
 	
 	public Preset copy() {
-		return new Preset(this.version, this.world.copy(), this.surface.copy(), this.caves.copy(), this.climate.copy(), this.terrain.copy(), this.rivers.copy(), this.filters.copy(), /* this.structures.copy(), */this.miscellaneous.copy());
+		return new Preset(this.world.copy(), this.surface.copy(), this.caves.copy(), this.climate.copy(), this.terrain.copy(), this.rivers.copy(), this.filters.copy(), /* this.structures.copy(), */this.miscellaneous.copy());
 	}
 
 	public HolderLookup.Provider buildPatch(RegistryAccess registries) {
@@ -48,6 +60,7 @@ public record Preset(PresetVersion version, WorldSettings world, SurfaceSettings
 		this.addPatch(builder, Registries.PLACED_FEATURE, PresetPlacedFeatures::bootstrap);
 		this.addPatch(builder, Registries.BIOME, PresetBiomeData::bootstrap);
 		this.addPatch(builder, Registries.DIMENSION_TYPE, PresetDimensionTypes::bootstrap);
+		this.addPatch(builder, Registries.NOISE, PresetNoiseParameters::bootstrap);
 		this.addPatch(builder, Registries.DENSITY_FUNCTION, (preset, ctx) -> {
 			PresetNoiseRouterData.bootstrap(preset, ctx);
 			TBNoiseRouterData.bootstrap(ctx);

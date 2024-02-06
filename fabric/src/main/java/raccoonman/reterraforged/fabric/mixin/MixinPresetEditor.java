@@ -12,7 +12,6 @@ import net.minecraft.client.gui.screens.worldselection.PresetEditor;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import raccoonman.reterraforged.client.gui.screen.presetconfig.PresetConfigScreen;
 
-// why the fuck does mojang hardcode everything??
 @Deprecated 
 @Mixin(PresetEditor.class)
 interface MixinPresetEditor {

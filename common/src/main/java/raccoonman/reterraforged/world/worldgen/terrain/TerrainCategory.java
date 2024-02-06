@@ -121,6 +121,12 @@ public enum TerrainCategory implements ITerrain {
         public boolean isOverground() {
             return true;
         }
+    }, 
+    CLIFFS {
+        @Override
+        public boolean isOverground() {
+            return true;
+        }
     },
     ISLAND {
         @Override

@@ -1,12 +1,13 @@
-package raccoonman.reterraforged.world.worldgen.rivermap.lake;
+package raccoonman.reterraforged.world.worldgen.terrain.populator;
 
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil.Vec2f;
+import raccoonman.reterraforged.world.worldgen.rivermap.lake.LakeConfig;
 import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.util.Boundsf;
 
-public class Lake {
+public class LakePopulator {
     protected float valley;
     protected float valley2;
     protected float lakeDistance2;
@@ -19,7 +20,7 @@ public class Lake {
     private float bankMax;
     protected Vec2f center;
     
-    public Lake(Vec2f center, float radius, float multiplier, LakeConfig config) {
+    public LakePopulator(Vec2f center, float radius, float multiplier, LakeConfig config) {
         float lake = radius * multiplier;
         float valley = 275.0F * multiplier;
         this.valley = valley;

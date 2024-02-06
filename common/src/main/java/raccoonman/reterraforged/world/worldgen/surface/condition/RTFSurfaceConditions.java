@@ -16,59 +16,81 @@ import raccoonman.reterraforged.world.worldgen.terrain.Terrain;
 public class RTFSurfaceConditions {
 
 	public static void bootstrap() {
+		register("noise", NoiseCondition.Source.CODEC);
 		register("terrain", TerrainCondition.Source.CODEC);
 		register("height", HeightCondition.Source.CODEC);
 		register("steepness", SteepnessCondition.Source.CODEC);
 		register("erosion", ErosionCondition.Source.CODEC);
 		register("sediment", SedimentCondition.Source.CODEC);
 		register("distance_to_river", DistanceToRiverCondition.Source.CODEC);
+		register("height_modification_detection", HeightModificationDetection.Source.CODEC);
 	}
 	
-	public static TerrainCondition.Source isTerrain(Terrain... terrain) {
+	public static NoiseCondition.Source noise(Holder<Noise> noise, float threshold) {
+		return new NoiseCondition.Source(noise, threshold);
+	}
+	
+	public static TerrainCondition.Source terrain(Terrain... terrain) {
 		return new TerrainCondition.Source(Arrays.stream(terrain).collect(Collectors.toSet()));
 	}
 	
-	public static HeightCondition.Source isHigherThan(float threshold) {
-		return isHigherThan(threshold, Holder.direct(Noises.zero()));
+	public static HeightCondition.Source height(float threshold) {
+		return height(constant(threshold));
 	}
-	
-	public static HeightCondition.Source isHigherThan(float threshold, Holder<Noise> variance) {
+
+	public static HeightCondition.Source height(float threshold, Holder<Noise> variance) {
+		return height(constant(threshold), variance);
+	}
+
+	public static HeightCondition.Source height(Holder<Noise> threshold) {
+		return height(threshold, constant(0.0F));
+	}
+
+	public static HeightCondition.Source height(Holder<Noise> threshold, Holder<Noise> variance) {
 		return new HeightCondition.Source(threshold, variance);
 	}
 	
-	public static SteepnessCondition.Source isSteeperThan(float threshold) {
-		return isSteeperThan(threshold, Holder.direct(Noises.zero()));
+	public static SteepnessCondition.Source steepness(float threshold) {
+		return steepness(constant(threshold), constant(0.0F));
 	}
 
-	public static SteepnessCondition.Source isSteeperThan(float threshold, Holder<Noise> variance) {
+	public static SteepnessCondition.Source steepness(float threshold, Holder<Noise> variance) {
+		return steepness(constant(threshold), variance);
+	}
+	
+	public static SteepnessCondition.Source steepness(Holder<Noise> threshold, Holder<Noise> variance) {
 		return new SteepnessCondition.Source(threshold, variance);
 	}
 	
-	public static ErosionCondition.Source isMoreErodedThan(float threshold, Holder<Noise> variance) {
+	public static ErosionCondition.Source erosion(float threshold) {
+		return erosion(constant(threshold), constant(0.0F));
+	}
+	
+	public static ErosionCondition.Source erosion(Holder<Noise> threshold, Holder<Noise> variance) {
 		return new ErosionCondition.Source(threshold, variance);
 	}
 	
-	public static ErosionCondition.Source isMoreErodedThan(float threshold) {
-		return isMoreErodedThan(threshold, Holder.direct(Noises.zero()));
+	public static SedimentCondition.Source sediment(float threshold) {
+		return sediment(constant(threshold), constant(0.0F));
 	}
 	
-	public static SedimentCondition.Source isMoreSedimentThan(float threshold) {
-		return isMoreSedimentThan(threshold, Holder.direct(Noises.zero()));
-	}
-	
-	public static SedimentCondition.Source isMoreSedimentThan(float threshold, Holder<Noise> variance) {
+	public static SedimentCondition.Source sediment(Holder<Noise> threshold, Holder<Noise> variance) {
 		return new SedimentCondition.Source(threshold, variance);
 	}
 	
-	public static DistanceToRiverCondition.Source isCloserToRiverThan(float threshold) {
-		return isCloserToRiverThan(threshold, Holder.direct(Noises.zero()));
+	public static DistanceToRiverCondition.Source riverDistance(Holder<Noise> threshold, Holder<Noise> variance) {
+		return new DistanceToRiverCondition.Source(threshold, variance);
 	}
 	
-	public static DistanceToRiverCondition.Source isCloserToRiverThan(float threshold, Holder<Noise> variance) {
-		return new DistanceToRiverCondition.Source(threshold, variance);
+	public static HeightModificationDetection.Source heightModificationDetection(HeightModificationDetection.Target target) {
+		return new HeightModificationDetection.Source(target);
 	}
 	
 	public static void register(String name, Codec<? extends SurfaceRules.ConditionSource> value) {
 		RegistryUtil.register(BuiltInRegistries.MATERIAL_CONDITION, name, value);
+	}
+	
+	private static Holder<Noise> constant(float value) {
+		return Holder.direct(Noises.constant(value));
 	}
 }

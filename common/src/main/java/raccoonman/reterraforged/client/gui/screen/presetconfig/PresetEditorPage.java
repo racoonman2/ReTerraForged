@@ -157,11 +157,8 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	        WorldSettings world = preset.world();
 	        WorldSettings.Properties properties = world.properties;
 	        
-	        try {
-				CacheManager.clear();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+	        CacheManager.clear();
+	        
 			PerformanceConfig config = PerformanceConfig.read(PerformanceConfig.DEFAULT_FILE_PATH)
 				.resultOrPartial(RTFCommon.LOGGER::error)
 				.orElseGet(PerformanceConfig::makeDefault);
@@ -199,11 +196,8 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	    
 	    public void close() throws Exception {
 	    	this.texture.close();
-	    	try {
-				CacheManager.clear();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+
+	    	CacheManager.clear();
 	    }
 
 	    @Override
@@ -325,7 +319,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	        if (terrain.contains("river")) {
 	            return "river";
 	        }
-	        return cell.biome.name().toLowerCase();
+	        return cell.biomeType.name().toLowerCase();
 	    }
 	}
 }

@@ -23,6 +23,8 @@ public class PresetTemplatePaths {
 	public static final List<ResourceLocation> RED_MUSHROOM = mushroom("red", "red_mushroom_1", "red_mushroom_2", "red_mushroom_3", "red_mushroom_4", "red_mushroom_5");
 	public static final List<ResourceLocation> WILLOW_SMALL = tree("willow/small", "weeping_willow_small_1", "weeping_willow_small_2");
 	public static final List<ResourceLocation> WILLOW_LARGE = tree("willow/large", "weeping_willow_big_1", "weeping_willow_big_2");
+	public static final List<ResourceLocation> MEADOW_NORMAL = tree("meadow/normal", "meadow_normal_1", "meadow_normal_2", "meadow_normal_3", "meadow_normal_4", "meadow_normal_5", "meadow_normal_6");
+	public static final List<ResourceLocation> MEADOW_VARIANT = tree("meadow/variant", "meadow_variant_1", "meadow_variant_2");
 	public static final List<ResourceLocation> PINE = tree("pine", "huangshan_pine_1", "huangshan_pine_2", "huangshan_pine_3", "scots_pine_1", "scots_pine_2", "scots_pine_small_1", "scots_pine_small_2", "scots_pine_1", "scots_pine_2");
 	public static final List<ResourceLocation> SPRUCE_BUSH = tree("spruce/bush", "spruce_bush_1", "spruce_bush_2");
 	public static final List<ResourceLocation> SPRUCE_SMALL = union(tree("spruce/small", "spruce_small_1", "spruce_small_2", "spruce_small_3", "spruce_small_4"), SPRUCE_BUSH);

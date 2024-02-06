@@ -16,6 +16,7 @@ public class PresetNoiseData {
 		PresetClimateNoise.bootstrap(preset, ctx);
 		PresetSurfaceNoise.bootstrap(preset, ctx);
 		PresetStrataNoise.bootstrap(preset, ctx);
+		PresetFeatureNoise.bootstrap(preset, ctx);
 	}
 	
 	public static Noise getNoise(HolderGetter<Noise> noiseLookup, ResourceKey<Noise> key) {

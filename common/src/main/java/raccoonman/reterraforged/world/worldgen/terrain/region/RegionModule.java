@@ -66,14 +66,10 @@ public class RegionModule implements CellPopulator {
                 }
             }
         }
+        cell.terrainRegion = regionValue(edgeDistance, edgeDistance2);
         cell.terrainRegionId = cellValue(this.seed, cellX, cellY);
         cell.terrainRegionEdge = this.edgeValue(edgeDistance, edgeDistance2);
         cell.terrainRegionCenter = PosUtil.pack(centerX / this.frequency, centerY / this.frequency);
-    }
-    
-    private static float cellValue(int seed, int cellX, int cellY) {
-        float value = NoiseUtil.valCoord2D(seed, cellX, cellY);
-        return NoiseUtil.map(value, -1.0F, 1.0F, 2.0F);
     }
     
     private float edgeValue(float distance, float distance2) {
@@ -88,5 +84,17 @@ public class RegionModule implements CellPopulator {
             return 1.0F;
         }
         return (edgeValue - this.edgeMin) / this.edgeRange;
+    }
+
+	private static float regionValue(float distance, float distance2) {
+		EdgeFunction edge = EdgeFunction.DISTANCE_2_DIV;
+		float value = edge.apply(distance, distance2);
+		value = 1.0F - NoiseUtil.map(value, edge.min(), edge.max(), edge.range());
+		return value;
+	}
+
+    private static float cellValue(int seed, int cellX, int cellY) {
+        float value = NoiseUtil.valCoord2D(seed, cellX, cellY);
+        return NoiseUtil.map(value, -1.0F, 1.0F, 2.0F);
     }
 }

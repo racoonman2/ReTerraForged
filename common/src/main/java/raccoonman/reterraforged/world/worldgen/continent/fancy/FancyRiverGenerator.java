@@ -12,9 +12,9 @@ import raccoonman.reterraforged.world.worldgen.rivermap.gen.GenWarp;
 import raccoonman.reterraforged.world.worldgen.rivermap.river.BaseRiverGenerator;
 import raccoonman.reterraforged.world.worldgen.rivermap.river.Network;
 import raccoonman.reterraforged.world.worldgen.rivermap.river.River;
-import raccoonman.reterraforged.world.worldgen.rivermap.river.RiverCarver;
 import raccoonman.reterraforged.world.worldgen.rivermap.river.RiverConfig;
 import raccoonman.reterraforged.world.worldgen.rivermap.river.RiverWarp;
+import raccoonman.reterraforged.world.worldgen.terrain.populator.RiverPopulator;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;
 import raccoonman.reterraforged.world.worldgen.util.Variance;
 
@@ -116,11 +116,11 @@ public class FancyRiverGenerator extends BaseRiverGenerator<FancyContinentGenera
 		if (this.riverOverlaps(river, null, roots)) {
 			return;
 		}
-		RiverCarver.Settings settings = BaseRiverGenerator.creatSettings(random);
+		RiverPopulator.Settings settings = BaseRiverGenerator.creatSettings(random);
 		settings.fadeIn = config.fade;
 		settings.valleySize = 275.0F * River.FORK_VALLEY.next(random);
 		RiverWarp riverWarp = RiverWarp.create(0.1F, 0.85F, random);
-		RiverCarver carver = new RiverCarver(river, riverWarp, config, settings, this.levels);
+		RiverPopulator carver = new RiverPopulator(river, riverWarp, config, settings, this.levels);
 		Network.Builder network = Network.builder(carver);
 		roots.add(network);
 		this.generateForks(network, River.FORK_SPACING, this.fork, random, warp, roots, 0);

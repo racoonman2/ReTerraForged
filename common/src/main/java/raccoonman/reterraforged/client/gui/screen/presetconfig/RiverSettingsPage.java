@@ -33,8 +33,6 @@ class RiverSettingsPage extends PresetEditorPage {
 	private Slider branchRiverFade;
 	
 	private Slider lakeChance;
-	private Slider lakeMinStartDistance;
-	private Slider lakeMaxStartDistance;
 	private Slider lakeDepth;
 	private Slider lakeSizeMin;
 	private Slider lakeSizeMax;
@@ -141,16 +139,6 @@ class RiverSettingsPage extends PresetEditorPage {
 			this.regenerate();
 			return value;
 		});
-		this.lakeMinStartDistance = PresetWidgets.createFloatSlider(lake.minStartDistance, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_LAKE_MIN_START_DISTANCE, (slider, value) -> {
-			lake.minStartDistance = (float) slider.scaleValue(value);
-			this.regenerate();
-			return value;
-		});
-		this.lakeMaxStartDistance = PresetWidgets.createFloatSlider(lake.maxStartDistance, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_LAKE_MAX_START_DISTANCE, (slider, value) -> {
-			lake.maxStartDistance = (float) slider.scaleValue(value);
-			this.regenerate();
-			return value;
-		});
 		this.lakeDepth = PresetWidgets.createIntSlider(lake.depth, 1, 20, RTFTranslationKeys.GUI_SLIDER_LAKE_DEPTH, (slider, value) -> {
 			lake.depth = (int) slider.scaleValue(value);
 			this.regenerate();
@@ -214,8 +202,6 @@ class RiverSettingsPage extends PresetEditorPage {
 		
 		this.left.addWidget(PresetWidgets.createLabel(RTFTranslationKeys.GUI_LABEL_LAKES));
 		this.left.addWidget(this.lakeChance);
-		this.left.addWidget(this.lakeMinStartDistance);
-		this.left.addWidget(this.lakeMaxStartDistance);
 		this.left.addWidget(this.lakeDepth);
 		this.left.addWidget(this.lakeSizeMin);
 		this.left.addWidget(this.lakeSizeMax);

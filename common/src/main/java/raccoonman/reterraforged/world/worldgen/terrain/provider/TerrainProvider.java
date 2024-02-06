@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
 
-import raccoonman.reterraforged.data.preset.settings.MiscellaneousSettings;
 import raccoonman.reterraforged.data.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
@@ -23,7 +22,7 @@ import raccoonman.reterraforged.world.worldgen.util.Seed;
 public class TerrainProvider {
 	
 	@Deprecated
-    public static List<CellPopulator> generateTerrain(Seed seed, TerrainSettings terrainSettings, MiscellaneousSettings miscellaneousSettings, RegionConfig config, Levels levels, Noise ground) {
+    public static List<CellPopulator> generateTerrain(Seed seed, TerrainSettings terrainSettings, RegionConfig config, Levels levels, Noise ground) {
     	TerrainSettings.General general = terrainSettings.general;
     	float verticalScale = general.globalVerticalScale;
     	boolean fancyMountains = general.fancyMountains;
@@ -45,9 +44,9 @@ public class TerrainProvider {
         
         List<CellPopulator> unmixable = new ArrayList<>();
         unmixable.add(Populators.makeBadlands(terrainSeed, ground, terrainSettings.badlands));
-        unmixable.add(Populators.makeMountains(terrainSeed, ground, terrainSettings.mountains, miscellaneousSettings, verticalScale, fancyMountains, legacyWorldGen));
-        unmixable.add(Populators.makeMountains2(terrainSeed, ground, terrainSettings.mountains, miscellaneousSettings, verticalScale, fancyMountains, legacyWorldGen));
-        unmixable.add(Populators.makeMountains3(terrainSeed, ground, terrainSettings.mountains, miscellaneousSettings, verticalScale, fancyMountains, legacyWorldGen));
+        unmixable.add(Populators.makeMountains(terrainSeed, ground, terrainSettings.mountains, verticalScale, fancyMountains, legacyWorldGen));
+        unmixable.add(Populators.makeMountains2(terrainSeed, ground, terrainSettings.mountains, verticalScale, fancyMountains, legacyWorldGen));
+        unmixable.add(Populators.makeMountains3(terrainSeed, ground, terrainSettings.mountains, verticalScale, fancyMountains, legacyWorldGen));
         unmixable.add(new VolcanoPopulator(terrainSeed, config, levels, terrainSettings.volcano.weight));
 
         List<TerrainPopulator> mixed = combine(mixable, (t1, t2) -> {

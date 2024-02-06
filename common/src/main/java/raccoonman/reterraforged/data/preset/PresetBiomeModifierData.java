@@ -50,11 +50,12 @@ public class PresetBiomeModifierData {
 	public static final ResourceKey<BiomeModifier> PLAINS_BUSH = createKey("vegetation/bushes/plains");
 	public static final ResourceKey<BiomeModifier> STEPPE_BUSH = createKey("vegetation/bushes/steppe");
 	public static final ResourceKey<BiomeModifier> COLD_STEPPE_BUSH = createKey("vegetation/bushes/cold_steppe");
-	public static final ResourceKey<BiomeModifier> ADD_TAIGA_SCRUB_BUSH = createKey("vegetation/bushes/taiga_scrub");
+	public static final ResourceKey<BiomeModifier> TAIGA_SCRUB_BUSH = createKey("vegetation/bushes/taiga_scrub");
 	
 	public static final ResourceKey<BiomeModifier> FOREST_GRASS = createKey("vegetation/grass/forest");
-	public static final ResourceKey<BiomeModifier> COLD_GRASS = createKey("vegetation/grass/cold");
-	public static final ResourceKey<BiomeModifier> BIRCH_FOREST_GRASS = createKey("vegetation/grass/birch_forest");
+	public static final ResourceKey<BiomeModifier> MEADOW_GRASS = createKey("vegetation/grass/meadow");
+	public static final ResourceKey<BiomeModifier> FERN_GRASS = createKey("vegetation/grass/fern");
+	public static final ResourceKey<BiomeModifier> BIRCH_GRASS = createKey("vegetation/grass/birch");
 	
 	public static void bootstrap(Preset preset, BootstapContext<BiomeModifier> ctx) {
 		MiscellaneousSettings miscellaneous = preset.miscellaneous();
@@ -184,15 +185,17 @@ public class PresetBiomeModifierData {
 			ctx.register(PLAINS_BUSH, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasPlainsBushes, placedFeatures.getOrThrow(PresetPlacedFeatures.PLAINS_BUSH)));
 			ctx.register(STEPPE_BUSH, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasSteppeBushes, placedFeatures.getOrThrow(PresetPlacedFeatures.STEPPE_BUSH)));
 			ctx.register(COLD_STEPPE_BUSH, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasColdSteppeBushes, placedFeatures.getOrThrow(PresetPlacedFeatures.COLD_STEPPE_BUSH)));
-			ctx.register(ADD_TAIGA_SCRUB_BUSH, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasColdTaigaScrubBushes, placedFeatures.getOrThrow(PresetPlacedFeatures.TAIGA_SCRUB_BUSH)));
+			ctx.register(TAIGA_SCRUB_BUSH, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasColdTaigaScrubBushes, placedFeatures.getOrThrow(PresetPlacedFeatures.TAIGA_SCRUB_BUSH)));
 			
 			HolderSet<Biome> hasForestGrass = biomes.getOrThrow(RTFBiomeTags.HAS_FOREST_GRASS);
-			HolderSet<Biome> hasColdGrass = biomes.getOrThrow(RTFBiomeTags.HAS_COLD_GRASS);
-			HolderSet<Biome> hasBirchForestGrass = biomes.getOrThrow(RTFBiomeTags.HAS_BIRCH_FOREST_GRASS);
+			HolderSet<Biome> hasMeadowGrass = biomes.getOrThrow(RTFBiomeTags.HAS_MEADOW_GRASS);
+			HolderSet<Biome> hasColdGrass = biomes.getOrThrow(RTFBiomeTags.HAS_FERN_GRASS);
+			HolderSet<Biome> hasBirchGrass = biomes.getOrThrow(RTFBiomeTags.HAS_BIRCH_GRASS);
 			
 			ctx.register(FOREST_GRASS, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasForestGrass, placedFeatures.getOrThrow(PresetPlacedFeatures.FOREST_GRASS)));
-			ctx.register(COLD_GRASS, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasColdGrass, placedFeatures.getOrThrow(PresetPlacedFeatures.COLD_GRASS)));
-			ctx.register(BIRCH_FOREST_GRASS, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasBirchForestGrass, placedFeatures.getOrThrow(PresetPlacedFeatures.BIRCH_FOREST_GRASS)));
+			ctx.register(MEADOW_GRASS, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasMeadowGrass, placedFeatures.getOrThrow(PresetPlacedFeatures.MEADOW_GRASS)));
+			ctx.register(FERN_GRASS, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasColdGrass, placedFeatures.getOrThrow(PresetPlacedFeatures.FERN_GRASS)));
+			ctx.register(BIRCH_GRASS, prepend(GenerationStep.Decoration.VEGETAL_DECORATION, Filter.Behavior.WHITELIST, hasBirchGrass, placedFeatures.getOrThrow(PresetPlacedFeatures.BIRCH_GRASS)));
 		}
 	}
 	

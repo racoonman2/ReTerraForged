@@ -20,16 +20,15 @@ import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 
 public class BuiltinPresets {
 	
-	public static Preset makeRTFDefault() {
+	public static Preset makeDefault() {
 		return new Preset(
-			PresetVersion.TERRAFORGED,
 			new WorldSettings(
 				new Continent(ContinentType.MULTI_IMPROVED, DistanceFunction.EUCLIDEAN, 3000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.327F, 0.448F, 0.502F), 
-				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
+				new Properties(SpawnType.CONTINENT_CENTER, 512, 64, 63, -54)
 			), 
-			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
-			new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false),
+			new SurfaceSettings(new SurfaceSettings.Erosion(30, 1024, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
+			new CaveSettings(new CaveSettings.Pillar()),
 			new ClimateSettings(
 				new RangeValue(0, 6, 2, 0.0F, 0.98F, 0.05F), 
 				new RangeValue(0, 6, 1, 0.0F, 1.0F, 0.0F), 
@@ -37,12 +36,12 @@ public class BuiltinPresets {
 				new BiomeNoise(ClimateSettings.BiomeNoise.EdgeType.SIMPLEX, 24, 2, 0.5F, 2.65F, 14)
 			), 
 			new TerrainSettings(
-				new General(0, 1200, 0.98F, 1.0F, true, true),
+				new General(0, 1200, 0.98F, 1.0F, true, false),
 				new Terrain(1.0F, 1.0F, 1.0F, 1.0F), 
 				new Terrain(2.0F, 1.0F, 1.0F, 1.0F), 
 				new Terrain(2.0F, 1.0F, 1.0F, 1.0F),
 				new Terrain(1.5F, 1.0F, 1.0F, 1.0F),
-				new Terrain(1.5F, 1.0F, 1.0F, 1.0F), 
+				new Terrain(1.5F, 1.0F, 1.0F, 1.0F),
 				new Terrain(1.0F, 1.0F, 1.0F, 1.0F), 
 				new Terrain(2.0F, 1.0F, 1.0F, 1.0F), 
 				new Terrain(2.5F, 1.0F, 1.0F, 1.0F),
@@ -52,11 +51,11 @@ public class BuiltinPresets {
 				0, 8, 
 				new River(5, 2, 6, 20, 8, 0.75F),
 				new River(4, 1, 4, 14, 5, 0.975F), 
-				new Lake(0.3F, 0.0F, 0.03F, 10, 75, 150, 2, 10),
+				new Lake(0.3F, 10, 75, 150, 2, 10),
 				new Wetland(0.6F, 175, 225)
 			), 
 			new FilterSettings(
-				new Erosion(220, 25, 0.5F, 0.5F, 0.8F, 0.8F),
+				new Erosion(135, 12, 0.7F, 0.7F, 0.5F, 0.5F),
 				new Smoothing(1, 1.8F, 0.9F)
 			), 
 //				new StructureSettings(),
@@ -64,16 +63,16 @@ public class BuiltinPresets {
 		); 
 	}
 	
+	@Deprecated
 	public static Preset makeLegacyDefault() {
 		return new Preset(
-			PresetVersion.TERRAFORGED,
 			new WorldSettings(
 				new Continent(ContinentType.MULTI_IMPROVED, DistanceFunction.EUCLIDEAN, 3000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.327F, 0.448F, 0.502F), 
 				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			), 
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
-			new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false),
+			new CaveSettings(new CaveSettings.Pillar()),
 			new ClimateSettings(
 				new RangeValue(0, 6, 2, 0.0F, 0.98F, 0.05F), 
 				new RangeValue(0, 6, 1, 0.0F, 1.0F, 0.0F), 
@@ -96,7 +95,7 @@ public class BuiltinPresets {
 				0, 8, 
 				new River(5, 2, 6, 20, 8, 0.75F),
 				new River(4, 1, 4, 14, 5, 0.975F), 
-				new Lake(0.3F, 0.0F, 0.03F, 10, 75, 150, 2, 10),
+				new Lake(0.3F, 10, 75, 150, 2, 10),
 				new Wetland(0.6F, 175, 225)
 			), 
 			new FilterSettings(
@@ -107,17 +106,17 @@ public class BuiltinPresets {
 			new MiscellaneousSettings(true, 600, true, true, true, false, true, true, true, true, true, 0.4F, 0.4F)
 		); 
 	}
-	
+
+	@Deprecated
 	public static Preset makeLegacyVanillaish() {
 		return new Preset(
-			PresetVersion.TERRAFORGED,
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 2000, 0.763F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F), 
 				new Properties(SpawnType.WORLD_ORIGIN, 320, 64, 63, -54)
 			), 
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
-			new CaveSettings(1.5625F, 1.0F, 1.0F, 1.0F, 1.0F, 0.15F, 0.07F, 0.021F, true, false),
+			new CaveSettings(new CaveSettings.Pillar()),
 			new ClimateSettings(
 				new RangeValue(0, 4, 1, 0.0F, 0.98F, 0.05F), 
 				new RangeValue(0, 5, 1, 0.0F, 1.0F, 0.0F), 
@@ -140,7 +139,7 @@ public class BuiltinPresets {
 				0, 11, 
 				new River(5, 2, 6, 20, 8, 0.507F),
 				new River(4, 1, 4, 14, 5, 0.493F), 
-				new Lake(0.462F, 0.0F, 0.028F, 10, 75, 150, 2, 10),
+				new Lake(0.462F, 10, 75, 150, 2, 10),
 				new Wetland(0.796F, 196, 255)
 			), 
 			new FilterSettings(
@@ -152,17 +151,16 @@ public class BuiltinPresets {
 		); 
 	}
 	
-	//TODO make mushroom islands bigger
+	@Deprecated
 	public static Preset makeLegacyBeautiful() {
 		return new Preset(
-			PresetVersion.TERRAFORGED,
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 3000, 0.8F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F), 
 				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			), 
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
-			new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false),
+			new CaveSettings(new CaveSettings.Pillar()),
 			new ClimateSettings(
 				new RangeValue(0, 7, 1, 0.0F, 1.0F, -0.004F), 
 				new RangeValue(0, 6, 1, 0.0F, 1.0F, 0.0F), 
@@ -185,7 +183,7 @@ public class BuiltinPresets {
 				0, 14, 
 				new River(5, 1, 4, 20, 5, 0.504F),
 				new River(3, 1, 2, 12, 4, 0.5F), 
-				new Lake(0.671F, 0.0F, 0.028F, 8, 75, 150, 2, 7),
+				new Lake(0.671F, 8, 75, 150, 2, 7),
 				new Wetland(0.865F, 134, 201)
 			), 
 			new FilterSettings(
@@ -196,17 +194,17 @@ public class BuiltinPresets {
 			new MiscellaneousSettings(true, 684, true, true, true, false, true, true, true, true, false, 0.853F, 0.855F)
 		); 
 	}
-	
+
+	@Deprecated
 	public static Preset makeLegacyLite() {
 		return new Preset(
-			PresetVersion.TERRAFORGED,
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 2000, 0.765F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(-1.0F, -1.0F, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F), 
 				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			),
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
-			new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, false, false),
+			new CaveSettings(new CaveSettings.Pillar()),
 			new ClimateSettings(
 				new RangeValue(0, 4, 1, 0.0F, 0.98F, 0.05F),
 				new RangeValue(0, 5, 1, 0.0F, 1.0F, 0.0F), 
@@ -229,7 +227,7 @@ public class BuiltinPresets {
 				0, 11, 
 				new River(5, 2, 6, 20, 8, 0.507F),
 				new River(4, 1, 4, 14, 5, 0.493F), 
-				new Lake(0.462F, 0.0F, 0.028F, 10, 75, 150, 2, 10),
+				new Lake(0.462F, 10, 75, 150, 2, 10),
 				new Wetland(0.796F, 196, 255)
 			), 
 			new FilterSettings(
@@ -240,17 +238,17 @@ public class BuiltinPresets {
 			new MiscellaneousSettings(true, 600, false, true, true, false, true, true, true, true, true, 1.0F, 0.75F)
 		);
 	}
-	
+
+	@Deprecated
 	public static Preset makeLegacyHugeBiomes() {
 		return new Preset(
-			PresetVersion.TERRAFORGED,
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 4029, 0.8F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
 				new ControlPoints(-1.0F, -1.0F, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F), 
 				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			), 
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
-			new CaveSettings(1.5625F, 0.0F, 1.0F, 1.0F, 1.0F, 0.14285715F, 0.07F, 0.02F, true, false),
+			new CaveSettings(new CaveSettings.Pillar()),
 			new ClimateSettings(
 				new RangeValue(0, 4, 2, 0.0F, 1.0F, 0.097F), 
 				new RangeValue(0, 3, 1, 0.0F, 1.0F, 0.0F), 
@@ -273,7 +271,7 @@ public class BuiltinPresets {
 				0, 13, 
 				new River(5, 1, 5, 28, 9, 0.27F),
 				new River(3, 1, 3, 18, 3, 0.7F), 
-				new Lake(0.595F, 0.0F, 0.028F, 10, 75, 150, 2, 10),
+				new Lake(0.595F, 10, 75, 150, 2, 10),
 				new Wetland(0.86F, 175, 225)
 			), 
 			new FilterSettings(
@@ -284,7 +282,8 @@ public class BuiltinPresets {
 			new MiscellaneousSettings(true, 721, true, true, true, false, true, true, true, true, false, 0.902F, 0.945F)
 		);
 	}
-	
+
+	@Deprecated
 	public static Preset makeLegacy1_18() {
 		throw new UnsupportedOperationException("TODO");
 	}

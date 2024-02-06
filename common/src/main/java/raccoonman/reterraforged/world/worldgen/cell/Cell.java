@@ -37,7 +37,9 @@ public class Cell {
     @Deprecated
     public float continentEdge;
     public float continentalness;
+    public float terrainRegion;
     public float terrainRegionId;
+    @Deprecated
     public float terrainRegionEdge;
     public long terrainRegionCenter;
     public float biomeRegionId;
@@ -48,7 +50,7 @@ public class Cell {
     public int continentZ;
     public boolean erosionMask;
     public Terrain terrain;
-    public BiomeType biome;
+    public BiomeType biomeType;
     public float erosion;
     public float weirdness;
     public float temperature;
@@ -67,7 +69,7 @@ public class Cell {
         this.riverMask = 1.0F;
         this.erosionMask = false;
         this.terrain = TerrainType.NONE;
-        this.biome = BiomeType.GRASSLAND;
+        this.biomeType = BiomeType.GRASSLAND;
     }
     
     public void copyFrom(Cell other) {
@@ -82,6 +84,7 @@ public class Cell {
         this.continentId = other.continentId;
         this.continentEdge = other.continentEdge;
         this.continentalness = other.continentalness;
+        this.terrainRegion = other.terrainRegion;
         this.terrainRegionId = other.terrainRegionId;
         this.terrainRegionEdge = other.terrainRegionEdge;
         this.terrainRegionCenter = other.terrainRegionCenter;
@@ -93,7 +96,7 @@ public class Cell {
         this.continentZ = other.continentZ;
         this.erosionMask = other.erosionMask;
         this.terrain = other.terrain;
-        this.biome = other.biome;
+        this.biomeType = other.biomeType;
         this.erosion = other.erosion;
         this.weirdness = other.weirdness;
         this.temperature = other.temperature;

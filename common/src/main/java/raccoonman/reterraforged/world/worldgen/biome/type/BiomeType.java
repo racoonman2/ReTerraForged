@@ -43,6 +43,7 @@ public enum BiomeType {
     
     private BiomeType(Color lookup, Color color, List<Pair<Temperature, Humidity>> noisePairs) {
         this.lookup = lookup;
+
         this.noisePairs = ImmutableList.copyOf(noisePairs);
         this.color = BiomeTypeColors.getInstance().getColor(this.name(), color);
     }
@@ -52,11 +53,11 @@ public enum BiomeType {
     }
 
     public float getTemperature(float identity) {
-    	return this.getRandomPair(identity).getFirst().mid();
+    	return this.getRandomPair(identity).getFirst().midpoint();
     }
 
     public float getMoisture(float identity) {
-    	return this.getRandomPair(identity).getSecond().mid();
+    	return this.getRandomPair(identity).getSecond().midpoint();
     }
     
     private Pair<Temperature, Humidity> getRandomPair(float identity) {
@@ -81,45 +82,16 @@ public enum BiomeType {
     }
     
     public static BiomeType get(float temperature, float moisture) {
-        return getCurve(temperature, moisture);
-    }
-    
-    public static BiomeType getLinear(float temperature, float moisture) {
-        int x = NoiseUtil.round(255.0f * temperature);
-        int y = getYLinear(x, temperature, moisture);
+        int x = NoiseUtil.round(255.0F * temperature);
+        int y = getYCurve(x, moisture);
         return getType(x, y);
     }
-    
-    public static BiomeType getCurve(float temperature, float moisture) {
-        int x = NoiseUtil.round(255.0f * temperature);
-        int y = getYCurve(x, temperature, moisture);
-        return getType(x, y);
-    }
-    
-//    public static void apply(Cell cell) {
-//        applyCurve(cell);
-//    }
-    
-//    public static void applyLinear(Cell cell) {
-//        cell.biome = get(cell.regionTemperature, cell.regionMoisture);
-//    }
-//    
-//    public static void applyCurve(Cell cell) {
-//        cell.biome = get(cell.regionTemperature, cell.regionMoisture);
-//    }
     
     private static BiomeType getType(int x, int y) {
         return BiomeTypeLoader.getInstance().getTypeMap()[y][x];
     }
     
-    private static int getYLinear(int x, float temperature, float moisture) {
-        if (moisture > temperature) {
-            return x;
-        }
-        return NoiseUtil.round(255.0F * moisture);
-    }
-    
-    private static int getYCurve(int x, float temperature, float moisture) {
+    private static int getYCurve(int x, float moisture) {
         int max = x + (255 - x) / 2;
         int y = NoiseUtil.round(max * moisture);
         return Math.min(x, y);
@@ -157,14 +129,6 @@ public enum BiomeType {
     		newNoisePairs.add(noisePair);
     	}
     	return newNoisePairs;
-    }
-    
-    private static <T> Pair<T, T> range(T min, T max) {
-    	return Pair.of(min, max);
-    }
-
-    private static <T> Pair<T, T> constant(T value)	{
-    	return Pair.of(value, value);
     }
     
     private static void init() {

@@ -3,6 +3,7 @@ package raccoonman.reterraforged.world.worldgen.rivermap;
 import java.util.concurrent.TimeUnit;
 
 import raccoonman.reterraforged.concurrent.cache.Cache;
+import raccoonman.reterraforged.concurrent.cache.CacheManager;
 import raccoonman.reterraforged.concurrent.cache.map.StampedLongMap;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;
 
@@ -11,7 +12,7 @@ public class RiverCache {
     protected Cache<Rivermap> cache;
     
     public RiverCache(RiverGenerator generator) {
-        this.cache = new Cache<>(32, 5L, 1L, TimeUnit.MINUTES, StampedLongMap::new);
+        this.cache = CacheManager.createCache(32, 5L, 1L, TimeUnit.MINUTES, StampedLongMap::new);
         this.generator = generator;
     }
     
