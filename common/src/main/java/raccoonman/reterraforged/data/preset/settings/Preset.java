@@ -24,6 +24,7 @@ import raccoonman.reterraforged.data.preset.PresetNoiseRouterData;
 import raccoonman.reterraforged.data.preset.PresetPlacedFeatures;
 import raccoonman.reterraforged.data.preset.PresetStructureRuleData;
 import raccoonman.reterraforged.data.preset.PresetStructureSets;
+import raccoonman.reterraforged.data.preset.PresetSurfaceLayerData;
 import raccoonman.reterraforged.integration.terrablender.TBNoiseRouterData;
 import raccoonman.reterraforged.registries.RTFRegistries;
 
@@ -50,6 +51,7 @@ public record Preset(WorldSettings world, SurfaceSettings surface, CaveSettings 
 		this.addPatch(builder, RTFRegistries.NOISE, PresetNoiseData::bootstrap);
 		this.addPatch(builder, RTFRegistries.BIOME_MODIFIER, PresetBiomeModifierData::bootstrap);
 		this.addPatch(builder, RTFRegistries.STRUCTURE_RULE, PresetStructureRuleData::bootstrap);
+		this.addPatch(builder, RTFRegistries.SURFACE_LAYERS, PresetSurfaceLayerData::bootstrap);
 		this.addPatch(builder, Registries.CONFIGURED_FEATURE, (preset, ctx) -> {
 			PresetConfiguredFeatures.bootstrap(preset, ctx);
 		});

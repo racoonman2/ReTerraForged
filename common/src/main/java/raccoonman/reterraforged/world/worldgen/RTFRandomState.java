@@ -8,7 +8,10 @@ import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 
 public interface RTFRandomState {
-	void initialize(RegistryAccess registries);
+	void initialize(RegistryAccess registryAccess);
+	
+	@Nullable
+	RegistryAccess registryAccess();
 	
 	@Nullable
 	Preset preset();

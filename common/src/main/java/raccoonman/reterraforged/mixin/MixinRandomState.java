@@ -51,6 +51,8 @@ class MixinRandomState {
 	@Final
     private SurfaceSystem surfaceSystem;
 	
+	@Nullable
+	private RegistryAccess registryAccess;
 	@Deprecated
 	private boolean hasContext;
 	@Nullable
@@ -92,10 +94,12 @@ class MixinRandomState {
 		return router.mapAll(this.densityFunctionWrapper);
 	}
 
-	public void reterraforged$RTFRandomState$initialize(RegistryAccess registries) {
-		RegistryLookup<Preset> presets = registries.lookupOrThrow(RTFRegistries.PRESET);
-		RegistryLookup<Noise> noises = registries.lookupOrThrow(RTFRegistries.NOISE);
-		RegistryLookup<DensityFunction> functions = registries.lookupOrThrow(Registries.DENSITY_FUNCTION);
+	public void reterraforged$RTFRandomState$initialize(RegistryAccess registryAccess) {
+		this.registryAccess = registryAccess;
+		
+		RegistryLookup<Preset> presets = registryAccess.lookupOrThrow(RTFRegistries.PRESET);
+		RegistryLookup<Noise> noises = registryAccess.lookupOrThrow(RTFRegistries.NOISE);
+		RegistryLookup<DensityFunction> functions = registryAccess.lookupOrThrow(Registries.DENSITY_FUNCTION);
 		
 		if((Object) this.sampler instanceof TBClimateSampler tbClimateSampler && TBIntegration.isEnabled()) {
 			functions.get(TBNoiseRouterData.UNIQUENESS).ifPresent((uniqueness) -> {
@@ -116,6 +120,11 @@ class MixinRandomState {
 				this.generatorContext = GeneratorContext.makeCached(this.preset, (int) this.seed, config.tileSize(), config.batchCount(), ThreadPools.availableProcessors() > 4);
 			}
 		});
+	}
+	
+	@Nullable
+	public RegistryAccess reterraforged$RTFRandomState$registryAccess() {
+		return this.registryAccess;
 	}
 	
 	@Nullable

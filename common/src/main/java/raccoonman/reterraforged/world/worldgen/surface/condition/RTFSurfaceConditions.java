@@ -7,6 +7,8 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import raccoonman.reterraforged.platform.RegistryUtil;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
@@ -16,6 +18,8 @@ import raccoonman.reterraforged.world.worldgen.terrain.Terrain;
 public class RTFSurfaceConditions {
 
 	public static void bootstrap() {
+		register("mod", ModCondition.CODEC);
+		register("biome_tag", BiomeTagCondition.CODEC);
 		register("noise", NoiseCondition.Source.CODEC);
 		register("terrain", TerrainCondition.Source.CODEC);
 		register("height", HeightCondition.Source.CODEC);
@@ -24,6 +28,14 @@ public class RTFSurfaceConditions {
 		register("sediment", SedimentCondition.Source.CODEC);
 		register("distance_to_river", DistanceToRiverCondition.Source.CODEC);
 		register("height_modification_detection", HeightModificationDetection.Source.CODEC);
+	}
+	
+	public static ModCondition modLoaded(String modId) {
+		return new ModCondition(modId);
+	}
+	
+	public static BiomeTagCondition biomeTag(TagKey<Biome> tag) {
+		return new BiomeTagCondition(tag);
 	}
 	
 	public static NoiseCondition.Source noise(Holder<Noise> noise, float threshold) {

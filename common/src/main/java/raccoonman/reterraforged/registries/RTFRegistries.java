@@ -14,6 +14,7 @@ import raccoonman.reterraforged.world.worldgen.noise.domain.Domain;
 import raccoonman.reterraforged.world.worldgen.noise.function.CurveFunction;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.structure.rule.StructureRule;
+import raccoonman.reterraforged.world.worldgen.surface.rule.LayeredSurfaceRule;
 
 public class RTFRegistries {
 	public static final ResourceKey<Registry<Codec<? extends Noise>>> NOISE_TYPE = createKey("worldgen/noise_type");
@@ -27,6 +28,7 @@ public class RTFRegistries {
 	public static final ResourceKey<Registry<Noise>> NOISE = createKey("worldgen/noise");
 	public static final ResourceKey<Registry<BiomeModifier>> BIOME_MODIFIER = createKey("worldgen/biome_modifier");
 	public static final ResourceKey<Registry<StructureRule>> STRUCTURE_RULE = createKey("worldgen/structure_rule");
+	public static final ResourceKey<Registry<LayeredSurfaceRule.Layer>> SURFACE_LAYERS = createKey("worldgen/surface_layers");
 
 	public static final ResourceKey<Registry<Preset>> PRESET = createKey("worldgen/preset");
 	
