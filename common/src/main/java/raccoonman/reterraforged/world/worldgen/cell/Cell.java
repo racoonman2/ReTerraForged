@@ -45,7 +45,9 @@ public class Cell {
     public float biomeRegionId;
     public float biomeRegionEdge;
     public float macroBiomeId;
-    public float riverMask;
+    @Deprecated
+    public float riverDistance;
+    public float riverBanks;
     public int continentX;
     public int continentZ;
     public boolean erosionMask;
@@ -66,7 +68,7 @@ public class Cell {
         this.regionMoisture = 0.5F;
         this.regionTemperature = 0.5F;
         this.biomeRegionEdge = 1.0F;
-        this.riverMask = 1.0F;
+        this.riverDistance = 1.0F;
         this.erosionMask = false;
         this.terrain = TerrainType.NONE;
         this.biomeType = BiomeType.GRASSLAND;
@@ -91,7 +93,8 @@ public class Cell {
         this.biomeRegionId = other.biomeRegionId;
         this.biomeRegionEdge = other.biomeRegionEdge;
         this.macroBiomeId = other.macroBiomeId;
-        this.riverMask = other.riverMask;
+        this.riverDistance = other.riverDistance;
+        this.riverBanks = other.riverBanks;
         this.continentX = other.continentX;
         this.continentZ = other.continentZ;
         this.erosionMask = other.erosionMask;

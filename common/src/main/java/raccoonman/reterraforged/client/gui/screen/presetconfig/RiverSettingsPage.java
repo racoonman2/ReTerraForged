@@ -70,27 +70,27 @@ class RiverSettingsPage extends PresetEditorPage {
 		});
 		
 		River mainRivers = river.mainRivers;
-		this.mainRiverBedDepth = PresetWidgets.createIntSlider(mainRivers.bedDepth, 1, 10, RTFTranslationKeys.GUI_SLIDER_RIVER_BED_DEPTH, (slider, value) -> {
+		this.mainRiverBedDepth = PresetWidgets.createIntSlider(mainRivers.bedDepth, 1, 50, RTFTranslationKeys.GUI_SLIDER_RIVER_BED_DEPTH, (slider, value) -> {
 			mainRivers.bedDepth = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
-		this.mainRiverMinBankHeight = PresetWidgets.createIntSlider(mainRivers.minBankHeight, 0, 10, RTFTranslationKeys.GUI_SLIDER_RIVER_MIN_BANK_HEIGHT, (slider, value) -> {
+		this.mainRiverMinBankHeight = PresetWidgets.createIntSlider(mainRivers.minBankHeight, 0, 20, RTFTranslationKeys.GUI_SLIDER_RIVER_MIN_BANK_HEIGHT, (slider, value) -> {
 			mainRivers.minBankHeight = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
-		this.mainRiverMaxBankHeight = PresetWidgets.createIntSlider(mainRivers.maxBankHeight, 1, 10, RTFTranslationKeys.GUI_SLIDER_RIVER_MAX_BANK_HEIGHT, (slider, value) -> {
+		this.mainRiverMaxBankHeight = PresetWidgets.createIntSlider(mainRivers.maxBankHeight, 1, 20, RTFTranslationKeys.GUI_SLIDER_RIVER_MAX_BANK_HEIGHT, (slider, value) -> {
 			mainRivers.maxBankHeight = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
-		this.mainRiverBedWidth = PresetWidgets.createIntSlider(mainRivers.bedWidth, 1, 20, RTFTranslationKeys.GUI_SLIDER_RIVER_BED_WIDTH, (slider, value) -> {
+		this.mainRiverBedWidth = PresetWidgets.createIntSlider(mainRivers.bedWidth, 1, 200, RTFTranslationKeys.GUI_SLIDER_RIVER_BED_WIDTH, (slider, value) -> {
 			mainRivers.bedWidth = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
-		this.mainRiverBankWidth = PresetWidgets.createIntSlider(mainRivers.bankWidth, 1, 50, RTFTranslationKeys.GUI_SLIDER_RIVER_BANK_WIDTH, (slider, value) -> {
+		this.mainRiverBankWidth = PresetWidgets.createIntSlider(mainRivers.bankWidth, 1, 150, RTFTranslationKeys.GUI_SLIDER_RIVER_BANK_WIDTH, (slider, value) -> {
 			mainRivers.bankWidth = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
@@ -102,27 +102,27 @@ class RiverSettingsPage extends PresetEditorPage {
 		});
 		
 		River branchRivers = river.branchRivers;
-		this.branchRiverBedDepth = PresetWidgets.createIntSlider(branchRivers.bedDepth, 1, 10, RTFTranslationKeys.GUI_SLIDER_RIVER_BED_DEPTH, (slider, value) -> {
+		this.branchRiverBedDepth = PresetWidgets.createIntSlider(branchRivers.bedDepth, 1, 20, RTFTranslationKeys.GUI_SLIDER_RIVER_BED_DEPTH, (slider, value) -> {
 			branchRivers.bedDepth = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
-		this.branchRiverMinBankHeight = PresetWidgets.createIntSlider(branchRivers.minBankHeight, 0, 10, RTFTranslationKeys.GUI_SLIDER_RIVER_MIN_BANK_HEIGHT, (slider, value) -> {
+		this.branchRiverMinBankHeight = PresetWidgets.createIntSlider(branchRivers.minBankHeight, 0, 20, RTFTranslationKeys.GUI_SLIDER_RIVER_MIN_BANK_HEIGHT, (slider, value) -> {
 			branchRivers.minBankHeight = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
-		this.branchRiverMaxBankHeight = PresetWidgets.createIntSlider(branchRivers.maxBankHeight, 1, 10, RTFTranslationKeys.GUI_SLIDER_RIVER_MAX_BANK_HEIGHT, (slider, value) -> {
+		this.branchRiverMaxBankHeight = PresetWidgets.createIntSlider(branchRivers.maxBankHeight, 1, 20, RTFTranslationKeys.GUI_SLIDER_RIVER_MAX_BANK_HEIGHT, (slider, value) -> {
 			branchRivers.maxBankHeight = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
-		this.branchRiverBedWidth = PresetWidgets.createIntSlider(branchRivers.bedWidth, 1, 20, RTFTranslationKeys.GUI_SLIDER_RIVER_BED_WIDTH, (slider, value) -> {
+		this.branchRiverBedWidth = PresetWidgets.createIntSlider(branchRivers.bedWidth, 1, 50, RTFTranslationKeys.GUI_SLIDER_RIVER_BED_WIDTH, (slider, value) -> {
 			branchRivers.bedWidth = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
-		this.branchRiverBankWidth = PresetWidgets.createIntSlider(branchRivers.bankWidth, 1, 50, RTFTranslationKeys.GUI_SLIDER_RIVER_BANK_WIDTH, (slider, value) -> {
+		this.branchRiverBankWidth = PresetWidgets.createIntSlider(branchRivers.bankWidth, 1, 100, RTFTranslationKeys.GUI_SLIDER_RIVER_BANK_WIDTH, (slider, value) -> {
 			branchRivers.bankWidth = (int) slider.scaleValue(value);
 			this.regenerate();
 			return value;

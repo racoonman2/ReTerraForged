@@ -54,7 +54,7 @@ public class LakePopulator {
                 float lakeDepth = Math.min(cell.height, this.depth);
                 cell.height = NoiseUtil.lerp(cell.height, lakeDepth, depthAlpha);
                 cell.terrain = TerrainType.LAKE;
-                cell.riverMask = Math.min(cell.riverMask, 1.0F - depthAlpha);
+                cell.riverDistance = Math.min(cell.riverDistance, 1.0F - depthAlpha);
             }
             return;
         }
@@ -68,8 +68,8 @@ public class LakePopulator {
             valleyAlpha = 1.0F;
         }
         cell.height = NoiseUtil.lerp(cell.height, bankHeight, valleyAlpha);
-        cell.riverMask *= 1.0F - valleyAlpha;
-        cell.riverMask = Math.min(cell.riverMask, 1.0F - valleyAlpha);
+        cell.riverDistance *= 1.0F - valleyAlpha;
+        cell.riverDistance = Math.min(cell.riverDistance, 1.0F - valleyAlpha);
     }
     
     public void recordBounds(Boundsf.Builder builder) {

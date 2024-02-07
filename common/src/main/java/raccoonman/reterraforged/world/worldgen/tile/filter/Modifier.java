@@ -13,8 +13,8 @@ public interface Modifier {
             float alpha = NoiseUtil.map(cell.terrainRegionEdge, 0.0F, 0.15F, 0.15F);
             strengthModifier = NoiseUtil.lerp(1.0F, erosionModifier, alpha);
         }
-        if (cell.riverMask < 0.1F) {
-            strengthModifier *= NoiseUtil.map(cell.riverMask, 0.002F, 0.1F, 0.098F);
+        if (cell.riverDistance < 0.1F) {
+            strengthModifier *= NoiseUtil.map(cell.riverDistance, 0.002F, 0.1F, 0.098F);
         }
         return this.getValueModifier(cell.height) * strengthModifier * value;
     }

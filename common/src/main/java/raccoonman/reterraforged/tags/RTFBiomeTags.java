@@ -39,6 +39,8 @@ public class RTFBiomeTags {
 	public static final TagKey<Biome> HAS_FERN_GRASS = resolve("features/has_fern_grass");
 	public static final TagKey<Biome> HAS_BIRCH_GRASS = resolve("features/has_birch_grass");
 	
+	public static final TagKey<Biome> EROSION_BLACKLIST = resolve("surface/erosion_blacklist");
+	
     private static TagKey<Biome> resolve(String path) {
     	return TagKey.create(Registries.BIOME, RTFCommon.location(path));
     }

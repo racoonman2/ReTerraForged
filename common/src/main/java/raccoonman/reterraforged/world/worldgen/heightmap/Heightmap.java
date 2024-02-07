@@ -1,17 +1,20 @@
 package raccoonman.reterraforged.world.worldgen.heightmap;
 
-import raccoonman.reterraforged.data.preset.settings.MiscellaneousSettings;
 import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.data.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.data.preset.settings.WorldSettings;
 import raccoonman.reterraforged.data.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
+import raccoonman.reterraforged.world.worldgen.biome.Continentalness;
+import raccoonman.reterraforged.world.worldgen.biome.Erosion;
+import raccoonman.reterraforged.world.worldgen.biome.Weirdness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.climate.Climate;
 import raccoonman.reterraforged.world.worldgen.continent.Continent;
 import raccoonman.reterraforged.world.worldgen.continent.ContinentLerper2;
 import raccoonman.reterraforged.world.worldgen.continent.ContinentLerper3;
+import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.EdgeFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.Interpolation;
@@ -46,7 +49,7 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 	}
 	
 	public void applyRivers(Cell cell, float x, float z, Rivermap rivermap) {
-//        rivermap.apply(cell, x, z);
+        rivermap.apply(cell, x, z);
         VolcanoPopulator.modifyVolcanoType(cell, this.levels);
 	}
 	
@@ -54,24 +57,49 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
     	cell.weirdness = -cell.weirdness;
     	
 		float riverValleyThreshold = 0.675F;
-//        if(cell.riverMask < riverValleyThreshold) {
-//        	cell.erosion = 0.4F;
-//        	cell.weirdness = 0.1F; NoiseUtil.lerp(cell.weirdness, Weirdness.LOW_SLICE_NORMAL_DESCENDING.mid(), 1.0F - cell.riverMask);
-////        	cell.erosion = NoiseUtil.lerp(cell.erosion, Erosion.LEVEL_3.mid(), 1.0F - cell.riverMask);
-//        }
-//
-//        if(cell.terrain.isRiver()) {
-//        	cell.weirdness = 0.0F;
-//        }
-////        
-//        if(cell.terrain.isLake() && cell.height < this.levels.water) {
-//            cell.erosion = Erosion.LEVEL_4.mid();
-//            cell.weirdness = -0.03F;
-//        }
+        if(cell.riverDistance < riverValleyThreshold) {
+        	cell.erosion = 0.4F;
+        	cell.weirdness = 0.1F;// NoiseUtil.lerp(cell.weirdness, Weirdness.LOW_SLICE_NORMAL_DESCENDING.midpoint(), 1.0F - cell.riverDistance);
+//        	cell.erosion = NoiseUtil.lerp(cell.erosion, Erosion.LEVEL_3.mid(), 1.0F - cell.riverMask);
+        }
+
+        if(cell.terrain.isRiver()) {
+        	cell.weirdness = 0.0F;
+        }
+//        
+        if(cell.terrain.isLake() && cell.height < this.levels.water) {
+            cell.erosion = Erosion.LEVEL_4.midpoint();
+            cell.weirdness = -0.03F;
+        }
         this.climate.apply(cell, x, z);
-//
-//        if(cell.riverMask >= riverValleyThreshold && cell.macroBiomeId > 0.5F) { 
-//        }
+
+		float deepOcean = this.controlPoints.deepOcean;
+		float shallowOcean = this.controlPoints.shallowOcean;
+		float beach = this.controlPoints.beach;
+		float coast = this.controlPoints.coast;
+		float midInland = this.controlPoints.midInland;
+		float farInland = this.controlPoints.farInland;
+		float maxInland = this.controlPoints.maxInland;
+		
+		float continentalness = cell.continentalness;
+		
+		if(continentalness <= deepOcean) {
+			float alpha = NoiseUtil.map(continentalness, 0.0F, deepOcean);
+			cell.continentalness = Continentalness.DEEP_OCEAN.lerp(alpha);
+		} else if(continentalness <= shallowOcean) {
+			float alpha = NoiseUtil.map(continentalness, deepOcean, shallowOcean);
+			cell.continentalness = Continentalness.OCEAN.lerp(alpha);
+		} else if(continentalness <= midInland) {
+			float alpha = NoiseUtil.map(continentalness, shallowOcean, midInland);
+			cell.continentalness = Continentalness.NEAR_INLAND.lerp(alpha);
+		} else if(continentalness <= farInland) {
+			float alpha = NoiseUtil.map(continentalness, midInland, farInland);
+			cell.continentalness = NoiseUtil.lerp(Continentalness.MID_INLAND.min(), Continentalness.MID_INLAND.max(), alpha);
+		} else {
+			float alpha = NoiseUtil.map(continentalness, farInland, maxInland);
+			alpha = Math.min(alpha, 1.0F);
+			cell.continentalness = NoiseUtil.lerp(Continentalness.FAR_INLAND.min(), Continentalness.FAR_INLAND.max(), alpha);
+		}
 	}
 	
 	public static Heightmap make(GeneratorContext ctx) {

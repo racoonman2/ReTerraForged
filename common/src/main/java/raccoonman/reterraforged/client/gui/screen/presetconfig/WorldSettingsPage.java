@@ -35,6 +35,9 @@ public class WorldSettingsPage extends PresetEditorPage {
 	private Slider beach;
 	private Slider coast;
 	private Slider inland;
+	private Slider midInland;
+	private Slider farInland;
+	private Slider maxInland;
 	
 	private CycleButton<SpawnType> spawnType;
 	private Slider worldHeight;
@@ -154,8 +157,26 @@ public class WorldSettingsPage extends PresetEditorPage {
 			return value;
 		});
 		this.inland = PresetWidgets.createFloatSlider(controlPoints.inland, 0.0F, 1.0F, RTFTranslationKeys.GUI_SLIDER_INLAND, (slider, value) -> {
-			value = Math.max(value, this.coast.getValue());
+//			value = Mth.clamp(value, this.coast.getValue(), this.farInland.getValue());
 			controlPoints.inland = (float) slider.scaleValue(value);
+			this.regenerate();
+			return value;
+		});
+		this.midInland = PresetWidgets.createFloatSlider(controlPoints.midInland , 0.0F, 6.0F, RTFTranslationKeys.GUI_SLIDER_MID_INLAND, (slider, value) -> {
+//			value = Mth.clamp(value, this.inland.getValue(), this.maxInland.getValue());
+			controlPoints.midInland = (float) slider.scaleValue(value);
+			this.regenerate();
+			return value;
+		});
+		this.farInland = PresetWidgets.createFloatSlider(controlPoints.farInland, 0.0F, 6.0F, RTFTranslationKeys.GUI_SLIDER_FAR_INLAND, (slider, value) -> {
+//			value = Mth.clamp(value, this.inland.getValue(), this.maxInland.getValue());
+			controlPoints.farInland = (float) slider.scaleValue(value);
+			this.regenerate();
+			return value;
+		});
+		this.maxInland = PresetWidgets.createFloatSlider(controlPoints.maxInland, 0.0F, 6.0F, RTFTranslationKeys.GUI_SLIDER_MAX_INLAND, (slider, value) -> {
+//			value = Math.max(value, this.farInland.getValue());
+			controlPoints.maxInland = (float) slider.scaleValue(value);
 			this.regenerate();
 			return value;
 		});
@@ -203,6 +224,9 @@ public class WorldSettingsPage extends PresetEditorPage {
 		this.left.addWidget(this.beach);
 		this.left.addWidget(this.coast);
 		this.left.addWidget(this.inland);
+		this.left.addWidget(this.midInland);
+		this.left.addWidget(this.farInland);
+		this.left.addWidget(this.maxInland);
 		
 		this.left.addWidget(PresetWidgets.createLabel(RTFTranslationKeys.GUI_LABEL_PROPERTIES));
 		this.left.addWidget(this.spawnType);

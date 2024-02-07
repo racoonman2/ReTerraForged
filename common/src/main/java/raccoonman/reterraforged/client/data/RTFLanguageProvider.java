@@ -89,6 +89,9 @@ public class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_SLIDER_BEACH, "Beach");
 			this.add(RTFTranslationKeys.GUI_SLIDER_COAST, "Coast");
 			this.add(RTFTranslationKeys.GUI_SLIDER_INLAND, "Inland");
+			this.add(RTFTranslationKeys.GUI_SLIDER_MID_INLAND, "Mid Inland");
+			this.add(RTFTranslationKeys.GUI_SLIDER_FAR_INLAND, "Far Inland");
+			this.add(RTFTranslationKeys.GUI_SLIDER_MAX_INLAND, "Max Inland");
 			this.add(RTFTranslationKeys.GUI_SLIDER_WORLD_HEIGHT, "World Height");
 			this.add(RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH, "World Depth");
 			this.add(RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL, "Sea Level");
@@ -247,6 +250,9 @@ public class RTFLanguageProvider {
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_BEACH), "Controls how much of the coastal terrain is assigned to beach biomes.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_COAST), "Controls the size of coastal regions and is also the point below which inland terrain transitions into oceans.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_INLAND), "Controls the overall transition from ocean to inland terrain.");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_MID_INLAND), "Controls the point at which biomes transition into mid inland biomes.");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_FAR_INLAND), "Controls the point at which biomes transition into far inland biomes.");
+			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_MAX_INLAND), "Controls the max continentalness.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WORLD_HEIGHT), "Controls the world height");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_WORLD_DEPTH), "Controls the minimum y level");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_SLIDER_SEA_LEVEL), "Controls the sea level");

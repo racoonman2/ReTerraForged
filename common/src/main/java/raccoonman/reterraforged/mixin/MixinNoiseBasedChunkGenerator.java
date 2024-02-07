@@ -98,12 +98,13 @@ class MixinNoiseBasedChunkGenerator {
 			generatorContext.lookup.apply(cell, blockPos.getX(), blockPos.getZ());
 
 			list.add("");
+			list.add("Continent Edge: " + cell.continentEdge);
 			list.add("Terrain Type: " + cell.terrain.getName());
-			list.add("Biome Type: " + cell.biomeType.name());
 			list.add("Terrain Region: " + cell.terrainRegion);
 			list.add("Terrain Region Edge: " + cell.terrainRegionEdge);
-			list.add("River Distance: " + (1.0F - cell.riverMask));
+			list.add("Biome Type: " + cell.biomeType.name());
 			list.add("Macro Biome: " + (cell.macroBiomeId));
+			list.add("River Banks: " + cell.riverBanks);
 			list.add("");
     	}
     }

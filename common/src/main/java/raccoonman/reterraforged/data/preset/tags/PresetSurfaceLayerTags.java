@@ -23,13 +23,9 @@ public class PresetSurfaceLayerTags extends TagsProvider<LayeredSurfaceRule.Laye
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		this.tag(RTFSurfaceLayerTags.EROSION_MATERIAL).add(
-			PresetSurfaceLayerData.EROSION_MATERIAL
-		);
-		this.tag(RTFSurfaceLayerTags.OVERWORLD).add(
-			PresetSurfaceLayerData.EROSION,
-			PresetSurfaceLayerData.DEFAULT,
-			PresetSurfaceLayerData.FOREST
-		);
+		this.tag(RTFSurfaceLayerTags.ON_FLOOR).add(PresetSurfaceLayerData.EROSION, PresetSurfaceLayerData.DIRT_EROSION);
+		this.tag(RTFSurfaceLayerTags.UNDER_FLOOR).add(PresetSurfaceLayerData.EROSION, PresetSurfaceLayerData.DIRT_EROSION);
+		this.tag(RTFSurfaceLayerTags.EROSION).add(PresetSurfaceLayerData.ROCK_EROSION, PresetSurfaceLayerData.BADLANDS_EROSION);
+		this.tag(RTFSurfaceLayerTags.EROSION_VARIANT).add(PresetSurfaceLayerData.ROCK_EROSION, PresetSurfaceLayerData.BADLANDS_EROSION);
 	}
 }

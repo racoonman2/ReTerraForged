@@ -23,6 +23,10 @@ public class NoiseUtil {
         return NoiseUtil.CELL_2D[hash2D(seed, x, y) & 0xFF];
     }
 
+    public static float map(float value, float min, float max) {
+    	return map(value, min, max, max - min);
+    }
+    
     public static float map(float value, float min, float max, float range) {
     	return map(value, min, max, range, true);
     }

@@ -77,7 +77,10 @@ public class WorldSettings {
     		Codec.FLOAT.fieldOf("shallowOcean").forGetter((o) -> o.shallowOcean),
     		Codec.FLOAT.fieldOf("beach").forGetter((o) -> o.beach),
     		Codec.FLOAT.fieldOf("coast").forGetter((o) -> o.coast),
-    		Codec.FLOAT.fieldOf("inland").forGetter((o) -> o.inland)
+    		Codec.FLOAT.fieldOf("inland").forGetter((o) -> o.inland),
+    		Codec.FLOAT.optionalFieldOf("midInland", 0.5F).forGetter((o) -> o.midInland),
+    		Codec.FLOAT.optionalFieldOf("farInland", 0.7F).forGetter((o) -> o.farInland),
+    		Codec.FLOAT.optionalFieldOf("maxInland", 1.0F).forGetter((o) -> o.maxInland)
         ).apply(instance, ControlPoints::new));
 
     	public float islandInland;
@@ -87,8 +90,11 @@ public class WorldSettings {
         public float beach;
         public float coast;
         public float inland;
+        public float midInland;
+        public float farInland;
+        public float maxInland;
         
-        public ControlPoints(float islandInland, float islandCoast, float deepOcean, float shallowOcean, float beach, float coast, float inland) {
+        public ControlPoints(float islandInland, float islandCoast, float deepOcean, float shallowOcean, float beach, float coast, float inland, float farInland, float maxInland, float midInland) {
         	this.islandInland = islandInland;
         	this.islandCoast = islandCoast;
             this.deepOcean = deepOcean;
@@ -96,6 +102,9 @@ public class WorldSettings {
             this.beach = beach;
             this.coast = coast;
             this.inland = inland;
+            this.midInland = midInland;
+            this.farInland = farInland;
+            this.maxInland = maxInland;
         }
         
         public float coastMarker() {
@@ -103,7 +112,7 @@ public class WorldSettings {
         }
         
         public ControlPoints copy() {
-        	return new ControlPoints(this.islandInland, this.islandCoast, this.deepOcean, this.shallowOcean, this.beach, this.coast, this.inland);
+        	return new ControlPoints(this.islandInland, this.islandCoast, this.deepOcean, this.shallowOcean, this.beach, this.coast, this.inland, this.midInland, this.farInland, this.maxInland);
         }
     }
     

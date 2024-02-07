@@ -103,7 +103,7 @@ public class VolcanoPopulator implements CellPopulator, WeightedPopulator {
     }
     
     public static void modifyVolcanoType(Cell cell, Levels levels) {
-        if (cell.terrain == TerrainType.VOLCANO_PIPE && (cell.height < levels.water || cell.riverMask < 0.85F)) {
+        if (cell.terrain == TerrainType.VOLCANO_PIPE && (cell.height < levels.water || cell.riverDistance < 0.85F)) {
             cell.terrain = TerrainType.VOLCANO;
         }
     }

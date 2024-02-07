@@ -31,6 +31,10 @@ public record LayeredSurfaceRule(TagKey<Layer> layers) implements SurfaceRules.R
 	public KeyDispatchDataCodec<LayeredSurfaceRule> codec() {
 		return new KeyDispatchDataCodec<>(CODEC);
 	}
+
+	public static Layer layer(TagKey<Layer> layers) {
+		return new Layer(RTFSurfaceRules.layered(layers));
+	}
 	
 	public static Layer layer(SurfaceRules.RuleSource rule) {
 		return new Layer(rule);

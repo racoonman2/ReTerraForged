@@ -12,10 +12,7 @@ import raccoonman.reterraforged.data.preset.settings.CaveSettings;
 import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.data.preset.settings.WorldSettings;
 import raccoonman.reterraforged.registries.RTFRegistries;
-import raccoonman.reterraforged.tags.RTFSurfaceLayerTags;
-import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
-import raccoonman.reterraforged.world.worldgen.surface.rule.RTFSurfaceRules;
 
 public class PresetNoiseGeneratorSettings {
 	
@@ -28,7 +25,7 @@ public class PresetNoiseGeneratorSettings {
 		WorldSettings.Properties properties = worldSettings.properties;
 		int worldHeight = properties.worldHeight;
 		int worldDepth = properties.worldDepth;
-    	Levels levels = new Levels(properties.terrainScaler(), properties.seaLevel);
+//    	Levels levels = new Levels(properties.terrainScaler(), properties.seaLevel);
     	
 		CaveSettings caveSettings = preset.caves();
 
@@ -36,7 +33,7 @@ public class PresetNoiseGeneratorSettings {
 			NoiseSettings.create(-worldDepth, worldDepth + worldHeight, 1, 2), 
 			Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), 
 			PresetNoiseRouterData.overworld(preset, densityFunctions, noiseParams, noises),
-			RTFSurfaceRules.layered(RTFSurfaceLayerTags.OVERWORLD), //			PresetSurfaceRuleData.overworld(preset, levels, noises),
+			PresetSurfaceRuleData.overworld(preset, noises),
 			properties.spawnType.getParameterPoints(), 
 			properties.seaLevel, 
 			false, 

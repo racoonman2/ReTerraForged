@@ -37,7 +37,7 @@ record CellTest(float cutoff, Set<Terrain> terrainTypeBlacklist) implements Stru
 				WorldLookup worldLookup = generatorContext.lookup;
 				Cell cell = new Cell();
 				worldLookup.apply(cell.reset(), pos.getX(), pos.getZ());
-				if(cell.riverMask < this.cutoff) {//FIXME this breaks ancient city generation || this.terrainTypeBlacklist.contains(cell.terrain)) {
+				if(cell.riverDistance < this.cutoff) {//FIXME this breaks ancient city generation || this.terrainTypeBlacklist.contains(cell.terrain)) {
 					return false;
 				}
 			}

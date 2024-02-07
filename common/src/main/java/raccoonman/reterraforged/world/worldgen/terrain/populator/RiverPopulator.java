@@ -66,10 +66,12 @@ public class RiverPopulator implements Comparable<RiverPopulator> {
         float mouthModifier = getMouthModifier(cell);
         float bedHeight = this.getScaledSize(t, this.bedDepth);
         
-        cell.riverMask = Math.min(cell.riverMask, 1.0F - valleyAlpha);
+        cell.riverDistance = Math.min(cell.riverDistance, 1.0F - valleyAlpha);
         cell.height = Math.min(NoiseUtil.lerp(cell.height, bankHeight, valleyAlpha), cell.height);
 
-        float banksAlpha = this.getDistanceAlpha(t, d2 * mouthModifier, this.banksWidth);
+        float banks = d2 * mouthModifier;
+        cell.riverBanks = 1.0F / banks;
+        float banksAlpha = this.getDistanceAlpha(t, banks, this.banksWidth);
         if (banksAlpha == 0.0F) {
             return;
         }

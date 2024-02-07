@@ -132,31 +132,15 @@ public record CellSampler(Supplier<GeneratorContext> generatorContext, Field fie
 				Levels levels = heightmap.levels();
 				ControlPoints controlPoints = heightmap.controlPoints();
 				
-				float deepOcean = controlPoints.deepOcean;
 				float shallowOcean = controlPoints.shallowOcean;
 				float beach = controlPoints.beach;
-				float coast = controlPoints.coast;
-				float inland = controlPoints.inland;
 				
-				if(cell.terrain.isDeepOcean()) {
-					float alpha = NoiseUtil.clamp(cell.continentEdge, 0.0F, deepOcean);
-					alpha = NoiseUtil.lerp(alpha, 0.0F, deepOcean, 0.0F, 1.0F);
-					return NoiseUtil.lerp(Continentalness.DEEP_OCEAN.min() + 0.05F, Continentalness.DEEP_OCEAN.max(), alpha);					
-				}
-				
-				if(cell.terrain.isShallowOcean()) {
-					float alpha = NoiseUtil.clamp(cell.continentEdge, deepOcean, shallowOcean);
-					alpha = NoiseUtil.lerp(alpha, deepOcean, shallowOcean, 0.0F, 0.98F);
-					return NoiseUtil.lerp(Continentalness.OCEAN.min(), Continentalness.OCEAN.max(), alpha);
-				}
-
 				if(cell.terrain.getDelegate() == TerrainCategory.BEACH && cell.height + cell.beachNoise < levels.water(5)) {
 					float alpha = NoiseUtil.clamp(cell.continentEdge, shallowOcean, beach);
 					alpha = NoiseUtil.lerp(alpha, shallowOcean, beach, 0.0F, 1.0F);
 					return NoiseUtil.lerp(Continentalness.COAST.min(), Continentalness.COAST.max(), alpha);
 				}
-
-				return NoiseUtil.lerp(Continentalness.NEAR_INLAND.min(), 0.6F, cell.continentEdge * 0.75F);
+				return cell.continentalness;
 			}
 		},
 		EROSION("erosion") {

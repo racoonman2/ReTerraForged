@@ -22,6 +22,7 @@ public class PresetSurfaceNoise {
 	public static final ResourceKey<Noise> DESERT = createKey("desert");
 	public static final ResourceKey<Noise> SWAMP = createKey("swamp");
 	public static final ResourceKey<Noise> FOREST = createKey("forest");
+	public static final ResourceKey<Noise> RIVER_BANK = createKey("river_bank");
 		
 	public static final ResourceKey<Noise> ICEBERG_DEEP_SHAPE = createKey("iceberg/deep/shape");
 	public static final ResourceKey<Noise> ICEBERG_DEEP_MASK = createKey("iceberg/deep/mask");
@@ -66,6 +67,7 @@ public class PresetSurfaceNoise {
 		ctx.register(DESERT, makeDesert(scaling));
 		ctx.register(SWAMP, makeSwamp());
 		ctx.register(FOREST, makeForest());
+		ctx.register(RIVER_BANK, makeRiverBank());
 		
 		registerIceberg(ctx, ICEBERG_DEEP_SHAPE, ICEBERG_DEEP_MASK, ICEBERG_DEEP_FADE_DOWN, ICEBERG_DEEP_FADE_UP, ICEBERG_DEEP_UP, ICEBERG_DEEP_DOWN, ICEBERG_DEEP_TOP, scaling, 30, 30, 0);
 		registerIceberg(ctx, ICEBERG_SHALLOW_SHAPE, ICEBERG_SHALLOW_MASK, ICEBERG_SHALLOW_FADE_DOWN, ICEBERG_SHALLOW_FADE_UP, ICEBERG_SHALLOW_UP, ICEBERG_SHALLOW_DOWN, ICEBERG_SHALLOW_TOP, scaling, 20, 15, 6);
@@ -101,6 +103,14 @@ public class PresetSurfaceNoise {
 		int seed = 15;
 		
 		Noise noise = Noises.simplex(seed++, 50, 2);
+		noise = Noises.warpWhite(noise, seed, 2, 3);
+		return generatorResource(noise);
+	}
+
+	private static Noise makeRiverBank() {
+		int seed = 15;
+		
+		Noise noise = Noises.simplex(seed++, 5, 5);
 		noise = Noises.warpWhite(noise, seed, 2, 3);
 		return generatorResource(noise);
 	}

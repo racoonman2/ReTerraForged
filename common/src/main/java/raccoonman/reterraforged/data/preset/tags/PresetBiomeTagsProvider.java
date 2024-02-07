@@ -59,6 +59,8 @@ public class PresetBiomeTagsProvider extends TagsProvider<Biome> {
 			this.tag(RTFBiomeTags.HAS_MEADOW_GRASS).add(Biomes.MEADOW, Biomes.FLOWER_FOREST);
 			this.tag(RTFBiomeTags.HAS_FERN_GRASS).add(Biomes.WINDSWEPT_FOREST, Biomes.WINDSWEPT_GRAVELLY_HILLS, Biomes.WINDSWEPT_HILLS, Biomes.TAIGA);
 			this.tag(RTFBiomeTags.HAS_BIRCH_GRASS).add(Biomes.BIRCH_FOREST, Biomes.OLD_GROWTH_BIRCH_FOREST);
+	
+			this.tag(RTFBiomeTags.EROSION_BLACKLIST).add(Biomes.DESERT);
 		}
 	}
 }

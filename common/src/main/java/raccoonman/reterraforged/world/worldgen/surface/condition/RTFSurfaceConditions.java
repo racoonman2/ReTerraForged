@@ -26,7 +26,7 @@ public class RTFSurfaceConditions {
 		register("steepness", SteepnessCondition.Source.CODEC);
 		register("erosion", ErosionCondition.Source.CODEC);
 		register("sediment", SedimentCondition.Source.CODEC);
-		register("distance_to_river", DistanceToRiverCondition.Source.CODEC);
+		register("river_bank", RiverBankCondition.Source.CODEC);
 		register("height_modification_detection", HeightModificationDetection.Source.CODEC);
 	}
 	
@@ -89,9 +89,13 @@ public class RTFSurfaceConditions {
 	public static SedimentCondition.Source sediment(Holder<Noise> threshold, Holder<Noise> variance) {
 		return new SedimentCondition.Source(threshold, variance);
 	}
+
+	public static RiverBankCondition.Source riverBank(float threshold) {
+		return riverBank(constant(threshold), constant(0.0F));
+	}
 	
-	public static DistanceToRiverCondition.Source riverDistance(Holder<Noise> threshold, Holder<Noise> variance) {
-		return new DistanceToRiverCondition.Source(threshold, variance);
+	public static RiverBankCondition.Source riverBank(Holder<Noise> threshold, Holder<Noise> variance) {
+		return new RiverBankCondition.Source(threshold, variance);
 	}
 	
 	public static HeightModificationDetection.Source heightModificationDetection(HeightModificationDetection.Target target) {

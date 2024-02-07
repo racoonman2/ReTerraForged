@@ -29,13 +29,13 @@ public class MixinSurfaceRules$BiomeConditionSource {
 
     @Inject(at = @At("HEAD"), method = "apply", cancellable = true)
     public void apply(SurfaceRules.Context ctx, CallbackInfoReturnable<SurfaceRules.Condition> callback) {
-    	WorldGenRegion region = SurfaceRegion.get();
+//    	WorldGenRegion region = SurfaceRegion.get();
 
-    	Set<ResourceKey<Biome>> surroundingBiomes;
-    	if((Object) ctx instanceof RTFSurfaceContext rtfSurfaceContext && (surroundingBiomes = rtfSurfaceContext.getSurroundingBiomes()) != null) {
-    		boolean skipChunk = surroundingBiomes.stream().filter(this.biomeNameTest).findAny().isEmpty();
-            callback.setReturnValue(new BiomeCondition(skipChunk, null, ctx, region));
-    	}
+//    	Set<ResourceKey<Biome>> surroundingBiomes;
+//    	if((Object) ctx instanceof RTFSurfaceContext rtfSurfaceContext && (surroundingBiomes = rtfSurfaceContext.getSurroundingBiomes()) != null) {
+//    		boolean skipChunk = surroundingBiomes.stream().filter(this.biomeNameTest).findAny().isEmpty();
+//            callback.setReturnValue(new BiomeCondition(skipChunk, null, ctx, region));
+//    	}
     }
     
     class BiomeCondition extends SurfaceRules.LazyYCondition {
@@ -126,6 +126,8 @@ public class MixinSurfaceRules$BiomeConditionSource {
     	
 		@Override
 		public boolean compute() {
+			
+			
 			if(this.skipChunk) {
 				return false;
 			}

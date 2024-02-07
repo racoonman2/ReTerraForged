@@ -66,9 +66,6 @@ public class WetlandPopulator {
             return;
         }
         float valleyAlpha = NoiseUtil.map(dist, 0.0F, 0.65F, 0.65F);
-        float erosionAlpha = NoiseUtil.map(Math.max(dist, 0.0F), 0.0F, 0.65F, 0.65F, false);
-        cell.erosion = NoiseUtil.lerp(cell.erosion, 0.55025F, erosionAlpha);
-        cell.weirdness = Weirdness.LOW_SLICE_NORMAL_DESCENDING.midpoint();
         if (cell.height > this.banks) {
             cell.height = NoiseUtil.lerp(cell.height, this.banks, valleyAlpha);
         }
@@ -88,7 +85,7 @@ public class WetlandPopulator {
             float mounds = this.moundMin + this.moundHeight.compute(x, z, 0) * this.moundVariance;
             cell.height = NoiseUtil.lerp(cell.height, mounds, shapeAlpha);
         }
-        cell.riverMask = Math.min(cell.riverMask, 1.0F - valleyAlpha);
+        cell.riverDistance = Math.min(cell.riverDistance, 1.0F - valleyAlpha);
     }
     
     public void recordBounds(Boundsf.Builder builder) {
