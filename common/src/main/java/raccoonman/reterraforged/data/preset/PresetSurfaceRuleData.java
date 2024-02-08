@@ -690,11 +690,8 @@ public class PresetSurfaceRuleData {
         		SurfaceRules.abovePreliminarySurface(),
         		surface
         	),
-        	SurfaceRules.ifTrue(SurfaceRules.verticalGradient("deepslate", VerticalAnchor.absolute(0), VerticalAnchor.absolute(8)), DEEPSLATE)
-//        	SurfaceRules.ifTrue(
-//        		SurfaceRules.isBiome(Biomes.DRIPSTONE_CAVES),
-//        		GRASS_BLOCK
-//        	)
+        	SurfaceRules.ifTrue(SurfaceRules.verticalGradient("deepslate", VerticalAnchor.absolute(0), VerticalAnchor.absolute(8)), DEEPSLATE),
+        	SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.DRIPSTONE_CAVES), GRASS_BLOCK)
 //        	makeStrataRule(1, miscellaneousSettings, noise)
         );
 //        SurfaceRuleManager.setDefaultSurfaceRules(RuleCategory.OVERWORLD, rules);

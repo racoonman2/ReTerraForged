@@ -62,7 +62,7 @@ public class TerrainProvider {
         List<CellPopulator> result = new ArrayList<>();
         result.addAll(mixed);
         result.addAll(unmixable);
-
+        
         Collections.shuffle(result, new Random(terrainSeed.next()));
         return result;
     }

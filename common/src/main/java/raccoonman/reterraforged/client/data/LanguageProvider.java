@@ -42,7 +42,7 @@ public abstract class LanguageProvider implements DataProvider {
 
         if (!this.data.isEmpty())
             return this.save(cache, this.output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(this.modid).resolve("lang").resolve(this.locale + ".json"));
-
+        
         return CompletableFuture.allOf();
     }
 
