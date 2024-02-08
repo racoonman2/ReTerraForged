@@ -104,6 +104,7 @@ public class Populators {
 	
 	public static TerrainPopulator makePlateau(@Deprecated Seed seed, Noise ground, TerrainSettings.Terrain settings, float verticalScale) {
 		Noise valley = Noises.perlinRidge(seed.next(), 500, 1);
+		
 		valley = Noises.invert(valley);
 		valley = Noises.warpPerlin(valley, seed.next(), 100, 1, 150.0F);
 		valley = Noises.warpPerlin(valley, seed.next(), 20, 1, 15.0F);
@@ -134,7 +135,7 @@ public class Populators {
 		weirdness = Noises.cache2d(weirdness);
 		
 		Noise height = Noises.mul(weirdness, 0.475F * verticalScale);
-		return TerrainPopulator.make(TerrainType.PLATEAU, ground, height, Erosion.LEVEL_2.source(), Noises.add(weirdness, 0.19F), settings);
+		return TerrainPopulator.make(TerrainType.PLATEAU, ground, height, Erosion.LEVEL_2.source(), Noises.add(Noises.mul(weirdness, 0.5F), 0.15F), settings);
 	}
 	
 	public static TerrainPopulator makeHills1(@Deprecated Seed seed, Noise ground, TerrainSettings.Terrain settings, float verticalScale) {
