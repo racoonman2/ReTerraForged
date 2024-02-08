@@ -34,7 +34,7 @@ import raccoonman.reterraforged.world.worldgen.RTFRandomState;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.surface.SurfaceRegion;
 
-@Mixin(NoiseBasedChunkGenerator.class)
+@Mixin(value = NoiseBasedChunkGenerator.class, priority = 9001 /* we need this so we don't break noisium */)
 class MixinNoiseBasedChunkGenerator {
 	
 	@Shadow
