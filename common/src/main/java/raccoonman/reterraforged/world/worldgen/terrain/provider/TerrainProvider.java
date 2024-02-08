@@ -4,15 +4,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.BiFunction;
 
+import com.google.common.collect.ImmutableSet;
+
+import net.minecraft.world.level.biome.BiomeManager;
 import raccoonman.reterraforged.data.preset.settings.TerrainSettings;
+import raccoonman.reterraforged.world.worldgen.biome.Erosion;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.heightmap.RegionConfig;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.terrain.Terrain;
+import raccoonman.reterraforged.world.worldgen.terrain.TerrainCategory;
 import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.terrain.populator.Populators;
 import raccoonman.reterraforged.world.worldgen.terrain.populator.TerrainPopulator;
@@ -56,9 +62,15 @@ public class TerrainProvider {
         List<CellPopulator> result = new ArrayList<>();
         result.addAll(mixed);
         result.addAll(unmixable);
+
         Collections.shuffle(result, new Random(terrainSeed.next()));
         return result;
     }
+	
+	@Deprecated
+	private static Set<Terrain> LOW_EROSION = ImmutableSet.of(
+		TerrainType.PLATEAU, TerrainType.BADLANDS, TerrainType.TORRIDONIAN
+	);
     
     private static TerrainPopulator combine(TerrainPopulator tp1, TerrainPopulator tp2, Seed seed, Levels levels, int scale) {
         Terrain type = TerrainType.registerComposite(tp1.type(), tp2.type());
@@ -68,7 +80,7 @@ public class TerrainProvider {
         Noise height = Noises.blend(selector, tp1.height(), tp2.height(), 0.5F, 0.25F);
         height = Noises.max(height, Noises.zero());
         
-        Noise erosion = Noises.blend(selector, tp1.erosion(), tp2.erosion(), 0.5F, 0.25F);
+        Noise erosion = LOW_EROSION.contains(tp1.type()) && LOW_EROSION.contains(tp2.type()) ? Erosion.LEVEL_3.source() : Erosion.LEVEL_4.source();
         Noise weirdness = Noises.threshold(selector, tp1.weirdness(), tp2.weirdness(), 0.5F);
 
         float weight = (tp1.weight() + tp2.weight()) / 2.0F;

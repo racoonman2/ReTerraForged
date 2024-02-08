@@ -77,9 +77,9 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 		float shallowOcean = this.controlPoints.shallowOcean;
 		float beach = this.controlPoints.beach;
 		float coast = this.controlPoints.coast;
+		float nearInland = this.controlPoints.nearInland;
 		float midInland = this.controlPoints.midInland;
 		float farInland = this.controlPoints.farInland;
-		float maxInland = this.controlPoints.maxInland;
 		
 		float continentalness = cell.continentalness;
 		
@@ -89,14 +89,14 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 		} else if(continentalness <= shallowOcean) {
 			float alpha = NoiseUtil.map(continentalness, deepOcean, shallowOcean);
 			cell.continentalness = Continentalness.OCEAN.lerp(alpha);
-		} else if(continentalness <= midInland) {
-			float alpha = NoiseUtil.map(continentalness, shallowOcean, midInland);
+		} else if(continentalness <= nearInland) {
+			float alpha = NoiseUtil.map(continentalness, shallowOcean, nearInland);
 			cell.continentalness = Continentalness.NEAR_INLAND.lerp(alpha);
-		} else if(continentalness <= farInland) {
-			float alpha = NoiseUtil.map(continentalness, midInland, farInland);
+		} else if(continentalness <= midInland) {
+			float alpha = NoiseUtil.map(continentalness, nearInland, midInland);
 			cell.continentalness = NoiseUtil.lerp(Continentalness.MID_INLAND.min(), Continentalness.MID_INLAND.max(), alpha);
 		} else {
-			float alpha = NoiseUtil.map(continentalness, farInland, maxInland);
+			float alpha = NoiseUtil.map(continentalness, midInland, farInland);
 			alpha = Math.min(alpha, 1.0F);
 			cell.continentalness = NoiseUtil.lerp(Continentalness.FAR_INLAND.min(), Continentalness.FAR_INLAND.max(), alpha);
 		}
@@ -150,7 +150,7 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
         CellPopulator coast = Populators.makeCoast(ctx.levels);
         
         CellPopulator oceans = new ContinentLerper3(deepOcean, shallowOcean, coast, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast);
-        CellPopulator terrain = new ContinentLerper2(oceans, land, controlPoints.shallowOcean, controlPoints.inland);
+        CellPopulator terrain = new ContinentLerper2(oceans, land, controlPoints.shallowOcean, controlPoints.nearInland);
        
         Noise beachNoise = Noises.perlin2(ctx.seed.next(), 20, 1);
         beachNoise = Noises.mul(beachNoise, ctx.levels.scale(5));

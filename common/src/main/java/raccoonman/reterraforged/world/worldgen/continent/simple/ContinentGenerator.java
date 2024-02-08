@@ -253,10 +253,10 @@ public abstract class ContinentGenerator implements SimpleContinent {
     }
     
     protected float getContinentalness(float x, float z, float edgeValue) {
-        if (edgeValue >= this.controlPoints.inland) {
+        if (edgeValue >= this.controlPoints.nearInland) {
             return 1.0F;
         }
-        float alpha = edgeValue / this.controlPoints.inland;
+        float alpha = edgeValue / this.controlPoints.nearInland;
         return this.continentalness.compute(x, z, 0) * alpha;
     }
 }

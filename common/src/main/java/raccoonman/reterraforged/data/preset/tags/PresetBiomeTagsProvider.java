@@ -27,6 +27,7 @@ public class PresetBiomeTagsProvider extends TagsProvider<Biome> {
 		MiscellaneousSettings miscellaneous = this.preset.miscellaneous();
 
 		this.tag(RTFBiomeTags.HAS_SWAMP_SURFACE).add(Biomes.SWAMP);
+		this.tag(RTFBiomeTags.EROSION_BLACKLIST).add(Biomes.DESERT, Biomes.BADLANDS, Biomes.WOODED_BADLANDS);
 		
 		if(miscellaneous.customBiomeFeatures) {
 			this.tag(RTFBiomeTags.HAS_SWAMP_TREES).add(Biomes.SWAMP);
@@ -59,8 +60,6 @@ public class PresetBiomeTagsProvider extends TagsProvider<Biome> {
 			this.tag(RTFBiomeTags.HAS_MEADOW_GRASS).add(Biomes.MEADOW, Biomes.FLOWER_FOREST);
 			this.tag(RTFBiomeTags.HAS_FERN_GRASS).add(Biomes.WINDSWEPT_FOREST, Biomes.WINDSWEPT_GRAVELLY_HILLS, Biomes.WINDSWEPT_HILLS, Biomes.TAIGA);
 			this.tag(RTFBiomeTags.HAS_BIRCH_GRASS).add(Biomes.BIRCH_FOREST, Biomes.OLD_GROWTH_BIRCH_FOREST);
-	
-			this.tag(RTFBiomeTags.EROSION_BLACKLIST).add(Biomes.DESERT);
 		}
 	}
 }

@@ -21,14 +21,14 @@ import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.data.preset.settings.MiscellaneousSettings;
 import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.data.preset.settings.SurfaceSettings;
-import raccoonman.reterraforged.tags.RTFBiomeTags;
+import raccoonman.reterraforged.data.preset.settings.WorldSettings;
 import raccoonman.reterraforged.tags.RTFBlockTags;
-import raccoonman.reterraforged.tags.RTFSurfaceLayerTags;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.surface.condition.RTFSurfaceConditions;
 import raccoonman.reterraforged.world.worldgen.surface.rule.RTFSurfaceRules;
 import raccoonman.reterraforged.world.worldgen.surface.rule.StrataRule;
+import raccoonman.reterraforged.world.worldgen.util.Scaling;
 
 public class PresetSurfaceRuleData {
     private static final SurfaceRules.RuleSource AIR = PresetSurfaceRuleData.makeStateRule(Blocks.AIR);
@@ -65,21 +65,25 @@ public class PresetSurfaceRuleData {
     }
     
     public static SurfaceRules.RuleSource overworld(Preset preset, HolderGetter<Noise> noise) {
+		WorldSettings worldSettings = preset.world();
+		WorldSettings.Properties properties = worldSettings.properties;
+		Scaling scaling = Scaling.make(properties.terrainScaler(), properties.seaLevel);
         return SurfaceRules.sequence(
-        	SurfaceRules.ifTrue(
-        		SurfaceRules.abovePreliminarySurface(),
-        		SurfaceRules.sequence(
-        			SurfaceRules.ifTrue(
-        				SurfaceRules.ON_FLOOR,
-        				RTFSurfaceRules.layered(RTFSurfaceLayerTags.ON_FLOOR)
-                	),
-        			SurfaceRules.ifTrue(
-        				SurfaceRules.UNDER_FLOOR,
-        				RTFSurfaceRules.layered(RTFSurfaceLayerTags.UNDER_FLOOR)
-                	)
-        		)
-    	   	),
-        	overworld()
+//        	SurfaceRules.ifTrue(
+//        		SurfaceRules.abovePreliminarySurface(),
+//        		SurfaceRules.sequence(
+//        			SurfaceRules.ifTrue(
+//        				SurfaceRules.ON_FLOOR,
+//        				RTFSurfaceRules.layered(RTFSurfaceLayerTags.ON_FLOOR)
+//                	),
+//        			SurfaceRules.ifTrue(
+//        				SurfaceRules.UNDER_FLOOR,
+//        				RTFSurfaceRules.layered(RTFSurfaceLayerTags.UNDER_FLOOR)
+//                	)
+//        		)
+//    	   	),
+        	overworld(preset, scaling, noise)
+//        		overworld()
     	);
     }
     
@@ -119,7 +123,7 @@ public class PresetSurfaceRuleData {
         return SurfaceRules.sequence((SurfaceRules.RuleSource[])builder.build().toArray(SurfaceRules.RuleSource[]::new));
     }
 
-    public static SurfaceRules.RuleSource overworld(Preset preset, Levels levels, HolderGetter<Noise> noise) {
+    public static SurfaceRules.RuleSource overworld(Preset preset, Scaling scaling, HolderGetter<Noise> noise) {
     	MiscellaneousSettings miscellaneousSettings = preset.miscellaneous();
     	
     	SurfaceSettings surfaceSettings = preset.surface();
@@ -449,7 +453,7 @@ public class PresetSurfaceRuleData {
         		desert, 
         		SurfaceRules.ifTrue(
         			y4BelowSurface, 
-        			makeDesertRule(levels, noise)
+        			makeDesertRule(scaling, noise)
         		)
         	),
         	SurfaceRules.ifTrue(
@@ -697,10 +701,10 @@ public class PresetSurfaceRuleData {
         return rules;
     }
     
-    private static SurfaceRules.RuleSource makeDesertRule(Levels levels, HolderGetter<Noise> noise) {
+    private static SurfaceRules.RuleSource makeDesertRule(Scaling scaling, HolderGetter<Noise> noise) {
     	Holder<Noise> variance = noise.getOrThrow(PresetSurfaceNoise.DESERT);
-    	float min = levels.ground(10);
-    	float level = levels.ground(40);
+    	float min = scaling.ground(10);
+    	float level = scaling.ground(40);
     	
     	SurfaceRules.ConditionSource aboveLevel = RTFSurfaceConditions.height(level, variance);
     	return SurfaceRules.ifTrue(

@@ -98,7 +98,6 @@ class MixinNoiseBasedChunkGenerator {
 			generatorContext.lookup.apply(cell, blockPos.getX(), blockPos.getZ());
 
 			list.add("");
-			list.add("Continent Edge: " + cell.continentEdge);
 			list.add("Terrain Type: " + cell.terrain.getName());
 			list.add("Terrain Region: " + cell.terrainRegion);
 			list.add("Terrain Region Edge: " + cell.terrainRegionEdge);

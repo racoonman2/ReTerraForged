@@ -88,16 +88,19 @@ public class MixinSurfaceRules$BiomeConditionSource {
     	}
     	
     	private BiomeCheckStatus getStatus() {
-			int quartX = QuartPos.fromBlock(this.ctx.blockX);
-			int quartY = QuartPos.fromBlock(this.ctx.blockY);
-			int quartZ = QuartPos.fromBlock(this.ctx.blockZ);
+	        int adjustedX = this.ctx.blockX - 2;
+	        int adjustedY = this.ctx.blockY - 2;
+	        int adjustedZ = this.ctx.blockZ - 2;
+	        int quartX = adjustedX >> 2;
+	        int quartY = adjustedY >> 2;
+	        int quartZ = adjustedZ >> 2;
 			
 			boolean failed = false;
 			boolean found = false;
 			
-			for(int x = -1; x <= 1; x++) {
-				for(int y = -1; y <= 1; y++) {
-					for(int z = -1; z <= 1; z++) {
+			for(int x = 0; x <= 1; x++) {
+				for(int y = 0; y <= 1; y++) {
+					for(int z = 0; z <= 1; z++) {
 						int dQuartX = quartX + x;
 						int dQuartZ = quartZ + z;
 						

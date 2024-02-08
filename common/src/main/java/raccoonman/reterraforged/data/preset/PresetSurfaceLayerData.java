@@ -15,15 +15,15 @@ import net.minecraft.world.level.levelgen.SurfaceRules;
 import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.data.preset.settings.SurfaceSettings;
+import raccoonman.reterraforged.data.preset.settings.WorldSettings;
 import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.tags.RTFBiomeTags;
 import raccoonman.reterraforged.tags.RTFSurfaceLayerTags;
-import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
-import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.surface.condition.RTFSurfaceConditions;
 import raccoonman.reterraforged.world.worldgen.surface.rule.LayeredSurfaceRule;
 import raccoonman.reterraforged.world.worldgen.surface.rule.RTFSurfaceRules;
+import raccoonman.reterraforged.world.worldgen.util.Scaling;
 
 public class PresetSurfaceLayerData {
 	public static final ResourceKey<LayeredSurfaceRule.Layer> VANILLA = createKey("preliminary_surface/vanilla");
@@ -52,8 +52,13 @@ public class PresetSurfaceLayerData {
     private static final SurfaceRules.RuleSource GRAVEL = makeStateRule(Blocks.GRAVEL);
 	
 	public static void bootstrap(Preset preset, BootstapContext<LayeredSurfaceRule.Layer> ctx) {
+		WorldSettings worldSettings = preset.world();
+		WorldSettings.Properties properties = worldSettings.properties;
+		
 		SurfaceSettings surfaceSettings = preset.surface();
 		SurfaceSettings.Erosion erosion = surfaceSettings.erosion();
+		
+		Scaling scaling = Scaling.make(properties.terrainScaler(), properties.seaLevel);
 		
 		HolderGetter<Noise> noise = ctx.lookup(RTFRegistries.NOISE);
 
@@ -62,6 +67,7 @@ public class PresetSurfaceLayerData {
 		ctx.register(BADLANDS_EROSION, makeBadlandsErosion());
 		ctx.register(EROSION, makeErosion(noise, erosion));
 
+		ctx.register(DESERT, makeDesert(scaling, noise));
 		ctx.register(FOREST, makeForest(noise));
 		ctx.register(RIVER_BANK, makeRiverBank(noise));
 	}
@@ -90,7 +96,7 @@ public class PresetSurfaceLayerData {
 	private static LayeredSurfaceRule.Layer makeBadlandsErosion() {
 		return LayeredSurfaceRule.layer(
 			SurfaceRules.ifTrue(
-				SurfaceRules.isBiome(Biomes.WOODED_BADLANDS, Biomes.ERODED_BADLANDS, Biomes.BADLANDS),
+				SurfaceRules.isBiome(Biomes.WOODED_BADLANDS),
 				SurfaceRules.bandlands()
 			)
 		);
@@ -150,34 +156,37 @@ public class PresetSurfaceLayerData {
 //		);
 //	}
 	
-	private static LayeredSurfaceRule.Layer makeDesert(Levels levels, HolderGetter<Noise> noise) {
+	private static LayeredSurfaceRule.Layer makeDesert(Scaling scaling, HolderGetter<Noise> noise) {
     	Holder<Noise> variance = noise.getOrThrow(PresetSurfaceNoise.DESERT);
-    	float min = levels.ground(10);
-    	float level = levels.ground(40);
+    	float min = scaling.ground(10);
+    	float level = scaling.ground(40);
     	
     	SurfaceRules.ConditionSource aboveLevel = RTFSurfaceConditions.height(level, variance);
 		return LayeredSurfaceRule.layer(
 	    	SurfaceRules.ifTrue(
-	    		RTFSurfaceConditions.height(min), 
-	    		SurfaceRules.sequence(
-	    			SurfaceRules.ifTrue(
-	    				RTFSurfaceConditions.steepness(0.15F), 
-	    				SurfaceRules.ifTrue(
-	    					aboveLevel, 
-	    					SurfaceRules.sequence(
-	    						SurfaceRules.ifTrue(RTFSurfaceConditions.steepness(0.975F), TERRACOTTA),
-	    						SurfaceRules.ifTrue(RTFSurfaceConditions.steepness(0.85F), BROWN_TERRACOTTA),
-	    						SurfaceRules.ifTrue(RTFSurfaceConditions.steepness(0.75F), ORANGE_TERRACOTTA),
-	    						SurfaceRules.ifTrue(RTFSurfaceConditions.steepness(0.65F), TERRACOTTA), 
-	    						SMOOTH_SANDSTONE
-	    					)
-	    				)
-	    			),
-	        		SurfaceRules.ifTrue(
-	        			RTFSurfaceConditions.steepness(0.3F), 
-	        			SMOOTH_SANDSTONE
-	            	)
-	    		)
+	    		SurfaceRules.isBiome(Biomes.DESERT),
+	    		SurfaceRules.ifTrue(
+		    		RTFSurfaceConditions.height(min), 
+		    		SurfaceRules.sequence(
+		    			SurfaceRules.ifTrue(
+		    				RTFSurfaceConditions.steepness(0.15F), 
+		    				SurfaceRules.ifTrue(
+		    					aboveLevel, 
+		    					SurfaceRules.sequence(
+		    						SurfaceRules.ifTrue(RTFSurfaceConditions.steepness(0.975F), TERRACOTTA),
+		    						SurfaceRules.ifTrue(RTFSurfaceConditions.steepness(0.85F), BROWN_TERRACOTTA),
+		    						SurfaceRules.ifTrue(RTFSurfaceConditions.steepness(0.75F), ORANGE_TERRACOTTA),
+		    						SurfaceRules.ifTrue(RTFSurfaceConditions.steepness(0.65F), TERRACOTTA), 
+		    						SMOOTH_SANDSTONE
+		    					)
+		    				)
+		    			),
+		        		SurfaceRules.ifTrue(
+		        			RTFSurfaceConditions.steepness(0.3F), 
+		        			SMOOTH_SANDSTONE
+		            	)
+		    		)
+		    	)
 	    	)
     	);
     }

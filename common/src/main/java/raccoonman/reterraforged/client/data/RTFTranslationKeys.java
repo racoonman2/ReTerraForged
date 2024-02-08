@@ -76,10 +76,9 @@ public class RTFTranslationKeys {
 	public static final String GUI_SLIDER_SHALLOW_OCEAN = resolve("gui.slider.shallowOcean");
 	public static final String GUI_SLIDER_BEACH = resolve("gui.slider.beach");
 	public static final String GUI_SLIDER_COAST = resolve("gui.slider.coast");
-	public static final String GUI_SLIDER_INLAND = resolve("gui.slider.inland");
+	public static final String GUI_SLIDER_NEAR_INLAND = resolve("gui.slider.nearInland");
 	public static final String GUI_SLIDER_MID_INLAND = resolve("gui.slider.midInland");
 	public static final String GUI_SLIDER_FAR_INLAND = resolve("gui.slider.farInland");
-	public static final String GUI_SLIDER_MAX_INLAND = resolve("gui.slider.maxInland");
 	public static final String GUI_SLIDER_WORLD_HEIGHT = resolve("gui.slider.worldHeight");
 	public static final String GUI_SLIDER_WORLD_DEPTH = resolve("gui.slider.worldDepth");
 	public static final String GUI_SLIDER_SEA_LEVEL = resolve("gui.slider.seaLevel");

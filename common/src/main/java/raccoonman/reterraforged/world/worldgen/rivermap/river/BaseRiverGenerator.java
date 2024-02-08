@@ -36,7 +36,7 @@ public abstract class BaseRiverGenerator<T extends Continent> implements RiverGe
         this.continent = continent;
         this.levels = context.levels;
         this.continentScale = context.preset.world().continent.continentScale;
-        this.minEdgeValue = context.preset.world().controlPoints.inland;
+        this.minEdgeValue = context.preset.world().controlPoints.nearInland;
         this.seed = context.seed.root() + context.preset.rivers().seedOffset;
         this.count = context.preset.rivers().riverCount;
         this.main = RiverConfig.builder(context.levels).bankHeight(context.preset.rivers().mainRivers.minBankHeight, context.preset.rivers().mainRivers.maxBankHeight).bankWidth(context.preset.rivers().mainRivers.bankWidth).bedWidth(context.preset.rivers().mainRivers.bedWidth).bedDepth(context.preset.rivers().mainRivers.bedDepth).fade(context.preset.rivers().mainRivers.fade).length(5000).main(true).order(0).build();

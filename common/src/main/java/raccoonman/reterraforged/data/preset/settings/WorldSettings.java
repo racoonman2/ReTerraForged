@@ -3,6 +3,7 @@ package raccoonman.reterraforged.data.preset.settings;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.util.ExtraCodecs.EitherCodec;
 import raccoonman.reterraforged.world.worldgen.biome.spawn.SpawnType;
 import raccoonman.reterraforged.world.worldgen.continent.ContinentType;
 import raccoonman.reterraforged.world.worldgen.continent.IslandPopulator;
@@ -77,10 +78,9 @@ public class WorldSettings {
     		Codec.FLOAT.fieldOf("shallowOcean").forGetter((o) -> o.shallowOcean),
     		Codec.FLOAT.fieldOf("beach").forGetter((o) -> o.beach),
     		Codec.FLOAT.fieldOf("coast").forGetter((o) -> o.coast),
-    		Codec.FLOAT.fieldOf("inland").forGetter((o) -> o.inland),
-    		Codec.FLOAT.optionalFieldOf("midInland", 0.5F).forGetter((o) -> o.midInland),
-    		Codec.FLOAT.optionalFieldOf("farInland", 0.7F).forGetter((o) -> o.farInland),
-    		Codec.FLOAT.optionalFieldOf("maxInland", 1.0F).forGetter((o) -> o.maxInland)
+    		Codec.FLOAT.fieldOf("inland").forGetter((o) -> o.nearInland),
+    		Codec.FLOAT.optionalFieldOf("midInland", 0.7F).forGetter((o) -> o.midInland),
+    		Codec.FLOAT.optionalFieldOf("farInland", 1.0F).forGetter((o) -> o.farInland)
         ).apply(instance, ControlPoints::new));
 
     	public float islandInland;
@@ -89,30 +89,31 @@ public class WorldSettings {
         public float shallowOcean;
         public float beach;
         public float coast;
-        public float inland;
+        public float nearInland;
         public float midInland;
         public float farInland;
-        public float maxInland;
         
-        public ControlPoints(float islandInland, float islandCoast, float deepOcean, float shallowOcean, float beach, float coast, float inland, float farInland, float maxInland, float midInland) {
+        //TODO
+        public float farInlandModifier;
+        
+        public ControlPoints(float islandInland, float islandCoast, float deepOcean, float shallowOcean, float beach, float coast, float nearInland, float midInland, float farInland) {
         	this.islandInland = islandInland;
         	this.islandCoast = islandCoast;
             this.deepOcean = deepOcean;
             this.shallowOcean = shallowOcean;
             this.beach = beach;
             this.coast = coast;
-            this.inland = inland;
+            this.nearInland = nearInland;
             this.midInland = midInland;
             this.farInland = farInland;
-            this.maxInland = maxInland;
         }
         
         public float coastMarker() {
-        	return this.coast + (this.inland - this.coast) / 2.0F;
+        	return this.coast + (this.nearInland - this.coast) / 2.0F;
         }
         
         public ControlPoints copy() {
-        	return new ControlPoints(this.islandInland, this.islandCoast, this.deepOcean, this.shallowOcean, this.beach, this.coast, this.inland, this.midInland, this.farInland, this.maxInland);
+        	return new ControlPoints(this.islandInland, this.islandCoast, this.deepOcean, this.shallowOcean, this.beach, this.coast, this.nearInland, this.midInland, this.farInland);
         }
     }
     

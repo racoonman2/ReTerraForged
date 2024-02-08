@@ -68,7 +68,7 @@ public enum RenderMode {
 
 		@Override
 		public float getNoiseValue(Cell cell) {
-			return cell.continentalness;// cell.continentEdge;
+			return cell.continentEdge;
 		}
     },
     TEMPERATURE {
@@ -141,56 +141,17 @@ public enum RenderMode {
 			return cell.terrainRegionId;
 		}
     },
-    EROSION {
-    	
-        @Override
-        public int getColor(Cell cell, Levels levels, float scale, float bias) {
-        	float erosion = this.getNoiseValue(cell);
-        	return rgba(erosion, erosion, erosion);
-        }
-
-		@Override
-		public float getNoiseValue(Cell cell) {
-			return cell.erosion;
-		}
-    },
-	WEIRDNESS {
-    	
-        @Override
-        public int getColor(Cell cell, Levels levels, float scale, float bias) {
-        	float weirdness = this.getNoiseValue(cell);
-        	return rgba(weirdness, weirdness, weirdness);
-        }
-
-		@Override
-		public float getNoiseValue(Cell cell) {
-			return cell.weirdness;
-		}
-    },
 	CONTINENTALNESS {
     	
         @Override
         public int getColor(Cell cell, Levels levels, float scale, float bias) {
-        	float continentalness = this.getNoiseValue(cell);
+        	float continentalness = NoiseUtil.clamp(this.getNoiseValue(cell), 0.0F, 1.0F);
         	return rgba(continentalness, continentalness, continentalness);
         }
 
 		@Override
 		public float getNoiseValue(Cell cell) {
 			return cell.continentalness;
-		}
-    },
-	PEAKS_AND_VALLEYS {
-    	
-        @Override
-        public int getColor(Cell cell, Levels levels, float scale, float bias) {
-        	float peaksAndValleys = this.getNoiseValue(cell);
-        	return rgba(peaksAndValleys, peaksAndValleys, peaksAndValleys);
-        }
-
-		@Override
-		public float getNoiseValue(Cell cell) {
-			return NoiseRouterData.peaksAndValleys(cell.weirdness);
 		}
     };
 

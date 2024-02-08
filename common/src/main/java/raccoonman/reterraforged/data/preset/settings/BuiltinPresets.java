@@ -18,13 +18,16 @@ import raccoonman.reterraforged.world.worldgen.continent.ContinentType;
 import raccoonman.reterraforged.world.worldgen.continent.IslandPopulator;
 import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 
+//1.07, 4.975
+//1.095, 5
+//1.095, 4.097
 public class BuiltinPresets {
 	
 	public static Preset makeDefault() {
 		return new Preset(
 			new WorldSettings(
 				new Continent(ContinentType.MULTI_IMPROVED, DistanceFunction.EUCLIDEAN, 3000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
-				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.327F, 0.448F, 0.502F, 0.5F, 0.7F, 1.0F), 
+				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.327F, 0.448F, 0.502F, 1.327F, 2.758F), 
 				new Properties(SpawnType.CONTINENT_CENTER, 512, 64, 63, -54)
 			), 
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 1024, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
@@ -45,7 +48,7 @@ public class BuiltinPresets {
 				new Terrain(1.0F, 1.0F, 1.0F, 1.0F), 
 				new Terrain(2.0F, 1.0F, 1.0F, 1.0F), 
 				new Terrain(2.5F, 1.0F, 1.0F, 1.0F),
-				new Terrain(5.0F, 1.0F, 1.0F, 1.0F)
+				new Terrain(2.0F, 1.0F, 1.0F, 1.0F)
 			), 
 			new RiverSettings(
 				0, 8, 
@@ -68,7 +71,7 @@ public class BuiltinPresets {
 		return new Preset(
 			new WorldSettings(
 				new Continent(ContinentType.MULTI_IMPROVED, DistanceFunction.EUCLIDEAN, 3000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
-				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.327F, 0.448F, 0.502F, 0.5F, 0.7F, 1.0F), 
+				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.327F, 0.448F, 0.502F, 1.327F, 2.758F), 
 				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			), 
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
@@ -112,7 +115,7 @@ public class BuiltinPresets {
 		return new Preset(
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 2000, 0.763F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
-				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F, 0.5F, 0.7F, 1.0F), 
+				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F, 1.327F, 2.758F), 
 				new Properties(SpawnType.WORLD_ORIGIN, 320, 64, 63, -54)
 			), 
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
@@ -156,7 +159,7 @@ public class BuiltinPresets {
 		return new Preset(
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 3000, 0.8F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
-				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F, 0.5F, 0.7F, 1.0F), 
+				new ControlPoints(IslandPopulator.DEFAULT_INLAND_POINT, IslandPopulator.DEFAULT_COAST_POINT, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F, 1.327F, 2.758F), 
 				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			), 
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
@@ -200,7 +203,7 @@ public class BuiltinPresets {
 		return new Preset(
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 2000, 0.765F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
-				new ControlPoints(-1.0F, -1.0F, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F, 0.5F, 0.7F, 1.0F), 
+				new ControlPoints(-1.0F, -1.0F, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F, 1.327F, 2.758F), 
 				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			),
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
@@ -244,7 +247,7 @@ public class BuiltinPresets {
 		return new Preset(
 			new WorldSettings(
 				new Continent(ContinentType.MULTI, DistanceFunction.EUCLIDEAN, 4029, 0.8F, 0.25F, 0.25F, 5, 0.26F, 4.33F),
-				new ControlPoints(-1.0F, -1.0F, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F, 0.5F, 0.7F, 1.0F), 
+				new ControlPoints(-1.0F, -1.0F, 0.1F, 0.25F, 0.326F, 0.448F, 0.5F, 1.327F, 2.758F), 
 				new Properties(SpawnType.CONTINENT_CENTER, 320, 64, 63, -54)
 			), 
 			new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F)),
