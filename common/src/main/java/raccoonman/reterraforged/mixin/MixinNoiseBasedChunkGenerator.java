@@ -36,17 +36,18 @@ import raccoonman.reterraforged.world.worldgen.surface.SurfaceRegion;
 
 @Mixin(NoiseBasedChunkGenerator.class)
 class MixinNoiseBasedChunkGenerator {
+	
 	@Shadow
 	@Final
     private Holder<NoiseGeneratorSettings> settings;
 	
-	@Inject(at = @At("HEAD"), method = "buildSurface")
+	@Inject(at = @At("HEAD"), method = "buildSurface", require = 1)
     public void buildSurface$HEAD(WorldGenRegion worldGenRegion, StructureManager structureManager, RandomState randomState, ChunkAccess chunkAccess, CallbackInfo callback) {
 		SurfaceRegion.set(worldGenRegion);
     }
 	
 
-	@Inject(at = @At("TAIL"), method = "buildSurface")
+	@Inject(at = @At("TAIL"), method = "buildSurface", require = 1)
     public void buildSurface$TAIL(WorldGenRegion worldGenRegion, StructureManager structureManager, RandomState randomState, ChunkAccess chunkAccess, CallbackInfo callback) {
 		SurfaceRegion.set(null);
     }
@@ -57,7 +58,7 @@ class MixinNoiseBasedChunkGenerator {
 			target = "Lnet/minecraft/world/level/levelgen/NoiseSettings;height()I"
 		),
 		require = 1,
-		method = "fillFromNoise(Ljava/util/Executor;Lnet/minecraft/world/level/levelgen/blending/Blender;Lnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/levelgen/StructureManager;Lnet/minecraft/world/level/levelgen/ChunkAccess;)Ljava/util/concurrent/CompletableFuture;"
+		method = { "fillFromNoise", "populateNoise" }
 	)
     public int fillFromNoise(NoiseSettings settings, Executor executor, Blender blender, RandomState randomState, StructureManager structureManager, ChunkAccess chunkAccess2) {
 		GeneratorContext generatorContext;
@@ -75,7 +76,7 @@ class MixinNoiseBasedChunkGenerator {
 			target = "Lnet/minecraft/world/level/levelgen/NoiseSettings;height()I"
 		),
 		require = 2,
-		method = "iterateNoiseColumn(Lnet/minecraft/world/level/levelgen/LevelHeightAccessor;Lnet/minecraft/world/level/levelgen/RandomState;IILorg/apache/commons/lang3/mutable/MutableObject;Ljava/util/function/Predicate;)Ljava/util/OptionalInt;"
+		method = { "iterateNoiseColumn", "sampleHeightmap" }
 	)
     private int iterateNoiseColumn(NoiseSettings settings, LevelHeightAccessor levelHeightAccessor, RandomState randomState, int blockX, int blockZ, @Nullable MutableObject<NoiseColumn> mutableObject, @Nullable Predicate<BlockState> predicate) {
 		GeneratorContext generatorContext;
