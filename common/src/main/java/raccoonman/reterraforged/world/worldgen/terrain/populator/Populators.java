@@ -298,7 +298,7 @@ public class Populators {
 			height = makeFancy(seed, height);
 		}
 		height = Noises.cache2d(height);
-		return TerrainPopulator.make(terrainType, ground, Noises.mul(height, (legacyScaling ? 0.7F : MOUNTAINS_V) * verticalScale), Erosion.LEVEL_1.source(), Noises.add(height, 0.2F), terrainSettings);
+		return TerrainPopulator.make(terrainType, ground, Noises.mul(height, (legacyScaling ? 0.7F : MOUNTAINS_V) * verticalScale), Erosion.LEVEL_1.source(), Noises.add(Noises.mul(height, 0.5F), 0.2975F), terrainSettings);
 	}
 
 	public static TerrainPopulator makeMountains(@Deprecated Seed seed, Noise ground, TerrainSettings.Terrain terrainSettings, float verticalScale, boolean makeFancy, boolean legacyScaling) { 
