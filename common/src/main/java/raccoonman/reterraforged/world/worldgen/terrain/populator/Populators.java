@@ -75,7 +75,7 @@ public class Populators {
         
         Noise height = Noises.mul(weirdness, 0.08F);
         height = Noises.add(height, -0.02F);
-		return TerrainPopulator.make(TerrainType.STEPPE, ground, height, Erosion.LEVEL_4.source(), Noises.add(Noises.mul(weirdness, 0.4F), 0.02F), settings);
+		return TerrainPopulator.make(TerrainType.STEPPE, ground, height, Erosion.LEVEL_4.source(), Noises.add(Noises.mul(weirdness, 0.4F), 0.07F), settings);
     }
     
     private static TerrainPopulator makePlains(@Deprecated Seed seed, Noise ground, TerrainSettings.Terrain noiseSettings, TerrainSettings.Terrain scalingSettings, float verticalScale, Terrain terrainType, Optional<Noise> fixedWeirdness) {
