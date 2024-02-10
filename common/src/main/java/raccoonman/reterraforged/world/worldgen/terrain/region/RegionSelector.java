@@ -6,7 +6,6 @@ import java.util.List;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
-import raccoonman.reterraforged.world.worldgen.terrain.populator.WeightedPopulator;
 
 public class RegionSelector implements CellPopulator {
 	private int maxIndex;
@@ -30,7 +29,7 @@ public class RegionSelector implements CellPopulator {
 	private static CellPopulator[] getWeightedArray(List<CellPopulator> modules) {
 		float smallest = Float.MAX_VALUE;
 		for (CellPopulator p : modules) {
-			if (p instanceof WeightedPopulator tp) {
+			if (p instanceof Weighted tp) {
 				if (tp.weight() == 0.0F) {
 					continue;
 				}
@@ -45,7 +44,7 @@ public class RegionSelector implements CellPopulator {
 		List<CellPopulator> result = new LinkedList<>();
 		for (CellPopulator p2 : modules) {
 			int count;
-			if (p2 instanceof WeightedPopulator tp2) {
+			if (p2 instanceof Weighted tp2) {
 				if (tp2.weight() == 0.0F) {
 					continue;
 				}
@@ -61,5 +60,9 @@ public class RegionSelector implements CellPopulator {
 			return modules.toArray(CellPopulator[]::new);
 		}
 		return result.toArray(CellPopulator[]::new);
+	}
+	
+	public interface Weighted {
+		float weight();
 	}
 }

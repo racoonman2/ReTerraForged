@@ -60,9 +60,6 @@ public class Cell {
     
     @Deprecated(forRemoval = true)
     public float beachNoise;
-
-    @Deprecated(forRemoval = true)
-    public float volcanoHeightThreshold;
     
     public Cell() {
         this.regionMoisture = 0.5F;
@@ -105,7 +102,6 @@ public class Cell {
         this.temperature = other.temperature;
         this.moisture = other.moisture;
         this.beachNoise = other.beachNoise;
-        this.volcanoHeightThreshold = other.volcanoHeightThreshold;
     }
 
     public Cell reset() {

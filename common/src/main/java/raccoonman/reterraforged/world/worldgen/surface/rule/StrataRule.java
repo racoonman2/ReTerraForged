@@ -178,22 +178,10 @@ public record StrataRule(ResourceLocation cacheId, int buffer, int iterations, H
 				return this.bufferMaterial.state();
 			}
 			
-			
 			List<Stratum> stratum = this.strata.stratum;
-			
 			while(y < this.depthBuffer[this.index] && this.index + 1 < stratum.size()) {
 				this.index++;
 			}
-			
-//			for(int i = 0; i < stratum.size(); i++) {
-//				if(y > this.depthBuffer[i]) {
-//					BlockState state = stratum.get(i).state();
-//					if(StrataRule.this.buffer != 0 && !state.is(RTFBlockTags.ROCK)) {
-//						continue;
-//					}
-//					return state;
-//				}
-//			}
 			return stratum.get(this.index).state;
 		}
 	}

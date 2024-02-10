@@ -12,10 +12,10 @@ import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.tags.RTFSurfaceLayerTags;
 import raccoonman.reterraforged.world.worldgen.surface.rule.LayeredSurfaceRule;
 
-public class PresetSurfaceLayerTags extends TagsProvider<LayeredSurfaceRule.Layer> {
+public class PresetSurfaceLayerProvider extends TagsProvider<LayeredSurfaceRule.Layer> {
 	private Preset preset;
 	
-	public PresetSurfaceLayerTags(Preset preset, PackOutput packOutput, CompletableFuture<Provider> completableFuture) {
+	public PresetSurfaceLayerProvider(Preset preset, PackOutput packOutput, CompletableFuture<Provider> completableFuture) {
 		super(packOutput, RTFRegistries.SURFACE_LAYERS, completableFuture);
 		
 		this.preset = preset;
@@ -23,9 +23,6 @@ public class PresetSurfaceLayerTags extends TagsProvider<LayeredSurfaceRule.Laye
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		this.tag(RTFSurfaceLayerTags.ON_FLOOR).add(PresetSurfaceLayerData.DESERT, PresetSurfaceLayerData.EROSION, PresetSurfaceLayerData.DIRT_EROSION);
-		this.tag(RTFSurfaceLayerTags.UNDER_FLOOR).add(PresetSurfaceLayerData.DESERT, PresetSurfaceLayerData.EROSION, PresetSurfaceLayerData.DIRT_EROSION);
-		this.tag(RTFSurfaceLayerTags.EROSION).add(PresetSurfaceLayerData.BADLANDS_EROSION, PresetSurfaceLayerData.ROCK_EROSION);
-		this.tag(RTFSurfaceLayerTags.EROSION_VARIANT).add(PresetSurfaceLayerData.BADLANDS_EROSION, PresetSurfaceLayerData.ROCK_EROSION);
+		this.tag(RTFSurfaceLayerTags.TERRABLENDER).add(PresetSurfaceLayerData.REGIONS_UNEXPLORED);
 	}
 }

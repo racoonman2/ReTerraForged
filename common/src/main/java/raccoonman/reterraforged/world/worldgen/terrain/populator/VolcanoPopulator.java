@@ -1,7 +1,6 @@
 package raccoonman.reterraforged.world.worldgen.terrain.populator;
 
 import raccoonman.reterraforged.world.worldgen.biome.Erosion;
-import raccoonman.reterraforged.world.worldgen.biome.Weirdness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
@@ -13,9 +12,10 @@ import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.terrain.Terrain;
 import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
+import raccoonman.reterraforged.world.worldgen.terrain.region.RegionSelector;
 import raccoonman.reterraforged.world.worldgen.util.Seed;
 
-public class VolcanoPopulator implements CellPopulator, WeightedPopulator {
+public class VolcanoPopulator implements CellPopulator, RegionSelector.Weighted {
     private Noise cone;
     private Noise height;
     private Noise lowlands;
@@ -78,8 +78,6 @@ public class VolcanoPopulator implements CellPopulator, WeightedPopulator {
         float value = this.cone.compute(x, z, 0);
         float limit = this.height.compute(x, z, 0);
         float maxHeight = limit * this.inversionPoint;
-        cell.weirdness = Weirdness.LOW_SLICE_NORMAL_DESCENDING.midpoint();
-        cell.erosion = Erosion.LEVEL_5.midpoint();
         if (value > maxHeight) {
             float steepnessModifier = 1.0F;
             float delta = (value - maxHeight) * steepnessModifier;
@@ -90,16 +88,22 @@ public class VolcanoPopulator implements CellPopulator, WeightedPopulator {
             }
             cell.terrain = TerrainType.VOLCANO_PIPE;
             value = maxHeight - maxHeight / 5.0F * alpha;
-            cell.volcanoHeightThreshold = this.levels.scale(maxHeight);
+            cell.weirdness = value * 0.8F;
         } else if (value < this.blendLower) {
-            value += this.lowlands.compute(x, z, 0);
+            float lowlands = this.lowlands.compute(x, z, 0);
+            value += lowlands;
+            cell.weirdness += lowlands * 0.3F;
             cell.terrain = this.outer;
         } else if (value < this.blendUpper) {
             float alpha2 = 1.0F - (value - this.blendLower) / this.blendRange;
-            value += this.lowlands.compute(x, z, 0) * alpha2;
+            float lowlands = this.lowlands.compute(x, z, 0);
+            value += lowlands * alpha2;
+            cell.weirdness += lowlands * 0.3F * alpha2;
             cell.terrain = this.outer;
         }
         cell.height = this.bias + value;
+        cell.weirdness = value * 0.7F + 0.18F;
+        cell.erosion = Erosion.LEVEL_5.midpoint();
     }
     
     public static void modifyVolcanoType(Cell cell, Levels levels) {

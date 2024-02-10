@@ -5,8 +5,9 @@ import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.terrain.Terrain;
+import raccoonman.reterraforged.world.worldgen.terrain.region.RegionSelector;
 
-public record TerrainPopulator(Terrain type, Noise base, Noise height, Noise erosion, Noise weirdness, float baseScale, float heightScale, float weight) implements CellPopulator, WeightedPopulator {
+public record TerrainPopulator(Terrain type, Noise base, Noise height, Noise erosion, Noise weirdness, float baseScale, float heightScale, float weight) implements CellPopulator, RegionSelector.Weighted {
     
 	public TerrainPopulator(Terrain type, Noise base, Noise height, Noise erosion, Noise weirdness, float weight) {
 		this(type, base, height, erosion, weirdness, 1.0F, 1.0F, weight);

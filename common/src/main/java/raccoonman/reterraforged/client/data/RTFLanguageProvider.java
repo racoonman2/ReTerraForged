@@ -202,7 +202,7 @@ public class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_LABEL_EROSION, "Erosion");
 			this.add(RTFTranslationKeys.GUI_LABEL_SMOOTHING, "Smoothing");
 
-			this.add(RTFTranslationKeys.TERRAIN_FOUND, "The nearest %s is at %s");
+			this.add(RTFTranslationKeys.TERRAIN_FOUND, "The nearest %s is at %s (%s blocks away)");
 			this.add(RTFTranslationKeys.TERRAIN_NOT_FOUND, "Could not find a \"%s\" within reasonable distance");
 			this.add(RTFTranslationKeys.TERRAIN_ARGUMENT_INVALID, "Could not find a terrain type with the name \"%s\"");
 

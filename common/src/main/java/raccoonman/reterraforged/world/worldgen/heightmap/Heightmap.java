@@ -71,6 +71,12 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
             cell.erosion = Erosion.LEVEL_4.midpoint();
             cell.weirdness = -0.03F;
         }
+        
+        if(cell.terrain.isWetland()) {
+        	cell.erosion = Erosion.LEVEL_6.midpoint();
+        	cell.weirdness = Weirdness.VALLEY.midpoint();
+        }
+        
         this.climate.apply(cell, x, z);
 
 		float deepOcean = this.controlPoints.deepOcean;
@@ -83,10 +89,10 @@ public record Heightmap(CellPopulator terrain, CellPopulator region, Continent c
 		
 		float continentalness = cell.continentalness;
 		
-		if(continentalness <= deepOcean) {
+		if(continentalness <= deepOcean || cell.terrain.isDeepOcean()) {
 			float alpha = NoiseUtil.map(continentalness, 0.0F, deepOcean);
 			cell.continentalness = Continentalness.DEEP_OCEAN.lerp(alpha);
-		} else if(continentalness <= shallowOcean) {
+		} else if(continentalness <= shallowOcean || cell.terrain.isShallowOcean()) {
 			float alpha = NoiseUtil.map(continentalness, deepOcean, shallowOcean);
 			cell.continentalness = Continentalness.OCEAN.lerp(alpha);
 		} else if(continentalness <= nearInland) {

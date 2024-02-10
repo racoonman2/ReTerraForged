@@ -33,7 +33,7 @@ public record Preset(WorldSettings world, SurfaceSettings surface, CaveSettings 
 	public static final Codec<Preset> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		WorldSettings.CODEC.fieldOf("world").forGetter(Preset::world),
 		SurfaceSettings.CODEC.optionalFieldOf("surface", new SurfaceSettings(new SurfaceSettings.Erosion(30, 140, 40, 95, 95, 0.65F, 0.475F, 0.4F, 0.45F, 6.0F, 3.0F))).forGetter(Preset::surface),
-		CaveSettings.CODEC.optionalFieldOf("caves", new CaveSettings(new CaveSettings.Pillar())).forGetter(Preset::caves),
+		CaveSettings.CODEC.optionalFieldOf("caves", new CaveSettings()).forGetter(Preset::caves),
 		ClimateSettings.CODEC.fieldOf("climate").forGetter(Preset::climate),
 		TerrainSettings.CODEC.fieldOf("terrain").forGetter(Preset::terrain),
 		RiverSettings.CODEC.fieldOf("rivers").forGetter(Preset::rivers),

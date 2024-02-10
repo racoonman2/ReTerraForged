@@ -1,9 +1,11 @@
 package raccoonman.reterraforged.server.commands;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -52,8 +54,10 @@ public class TerrainArgument implements ArgumentType<Terrain> {
         return getTerrainTypeNames().toList();
     }
     
+    private static final List<Terrain> BLACKLIST = ImmutableList.of(TerrainType.NONE, TerrainType.VOLCANO_PIPE);
+    
     private static Stream<String> getTerrainTypeNames() {
-    	return TerrainType.REGISTRY.stream().filter((type) -> type != TerrainType.NONE).map(Terrain::getName);
+    	return TerrainType.REGISTRY.stream().filter((type) -> !BLACKLIST.contains(type)).map(Terrain::getName);
     }
     
     public static class Info implements ArgumentTypeInfo<TerrainArgument, Info.Template> {

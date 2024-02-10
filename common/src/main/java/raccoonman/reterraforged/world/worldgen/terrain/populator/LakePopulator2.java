@@ -9,11 +9,10 @@ import raccoonman.reterraforged.world.worldgen.rivermap.lake.LakeConfig;
 import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.util.Boundsf;
 
-public class LakePopulator {
+public class LakePopulator2 {
     protected float valley;
     protected float valley2;
     protected float lakeDistance2;
-    protected float valleyDistance2;
     protected float bankAlphaMin;
     protected float bankAlphaMax;
     protected float bankAlphaRange;
@@ -21,13 +20,13 @@ public class LakePopulator {
     private float bankMin;
     private float bankMax;
     protected Vec2f center;
+
+    private Noise fjord;
+    private Noise ridge;
+    private Noise variance;
     
-    private LakePopulator2 populator2;
-    
-    public LakePopulator(Vec2f center, float radius, float multiplier, LakeConfig config) {
-    	this.populator2 = new LakePopulator2(center, radius, multiplier, config);
-    	
-    	float lake = radius * multiplier;
+    public LakePopulator2(Vec2f center, float radius, float multiplier, LakeConfig config) {
+        float lake = radius * multiplier;
         float valley = 275.0F * multiplier;
         this.valley = valley;
         this.valley2 = valley * valley;
@@ -39,29 +38,31 @@ public class LakePopulator {
         this.bankAlphaMax = Math.min(1.0F, this.bankAlphaMin + 0.275F);
         this.bankAlphaRange = this.bankAlphaMax - this.bankAlphaMin;
         this.lakeDistance2 = lake * lake;
-        this.valleyDistance2 = this.valley2 - this.lakeDistance2;
+        
+        this.variance = Noises.perlin(0, 50, 4);
+        this.variance = Noises.warpPerlin(this.variance, 1, 40, 5, 2.3F);
+        this.variance = Noises.mul(this.variance, 0.7F);
     }
     
     public void apply(Cell cell, float x, float z) {
-    	if(Boolean.TRUE) {
-    		this.populator2.apply(cell, x, z);
-    	}
-    	
         float distance2 = this.getDistance2(x, z);
         if (distance2 > this.valley2) {
             return;
         }
+        
+        float lakeDistance2 = this.lakeDistance2;// - this.variance.compute(x, z, 0);
         float bankHeight = this.getBankHeight(cell);
-        if (distance2 <= this.lakeDistance2) {
+        if (distance2 <= lakeDistance2) {
             cell.height = Math.min(bankHeight, cell.height);
-            if (distance2 < this.lakeDistance2) {
-                float depthAlpha = 1.0F - distance2 / this.lakeDistance2;
+            if (distance2 < lakeDistance2) {
+                float depthAlpha = 1.0F - distance2 / lakeDistance2;
+                
                 if (depthAlpha < 0.0F) {
                     depthAlpha = 0.0F;
                 } else if (depthAlpha > 1.0F) {
                     depthAlpha = 1.0F;
                 }
-                float lakeDepth = Math.min(cell.height, this.depth);
+                float lakeDepth = Math.min(cell.height, this.depth - 0.05F);
                 cell.height = NoiseUtil.lerp(cell.height, lakeDepth, depthAlpha);
                 cell.terrain = TerrainType.LAKE;
                 cell.riverDistance = Math.min(cell.riverDistance, 1.0F - depthAlpha);
@@ -71,7 +72,7 @@ public class LakePopulator {
         if (cell.height < bankHeight) {
             return;
         }
-        float valleyAlpha = 1.0F - (distance2 - this.lakeDistance2) / this.valleyDistance2;
+        float valleyAlpha = 1.0F - (distance2 - lakeDistance2) / (this.valley2 - lakeDistance2);
         if (valleyAlpha < 0.0F) {
             valleyAlpha = 0.0F;
         } else if (valleyAlpha > 1.0F) {

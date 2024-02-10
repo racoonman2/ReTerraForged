@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
@@ -37,10 +38,12 @@ public class LocateTerrainCommand {
 	    				CommandSourceStack stack = ctx.getSource();
 	    				Terrain terrain = ctx.getArgument("terrain", Terrain.class);
 	    				String terrainName = terrain.getName();
+	    				BlockPos origin = BlockPos.containing(stack.getPosition());
 	    				@Nullable
-	    				BlockPos blockPos = locate(stack, terrain, 256, 256, 24000, 30L);
-	    				if(blockPos != null) {
-		    			    stack.sendSuccess(() -> Component.translatable(RTFTranslationKeys.TERRAIN_FOUND, terrainName, createTeleportMessage(blockPos)), false);
+	    				BlockPos result = locate(stack, terrain, 256, 256, 24000, 30L);
+	    				if(result != null) {
+	    			        int distance = Mth.floor(dist(origin.getX(), origin.getZ(), result.getX(), result.getZ()));
+		    			    stack.sendSuccess(() -> Component.translatable(RTFTranslationKeys.TERRAIN_FOUND, terrainName, createTeleportMessage(result), distance), false);
 		    			    return Command.SINGLE_SUCCESS;
 	    				}
 	    	            throw ERROR_TERRAIN_NOT_FOUND.create(terrainName);
@@ -118,6 +121,12 @@ public class LocateTerrainCommand {
     private static boolean test(WorldLookup lookup, Cell cell, BlockPos pos, Terrain target) {
         lookup.apply(cell, pos.getX(), pos.getZ());
         return cell.terrain.equals(target);
+    }
+
+    private static float dist(int x0, int z0, int x1, int z1) {
+        int deltaX = x1 - x0;
+        int deltaZ = z1 - z0;
+        return Mth.sqrt(deltaX * deltaX + deltaZ * deltaZ);
     }
 }
 

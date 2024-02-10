@@ -17,7 +17,7 @@ import raccoonman.reterraforged.client.data.RTFTranslationKeys;
 import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.data.preset.tags.PresetBiomeTagsProvider;
 import raccoonman.reterraforged.data.preset.tags.PresetBlockTagsProvider;
-import raccoonman.reterraforged.data.preset.tags.PresetSurfaceLayerTags;
+import raccoonman.reterraforged.data.preset.tags.PresetSurfaceLayerProvider;
 import raccoonman.reterraforged.platform.DataGenUtil;
 
 public class RTFDataGen {
@@ -43,7 +43,7 @@ public class RTFDataGen {
 			return new PresetBlockTagsProvider(output, lookup);
 		});
 		packGenerator.addProvider((output) -> {
-			return new PresetSurfaceLayerTags(preset, output, lookup);
+			return new PresetSurfaceLayerProvider(preset, output, lookup);
 		});
 		packGenerator.addProvider((output) -> {
 			return new PresetBiomeTagsProvider(preset, output, CompletableFuture.completedFuture(registryAccess));
