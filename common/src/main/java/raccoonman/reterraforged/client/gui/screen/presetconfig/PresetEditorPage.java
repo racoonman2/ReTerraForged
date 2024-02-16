@@ -74,7 +74,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 			}
 		}
 
-		this.zoom = PresetWidgets.createIntSlider(Optional.ofNullable(this.zoom).map(Slider::getLerpedValue).orElse(68.0D).intValue(), 1, 100, RTFTranslationKeys.GUI_SLIDER_ZOOM, (slider, value) -> {
+		this.zoom = PresetWidgets.createIntSlider(Optional.ofNullable(this.zoom).map(Slider::getLerpedValue).orElse(680.0D).intValue(), 1, 1000, RTFTranslationKeys.GUI_SLIDER_ZOOM, (slider, value) -> {
 			this.regenerate();
 			return value;
 		});
@@ -294,7 +294,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	    }
 	
 	    private int getZoom() {
-	        return NoiseUtil.round(1.5F * (101 - (float) PresetEditorPage.this.zoom.getLerpedValue()));
+	        return NoiseUtil.round(1.5F * (1001 - (float) PresetEditorPage.this.zoom.getLerpedValue()));
 	    }
 	
 	    private static String getTerrainName(Cell cell) {
