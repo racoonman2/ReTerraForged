@@ -4,6 +4,7 @@ import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.function.Interpolation;
+import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 
 public class ContinentLerper3 implements CellPopulator {
     private CellPopulator lower;
@@ -56,5 +57,11 @@ public class ContinentLerper3 implements CellPopulator {
             this.upper.apply(cell, x, y);
             cell.height = NoiseUtil.lerp(lowerHeight, cell.height, alpha);
         }
+    }
+
+
+    @Override
+    public CellPopulator mapNoise(Noise.Visitor visitor) {
+    	return new ContinentLerper3(this.lower.mapNoise(visitor), this.middle.mapNoise(visitor), this.upper.mapNoise(visitor), this.blendLower, this.midpoint, this.blendUpper, this.interpolation);
     }
 }

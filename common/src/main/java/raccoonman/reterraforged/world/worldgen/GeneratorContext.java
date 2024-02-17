@@ -15,6 +15,9 @@ public class GeneratorContext {
     public Seed seed;
     public Levels levels;
     public Preset preset;
+    
+    @Deprecated
+    public ThreadLocal<Heightmap> localHeightmap;
     public TileGenerator generator;
     @Nullable
     public TileCache cache;
@@ -24,7 +27,10 @@ public class GeneratorContext {
         this.preset = preset;
         this.seed = new Seed(seed);
         this.levels = new Levels(preset.world().properties.terrainScaler(), preset.world().properties.seaLevel);
-        this.generator = new TileGenerator(Heightmap.make(this), new WorldFilters(this), tileSize, tileBorder, batchCount);
+
+        Heightmap globalHeightmap = Heightmap.make(this);
+        this.localHeightmap = ThreadLocal.withInitial(globalHeightmap::cache);
+        this.generator = new TileGenerator(this.localHeightmap, new WorldFilters(this, globalHeightmap), tileSize, tileBorder, batchCount);
         this.cache = cache;
         this.lookup = new WorldLookup(this);
     }

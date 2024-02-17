@@ -5,6 +5,7 @@ import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.data.preset.settings.WorldSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
+import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.continent.Continent;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
@@ -12,8 +13,9 @@ import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 
-public record Climate(int randomSeed, Noise offsetX, Noise offsetZ, int offsetDistance, Levels levels, BiomeNoise biomeNoise) {
+public record Climate(int randomSeed, Noise offsetX, Noise offsetZ, int offsetDistance, Levels levels, BiomeNoise biomeNoise) implements CellPopulator {
 
+	@Override
 	public void apply(Cell cell, float x, float z) {
 		this.biomeNoise.apply(cell, x, z, x, z, true);
 		float edgeBlend = 0.4F;

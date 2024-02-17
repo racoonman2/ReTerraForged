@@ -58,7 +58,7 @@ public class ErodeSnowFeature extends Feature<Config> {
 			int chunkZ = chunkPos.z;
 			ChunkAccess chunk = level.getChunk(chunkX, chunkZ);
 			Tile.Chunk tileChunk = generatorContext.cache.provideAtChunk(chunkX, chunkZ).getChunkReader(chunkX, chunkZ);
-			raccoonman.reterraforged.world.worldgen.heightmap.Heightmap heightmap = generatorContext.generator.getHeightmap();
+			raccoonman.reterraforged.world.worldgen.heightmap.Heightmap heightmap = generatorContext.localHeightmap.get();
 			Levels levels = heightmap.levels();
 			Noise rand = Noises.white(heightmap.climate().randomSeed(), 1);
 			BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
@@ -67,6 +67,7 @@ public class ErodeSnowFeature extends Feature<Config> {
 			for(int x = 0; x < 16; x++) {
 				for(int z = 0; z < 16; z++) {
 		        	Cell cell = tileChunk.getCell(x, z);
+		        	
 					int scaledY = levels.scale(cell.height);
 			        int surfaceY = chunk.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
 			        if(scaledY == surfaceY && scaledY >= generator.getSeaLevel() - 1) {

@@ -4,25 +4,26 @@ import java.util.function.IntFunction;
 
 import raccoonman.reterraforged.data.preset.settings.FilterSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
+import raccoonman.reterraforged.world.worldgen.heightmap.Heightmap;
 import raccoonman.reterraforged.world.worldgen.tile.Tile;
 
 public class WorldFilters {
     private Smoothing smoothing;
     private Steepness steepness;
     private BeachDetect beach;
-    private NoiseCorrection corrections;
+    private PostProcessing processing;
     private FilterSettings settings;
     private WorldErosion<Erosion> erosion;
     private int erosionIterations;
     private int smoothingIterations;
     
-    public WorldFilters(GeneratorContext context) {
+    public WorldFilters(GeneratorContext context, Heightmap heightmap) {
         IntFunction<Erosion> factory = Erosion.factory(context);
         this.settings = context.preset.filters();
         this.beach = BeachDetect.make(context);
         this.smoothing = Smoothing.make(context.preset.filters().smoothing, context.levels);
         this.steepness = Steepness.make(1, 10.0F, context.levels);
-        this.corrections = new NoiseCorrection(context.levels);
+        this.processing = new PostProcessing(heightmap, context.levels);
         this.erosion = new WorldErosion<>(factory, (e, size) -> e.getSize() == size);
         this.erosionIterations = context.preset.filters().erosion.dropletsPerChunk;
         this.smoothingIterations = context.preset.filters().smoothing.iterations;
@@ -40,23 +41,21 @@ public class WorldFilters {
             this.applyOptionalFilters(tile, regionX, regionZ);
         }
         this.applyRequiredFilters(tile, regionX, regionZ);
-        if(optionalFilters) {
-        	this.applyCorrections(tile, regionX, regionZ);
-        }
+        this.applyPostProcessing(tile, regionX, regionZ);
     }
     
-    private void applyRequiredFilters(Filterable map, int seedX, int seedZ) {
-        this.steepness.apply(map, seedX, seedZ, 1);
-        this.beach.apply(map, seedX, seedZ, 1);
+    private void applyRequiredFilters(Tile tile, int seedX, int seedZ) {
+        this.steepness.apply(tile, seedX, seedZ, 1);
+        this.beach.apply(tile, seedX, seedZ, 1);
     }
     
-    private void applyOptionalFilters(Filterable map, int seedX, int seedZ) {
-        Erosion erosion = this.erosion.get(map.getBlockSize().total());
-        erosion.apply(map, seedX, seedZ, this.erosionIterations);
-        this.smoothing.apply(map, seedX, seedZ, this.smoothingIterations);
+    private void applyOptionalFilters(Tile tile, int seedX, int seedZ) {
+        Erosion erosion = this.erosion.get(tile.getBlockSize().total());
+        erosion.apply(tile, seedX, seedZ, this.erosionIterations);
+        this.smoothing.apply(tile, seedX, seedZ, this.smoothingIterations);
     }
     
-    public void applyCorrections(Filterable map, int seedX, int seedZ) {
-        this.corrections.apply(map, seedX, seedZ, 1);
+    public void applyPostProcessing(Tile map, int seedX, int seedZ) {
+        this.processing.apply(map, seedX, seedZ, 1);
     }
 }

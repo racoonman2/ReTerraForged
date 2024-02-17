@@ -1,77 +1,15 @@
 package raccoonman.reterraforged.world.worldgen.terrain.populator;
 
 import raccoonman.reterraforged.world.worldgen.biome.Erosion;
+import raccoonman.reterraforged.world.worldgen.biome.Weirdness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
-import raccoonman.reterraforged.world.worldgen.heightmap.RegionConfig;
-import raccoonman.reterraforged.world.worldgen.noise.function.CellFunction;
-import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
-import raccoonman.reterraforged.world.worldgen.noise.function.EdgeFunction;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
-import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
-import raccoonman.reterraforged.world.worldgen.terrain.Terrain;
 import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.terrain.region.RegionSelector;
-import raccoonman.reterraforged.world.worldgen.util.Seed;
 
-public class VolcanoPopulator implements CellPopulator, RegionSelector.Weighted {
-    private Noise cone;
-    private Noise height;
-    private Noise lowlands;
-    private float inversionPoint;
-    private float blendLower;
-    private float blendUpper;
-    private float blendRange;
-    private float bias;
-    private Terrain inner;
-    private Terrain outer;
-    private Levels levels;
-    private float weight;
-    
-    public VolcanoPopulator(Seed seed, RegionConfig region, Levels levels, float weight) {
-        float midpoint = 0.3F;
-        float range = 0.3F;
-        Noise heightLookup = Noises.perlin(seed.next(), 2, 1);
-        heightLookup = Noises.map(heightLookup, 0.45F, 0.65F);
-        
-        Noise heightNoise = Noises.worley(region.seed(), region.scale(), CellFunction.NOISE_LOOKUP, DistanceFunction.EUCLIDEAN, heightLookup);
-        heightNoise = Noises.warp(heightNoise, region.warpX(), region.warpZ(), region.warpStrength());
-        this.height = heightNoise;
-        
-        Noise cone = Noises.worleyEdge(region.seed(), region.scale(), EdgeFunction.DISTANCE_2_DIV, DistanceFunction.EUCLIDEAN);
-        cone = Noises.invert(cone);
-        cone = Noises.warp(cone, region.warpX(), region.warpZ(), region.warpStrength());
-        cone = Noises.powCurve(cone, 11.0F);
-        cone = Noises.clamp(cone, 0.475F, 1.0F);
-        cone = Noises.map(cone, 0.0F, 1.0F);
-        cone = Noises.gradient(cone, 0.0F, 0.5F, 0.5F);
-        cone = Noises.warpPerlin(cone, seed.next(), 15, 2, 10.0F);
-        cone = Noises.mul(cone, this.height);
-        
-        this.cone = cone;
-        
-        Noise lowlands = Noises.perlinRidge(seed.next(), 150, 3);
-        lowlands = Noises.warpPerlin(lowlands, seed.next(), 30, 1, 30.0F);
-        lowlands = Noises.mul(lowlands, 0.1F);
-        
-        this.lowlands = lowlands;
-        this.inversionPoint = 0.94F;
-        this.blendLower = midpoint - range / 2.0F;
-        this.blendUpper = this.blendLower + range;
-        this.blendRange = this.blendUpper - this.blendLower;
-        this.outer = TerrainType.VOLCANO;
-        this.inner = TerrainType.VOLCANO_PIPE;
-        this.levels = levels;
-        this.bias = levels.ground;
-        
-        this.weight = weight;
-    }
-    
-    @Override
-    public float weight() {
-    	return this.weight;
-    }
+public record VolcanoPopulator(float weight, Noise ground, Noise cone, Noise height, Noise lowlands, float inversionPoint, float blendLower, float blendUpper, float blendRange, Levels levels) implements CellPopulator, RegionSelector.Weighted {
     
     @Override
     public void apply(Cell cell, float x, float z) {
@@ -84,26 +22,27 @@ public class VolcanoPopulator implements CellPopulator, RegionSelector.Weighted 
             float range = limit - maxHeight;
             float alpha = delta / range;
             if (alpha > 0.925F) {
-                cell.terrain = this.inner;
+                cell.terrain = TerrainType.VOLCANO_PIPE;
             }
-            cell.terrain = TerrainType.VOLCANO_PIPE;
             value = maxHeight - maxHeight / 5.0F * alpha;
-            cell.weirdness = value * 0.8F;
         } else if (value < this.blendLower) {
             float lowlands = this.lowlands.compute(x, z, 0);
             value += lowlands;
-            cell.weirdness += lowlands * 0.3F;
-            cell.terrain = this.outer;
+            cell.terrain = TerrainType.VOLCANO;
         } else if (value < this.blendUpper) {
             float alpha2 = 1.0F - (value - this.blendLower) / this.blendRange;
             float lowlands = this.lowlands.compute(x, z, 0);
             value += lowlands * alpha2;
-            cell.weirdness += lowlands * 0.3F * alpha2;
-            cell.terrain = this.outer;
+            cell.terrain = TerrainType.VOLCANO;
         }
-        cell.height = this.bias + value;
-        cell.weirdness = value * 0.7F + 0.18F;
-        cell.erosion = Erosion.LEVEL_5.midpoint();
+        cell.height = this.ground.compute(x, z, 0) + value;
+        cell.weirdness = Weirdness.LOW_SLICE_VARIANT_ASCENDING.midpoint();
+        cell.erosion = Erosion.LEVEL_4.midpoint();
+    }
+    
+    @Override
+    public CellPopulator mapNoise(Noise.Visitor visitor) {
+    	return new VolcanoPopulator(this.weight, this.ground.mapAll(visitor), this.cone.mapAll(visitor), this.height.mapAll(visitor), this.lowlands.mapAll(visitor), this.inversionPoint, this.blendLower, this.blendUpper, this.blendRange, this.levels);
     }
     
     public static void modifyVolcanoType(Cell cell, Levels levels) {

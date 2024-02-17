@@ -6,29 +6,26 @@ import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
+import raccoonman.reterraforged.world.worldgen.cell.noise.CellSampler;
 import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.tile.TileCache;
 
 public class WorldLookup {
+	private GeneratorContext context;
 	private float waterLevel;
 	private float beachLevel;
 	private TileCache cache;
-	private Heightmap heightmap;
 	private Levels levels;
 	
 	public WorldLookup(GeneratorContext context) {
+		this.context = context;
 		this.cache = context.cache;
-		this.heightmap = context.generator.getHeightmap();
 		this.waterLevel = context.levels.water;
 		this.beachLevel = context.levels.water(5);
 		this.levels = context.levels;
 	}
-	
-	public Heightmap getHeightmap() {
-		return this.heightmap;
-	}
-	
+
 	public int getGenerationHeight(int chunkX, int chunkZ, NoiseGeneratorSettings generatorSettings, boolean load) {
 		NoiseSettings noiseSettings = generatorSettings.noiseSettings();
 		
@@ -40,7 +37,7 @@ public class WorldLookup {
 		Tile tile = load ? this.cache.provideAtChunk(chunkX, chunkZ) : this.cache.provideAtChunkIfPresent(chunkX, chunkZ);
 		if(tile != null) {
 			Tile.Chunk chunk = tile.getChunkReader(chunkX, chunkZ);
-			int generationHeight = Math.max(generatorSettings.seaLevel(), this.levels.scale(chunk.getGenerationHeight()));
+			int generationHeight = Math.max(generatorSettings.seaLevel(), this.levels.scale(chunk.getHighestPoint()));
 			return Math.min(genHeight, ((-minY + generationHeight) / cellHeight + 1) * cellHeight);
 		} else {
 			return genHeight;
@@ -86,11 +83,23 @@ public class WorldLookup {
 		return false;
 	}
 
-	private boolean compute(Cell cell, int x, int z) {
-		this.heightmap.apply(cell, x, z);
+	public boolean compute(Cell cell, int x, int z) {
+		Heightmap heightmap = this.context.localHeightmap.get();
+		CellSampler.Provider cellProvider = heightmap.cellProvider();
+		
+		@Nullable
+		Cell oldCell = cellProvider.getCacheCell();
+		
+		cellProvider.setCacheCell(cell);
+		heightmap.applyContinent(cell, x, z);
+		heightmap.applyTerrain(cell, x, z, heightmap.continent().getRivermap(cell));
+		heightmap.applyClimate(cell, x, z);
 		if (cell.terrain == TerrainType.COAST && cell.height > this.waterLevel && cell.height <= this.beachLevel) {
 			cell.terrain = TerrainType.BEACH;
 		}
+		heightmap.applyPost(cell, x, z);
+
+		cellProvider.setCacheCell(oldCell);
 		return false;
 	}
 }

@@ -2,23 +2,27 @@ package raccoonman.reterraforged.mixin.plugin;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
+import com.google.common.collect.ImmutableList;
+
 import raccoonman.reterraforged.RTFCommon;
-import raccoonman.reterraforged.integration.terrablender.TBIntegration;
+import raccoonman.reterraforged.compat.terrablender.TBCompat;
+import raccoonman.reterraforged.compat.worldpreview.WPCompat;
 
 public class MixinPlugin implements IMixinConfigPlugin {
-
+	private static final String MIXIN_PACKAGE_PREFIX = "raccoonman.reterraforged.mixin.";
+	public static final List<String> TB_MIXINS = ImmutableList.of(mixinClassName("terrablender.MixinClimateSampler"), mixinClassName("terrablender.MixinNoiseChunk"), mixinClassName("terrablender.MixinParameterList"), mixinClassName("terrablender.MixinTargetPoint"));
+	public static final List<String> WP_MIXINS = ImmutableList.of(mixinClassName("worldpreview.SampleUtilsMixin"));
+	
 	@Override
 	public void onLoad(String mixinPackage) {
-		if(TBIntegration.isEnabled()) {
-			RTFCommon.LOGGER.info("Enabling Terrablender compat");
-		} else {
-			RTFCommon.LOGGER.info("Disabling Terrablender compat");
-		}
+		log(TBCompat.isEnabled(), "TerraBlender");
+		log(WPCompat.isEnabled(), "World Preview");
 	}
 
 	@Override
@@ -28,7 +32,9 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-		return TBIntegration.isTBMixin(mixinClassName) ? TBIntegration.isEnabled() : true;
+		return TB_MIXINS.contains(mixinClassName) ? TBCompat.isEnabled() : 
+			   WP_MIXINS.contains(mixinClassName) ? WPCompat.isEnabled() :
+			   true;
 	}
 
 	@Override
@@ -37,8 +43,8 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public List<String> getMixins() {
-		return TBIntegration.MIXINS.stream().map((str) -> {
-			return str.replace("raccoonman.reterraforged.mixin.", "");
+		return Stream.concat(TB_MIXINS.stream(), WP_MIXINS.stream()).map((str) -> {
+			return str.replace(MIXIN_PACKAGE_PREFIX, "");
 		}).toList();
 	}
 
@@ -48,5 +54,17 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
+	}
+
+	private static String mixinClassName(String className) {
+		return MIXIN_PACKAGE_PREFIX + className;
+	}
+	
+	private static void log(boolean isModLoaded, String modName) {
+		if(isModLoaded) {
+			RTFCommon.LOGGER.info("Enabling {} compat", modName);
+		} else {
+			RTFCommon.LOGGER.info("Disabling {} compat", modName);
+		}
 	}
 }

@@ -25,17 +25,18 @@ import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
+import raccoonman.reterraforged.world.worldgen.WorldGenFlags;
 
 @Mixin(ChunkStatus.class)
 public class MixinChunkStatus {
 
+	//structure starts
 	@Inject(
 		at = @At("HEAD"),
 		method = "method_39464",
-		remap = false,
-		require = 1
+		remap = false
 	)
-	private static void method_39464(ChunkStatus status, Executor executor, ServerLevel level, ChunkGenerator generator, StructureTemplateManager templateManager, ThreadedLevelLightEngine lightEngine, Function<ChunkAccess, CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>>> chunkLookup, List<ChunkAccess> regionChunks, ChunkAccess centerChunk, CallbackInfoReturnable<CompletableFuture<ChunkAccess>> callback) {
+	private static void method_39464$HEAD(ChunkStatus status, Executor executor, ServerLevel level, ChunkGenerator generator, StructureTemplateManager templateManager, ThreadedLevelLightEngine lightEngine, Function<ChunkAccess, CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>>> chunkLookup, List<ChunkAccess> regionChunks, ChunkAccess centerChunk, CallbackInfoReturnable<CompletableFuture<ChunkAccess>> callback) {
 		RandomState randomState = level.getChunkSource().randomState();
 		if((Object) randomState instanceof RTFRandomState rtfRandomState) {
 			ChunkPos chunkPos = centerChunk.getPos();
@@ -44,15 +45,33 @@ public class MixinChunkStatus {
 			
 			if(context != null) {
 				context.cache.queueAtChunk(chunkPos.x, chunkPos.z);
+
+				WorldGenFlags.setFastCellLookups(false);
 			}
 		}
 	}
 	
 	@Inject(
 		at = @At("TAIL"),
+		method = "method_39464",
+		remap = false
+	)
+	private static void method_39464$TAIL(ChunkStatus status, Executor executor, ServerLevel level, ChunkGenerator generator, StructureTemplateManager templateManager, ThreadedLevelLightEngine lightEngine, Function<ChunkAccess, CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>>> chunkLookup, List<ChunkAccess> regionChunks, ChunkAccess centerChunk, CallbackInfoReturnable<CompletableFuture<ChunkAccess>> callback) {
+		RandomState randomState = level.getChunkSource().randomState();
+		if((Object) randomState instanceof RTFRandomState rtfRandomState) {
+			@Nullable
+			GeneratorContext context = rtfRandomState.generatorContext();
+			if(context != null) {
+				WorldGenFlags.setFastCellLookups(true);
+			}
+		}
+	}
+	
+	//features
+	@Inject(
+		at = @At("TAIL"),
 		method = "method_51375",
-		remap = false,
-		require = 1
+		remap = false
 	)
 	private static void method_51375(ChunkStatus status, ServerLevel level, ChunkGenerator generator, List<ChunkAccess> chunks, ChunkAccess centerChunk, CallbackInfo callback) {
 		RandomState randomState = level.getChunkSource().randomState();

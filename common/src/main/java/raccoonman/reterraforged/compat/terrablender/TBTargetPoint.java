@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.integration.terrablender;
+package raccoonman.reterraforged.compat.terrablender;
 
 public interface TBTargetPoint {
 	double getUniqueness();

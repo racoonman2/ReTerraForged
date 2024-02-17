@@ -5,18 +5,17 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 
-@Deprecated // use the CurveFunction version instead
-public record Terrace(Noise input, float ramp, float cliff, float rampHeight, float blendRange, Step[] steps) implements Noise {
+public record Terrace(Noise input, Noise ramp, Noise cliff, Noise rampHeight, float blendRange, Step[] steps) implements Noise {
 	public static final Codec<Terrace> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Noise.HOLDER_HELPER_CODEC.fieldOf("input").forGetter(Terrace::input),
-		Codec.FLOAT.fieldOf("ramp").forGetter(Terrace::ramp),
-		Codec.FLOAT.fieldOf("cliff").forGetter(Terrace::cliff),
-		Codec.FLOAT.fieldOf("ramp_height").forGetter(Terrace::rampHeight),
+		Noise.HOLDER_HELPER_CODEC.fieldOf("ramp").forGetter(Terrace::ramp),
+		Noise.HOLDER_HELPER_CODEC.fieldOf("cliff").forGetter(Terrace::cliff),
+		Noise.HOLDER_HELPER_CODEC.fieldOf("ramp_height").forGetter(Terrace::rampHeight),
 		Codec.FLOAT.fieldOf("blend_range").forGetter(Terrace::blendRange),
 		Codec.INT.fieldOf("steps").forGetter((terrace) -> terrace.steps().length)
 	).apply(instance, Terrace::new));
 	
-	public Terrace(Noise input, float ramp, float cliff, float rampHeight, float blendRange, int steps) {
+	public Terrace(Noise input, Noise ramp, Noise cliff, Noise rampHeight, float blendRange, int steps) {
 		this(input, ramp, cliff, rampHeight, blendRange, createSteps(input, blendRange, steps));
 	}
 	
@@ -35,15 +34,15 @@ public record Terrace(Noise input, float ramp, float cliff, float rampHeight, fl
             Step next = this.steps[index + 1];
             return next.value;
         }
-        float ramp = 1.0F - this.ramp * 0.5F;
-        float cliff = 1.0F - this.cliff * 0.5F;
+        float ramp = 1.0F - this.ramp.compute(x, z, seed) * 0.5F;
+        float cliff = 1.0F - this.cliff.compute(x, z, seed) * 0.5F;
         float alpha = (input - step.lowerBound) / (step.upperBound - step.lowerBound);
         float value = step.value;
         if (alpha > ramp) {
             Step next2 = this.steps[index + 1];
             float rampSize = 1.0F - ramp;
             float rampAlpha = (alpha - ramp) / rampSize;
-            float rampHeight = this.rampHeight;
+            float rampHeight = this.rampHeight.compute(x, z, seed);
             value += (next2.value - value) * rampAlpha * rampHeight;
         }
         if (alpha > cliff) {
@@ -66,7 +65,7 @@ public record Terrace(Noise input, float ramp, float cliff, float rampHeight, fl
 
 	@Override
 	public Noise mapAll(Visitor visitor) {
-		return visitor.apply(new Terrace(this.input.mapAll(visitor), this.ramp, this.cliff, this.rampHeight, this.blendRange, this.steps.length));
+		return visitor.apply(new Terrace(this.input.mapAll(visitor), this.ramp.mapAll(visitor), this.cliff.mapAll(visitor), this.rampHeight.mapAll(visitor), this.blendRange, this.steps.length));
 	}
 
 	@Override

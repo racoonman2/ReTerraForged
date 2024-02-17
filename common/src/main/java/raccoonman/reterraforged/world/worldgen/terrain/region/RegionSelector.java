@@ -1,18 +1,24 @@
 package raccoonman.reterraforged.world.worldgen.terrain.region;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
+import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 
 public class RegionSelector implements CellPopulator {
 	private int maxIndex;
 	private CellPopulator[] nodes;
 
-	public RegionSelector(List<CellPopulator> populators) {
-		this.nodes = getWeightedArray(populators);
+	public RegionSelector(List<CellPopulator> nodes) {
+		this(getWeightedArray(nodes));
+	}
+	
+	private RegionSelector(CellPopulator[] nodes) {
+		this.nodes = nodes;
 		this.maxIndex = this.nodes.length - 1;
 	}
 
@@ -25,6 +31,13 @@ public class RegionSelector implements CellPopulator {
 		int index = NoiseUtil.round(identity * this.maxIndex);
 		return this.nodes[index];
 	}
+	
+	@Override
+    public CellPopulator mapNoise(Noise.Visitor visitor) {
+    	return new RegionSelector(Arrays.stream(this.nodes).map((populator) -> {
+    		return populator.mapNoise(visitor);
+    	}).toArray(CellPopulator[]::new));
+    }
 
 	private static CellPopulator[] getWeightedArray(List<CellPopulator> modules) {
 		float smallest = Float.MAX_VALUE;

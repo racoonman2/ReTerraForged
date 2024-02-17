@@ -11,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
+import raccoonman.reterraforged.compat.terrablender.TBNoiseRouterData;
 import raccoonman.reterraforged.data.preset.PresetBiomeData;
 import raccoonman.reterraforged.data.preset.PresetBiomeModifierData;
 import raccoonman.reterraforged.data.preset.PresetConfiguredCarvers;
@@ -25,7 +26,6 @@ import raccoonman.reterraforged.data.preset.PresetPlacedFeatures;
 import raccoonman.reterraforged.data.preset.PresetStructureRuleData;
 import raccoonman.reterraforged.data.preset.PresetStructureSets;
 import raccoonman.reterraforged.data.preset.PresetSurfaceLayerData;
-import raccoonman.reterraforged.integration.terrablender.TBNoiseRouterData;
 import raccoonman.reterraforged.registries.RTFRegistries;
 
 //TODO make this actually immutable when we rework the gui

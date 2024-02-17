@@ -67,7 +67,8 @@ public class WorldSettingsPage extends PresetEditorPage {
 			ImmutableList.of(
 				ContinentType.MULTI,
 				ContinentType.SINGLE,
-				ContinentType.MULTI_IMPROVED
+				ContinentType.MULTI_IMPROVED,
+				ContinentType.EXPERIMENTAL
 			),
 			continent.continentType, RTFTranslationKeys.GUI_BUTTON_CONTINENT_TYPE, 
 			(button, value) -> {

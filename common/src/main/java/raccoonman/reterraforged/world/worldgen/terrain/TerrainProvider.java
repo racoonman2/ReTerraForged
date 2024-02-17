@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.world.worldgen.terrain.provider;
+package raccoonman.reterraforged.world.worldgen.terrain;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,7 +9,6 @@ import java.util.function.BiFunction;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.world.level.biome.BiomeManager;
 import raccoonman.reterraforged.data.preset.settings.TerrainSettings;
 import raccoonman.reterraforged.world.worldgen.biome.Erosion;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
@@ -17,12 +16,8 @@ import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.heightmap.RegionConfig;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
-import raccoonman.reterraforged.world.worldgen.terrain.Terrain;
-import raccoonman.reterraforged.world.worldgen.terrain.TerrainCategory;
-import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.terrain.populator.Populators;
 import raccoonman.reterraforged.world.worldgen.terrain.populator.TerrainPopulator;
-import raccoonman.reterraforged.world.worldgen.terrain.populator.VolcanoPopulator;
 import raccoonman.reterraforged.world.worldgen.util.Seed;
 
 public class TerrainProvider {
@@ -32,7 +27,6 @@ public class TerrainProvider {
     	TerrainSettings.General general = terrainSettings.general;
     	float verticalScale = general.globalVerticalScale;
     	boolean fancyMountains = general.fancyMountains;
-    	boolean legacyWorldGen = general.legacyWorldGen;
     	Seed terrainSeed = seed.offset(general.terrainSeedOffset);
     	
     	List<TerrainPopulator> mixable = new ArrayList<>();
@@ -47,16 +41,16 @@ public class TerrainProvider {
     	mixable = mixable.stream().filter((populator) -> {
     		return populator.weight() > 0.0F;
     	}).toList();
-        
+
         List<CellPopulator> unmixable = new ArrayList<>();
         unmixable.add(Populators.makeBadlands(terrainSeed, ground, terrainSettings.badlands));
-        unmixable.add(Populators.makeMountains(terrainSeed, ground, terrainSettings.mountains, verticalScale, fancyMountains, legacyWorldGen));
-        unmixable.add(Populators.makeMountains2(terrainSeed, ground, terrainSettings.mountains, verticalScale, fancyMountains, legacyWorldGen));
-        unmixable.add(Populators.makeMountains3(terrainSeed, ground, terrainSettings.mountains, verticalScale, fancyMountains, legacyWorldGen));
-        unmixable.add(new VolcanoPopulator(terrainSeed, config, levels, terrainSettings.volcano.weight));
+        unmixable.add(Populators.makeMountains(terrainSeed, ground, terrainSettings.mountains, verticalScale, fancyMountains));
+        unmixable.add(Populators.makeMountains2(terrainSeed, ground, terrainSettings.mountains, verticalScale, fancyMountains));
+        unmixable.add(Populators.makeMountains3(terrainSeed, ground, terrainSettings.mountains, verticalScale, fancyMountains));
+        unmixable.add(Populators.makeVolcano(terrainSeed, ground, config, levels, terrainSettings.volcano.weight));
 
         List<TerrainPopulator> mixed = combine(mixable, (t1, t2) -> {
-        	return combine(t1, t2, terrainSeed, levels, config.scale() / 2);
+        	return combine(ground, t1, t2, terrainSeed, levels, config.scale() / 2);
         });
 
         List<CellPopulator> result = new ArrayList<>();
@@ -72,7 +66,7 @@ public class TerrainProvider {
 		TerrainType.PLATEAU, TerrainType.BADLANDS, TerrainType.TORRIDONIAN
 	);
     
-    private static TerrainPopulator combine(TerrainPopulator tp1, TerrainPopulator tp2, Seed seed, Levels levels, int scale) {
+    private static TerrainPopulator combine(Noise ground, TerrainPopulator tp1, TerrainPopulator tp2, Seed seed, Levels levels, int scale) {
         Terrain type = TerrainType.registerComposite(tp1.type(), tp2.type());
         Noise selector = Noises.perlin(seed.next(), scale, 1);
         selector = Noises.warpPerlin(selector, seed.next(), scale / 2, 2, scale / 2.0F);
@@ -84,7 +78,7 @@ public class TerrainProvider {
         Noise weirdness = Noises.threshold(selector, tp1.weirdness(), tp2.weirdness(), 0.5F);
 
         float weight = (tp1.weight() + tp2.weight()) / 2.0F;
-        return new TerrainPopulator(type, Noises.constant(levels.ground), height, erosion, weirdness, weight);
+        return new TerrainPopulator(weight, type, ground, height, erosion, weirdness);
     }
     
     private static <T> List<T> combine(List<T> input, BiFunction<T, T, T> operator) {

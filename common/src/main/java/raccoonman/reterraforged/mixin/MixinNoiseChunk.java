@@ -25,6 +25,7 @@ import net.minecraft.world.level.levelgen.RandomState;
 import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
+import raccoonman.reterraforged.world.worldgen.WorldGenFlags;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
 import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler.Cache2d;
 import raccoonman.reterraforged.world.worldgen.tile.Tile;
@@ -75,7 +76,7 @@ class MixinNoiseChunk {
 		this.generatorSettings = noiseGeneratorSettings;
 		GeneratorContext generatorContext;
 		if((Object) this.randomState instanceof RTFRandomState rtfRandomState && (generatorContext = rtfRandomState.generatorContext()) != null) {
-			boolean cache = true;//CellSampler.isCachedNoiseChunk(cellCountXZ);
+			boolean cache = !WorldGenFlags.fastLookups() || CellSampler.isCachedNoiseChunk(cellCountXZ);
 
 //			if(beardifierOrMarker instanceof Beardifier beardifier && (beardifier.pieceIterator.hasNext() || beardifier.junctionIterator.hasNext())) {
 //				this.generationHeight = noiseSettings.height();

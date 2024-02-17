@@ -59,7 +59,6 @@ public class RTFLanguageProvider {
 			this.add(RTFTranslationKeys.GUI_BUTTON_BIOME_EDGE_TYPE, "Type");
 			this.add(RTFTranslationKeys.GUI_BUTTON_TERRAIN_SEED_OFFSET, "Terrain Seed Offset");
 			this.add(RTFTranslationKeys.GUI_BUTTON_FANCY_MOUNTAINS, "Fancy Mountains");
-			this.add(RTFTranslationKeys.GUI_BUTTON_LEGACY_WORLD_GEN, "Legacy World Generation");
 			this.add(RTFTranslationKeys.GUI_BUTTON_RIVER_SEED_OFFSET, "Seed Offset");
 			this.add(RTFTranslationKeys.GUI_BUTTON_SALT, "Salt");
 			this.add(RTFTranslationKeys.GUI_BUTTON_DISABLED, "Disabled");
@@ -220,7 +219,6 @@ public class RTFLanguageProvider {
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_BIOME_EDGE_TYPE), "The noise type");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_TERRAIN_SEED_OFFSET), "A seed offset used to randomise terrain distribution");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_FANCY_MOUNTAINS), "Carries out extra processing on mountains to make them look even nicer. Can be disabled to improve performance slightly.");
-			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_LEGACY_WORLD_GEN), "Changes world generation to be compatible with legacy TerraForged. This can possibly cause issues with modded biome generation.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_RIVER_SEED_OFFSET), "A seed offset used to randomise river distribution");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_SALT), "A random seed value for the structure.");
 			this.add(Tooltips.translationKey(RTFTranslationKeys.GUI_BUTTON_DISABLED), "Prevent this structure from generating.");

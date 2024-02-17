@@ -28,38 +28,33 @@ public class Cell {
     public float sediment;
     public float sediment2;
     public float gradient;
-    @Deprecated
     public float regionMoisture;
-    @Deprecated
     public float regionTemperature;
     public float continentId;
-    //use continentalness instead
-    @Deprecated
+    public float continentNoise;
     public float continentEdge;
     public float continentalness;
-    public float terrainRegion;
     public float terrainRegionId;
-    @Deprecated
     public float terrainRegionEdge;
     public long terrainRegionCenter;
     public float biomeRegionId;
     public float biomeRegionEdge;
     public float macroBiomeId;
-    @Deprecated
     public float riverDistance;
-    public float riverBanks;
     public int continentX;
     public int continentZ;
     public boolean erosionMask;
     public Terrain terrain;
+    public float terrainMask;
+    //TODO
+    public float borderMask;
+    @Deprecated
+    public float mountainChainAlpha;
     public BiomeType biomeType;
     public float erosion;
     public float weirdness;
     public float temperature;
     public float moisture;
-    
-    @Deprecated(forRemoval = true)
-    public float beachNoise;
     
     public Cell() {
         this.regionMoisture = 0.5F;
@@ -68,6 +63,7 @@ public class Cell {
         this.riverDistance = 1.0F;
         this.erosionMask = false;
         this.terrain = TerrainType.NONE;
+        this.terrainMask = 1.0F;
         this.biomeType = BiomeType.GRASSLAND;
     }
     
@@ -81,9 +77,9 @@ public class Cell {
         this.regionMoisture = other.regionMoisture;
         this.regionTemperature = other.regionTemperature;
         this.continentId = other.continentId;
+        this.continentNoise = other.continentNoise;
         this.continentEdge = other.continentEdge;
         this.continentalness = other.continentalness;
-        this.terrainRegion = other.terrainRegion;
         this.terrainRegionId = other.terrainRegionId;
         this.terrainRegionEdge = other.terrainRegionEdge;
         this.terrainRegionCenter = other.terrainRegionCenter;
@@ -91,17 +87,17 @@ public class Cell {
         this.biomeRegionEdge = other.biomeRegionEdge;
         this.macroBiomeId = other.macroBiomeId;
         this.riverDistance = other.riverDistance;
-        this.riverBanks = other.riverBanks;
         this.continentX = other.continentX;
         this.continentZ = other.continentZ;
         this.erosionMask = other.erosionMask;
         this.terrain = other.terrain;
+        this.terrainMask = other.terrainMask;
+        this.borderMask = other.borderMask;
         this.biomeType = other.biomeType;
         this.erosion = other.erosion;
         this.weirdness = other.weirdness;
         this.temperature = other.temperature;
         this.moisture = other.moisture;
-        this.beachNoise = other.beachNoise;
     }
 
     public Cell reset() {

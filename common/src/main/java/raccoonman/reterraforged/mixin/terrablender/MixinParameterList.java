@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.biome.Climate;
-import raccoonman.reterraforged.integration.terrablender.TBTargetPoint;
+import raccoonman.reterraforged.compat.terrablender.TBTargetPoint;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import terrablender.api.RegionType;
 import terrablender.api.Regions;
@@ -23,8 +23,7 @@ class MixinParameterList<T> {
 
 	@Inject(
 		at = @At("HEAD"),
-		method = "initializeForTerraBlender",
-		require = 1	
+		method = "initializeForTerraBlender"
 	)
     public void initializeForTerraBlender(RegistryAccess registryAccess, RegionType regionType, long seed, CallbackInfo callback) {
     	this.maxIndex = Regions.getCount(regionType) - 1;
@@ -44,8 +43,7 @@ class MixinParameterList<T> {
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/world/level/biome/Climate$ParameterList;getUniqueness(III)I"
-		),
-		require = 0	
+		)
 	)
     public int getUniqueness(Climate.ParameterList<T> parameterList, int x, int y, int z, Climate.TargetPoint targetPoint) {
 		if((Object) targetPoint instanceof TBTargetPoint tbTargetPoint) {

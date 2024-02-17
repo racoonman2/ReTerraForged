@@ -10,28 +10,21 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.KeyDispatchDataCodec;
-import net.minecraft.util.StringRepresentable;
-import raccoonman.reterraforged.data.preset.settings.WorldSettings.ControlPoints;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
-import raccoonman.reterraforged.world.worldgen.biome.Continentalness;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
-import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler.Field;
-import raccoonman.reterraforged.world.worldgen.heightmap.Heightmap;
-import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
+import raccoonman.reterraforged.world.worldgen.cell.CellField;
 import raccoonman.reterraforged.world.worldgen.heightmap.WorldLookup;
-import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
-import raccoonman.reterraforged.world.worldgen.terrain.TerrainCategory;
 import raccoonman.reterraforged.world.worldgen.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;
 
-public record CellSampler(Supplier<GeneratorContext> generatorContext, Field field) implements MarkerFunction.Mapped {
+public record CellSampler(Supplier<GeneratorContext> generatorContext, CellField field) implements MappedFunction {
 	private static final ThreadLocal<Cache2d> LOCAL_CELL = ThreadLocal.withInitial(Cache2d::new);
 	
 	@Override
 	public double compute(FunctionContext ctx) {
 		WorldLookup worldLookup = this.generatorContext.get().lookup;
 		Cell cell = LOCAL_CELL.get().getAndUpdate(worldLookup, ctx.blockX(), ctx.blockZ());
-		return this.field.read(cell, worldLookup.getHeightmap());
+		return this.field.read(cell);
 	}
 
 	@Override
@@ -65,7 +58,7 @@ public record CellSampler(Supplier<GeneratorContext> generatorContext, Field fie
 		}
 	}
 	
-	public class CacheChunk implements MarkerFunction.Mapped {
+	public class CacheChunk implements MappedFunction {
 		@Nullable
 		private Tile.Chunk chunk;
 		private Cache2d cache2d;
@@ -91,7 +84,7 @@ public record CellSampler(Supplier<GeneratorContext> generatorContext, Field fie
 			Cell cell = (this.chunk != null && this.chunkX == chunkX && this.chunkZ == chunkZ) ? 
 				this.chunk.getCell(blockX, blockZ) :
 				this.cache2d.getAndUpdate(worldLookup, quartBlockX, quartBlockZ);
-			return CellSampler.this.field.read(cell, worldLookup.getHeightmap());
+			return CellSampler.this.field.read(cell);
 		}
 
 		@Override
@@ -105,114 +98,14 @@ public record CellSampler(Supplier<GeneratorContext> generatorContext, Field fie
 		}
 	}
 	
-	public record Marker(Field field) implements MarkerFunction {
+	public record Marker(CellField field) implements MappedFunction.Marker {
 		public static final Codec<Marker> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Field.CODEC.fieldOf("field").forGetter(Marker::field)
+				CellField.CODEC.fieldOf("field").forGetter(Marker::field)
 		).apply(instance, Marker::new));
 		
 		@Override
 		public KeyDispatchDataCodec<Marker> codec() {
 			return new KeyDispatchDataCodec<>(CODEC);
 		}
-	}
-	
-	public enum Field implements StringRepresentable {
-		HEIGHT("height") {
-			
-			@Override
-			public float read(Cell cell, Heightmap heightmap) {
-				return cell.height;
-			}
-		},
-		CONTINENT("continent") {
-			
-			// TODO move this somewhere else
-			@Override
-			public float read(Cell cell, Heightmap heightmap) {
-				Levels levels = heightmap.levels();
-				ControlPoints controlPoints = heightmap.controlPoints();
-				
-				float shallowOcean = controlPoints.shallowOcean;
-				float beach = controlPoints.beach;
-				
-				if(cell.terrain.getDelegate() == TerrainCategory.BEACH && cell.height + cell.beachNoise < levels.water(5)) {
-					float alpha = NoiseUtil.clamp(cell.continentEdge, shallowOcean, beach);
-					alpha = NoiseUtil.lerp(alpha, shallowOcean, beach, 0.0F, 1.0F);
-					return NoiseUtil.lerp(Continentalness.COAST.min(), Continentalness.COAST.max(), alpha);
-				}
-				return cell.continentalness;
-			}
-		},
-		EROSION("erosion") {
-			
-			@Override
-			public float read(Cell cell, Heightmap heightmap) {
-				return cell.erosion;
-			}
-		},
-		WEIRDNESS("weirdness") {
-			
-			@Override
-			public float read(Cell cell, Heightmap heightmap) {
-				return cell.weirdness;
-			}
-		},
-		BIOME_REGION("biome_region") {
-			
-			@Override
-			public float read(Cell cell, Heightmap heightmap) {
-				return cell.biomeRegionId;
-			}
-		},
-		TEMPERATURE("temperature") {
-			
-			@Override
-			public float read(Cell cell, Heightmap heightmap) {
-				return cell.temperature;
-			}
-		},
-		MOISTURE("moisture") {
-			
-			@Override
-			public float read(Cell cell, Heightmap heightmap) {
-				return cell.moisture;
-			}
-		},
-		GRADIENT("gradient") {
-			
-			@Override
-			public float read(Cell cell, Heightmap heightmap) {
-				return cell.gradient;
-			}
-		},
-		LOCAL_EROSION("local_erosion") {
-			
-			@Override
-			public float read(Cell cell, Heightmap heightmap) {
-				return cell.localErosion;
-			}
-		},
-		SEDIMENT("sediment") {
-			
-			@Override
-			public float read(Cell cell, Heightmap heightmap) {
-				return cell.sediment;
-			}
-		};
-
-		public static final Codec<Field> CODEC = StringRepresentable.fromEnum(Field::values);
-		
-		private String name;
-		
-		private Field(String name) {
-			this.name = name;
-		}
-		
-		@Override
-		public String getSerializedName() {
-			return this.name;
-		}
-		
-		public abstract float read(Cell cell, Heightmap heightmap);
 	}
 }

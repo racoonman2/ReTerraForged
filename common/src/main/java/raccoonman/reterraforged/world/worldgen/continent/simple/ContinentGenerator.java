@@ -106,7 +106,6 @@ public abstract class ContinentGenerator implements SimpleContinent {
         cell.continentZ = (int) (centerY / this.frequency);
         continentalness *= this.getContinentalness(x, y, continentalness);
         cell.continentEdge = continentalness;
-        cell.continentalness = continentalness * 0.315F;
     }
     
     @Override

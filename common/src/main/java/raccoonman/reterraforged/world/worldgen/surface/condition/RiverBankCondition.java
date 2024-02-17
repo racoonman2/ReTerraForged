@@ -18,7 +18,7 @@ class RiverBankCondition extends ThresholdCondition {
 
 	@Override
 	protected float sample(Cell cell) {
-		return cell.riverBanks;
+		return 1.0F - cell.riverDistance;
 	}
 	
 	public record Source(Holder<Noise> threshold, Holder<Noise> variance) implements SurfaceRules.ConditionSource {

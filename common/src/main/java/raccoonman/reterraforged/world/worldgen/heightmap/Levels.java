@@ -26,9 +26,6 @@ public class Levels {
     }
     
     public int scale(float value) {
-//        if (value >= 1.0F) {
-//            return this.worldHeight - 1;
-//        }
         return (int) (value * this.worldHeight);
     }
     

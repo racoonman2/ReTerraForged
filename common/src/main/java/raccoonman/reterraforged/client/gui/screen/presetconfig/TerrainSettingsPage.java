@@ -20,7 +20,6 @@ public class TerrainSettingsPage extends PresetEditorPage {
 	private Slider globalVerticalScale;
 	private Slider globalHorizontalScale;
 	private CycleButton<Boolean> fancyMountains;
-	private CycleButton<Boolean> legacyWorldGen;
 	
 	private Slider steppeWeight;
 	private Slider steppeBaseScale;
@@ -107,11 +106,6 @@ public class TerrainSettingsPage extends PresetEditorPage {
 			general.fancyMountains = value;
 			this.regenerate();
 		});
-		this.legacyWorldGen = PresetWidgets.createToggle(general.legacyWorldGen, RTFTranslationKeys.GUI_BUTTON_LEGACY_WORLD_GEN, (button, value) -> {
-			general.legacyWorldGen = value;
-			this.regenerate();
-		});
-
 		Terrain steppe = terrain.steppe;
 		this.steppeWeight = PresetWidgets.createFloatSlider(steppe.weight, 0.0F, 10.0F, RTFTranslationKeys.GUI_SLIDER_TERRAIN_WEIGHT, (slider, value) -> {
 			steppe.weight = (float) slider.scaleValue(value);
@@ -316,7 +310,6 @@ public class TerrainSettingsPage extends PresetEditorPage {
 		this.left.addWidget(this.globalVerticalScale);
 		this.left.addWidget(this.globalHorizontalScale);
 		this.left.addWidget(this.fancyMountains);
-		this.left.addWidget(this.legacyWorldGen);
 
 		this.left.addWidget(PresetWidgets.createLabel(RTFTranslationKeys.GUI_LABEL_STEPPE));
 		this.left.addWidget(this.steppeWeight);

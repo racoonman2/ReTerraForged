@@ -1,4 +1,4 @@
-package raccoonman.reterraforged.integration.terrablender;
+package raccoonman.reterraforged.compat.terrablender;
 
 import org.jetbrains.annotations.Nullable;
 

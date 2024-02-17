@@ -3,6 +3,7 @@ package raccoonman.reterraforged.world.worldgen.terrain.region;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.cell.CellPopulator;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
+import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 
 public class RegionLerper implements CellPopulator {
     private CellPopulator lower;
@@ -38,5 +39,10 @@ public class RegionLerper implements CellPopulator {
         cell.height = NoiseUtil.lerp(lowerHeight, upperHeight, alpha);
         cell.erosion = NoiseUtil.lerp(lowerErosion, upperErosion, alpha);
         cell.weirdness = NoiseUtil.lerp(lowerWeirdness, upperWeirdness, alpha);
+    }
+    
+    @Override
+    public CellPopulator mapNoise(Noise.Visitor visitor) {
+    	return new RegionLerper(this.lower.mapNoise(visitor), this.upper.mapNoise(visitor));
     }
 }

@@ -1,5 +1,4 @@
 {
-  
   "required": true,
   "plugin": "raccoonman.reterraforged.mixin.plugin.MixinPlugin",
   "package": "raccoonman.reterraforged.mixin",
@@ -24,7 +23,8 @@
   	"terrablender.MixinParameterList",
   	"terrablender.MixinClimateSampler",
   	"terrablender.MixinTargetPoint",
-  	"terrablender.MixinNoiseChunk"
+  	"terrablender.MixinNoiseChunk",
+  	"worldpreview.SampleUtilsMixin"
   ],
   "client": [
   	"ScreenInvoker"

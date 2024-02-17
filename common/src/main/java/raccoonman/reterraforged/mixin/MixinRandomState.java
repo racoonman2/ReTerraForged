@@ -24,14 +24,14 @@ import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.SurfaceSystem;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import raccoonman.reterraforged.RTFCommon;
+import raccoonman.reterraforged.compat.terrablender.TBClimateSampler;
+import raccoonman.reterraforged.compat.terrablender.TBCompat;
+import raccoonman.reterraforged.compat.terrablender.TBNoiseRouterData;
 import raccoonman.reterraforged.concurrent.ThreadPools;
 import raccoonman.reterraforged.concurrent.cache.CacheManager;
 import raccoonman.reterraforged.config.PerformanceConfig;
 import raccoonman.reterraforged.data.preset.PresetData;
 import raccoonman.reterraforged.data.preset.settings.Preset;
-import raccoonman.reterraforged.integration.terrablender.TBClimateSampler;
-import raccoonman.reterraforged.integration.terrablender.TBIntegration;
-import raccoonman.reterraforged.integration.terrablender.TBNoiseRouterData;
 import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.world.worldgen.GeneratorContext;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
@@ -43,7 +43,6 @@ import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 @Mixin(RandomState.class)
 @Implements(@Interface(iface = RTFRandomState.class, prefix = "reterraforged$RTFRandomState$"))
 class MixinRandomState {
-	private DensityFunction.Visitor densityFunctionWrapper;
 	@Shadow
 	@Final
 	private Climate.Sampler sampler;
@@ -52,15 +51,20 @@ class MixinRandomState {
     private SurfaceSystem surfaceSystem;
 	
 	@Nullable
+	private Preset preset;
+	@Nullable
+	private NoiseSampler globalSampler;
+	@Nullable
 	private RegistryAccess registryAccess;
+	
 	@Deprecated
 	private boolean hasContext;
+	@Deprecated
 	@Nullable
 	private GeneratorContext generatorContext;
-	@Nullable
-	private Preset preset;
 	
 	private long seed;
+	private DensityFunction.Visitor densityFunctionWrapper;
 	
 	@Redirect(
 		at = @At(
@@ -98,10 +102,9 @@ class MixinRandomState {
 		this.registryAccess = registryAccess;
 		
 		RegistryLookup<Preset> presets = registryAccess.lookupOrThrow(RTFRegistries.PRESET);
-		RegistryLookup<Noise> noises = registryAccess.lookupOrThrow(RTFRegistries.NOISE);
 		RegistryLookup<DensityFunction> functions = registryAccess.lookupOrThrow(Registries.DENSITY_FUNCTION);
 		
-		if((Object) this.sampler instanceof TBClimateSampler tbClimateSampler && TBIntegration.isEnabled()) {
+		if((Object) this.sampler instanceof TBClimateSampler tbClimateSampler && TBCompat.isEnabled()) {
 			functions.get(TBNoiseRouterData.UNIQUENESS).ifPresent((uniqueness) -> {
 				tbClimateSampler.setUniqueness(uniqueness.value().mapAll(this.densityFunctionWrapper));
 			});

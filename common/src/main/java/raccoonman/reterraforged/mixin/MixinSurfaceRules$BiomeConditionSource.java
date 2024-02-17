@@ -25,12 +25,8 @@ public class MixinSurfaceRules$BiomeConditionSource {
     public void apply(SurfaceRules.Context ctx, CallbackInfoReturnable<SurfaceRules.Condition> callback) {
     	Set<ResourceKey<Biome>> surroundingBiomes;
     	if((Object) ctx instanceof RTFSurfaceContext rtfSurfaceContext && (surroundingBiomes = rtfSurfaceContext.getSurroundingBiomes()) != null) {
-    		if(surroundingBiomes.stream().filter(this.biomeNameTest).findAny().isEmpty()) {
-    			callback.setReturnValue(() -> false);
-    		}
-    		
-    		if(surroundingBiomes.size() == 1) {
-    			boolean result = surroundingBiomes.stream().findFirst().filter(this.biomeNameTest).isPresent();
+    		boolean result = surroundingBiomes.stream().filter(this.biomeNameTest).findAny().isPresent();
+    		if(!result || surroundingBiomes.size() == 1) {
     			callback.setReturnValue(() -> result);
     		}
     	}

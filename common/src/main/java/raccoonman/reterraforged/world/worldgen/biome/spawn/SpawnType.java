@@ -20,7 +20,7 @@ public enum SpawnType implements StringRepresentable {
 
 		@Override
     	public BlockPos getSearchCenter(GeneratorContext ctx) {
-    		long center = ctx.generator.getHeightmap().continent().getNearestCenter(0.0F, 0.0F);
+    		long center = ctx.localHeightmap.get().continent().getNearestCenter(0.0F, 0.0F);
     		return new BlockPos(PosUtil.unpackLeft(center), 0, PosUtil.unpackRight(center));
     	}
     	

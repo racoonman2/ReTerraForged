@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.world.level.biome.Climate;
-import raccoonman.reterraforged.integration.terrablender.TBTargetPoint;
+import raccoonman.reterraforged.compat.terrablender.TBTargetPoint;
 
 @Mixin(Climate.TargetPoint.class)
 @Implements(@Interface(iface = TBTargetPoint.class, prefix = "reterraforged$TBTargetPoint$"))

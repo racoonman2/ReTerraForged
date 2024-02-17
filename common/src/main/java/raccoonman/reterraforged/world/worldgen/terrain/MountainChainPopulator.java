@@ -6,28 +6,24 @@ import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.function.Interpolation;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 
-public class Blender implements CellPopulator {
-	private Noise control;
+public class MountainChainPopulator implements CellPopulator {
 	private CellPopulator lower;
 	private CellPopulator upper;
 	private float blendLower;
 	private float blendUpper;
 	private float blendRange;
-	private float midpoint;
 	
-	public Blender(Noise control, CellPopulator lower, CellPopulator upper, float min, float max, float split) {
-		this.control = control;
+	public MountainChainPopulator(CellPopulator lower, CellPopulator upper, float min, float max) {
 		this.lower = lower;
 		this.upper = upper;
 		this.blendLower = min;
 		this.blendUpper = max;
 		this.blendRange = this.blendUpper - this.blendLower;
-		this.midpoint = this.blendLower + this.blendRange * split;
 	}
 
 	@Override
 	public void apply(Cell cell, float x, float y) {
-		float select = this.control.compute(x, y, 0);
+		float select = cell.mountainChainAlpha;
 
 		if (select < this.blendLower) {
 			this.lower.apply(cell, x, y);
@@ -42,7 +38,6 @@ public class Blender implements CellPopulator {
 		float lowerHeight = cell.height;
 		float lowerErosion = cell.erosion;
 		float lowerWeirdness = cell.weirdness;
-		Terrain lowerType = cell.terrain;
 		this.upper.apply(cell, x, y);
 		float upperHeight = cell.height;
 		float upperErosion = cell.erosion;
@@ -50,9 +45,10 @@ public class Blender implements CellPopulator {
 		cell.height = NoiseUtil.lerp(lowerHeight, upperHeight, alpha);
 		cell.erosion = NoiseUtil.lerp(lowerErosion, upperErosion, alpha);
 		cell.weirdness = NoiseUtil.lerp(lowerWeirdness, upperWeirdness, alpha);
-		
-		if (select < this.midpoint) {
-			cell.terrain = lowerType;
-		}
 	}
+
+    @Override
+    public CellPopulator mapNoise(Noise.Visitor visitor) {
+    	return new MountainChainPopulator(this.lower.mapNoise(visitor), this.upper.mapNoise(visitor), this.blendLower, this.blendUpper);
+    }
 }

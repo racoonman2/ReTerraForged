@@ -133,7 +133,7 @@ public class PresetConfiguredFeatures {
 			FeatureUtils.register(ctx, ERODE_SNOW, RTFFeatures.ERODE_SNOW, new ErodeSnowFeature.Config(erosion.snowSteepness, (float) erosion.snowHeight / 255.0F, miscellaneous.naturalSnowDecorator, miscellaneous.smoothLayerDecorator, erosion.heightModifier / 255F, erosion.slopeModifier / 255F));
 		}
 		
-		FeatureUtils.register(ctx, SWAMP_SURFACE, RTFFeatures.SWAMP_SURFACE, new SwampSurfaceFeature.Config(Blocks.CLAY.defaultBlockState(), general.legacyWorldGen ? Blocks.GRAVEL.defaultBlockState() : Blocks.MUD.defaultBlockState(), general.legacyWorldGen ? Blocks.DIRT.defaultBlockState() : Blocks.MUD.defaultBlockState()));
+		FeatureUtils.register(ctx, SWAMP_SURFACE, RTFFeatures.SWAMP_SURFACE, new SwampSurfaceFeature.Config(Blocks.CLAY.defaultBlockState(), Blocks.MUD.defaultBlockState(), Blocks.MUD.defaultBlockState()));
 		
 		if(miscellaneous.customBiomeFeatures) {
 			HolderGetter<PlacedFeature> placedFeatures = ctx.lookup(Registries.PLACED_FEATURE);

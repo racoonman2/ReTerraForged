@@ -4,9 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.resources.ResourceLocation;
+import raccoonman.reterraforged.compat.terrablender.TBCompat;
+import raccoonman.reterraforged.compat.terrablender.TBSurfaceRules;
 import raccoonman.reterraforged.data.preset.settings.Preset;
-import raccoonman.reterraforged.integration.terrablender.TBIntegration;
-import raccoonman.reterraforged.integration.terrablender.TBSurfaceRules;
 import raccoonman.reterraforged.platform.RegistryUtil;
 import raccoonman.reterraforged.registries.RTFArgumentTypeInfos;
 import raccoonman.reterraforged.registries.RTFBuiltInRegistries;
@@ -58,8 +58,8 @@ public class RTFCommon {
 		RTFCommands.bootstrap();
 		RTFArgumentTypeInfos.bootstrap();
 		
-		if(TBIntegration.isEnabled()) {
-			TBIntegration.bootstrap();
+		if(TBCompat.isEnabled()) {
+			TBCompat.bootstrap();
 		}
 		
 		RegistryUtil.createDataRegistry(RTFRegistries.NOISE, Noise.DIRECT_CODEC);

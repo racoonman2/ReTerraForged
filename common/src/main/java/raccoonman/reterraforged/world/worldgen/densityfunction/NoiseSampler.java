@@ -8,7 +8,7 @@ import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 
-public record NoiseSampler(Holder<Noise> noise, int seed) implements MarkerFunction.Mapped {
+public record NoiseSampler(Holder<Noise> noise, int seed) implements MappedFunction {
 
 	@Override
 	public double compute(FunctionContext ctx) {
@@ -25,7 +25,7 @@ public record NoiseSampler(Holder<Noise> noise, int seed) implements MarkerFunct
 		return this.noise.value().maxValue();
 	}
 	
-	public record Marker(Holder<Noise> noise) implements MarkerFunction {
+	public record Marker(Holder<Noise> noise) implements MappedFunction.Marker {
 		public static final Codec<NoiseSampler.Marker> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Noise.CODEC.fieldOf("noise").forGetter(NoiseSampler.Marker::noise)
 		).apply(instance, NoiseSampler.Marker::new));

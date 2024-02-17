@@ -21,7 +21,7 @@ import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.SurfaceSystem;
 import raccoonman.reterraforged.RTFCommon;
-import raccoonman.reterraforged.integration.terrablender.TBIntegration;
+import raccoonman.reterraforged.compat.terrablender.TBCompat;
 import raccoonman.reterraforged.world.worldgen.surface.RTFSurfaceSystem;
 import raccoonman.reterraforged.world.worldgen.surface.rule.StrataRule.Strata;
 import terrablender.worldgen.surface.NamespacedSurfaceRuleSource;

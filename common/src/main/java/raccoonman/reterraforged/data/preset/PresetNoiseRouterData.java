@@ -5,7 +5,6 @@ import java.util.stream.Stream;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
@@ -14,10 +13,9 @@ import net.minecraft.world.level.levelgen.NoiseRouterData;
 import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.OreVeinifier;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
-import raccoonman.reterraforged.RTFCommon;
 import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.data.preset.settings.WorldSettings;
-import raccoonman.reterraforged.world.worldgen.densityfunction.CellSampler;
+import raccoonman.reterraforged.world.worldgen.cell.CellField;
 import raccoonman.reterraforged.world.worldgen.densityfunction.RTFDensityFunctions;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 
@@ -35,11 +33,11 @@ public class PresetNoiseRouterData {
         int worldHeight = properties.worldHeight;
         int worldDepth = properties.worldDepth;
         
-        ctx.register(NoiseRouterData.CONTINENTS, RTFDensityFunctions.cell(CellSampler.Field.CONTINENT));
-        ctx.register(NoiseRouterData.EROSION, RTFDensityFunctions.cell(CellSampler.Field.EROSION));
-        ctx.register(NoiseRouterData.RIDGES, RTFDensityFunctions.cell(CellSampler.Field.WEIRDNESS));
+        ctx.register(NoiseRouterData.CONTINENTS, RTFDensityFunctions.cell(CellField.CONTINENTALNESS));
+        ctx.register(NoiseRouterData.EROSION, RTFDensityFunctions.cell(CellField.EROSION));
+        ctx.register(NoiseRouterData.RIDGES, RTFDensityFunctions.cell(CellField.WEIRDNESS));
         
-        DensityFunction offset = NoiseRouterData.registerAndWrap(ctx, NoiseRouterData.OFFSET, DensityFunctions.add(DensityFunctions.constant(NoiseRouterData.GLOBAL_OFFSET - 0.5F), DensityFunctions.mul(RTFDensityFunctions.clampToNearestUnit(RTFDensityFunctions.cell(CellSampler.Field.HEIGHT), properties.terrainScaler()), DensityFunctions.constant(2.0D))));
+        DensityFunction offset = NoiseRouterData.registerAndWrap(ctx, NoiseRouterData.OFFSET, DensityFunctions.add(DensityFunctions.constant(NoiseRouterData.GLOBAL_OFFSET - 0.5F), DensityFunctions.mul(RTFDensityFunctions.clampToNearestUnit(RTFDensityFunctions.cell(CellField.HEIGHT), properties.terrainScaler()), DensityFunctions.constant(2.0D))));
         ctx.register(NoiseRouterData.DEPTH, DensityFunctions.add(DensityFunctions.yClampedGradient(-worldDepth, worldHeight, yGradientRange(-worldDepth), yGradientRange(worldHeight)), offset));
         ctx.register(NoiseRouterData.BASE_3D_NOISE_OVERWORLD, DensityFunctions.zero());
         ctx.register(NoiseRouterData.JAGGEDNESS, jaggednessPerformanceHack());
@@ -56,8 +54,8 @@ public class PresetNoiseRouterData {
         DensityFunction aquiferFluidLevelFloodedness = DensityFunctions.noise(noiseParams.getOrThrow(Noises.AQUIFER_FLUID_LEVEL_FLOODEDNESS), 0.67);
         DensityFunction aquiferFluidLevelSpread = DensityFunctions.noise(noiseParams.getOrThrow(Noises.AQUIFER_FLUID_LEVEL_SPREAD), 0.7142857142857143);
         DensityFunction aquiferLava = DensityFunctions.noise(noiseParams.getOrThrow(Noises.AQUIFER_LAVA));
-        DensityFunction temperature = RTFDensityFunctions.cell(CellSampler.Field.TEMPERATURE);
-        DensityFunction vegetation = RTFDensityFunctions.cell(CellSampler.Field.MOISTURE);
+        DensityFunction temperature = RTFDensityFunctions.cell(CellField.TEMPERATURE);
+        DensityFunction vegetation = RTFDensityFunctions.cell(CellField.MOISTURE);
         DensityFunction factor = NoiseRouterData.getFunction(densityFunctions, NoiseRouterData.FACTOR);
         DensityFunction depth = NoiseRouterData.getFunction(densityFunctions, NoiseRouterData.DEPTH);
         DensityFunction initialDensity = NoiseRouterData.noiseGradientDensity(DensityFunctions.cache2d(factor), depth);

@@ -10,7 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.levelgen.SurfaceRules;
-import raccoonman.reterraforged.integration.terrablender.TBSurfaceRules;
+import raccoonman.reterraforged.compat.terrablender.TBSurfaceRules;
 import raccoonman.reterraforged.platform.RegistryUtil;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.surface.rule.StrataRule.Layer;

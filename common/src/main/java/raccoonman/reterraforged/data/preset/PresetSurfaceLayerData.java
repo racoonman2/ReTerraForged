@@ -13,11 +13,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import raccoonman.reterraforged.RTFCommon;
+import raccoonman.reterraforged.compat.terrablender.TBCompat;
+import raccoonman.reterraforged.compat.terrablender.TBSurfaceRules;
 import raccoonman.reterraforged.data.preset.settings.Preset;
 import raccoonman.reterraforged.data.preset.settings.SurfaceSettings;
 import raccoonman.reterraforged.data.preset.settings.WorldSettings;
-import raccoonman.reterraforged.integration.terrablender.TBIntegration;
-import raccoonman.reterraforged.integration.terrablender.TBSurfaceRules;
 import raccoonman.reterraforged.registries.RTFRegistries;
 import raccoonman.reterraforged.tags.RTFBiomeTags;
 import raccoonman.reterraforged.tags.RTFSurfaceLayerTags;
@@ -29,8 +29,6 @@ import raccoonman.reterraforged.world.worldgen.util.Scaling;
 import terrablender.core.TerraBlender;
 
 public class PresetSurfaceLayerData {
-	public static final ResourceKey<LayeredSurfaceRule.Layer> REGIONS_UNEXPLORED = createKey("regions_unexplored");
-	
 	private static final SurfaceRules.RuleSource ORANGE_TERRACOTTA = makeStateRule(Blocks.ORANGE_TERRACOTTA);
 	private static final SurfaceRules.RuleSource BROWN_TERRACOTTA = makeStateRule(Blocks.BROWN_TERRACOTTA);
 	private static final SurfaceRules.RuleSource TERRACOTTA = makeStateRule(Blocks.TERRACOTTA);
@@ -53,17 +51,6 @@ public class PresetSurfaceLayerData {
 		
 		Scaling scaling = Scaling.make(properties.terrainScaler(), properties.seaLevel);
 		
-		HolderGetter<Noise> noise = ctx.lookup(RTFRegistries.NOISE);
-		ctx.register(REGIONS_UNEXPLORED, makeRU());
-	}
-	
-	private static LayeredSurfaceRule.Layer makeRU() {
-		return LayeredSurfaceRule.layer(
-			SurfaceRules.ifTrue(
-				RTFSurfaceConditions.modLoaded("regions_unexplored"), 
-				TBSurfaceRules.rule("OVERWORLD", "regions_unexplored")
-			)
-		);
 	}
 	
 	private static LayeredSurfaceRule.Layer makeRockErosion() {

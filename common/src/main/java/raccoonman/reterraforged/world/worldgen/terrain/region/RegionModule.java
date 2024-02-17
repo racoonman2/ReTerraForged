@@ -9,6 +9,7 @@ import raccoonman.reterraforged.world.worldgen.noise.domain.Domain;
 import raccoonman.reterraforged.world.worldgen.noise.domain.Domains;
 import raccoonman.reterraforged.world.worldgen.noise.function.DistanceFunction;
 import raccoonman.reterraforged.world.worldgen.noise.function.EdgeFunction;
+import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;	
 
@@ -66,9 +67,9 @@ public class RegionModule implements CellPopulator {
                 }
             }
         }
-        cell.terrainRegion = regionValue(edgeDistance, edgeDistance2);
         cell.terrainRegionId = cellValue(this.seed, cellX, cellY);
         cell.terrainRegionEdge = this.edgeValue(edgeDistance, edgeDistance2);
+        cell.terrainMask *= this.maskValue(edgeDistance, edgeDistance2);
         cell.terrainRegionCenter = PosUtil.pack(centerX / this.frequency, centerY / this.frequency);
     }
     
@@ -85,13 +86,14 @@ public class RegionModule implements CellPopulator {
         }
         return (edgeValue - this.edgeMin) / this.edgeRange;
     }
-
-	private static float regionValue(float distance, float distance2) {
-		EdgeFunction edge = EdgeFunction.DISTANCE_2_DIV;
-		float value = edge.apply(distance, distance2);
-		value = 1.0F - NoiseUtil.map(value, edge.min(), edge.max(), edge.range());
-		return value;
-	}
+    
+    private float maskValue(float distance, float distance2) {
+        EdgeFunction edge = EdgeFunction.DISTANCE_2_DIV;
+        float value = edge.apply(distance, distance2);
+        float edgeValue = 1.0F - NoiseUtil.map(value, edge.min(), edge.max(), edge.range());
+        edgeValue = NoiseUtil.map(edgeValue, 0.5F, 0.9F);
+        return NoiseUtil.pow(edgeValue, 4.0F + 5.0F * edgeValue);
+    }
 
     private static float cellValue(int seed, int cellX, int cellY) {
         float value = NoiseUtil.valCoord2D(seed, cellX, cellY);

@@ -3,8 +3,6 @@ package raccoonman.reterraforged.world.worldgen.terrain.populator;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil.Vec2f;
-import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
-import raccoonman.reterraforged.world.worldgen.noise.module.Noises;
 import raccoonman.reterraforged.world.worldgen.rivermap.lake.LakeConfig;
 import raccoonman.reterraforged.world.worldgen.terrain.TerrainType;
 import raccoonman.reterraforged.world.worldgen.util.Boundsf;
@@ -43,10 +41,6 @@ public class LakePopulator {
     }
     
     public void apply(Cell cell, float x, float z) {
-    	if(Boolean.TRUE) {
-    		this.populator2.apply(cell, x, z);
-    	}
-    	
         float distance2 = this.getDistance2(x, z);
         if (distance2 > this.valley2) {
             return;

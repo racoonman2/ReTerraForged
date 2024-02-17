@@ -8,6 +8,7 @@ import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
 import raccoonman.reterraforged.world.worldgen.tile.Size;
+import raccoonman.reterraforged.world.worldgen.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.util.FastRandom;
 
 public class Erosion implements Filter {
@@ -41,15 +42,15 @@ public class Erosion implements Filter {
     }
     
     @Override
-    public void apply(Filterable map, int regionX, int regionZ, int iterationsPerChunk) {
-        int chunkX = map.getBlockX() >> 4;
-        int chunkZ = map.getBlockZ() >> 4;
-        int lengthChunks = map.getBlockSize().total() >> 4;
-        int borderChunks = map.getBlockSize().border() >> 4;
-        Size size = map.getBlockSize();
+    public void apply(Tile tile, int regionX, int regionZ, int iterationsPerChunk) {
+        int chunkX = tile.getBlockX() >> 4;
+        int chunkZ = tile.getBlockZ() >> 4;
+        int lengthChunks = tile.getBlockSize().total() >> 4;
+        int borderChunks = tile.getBlockSize().border() >> 4;
+        Size size = tile.getBlockSize();
         int mapSize = size.total();
         float maxPos = mapSize - 2;
-        Cell[] cells = map.getBacking();
+        Cell[] cells = tile.getBacking();
         TerrainPos gradient1 = new TerrainPos();
         TerrainPos gradient2 = new TerrainPos();
         FastRandom random = new FastRandom();

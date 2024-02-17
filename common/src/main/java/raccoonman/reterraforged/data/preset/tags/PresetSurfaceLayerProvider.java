@@ -23,6 +23,6 @@ public class PresetSurfaceLayerProvider extends TagsProvider<LayeredSurfaceRule.
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		this.tag(RTFSurfaceLayerTags.TERRABLENDER).add(PresetSurfaceLayerData.REGIONS_UNEXPLORED);
+
 	}
 }

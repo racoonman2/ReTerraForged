@@ -42,7 +42,6 @@ import raccoonman.reterraforged.world.worldgen.biome.spawn.SpawnType;
 import raccoonman.reterraforged.world.worldgen.cell.Cell;
 import raccoonman.reterraforged.world.worldgen.heightmap.Levels;
 import raccoonman.reterraforged.world.worldgen.noise.NoiseUtil;
-import raccoonman.reterraforged.world.worldgen.noise.module.Noise;
 import raccoonman.reterraforged.world.worldgen.tile.Tile;
 import raccoonman.reterraforged.world.worldgen.util.PosUtil;
 
@@ -168,7 +167,7 @@ public abstract class PresetEditorPage extends BisectedPage<PresetConfigScreen, 
 	        this.centerZ = 0;
 	        
 	        if(preset.world().properties.spawnType == SpawnType.CONTINENT_CENTER) {
-	        	long nearestContinentCenter = generatorContext.lookup.getHeightmap().continent().getNearestCenter(this.offsetX, this.offsetZ);
+	        	long nearestContinentCenter = generatorContext.localHeightmap.get().continent().getNearestCenter(this.offsetX, this.offsetZ);
 	        	this.centerX = PosUtil.unpackLeft(nearestContinentCenter);
 	        	this.centerZ = PosUtil.unpackRight(nearestContinentCenter);
 	        } else {

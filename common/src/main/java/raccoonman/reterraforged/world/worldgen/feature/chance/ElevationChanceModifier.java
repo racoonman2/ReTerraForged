@@ -39,7 +39,7 @@ class ElevationChanceModifier extends RangeChanceModifier {
 			int chunkX = SectionPos.blockToSectionCoord(x);
 			int chunkZ = SectionPos.blockToSectionCoord(z);
 			Tile.Chunk chunk = generatorContext.cache.provideAtChunk(chunkX, chunkZ).getChunkReader(chunkX, chunkZ);
-			return rtfRandomState.generatorContext().generator.getHeightmap().levels().elevation(chunk.getCell(x, z).height);
+			return rtfRandomState.generatorContext().localHeightmap.get().levels().elevation(chunk.getCell(x, z).height);
 		} else {
 			throw new UnsupportedOperationException();
 		}

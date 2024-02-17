@@ -47,7 +47,6 @@ public class RTFTranslationKeys {
 	public static final String GUI_BUTTON_BIOME_EDGE_TYPE = resolve("gui.button.biomeEdgeType");
 	public static final String GUI_BUTTON_TERRAIN_SEED_OFFSET = resolve("gui.button.terrainSeedOffset");
 	public static final String GUI_BUTTON_FANCY_MOUNTAINS = resolve("gui.button.fancyMountains");
-	public static final String GUI_BUTTON_LEGACY_WORLD_GEN = resolve("gui.button.legacyWorldGen");
 	public static final String GUI_BUTTON_RIVER_SEED_OFFSET = resolve("gui.button.riverSeedOffset");
 	public static final String GUI_BUTTON_SALT = resolve("gui.button.salt");
 	public static final String GUI_BUTTON_DISABLED = resolve("gui.button.disabled");
