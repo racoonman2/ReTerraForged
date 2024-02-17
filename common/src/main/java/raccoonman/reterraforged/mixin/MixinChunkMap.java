@@ -23,6 +23,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import raccoonman.reterraforged.world.worldgen.RTFRandomState;
+import raccoonman.reterraforged.world.worldgen.WorldGenFlags;
 
 @Mixin(ChunkMap.class)
 public class MixinChunkMap {
@@ -35,6 +36,8 @@ public class MixinChunkMap {
 	)
 	public void ChunkMap(ServerLevel serverLevel, LevelStorageSource.LevelStorageAccess storageAccess, DataFixer dataFixer, StructureTemplateManager templateLoader, Executor executor, BlockableEventLoop<Runnable> eventLoop, LightChunkGetter lightChunkGetter, ChunkGenerator chunkGenerator, ChunkProgressListener chunkProgressListener, ChunkStatusUpdateListener chunkStatusListener, Supplier<DimensionDataStorage> dimensionStorage, int viewDistance, boolean syncChunkWrites, CallbackInfo callback) {
 		if((Object) this.randomState instanceof RTFRandomState rtfRandomState) {
+			WorldGenFlags.setCullNoiseSections(true);
+
 			rtfRandomState.initialize(serverLevel.registryAccess());
 		}
 	}
