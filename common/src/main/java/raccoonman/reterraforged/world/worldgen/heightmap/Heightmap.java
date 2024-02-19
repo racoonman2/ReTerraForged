@@ -187,7 +187,8 @@ public record Heightmap(CellSampler.Provider cellProvider, CellPopulator terrain
         
         CellPopulator oceans = new ContinentLerper3(deepOcean, shallowOcean, coast, controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast);
         CellPopulator terrain = new ContinentLerper2(oceans, land, controlPoints.shallowOcean, controlPoints.nearInland);
-       
+        terrain = Populators.makePlateau(mountainSeed, ground, terrainSettings.plateau, globalVerticalScale);
+        
         Noise beachNoise = Noises.perlin2(ctx.seed.next(), 20, 1);
         beachNoise = Noises.mul(beachNoise, ctx.levels.scale(5));
         

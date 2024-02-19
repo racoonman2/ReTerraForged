@@ -148,18 +148,21 @@ public record Erosion(Noise input, int seed, int octaves, float strength, float 
 
 	public enum BlendMode implements StringRepresentable {
 		CONSTANT("constant") {
+			
 			@Override
 			public float blend(float value, float erosion, float strength) {
 				return 1.0F - strength;
 			}
 		},
 		INPUT_LINEAR("input_linear") {
+			
 			@Override
 			public float blend(float value, float erosion, float strength) {
 				return 1.0F - strength * value;
 			}
 		},
 		OUTPUT_LINEAR("output_linear") {
+			
 			@Override
 			public float blend(float value, float erosion, float strength) {
 				return 1.0F - strength * erosion;

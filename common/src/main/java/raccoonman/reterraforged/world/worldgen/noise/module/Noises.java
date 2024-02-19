@@ -271,8 +271,8 @@ public class Noises {
 		return terrace(input, constant(lowerCurve), constant(upperCurve), constant(lower), blendRange, steps);
 	}
 	
-	public static Noise terrace(Noise input, Noise lowerCurve, Noise upperCurve, Noise lower, float blendRange, int steps) {
-        return new Terrace(input, lowerCurve, upperCurve, lower, blendRange, steps);
+	public static Noise terrace(Noise input, Noise lowerCurve, Noise upperCurve, Noise rampHeight, float blendRange, int steps) {
+        return new Terrace(input, lowerCurve, upperCurve, rampHeight, blendRange, steps);
     }
 
 	public static Noise advancedTerrace(Noise input, float modulation, float mask, float slope, float blendMin, float blendMax, int steps, int octaves) {

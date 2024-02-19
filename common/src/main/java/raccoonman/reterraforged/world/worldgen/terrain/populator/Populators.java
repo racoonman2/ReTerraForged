@@ -327,7 +327,7 @@ public class Populators {
 			weirdness = makeFancy(seed, weirdness);
 		}
 		weirdness = Noises.cache2d(weirdness);
-		return TerrainPopulator.make(TerrainType.MOUNTAINS_2, ground, Noises.mul(weirdness, 0.645F * verticalScale), Erosion.LEVEL_2.source(), Weirdness.LOW_SLICE_VARIANT_ASCENDING.source(), terrainSettings);
+		return TerrainPopulator.make(TerrainType.MOUNTAINS_2, ground, Noises.mul(weirdness, 0.645F * verticalScale), Noises.constant(-1.0F), Noises.add(Noises.mul(Noises.min(weirdness, 1.0F), PEAK), 0.06F), terrainSettings);
 	}
 	
     public static TerrainPopulator makeMountains3(Seed seed, Noise ground, TerrainSettings.Terrain terrainSettings, float verticalScale, boolean makeFancy) {
@@ -363,7 +363,7 @@ public class Populators {
     	if(makeFancy) {
         	height = makeFancy(seed, height);
     	}
-		return TerrainPopulator.make(TerrainType.MOUNTAINS_3, ground, Noises.mul(height, 0.645F * verticalScale), Erosion.LEVEL_2.source(), Weirdness.LOW_SLICE_VARIANT_ASCENDING.source(), terrainSettings);
+		return TerrainPopulator.make(TerrainType.MOUNTAINS_3, ground, Noises.mul(height, 0.645F * verticalScale), Noises.constant(-1.0F), Noises.add(Noises.mul(Noises.min(weirdness, 1.0F), PEAK), 0.06F), terrainSettings);
     }
 
     public static VolcanoPopulator makeVolcano(Seed seed, Noise ground, RegionConfig region, Levels levels, float weight) {

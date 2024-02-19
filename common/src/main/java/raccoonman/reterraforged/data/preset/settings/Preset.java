@@ -47,26 +47,26 @@ public record Preset(WorldSettings world, SurfaceSettings surface, CaveSettings 
 
 	public HolderLookup.Provider buildPatch(RegistryAccess registries) {
 		RegistrySetBuilder builder = new RegistrySetBuilder();
-		this.addPatch(builder, RTFRegistries.PRESET, PresetData::bootstrap);
-		this.addPatch(builder, RTFRegistries.NOISE, PresetNoiseData::bootstrap);
-		this.addPatch(builder, RTFRegistries.BIOME_MODIFIER, PresetBiomeModifierData::bootstrap);
-		this.addPatch(builder, RTFRegistries.STRUCTURE_RULE, PresetStructureRuleData::bootstrap);
-		this.addPatch(builder, RTFRegistries.SURFACE_LAYERS, PresetSurfaceLayerData::bootstrap);
-		this.addPatch(builder, Registries.CONFIGURED_FEATURE, (preset, ctx) -> {
-			PresetConfiguredFeatures.bootstrap(preset, ctx);
-		});
-		this.addPatch(builder, Registries.CONFIGURED_CARVER, (preset, ctx) -> {
-			PresetConfiguredCarvers.bootstrap(preset, ctx);	
-		});
-		this.addPatch(builder, Registries.STRUCTURE_SET, PresetStructureSets::bootstrap);
-		this.addPatch(builder, Registries.PLACED_FEATURE, PresetPlacedFeatures::bootstrap);
-		this.addPatch(builder, Registries.BIOME, PresetBiomeData::bootstrap);
-		this.addPatch(builder, Registries.DIMENSION_TYPE, PresetDimensionTypes::bootstrap);
-		this.addPatch(builder, Registries.NOISE, PresetNoiseParameters::bootstrap);
-		this.addPatch(builder, Registries.DENSITY_FUNCTION, (preset, ctx) -> {
-			PresetNoiseRouterData.bootstrap(preset, ctx);
-			TBNoiseRouterData.bootstrap(ctx);
-		});
+//		this.addPatch(builder, RTFRegistries.PRESET, PresetData::bootstrap);
+//		this.addPatch(builder, RTFRegistries.NOISE, PresetNoiseData::bootstrap);
+//		this.addPatch(builder, RTFRegistries.BIOME_MODIFIER, PresetBiomeModifierData::bootstrap);
+//		this.addPatch(builder, RTFRegistries.STRUCTURE_RULE, PresetStructureRuleData::bootstrap);
+//		this.addPatch(builder, RTFRegistries.SURFACE_LAYERS, PresetSurfaceLayerData::bootstrap);
+//		this.addPatch(builder, Registries.CONFIGURED_FEATURE, (preset, ctx) -> {
+//			PresetConfiguredFeatures.bootstrap(preset, ctx);
+//		});
+//		this.addPatch(builder, Registries.CONFIGURED_CARVER, (preset, ctx) -> {
+//			PresetConfiguredCarvers.bootstrap(preset, ctx);	
+//		});
+//		this.addPatch(builder, Registries.STRUCTURE_SET, PresetStructureSets::bootstrap);
+//		this.addPatch(builder, Registries.PLACED_FEATURE, PresetPlacedFeatures::bootstrap);
+//		this.addPatch(builder, Registries.BIOME, PresetBiomeData::bootstrap);
+//		this.addPatch(builder, Registries.DIMENSION_TYPE, PresetDimensionTypes::bootstrap);
+//		this.addPatch(builder, Registries.NOISE, PresetNoiseParameters::bootstrap);
+//		this.addPatch(builder, Registries.DENSITY_FUNCTION, (preset, ctx) -> {
+//			PresetNoiseRouterData.bootstrap(preset, ctx);
+//			TBNoiseRouterData.bootstrap(ctx);
+//		});
 		this.addPatch(builder, Registries.NOISE_SETTINGS, PresetNoiseGeneratorSettings::bootstrap);
 		return builder.buildPatch(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), registries);
 	}

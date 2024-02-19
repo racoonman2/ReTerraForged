@@ -20,7 +20,7 @@ public record PerformanceConfig(int tileSize, int batchCount, int threadCount) {
     }
     
     public static PerformanceConfig makeDefault() {
-    	int tileSize = 1;
+    	int tileSize = 3;
     	int batchCount = 6;
     	int threadCount = ThreadPools.availableProcessors();
     	return new PerformanceConfig(tileSize, batchCount, threadCount);
