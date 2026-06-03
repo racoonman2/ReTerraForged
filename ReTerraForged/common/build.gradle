@@ -1,0 +1,26 @@
+architectury {
+    common("fabric", "neoforge")
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/reterraforged.accesswidener")
+}
+
+base {
+    archivesName = "${mod_id}-common-${minecraft_version}"
+}
+
+repositories {
+	mavenCentral()
+	maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+	modCompileOnly "maven.modrinth:lithostitched:${rootProject.lithostitched_version}-fabric-1.21.9"
+    modCompileOnly "maven.modrinth:oh-the-trees-youll-grow:XY4vue4D"
+	modCompileOnly "maven.modrinth:terrablender:kzbTmNaX"
+	modCompileOnly "maven.modrinth:distanthorizons:CKJFSOC6"
+
+	modCompileOnly "org.kynosarges:tektosyne:6.2.0"
+}

@@ -1,0 +1,42 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+issueTrackerURL = "https://github.com/racoonman2/ReTerraForged/issues"
+license="MIT"
+
+[[mixins]]
+	config = "reterraforged-common.mixins.json"
+
+[[accessTransformers]]
+	file = "META-INF/accesstransformer.cfg"
+
+[[mods]]
+	modId="reterraforged"
+	displayName="ReTerraForged"
+	version="0.0.7"
+	authors="raccoonman,Steveplays28,EdoEquin0x,keyboardcat1"
+	credits="dags,Won-Ton,raccoonman,Steveplays28,EdoEquin0x,keyboardcat1"
+	logoFile="logo.png"
+	displayURL="https://github.com/racoonman2/reterraforged/"
+	issueTrackerURL="https://github.com/racoonman2/reterraforged/issues"
+	description="A fork of https://github.com/TerraForged/TerraForged that adds support for large scale terrain simulation"
+
+[[dependencies.reterraforged]]
+    modId="neoforge"
+    mandatory=true
+    versionRange="[21,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.reterraforged]]
+	modId = "minecraft"
+	mandatory = true
+	versionRange = "[1.21.1,)"
+	ordering = "NONE"
+	side = "BOTH"
+	
+[[dependencies.reterraforged]]
+	modId = "lithostitched"
+	mandatory = true
+	versionRange = "[1.2.5a,)"
+	ordering = "NONE"
+	side = "BOTH"

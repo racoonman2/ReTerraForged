@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "reterraforged",
+  "version": "${version}",
+  "name": "ReTerraForged",
+  "description": "A fork of https://github.com/TerraForged/TerraForged that adds support for large scale terrain simulation",
+  "authors": [
+	"racconman",
+	"Steveplays28",
+	"EdoEquin0x",
+	"keyboardcat1"
+  ],
+  "contact": {
+    "repo": "https://github.com/racoonman2/reterraforged/",
+    "issues": "https://github.com/racoonman2/reterraforged/issues"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "raccoonman.reterraforged.fabric.RTFFabric"
+    ],
+    "fabric-datagen": [
+      "raccoonman.reterraforged.fabric.RTFFabric"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.13",
+    "fabric": ">=0.120.0",
+    "minecraft": ">=1.21.5",
+    "lithostitched": ">=1.4.6"
+  },
+  "mixins": [
+    "reterraforged-common.mixins.json"
+  ],
+  "icon": "assets/reterraforged/icon.png"
+}

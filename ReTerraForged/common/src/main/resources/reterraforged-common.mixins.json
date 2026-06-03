@@ -1,0 +1,44 @@
+{
+  "required": true,
+  "plugin": "raccoonman.reterraforged.mixin.plugin.MixinPlugin",
+  "package": "raccoonman.reterraforged.mixin",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+	"client.MixinCreateWorldScreen",
+	"client.MixinDebugRenderer"
+  ],
+  "mixins": [
+  	"accessors.BiomeGenerationSettingsAccessor",
+  	"accessors.GlobalFluidPickerAccessor",
+  	"accessors.PlacedFeatureAccessor",
+  	"accessors.StructureSetAccessor",
+  	"accessors.NoiseBasedChunkGeneratorAccessor",
+  	"accessors.ChunkGeneratorAccessor",
+	"accessors.LevelChunkSectionAccessor",
+	"MixinNoiseBasedAquifer",
+  	"MixinNoiseChunk",
+  	"MixinRandomState",
+  	"MixinRandomState$Mixin1NoiseWiringHelper",
+  	"MixinChunkGenerator",
+  	"MixinNoiseBasedChunkGenerator",
+  	"MixinChunkAccess",
+	"MixinTemplateManager",
+	"MixinChunkGenerator",
+	"MixinMinecraftServer",
+	"MixinSurfaceContext",
+	"MixinWorldGenerationContext",
+	"MixinGenerationChunkHolder",
+	"MixinChunkMap",
+	"MixinLevelChunk",
+	"MixinImposterProtoChunk",
+	"MixinChunkStatusTasks",
+	"compat.MixinLTLithostitched",
+	"compat.MixinLTSurfaceRuleManager"
+  ],
+  "disabled": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

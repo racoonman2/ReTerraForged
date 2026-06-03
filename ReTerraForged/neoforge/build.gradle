@@ -1,0 +1,103 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+}
+
+architectury {
+    platformSetupLoomIde()
+    neoForge()
+}
+
+base {
+    archivesName = "${mod_id}-neoforge-${minecraft_version}"
+}
+
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+    
+    runs {
+        client {
+            ideConfigGenerated(true)
+        }
+    }
+    
+    runs {
+        data {
+            data()
+            programArgs "--all", "--mod", "reterraforged"
+            programArgs "--output", file('src/generated/resources').absolutePath
+            programArgs "--existing", file('src/generated/resources').absolutePath
+        }
+    }
+}
+
+configurations {
+    common
+    shadowCommon
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentNeoForge.extendsFrom common
+}
+
+repositories {
+    maven { url "https://maven.neoforged.net/releases/" }
+}
+
+dependencies {
+    neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
+    
+	modApi "maven.modrinth:lithostitched:${rootProject.lithostitched_version}-neoforge-1.21.9"
+    modApi "maven.modrinth:oh-the-trees-youll-grow:44blpeJ7"
+	include(modImplementation "org.kynosarges:tektosyne:6.2.0")
+
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive false }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs += [
+                "src/generated/resources"
+            ]
+        }
+    }
+}
+
+processResources {
+
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand "version": project.version
+    }
+}
+
+shadowJar {
+    exclude "fabric.mod.json"
+    exclude "architectury.common.json"
+
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier.set("shadow")
+}
+
+remapJar {
+    atAccessWideners.add('reterraforged.accesswidener')
+    
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+}
+
+processResources {
+	duplicatesStrategy "exclude"
+}
+
+sourcesJar {
+	duplicatesStrategy "exclude"
+    def commonSources = project(":common").sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}
