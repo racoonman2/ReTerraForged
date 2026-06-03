@@ -12,7 +12,7 @@ license="MIT"
 [[mods]]
 	modId="reterraforged"
 	displayName="ReTerraForged"
-	version="0.0.7"
+	version="0.1.0"
 	authors="raccoonman,Steveplays28,EdoEquin0x,keyboardcat1"
 	credits="dags,Won-Ton,raccoonman,Steveplays28,EdoEquin0x,keyboardcat1"
 	logoFile="logo.png"
