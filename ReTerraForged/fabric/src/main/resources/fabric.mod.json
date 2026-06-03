@@ -3,7 +3,7 @@
   "id": "reterraforged",
   "version": "${version}",
   "name": "ReTerraForged",
-  "description": "A fork of https://github.com/TerraForged/TerraForged that adds support for large scale terrain simulation",
+  "description": "A port of https://github.com/TerraForged/TerraForged to modern MC versions",
   "authors": [
 	"racconman",
 	"Steveplays28",

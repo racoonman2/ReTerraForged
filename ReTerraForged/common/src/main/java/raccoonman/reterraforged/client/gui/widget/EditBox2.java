@@ -10,8 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -631,8 +629,6 @@ public class EditBox2 extends AbstractWidget {
 		this.hint = (Component)(bl ? component.copy().withStyle(DEFAULT_HINT_STYLE) : component);
 	}
 
-	@FunctionalInterface
-	@Environment(EnvType.CLIENT)
 	public interface TextFormatter {
 		@Nullable
 		FormattedCharSequence format(String string, int i);

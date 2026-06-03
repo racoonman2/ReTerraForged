@@ -46,7 +46,7 @@ dependencies {
     neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
     
 	modApi "maven.modrinth:lithostitched:${rootProject.lithostitched_version}-neoforge-1.21.9"
-    modApi "maven.modrinth:oh-the-trees-youll-grow:44blpeJ7"
+//    modApi "maven.modrinth:oh-the-trees-youll-grow:44blpeJ7"
 	include(modImplementation "org.kynosarges:tektosyne:6.2.0")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }

@@ -18,7 +18,7 @@ license="MIT"
 	logoFile="logo.png"
 	displayURL="https://github.com/racoonman2/reterraforged/"
 	issueTrackerURL="https://github.com/racoonman2/reterraforged/issues"
-	description="A fork of https://github.com/TerraForged/TerraForged that adds support for large scale terrain simulation"
+	description="A port of https://github.com/TerraForged/TerraForged to modern MC versions"
 
 [[dependencies.reterraforged]]
     modId="neoforge"

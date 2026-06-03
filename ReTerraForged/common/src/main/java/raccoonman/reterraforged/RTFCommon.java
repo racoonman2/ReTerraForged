@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.resources.ResourceLocation;
 import raccoonman.reterraforged.commands.RTFCommands;
-import raccoonman.reterraforged.commands.arguments.RTFArgumentTypeInfos;
 import raccoonman.reterraforged.debug.RTFDebugScreenEntries;
 import raccoonman.reterraforged.platform.RegistryUtil;
 import raccoonman.reterraforged.registry.RTFBuiltInRegistries;
@@ -41,7 +40,7 @@ public class RTFCommon {
 		RTFCarvers.bootstrap();
 		RTFStructurePlacements.bootstrap();
 		RTFCommands.bootstrap();
-		RTFArgumentTypeInfos.bootstrap();
+//		RTFArgumentTypeInfos.bootstrap();
 		RTFGameRules.bootstrap();
 		RTFDebugScreenEntries.bootstrap();
 		Noises.bootstrap();
